@@ -4,8 +4,8 @@ permalink: /about/
 layout: single
 ---
 
-<div style="display:flex; flex-direction:column; max-width:1000px;">
 
+<br />
 <div style="display:flex; justify-content:center">
 <img src="https://github.com/codefug/codefug/raw/master/assets/gh-readme-header.png" alt="로고">
 </div>
@@ -29,9 +29,6 @@ layout: single
 | collab     | [![My Skills](https://skillicons.dev/icons?i=github,figma)](https://skillicons.dev)                            |
 | note       | [![My Skills](https://skillicons.dev/icons?i=obsidian,notion)](https://skillicons.dev)                         |
 
-<div style="display:flex"}>
 <a href="https://github.com/codefug/github-readme-stats"><img align="center" src="https://github-readme-stats.vercel.app/api?username=codefug&show_icons=true&title_color=0047A0&text_color=000000&icon_color=CC303B&bg_color=FFFFFF&" alt="Codefug's github stats" /></a>
 
 <a href="https://github.com/codefug/github-readme-stats"><img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=codefug&layout=compact&theme=buefy&hide_border=true" /></a>
-</div>
-</div>
