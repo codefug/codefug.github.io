@@ -1,9 +1,10 @@
 ---
 title: "이승현"
-layout: default
 permalink: /about/
+scope:
+  path: ""
+  type: posts
 ---
-
 
 <br />
 <div style="display:flex; justify-content:center">
