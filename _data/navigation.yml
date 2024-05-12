@@ -4,8 +4,8 @@ main:
     url: /about/
   - title: "Categories"
     url: /categories/
-  - title: "Posts"
-    url: /Posts/
+  - title: "GitHub"
+    url: https://github.com/codefug
 
 History:
   - title: History

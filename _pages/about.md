@@ -1,7 +1,7 @@
 ---
 title: "이승현"
+layout: default
 permalink: /about/
-layout: single
 ---
 
 
