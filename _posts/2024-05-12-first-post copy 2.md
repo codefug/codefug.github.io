@@ -1,5 +1,5 @@
 ---
-title: "github.io test"
+title: "깃허브 페이지 test"
 excerpt: "소개 멘트"
 toc: true
 toc_sticky: true
@@ -10,12 +10,44 @@ tags:
 last_modified_at: 2024-05-12T20:11:00
 ---
 
-GitHub Blog 서비스인 github.io 블로그 시작하기로 했다.
-GitHub Blog 서비스의 이름은 Pages이다.
+<p align="center"><a href="https://velog.io/@codefug"><img width="400px" alt="Hello, I'm codefug." src="./assets/gh-readme-header.png" /></a></p>
 
-Pages가 다른 블로그 플랫폼 보다 편한 것 같아서 마음에 든다.
-다른 사람들도 같이 많이 사용했으면 좋겠다는 생각이 든다.
+<br />
 
-YFM에서 정의한 제목을 이중 괄호 구문으로 본문에 추가할 수 있다.
-이 글의 제목은 {{ page.title }}이고
-마지막으로 수정된 시간은 {{ page.last_modified_at }}이다.
+I'm FE codefug
+
+**About me**
+
+- 💼 now I'm studying FE at Codeit BootCamp.
+
+- 💬 Ask me about anything [codefug](https://github.com/codefug/codefug/issues/1)
+
+- :fountain_pen: I like writing and summerizing everything i learn.
+
+- <img src="https://github.com/codefug/codefug/assets/86544979/f894009f-f524-4f61-98da-d1ba1cd92322" style="width:20px" /> Sometimes I transfer my writing to <a href="https://velog.io/@codefug"> My Blog </a>
+
+## skill set
+
+| category   | set                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| publishing | [![My Skills](https://skillicons.dev/icons?i=html,css,tailwind,styledcomponents,sass)](https://skillicons.dev) |
+| language   | [![My Skills](https://skillicons.dev/icons?i=js)](https://skillicons.dev)                                      |
+| FrameWork  | [![My Skills](https://skillicons.dev/icons?i=react,express)](https://skillicons.dev)                           |
+| RunTimeEnv | [![My Skills](https://skillicons.dev/icons?i=nodejs)](https://skillicons.dev)                                  |
+| collab     | [![My Skills](https://skillicons.dev/icons?i=github,figma)](https://skillicons.dev)                            |
+| note       | [![My Skills](https://skillicons.dev/icons?i=obsidian,notion)](https://skillicons.dev)                         |
+
+| <a href="https://github.com/codefug/github-readme-stats"><img align="center" src="https://github-readme-stats.vercel.app/api?username=codefug&show_icons=true&title_color=0047A0&text_color=000000&icon_color=CC303B&bg_color=FFFFFF&" alt="Codefug's github stats" /></a> | <a href="https://github.com/codefug/github-readme-stats"><img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=codefug&layout=compact&theme=buefy&hide_border=true" /></a> |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+
+#### Top Repositories
+
+<a href="https://github.com/codefug/WeatherAppProject">
+  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=codefug&repo=WeatherAppProject&theme=buefy" />
+</a>
+<a href="https://github.com/codefug/DramaProject">
+  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=codefug&repo=DramaProject&theme=buefy" />
+</a>
+
+<br />
+<br />****
