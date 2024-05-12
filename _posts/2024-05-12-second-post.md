@@ -8,6 +8,8 @@ categories:
 tags:
   - Blog
 last_modified_at: 2024-05-12T20:11:00
+header:
+  teaser: /assets/images/CodefugLogo.png
 ---
 
 {{page.title}}
