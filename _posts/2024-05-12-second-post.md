@@ -12,5 +12,4 @@ header:
 
 velog는 이런거 못해
 
-<video src="../assets/video/localhost_5173 - Chrome 2024-05-12 16-57-26.mp4" controls>
-</video>
+<iframe src="https://youtu.be/embed/AZINC8HpQ_0" width="560" height="315" frameborder="0"> </iframe>
