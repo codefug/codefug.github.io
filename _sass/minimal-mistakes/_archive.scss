@@ -2,10 +2,15 @@
    ARCHIVE
    ========================================================================== */
 
+.entries-list{
+  display: grid;
+  grid-template: repeat(3,1fr)/ repeat(4,1fr);
+}
+
 .archive {
   margin-top: 1em;
   margin-bottom: 2em;
-
+  padding-right: 0px;
   @include breakpoint($large) {
     float: right;
     width: calc(100% - #{$right-sidebar-width-narrow});
