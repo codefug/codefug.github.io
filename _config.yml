@@ -112,7 +112,7 @@ analytics:
 # Site Author
 author:
   name: "CodeFug"
-  avatar: "/assets/images/CodefugLogo.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar: "/assets/images/profileImage.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio: "FE Developer"
   location: "South Korea"
   email:
