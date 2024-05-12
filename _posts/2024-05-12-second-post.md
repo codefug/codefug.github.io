@@ -1,19 +1,12 @@
 ---
-title: "github.io test2"
-excerpt: "테스트 페이지2"
+title: "https://velog.io/@codefug/posts"
+excerpt: "벨로그에서 이사왔습니다."
 toc: true
 toc_sticky: true
 categories:
-  - Blog
-tags:
-  - Blog
-last_modified_at: 2024-05-12T20:11:00
+  - project
+last_modified_at: 2024-05-13T00:47:00
 header:
   teaser: /assets/images/CodefugLogo.png
 ---
 
-{{page.title}}
-
-{{page.tags}}
-
-{{page.excerpt}}

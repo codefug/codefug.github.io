@@ -1,5 +1,5 @@
 ---
-title: "이승현"
+title: "프론트엔드 개발자 이승현"
 permalink: /about/
 scope:
   path: ""
