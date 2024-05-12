@@ -1,6 +1,6 @@
 ---
 title: "github.io test"
-excerpt: "테스트 페이지"
+excerpt: "소개 멘트"
 toc: true
 toc_sticky: true
 categories:
