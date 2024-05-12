@@ -7,6 +7,10 @@ categories:
   - project
 last_modified_at: 2024-05-13T00:47:00
 header:
-  teaser: /assets/images/CodefugLogo.png
+  teaser: /assets/images/velogLogo.jpg
 ---
 
+velog는 이런거 못해
+
+<video src="../assets/video/localhost_5173 - Chrome 2024-05-12 16-57-26.mp4" controls>
+</video>
