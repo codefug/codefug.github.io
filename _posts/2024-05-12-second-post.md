@@ -12,4 +12,4 @@ header:
 
 velog는 이런거 못해
 
-<iframe src="https://youtu.be/embed/AZINC8HpQ_0" width="560" height="315" frameborder="0"> </iframe>
+<iframe class="posts_iframe" src="https://www.youtube.com/embed/AZINC8HpQ_0" frameborder="0"> </iframe>
