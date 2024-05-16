@@ -1,15 +1,12 @@
 /* ==========================================================================
-   ARCHIVE
-   ========================================================================== */
+  ARCHIVE
+========================================================================== */
 
-.entries-list{
+.entries-list {
   display: grid;
-  grid-template: repeat(3,1fr)/ repeat(4,1fr);
-  @media (width<1024px){
-    grid-template: repeat(4,1fr)/ repeat(3,1fr);
-  }
-  @media (width<767px){
-    grid-template: repeat(12,1fr)/repeat(1,1fr);
+  grid-template: repeat(12, 1fr) / repeat(1, 1fr);
+  @include breakpoint($large) {
+    grid-template: repeat(3, 1fr) / repeat(4, 1fr);
   }
 }
 
@@ -60,7 +57,7 @@
   text-overflow: ellipsis;
 
   a[rel="permalink"]::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -294,7 +291,7 @@
   }
 
   a.btn::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -320,7 +317,7 @@
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -361,7 +358,7 @@
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -405,7 +402,7 @@
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -451,7 +448,7 @@
    Wide Pages
    ========================================================================== */
 
-  .wide {
+.wide {
   .archive {
     @include breakpoint($large) {
       padding-right: 0;
@@ -466,7 +463,7 @@
 /* Place inside a single layout */
 
 .layout--single {
-	.feature__wrapper {
-		display: inline-block;
-	}
+  .feature__wrapper {
+    display: inline-block;
+  }
 }

@@ -1,15 +1,86 @@
-<!-- ---
-title: "https://velog.io/@codefug/posts"
-excerpt: "벨로그에서 이사왔습니다."
+---
+title: "깃허브 블로그 만들기"
+excerpt: "벨로그에서 이사오다."
 toc: true
 toc_sticky: true
 categories:
   - project
-last_modified_at: 2024-05-13T00:47:00
+last_modified_at: 2024-05-17T01:32:00
 header:
   teaser: /assets/images/velogLogo.jpg
 ---
 
-#
+## 이사온 이유
 
-<iframe class="posts_iframe" src="https://www.youtube.com/embed/AZINC8HpQ_0" frameborder="0"> </iframe> -->
+사실 깃허브 블로그 시작 자체가 tistory, medium, velog처럼 간단하게 할 수 있는 것이 아니다보니 배보다 배꼽이 더 커지는 것 같아서 그만했었던 기억이 있다.
+
+그럼에도 만들게 된 이유는 3가지 정도 생각할 수 있을 것 같다.
+1. 이전까지는 velog로 글을 작성했었는데 내가 포기한 건 아닌가 하는 진 것 같은 느낌이 들었다.
+  
+2. 평소 obsidian에 공부한 것들을 정리하고 그 공부한 것들을 정리해서 블로그에 올리곤 하는데 블로그에 올릴 때 파일을 하나씩 넣으면서 화났던 경험이 있다.
+
+3. 무엇보다 jekyll이라는 정적 생성기, scss 복습, 문서 읽고 프로젝트 진행, 리팩토링 여러가지가 섞여 있어 완전 시간 낭비는 아니겠다 싶었다.
+
+4. <s>낭만</s>
+
+## 문제와 해결과정
+
+크게 4가지 문제가 있었다.
+
+### 1. 사진이 안들어가는 문제
+
+
+post에 사진이 들어가지 않는 문제가 있었다. 
+
+minimal mistakes 공식 문서를 보니 jekyll이 md를 파싱하는 과정에서 post에 이미지 넣을려면 여기에 넣으라고 따로 path를 정해놓고 있었다.
+
+https://mmistakes.github.io/minimal-mistakes/post%20formats/post-image-standard/
+
+/assets/images/ 안에 파일을 넣고
+
+```html
+<img src="{{ site.url }}{{ site.baseurl }}/assets/images/filename.jpg" alt="" class="full">
+```
+
+이런 식으로 HTML img tag에 박아서 사용하면 된다.
+
+### 2. tzinfo dependency 오류
+
+<img src="https://codefug.github.io/assets/images/2024-05-12/2024-05-12-image1.png" class="full"/>
+
+맥이나 리눅스를 사용하지 않으면 무조건 겪게 되는 오류이다. 
+
+jekyll 공식 문서에서 해결방법이 나와있다.
+
+https://jekyllrb.com/docs/installation/windows/#time-zone-management
+
+요약하자면 jekyll이 rubygem을 사용해서 시간대를 구성하는 방식이 변화했고 그래서 jekyll V3.4이상으로 생성된 블로그는 자동으로 Gemfile에 해당 내용이 들어가는데 원래 존재하는 사이트(minimal mistake같은)는 Gemfile에 다음 코드를 넣어줘야 한다는 것
+
+```terminal
+platforms :mingw, :x64_mingw, :mswin, :jruby do
+  gem "tzinfo", ">= 1", "< 3"
+  gem "tzinfo-data"
+end
+```
+
+### 3. @ rb_sysopen bundler cannot continue
+
+jekyll로 로컬 서버를 킬 때 루트 폴더에 계속 _site가 생기게 된다. 번들되는 파일인 것 같은데 그 폴더 안에 package.json이 존재하지 않아 생기는 에러이다.
+
+stackoverflow나 이슈들을 찾아보니 아직 해결되지 않은 것 같아 로컬 서버 재실행시 _site를 없애고 실행하는 것으로 합의보았다. 되긴 되지만 추후에 무언가 알게 되면 방식이 변경 될 것 같다.
+
+<img src="https://codefug.github.io/assets/images/2024-05-12/2024-05-12-image2.png" class="full" />
+
+## 얻은 점
+
+예전에 만든 template이라 스타일링 중에 float를 만난다거나 최신 문법 파싱이 안된다거나 하는 문제를 만나기도 했었는데 광고도 붙히는 법, sitemap 등록, 댓글 처리 등등 많은 지식도 얻게 된 것 같다.
+
+에러를 마주했을 때 github issue나 공식문서에 대부분의 답이 있다는 걸 알게 된 계기이자 추후 여유가 생겨서 블로그를 만들게 되면 개선해 볼법한 부분들을 정리한 기회가 되었다.
+
+어쨌든 블로그도 블로그지만 결국에는 내용이 중요하다. 누가 볼지 몰라도 글을 보면서 "열심히 하는구나", "이런 식으로 문제 해결을 하는구나", "나도 이거 막혔는데 고맙네" 정도의 반응이면 만족할 것 같다.
+
+>
+> obsidian에 있는 모든 이론적인 공부 기록을 올리는 것 보다는 개인적인 문제 해결과정, 공유하면 좋을만한 정보들을 공유하는 것이 목표입니다.
+> 
+> 시작하겠습니다.
+> 

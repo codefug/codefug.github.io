@@ -12,15 +12,9 @@ History:
     children:
       - title: "Project"
         url: /categories/#project
-      - title: "TroubleShooting"
-        url: /categories/#TroubleShooting
-      - title: "Library"
-        url: /categories/#Library
       - title: "CS"
         url: /categories/#CS
       - title: "FETECH"
         url: /categories/#FETECH
       - title: "Language Knowledge"
         url: /categories/#LanguageKnowledge
-      - title: "Retrospective"
-        url: /categories/#Retrospective

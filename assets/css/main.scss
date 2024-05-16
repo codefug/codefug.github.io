@@ -1,5 +1,4 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
 search: false
 ---
 
@@ -9,26 +8,20 @@ search: false
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap");
 
 .thumbnail-container {
-    max-width: 100%;
-    overflow: hidden;
-    border-radius: 5px;
-    margin-bottom: 25px;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+  margin-bottom: 25px;
 }
 .thumbnail-container img {
-    margin-top: -11.5%;
-    margin-bottom: -11.5%;
+  margin-top: -11.5%;
+  margin-bottom: -11.5%;
 }
-.posts_iframe{
-  width:100%;
+.posts_iframe {
+  width: 100%;
   height: 500px;
-  @media (width<=767px) {
-    height: 400px;
-  }
-  @media (width<=500px){
-    height: 300px;
-  }
 }
-.archive__image{
-  width:100%;
-  height:100%;
+.archive__image {
+  width: 100%;
+  height: 100%;
 }
