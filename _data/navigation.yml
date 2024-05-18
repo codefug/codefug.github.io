@@ -10,11 +10,11 @@ main:
 History:
   - title: History
     children:
-      - title: "Project"
+      - title: "Project (#project)"
         url: /categories/#project
-      - title: "CS"
-        url: /categories/#CS
-      - title: "FETECH"
-        url: /categories/#FETECH
-      - title: "Language Knowledge"
-        url: /categories/#LanguageKnowledge
+      - title: "CS (#cs)"
+        url: /categories/#cs
+      - title: "FE Tech (#fetech)"
+        url: /categories/#fetech
+      - title: "나를 위한 가이드 (#guide)"
+        url: /categories/#guide

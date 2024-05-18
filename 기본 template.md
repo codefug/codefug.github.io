@@ -10,6 +10,8 @@ header:
   teaser: /assets/images/이미지 url
 ---
 
+_site 지우고 bundle exec jekyll serve
+
 >
 > 프로젝트 진행 중에 겪은 경험들입니다. 추후에 정리합니다.
 > 

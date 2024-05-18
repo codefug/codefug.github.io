@@ -1,5 +1,5 @@
 ---
-title: "post template"
+title: "TypeScript에서 강화된 점"
 excerpt: "infinite scroll, fetch api, modal, compound pattern"
 toc: true
 toc_sticky: true

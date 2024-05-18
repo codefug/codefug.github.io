@@ -1,11 +1,11 @@
 ---
 title: "기초 프로젝트 회고"
-excerpt: "infinite scroll, fetch api, modal, compound pattern"
+excerpt: "infinite scroll, fetch api, modal, skeleton"
 toc: true
 toc_sticky: true
 categories:
   - project
-last_modified_at: 2024-05-18T23:09:00
+last_modified_at: 2024-05-18T23:00:00
 header:
   teaser: /assets/images/Codeit.png
 ---
