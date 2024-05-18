@@ -7,7 +7,7 @@ categories:
   - project
 last_modified_at: 2024-05-18T23:00:00
 header:
-  teaser: /assets/images/Codeit.png
+  teaser: /assets/images/Logo/Codeit.png
 ---
 
 ## React
@@ -310,6 +310,9 @@ working directory, staged directory, remote repository 세가지 공간
 배포중 npm 자체의 에러가 존재했다.
 
 https://github.com/npm/cli/issues/4828
+
+
+이슈에서 사람들이 추천해준대로 package.lock.json와 node_modules를 삭제한 후 npm install 로 dependency를 다시 설치했더니 정상 동작하였다.
 
 >
 > 프로젝트 진행 중에 겪은 경험들입니다. 추후에 정리합니다.
