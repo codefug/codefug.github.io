@@ -1,11 +1,11 @@
 ---
-title: "위대한 TS"
+title: "TS를 쓰는 이유 (위대한 TS)"
 excerpt: "JS를 완벽하게 하기 위한 여정"
 toc: true
 toc_sticky: true
 categories:
   - fetech
-last_modified_at: 2024-05-19T08:00:00
+last_modified_at: 2024-05-20T08:00:00
 header:
   teaser: /assets/images/Logo/TS.png
 ---
@@ -16,8 +16,14 @@ header:
 
 
 
+<details>
+<summary>문법</summary>
+</details>
+
 >
-> 프로젝트 진행 중에 겪은 경험들입니다. 추후에 정리합니다.
+> TS를 입문하면서 알게된 지식들, 감탄하면서 본 것들 정리입니다.
+> 
+> 잘못된 정보가 있거나 더 알면 좋은 정보들이 있다면 댓글로 적어주세요!
 > 
 > 감사합니다.
 > 
