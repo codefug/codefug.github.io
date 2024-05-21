@@ -8,13 +8,45 @@ main:
     url: https://github.com/codefug
 
 History:
-  - title: History
+  - title: Project
     children:
-      - title: "Project (#project)"
-        url: /categories/#project
-      - title: "CS (#cs)"
-        url: /categories/#cs
-      - title: "FE Tech (#fetech)"
-        url: /categories/#fetech
-      - title: "나를 위한 가이드 (#guide)"
-        url: /categories/#guide
+      - title: "Fandom-K (#fandomK)"
+        url: /categories/#fandomK
+
+  - title: FETECH
+    children:
+      - title: "-TS (#typescript)"
+        url: /categories/#typescript
+
+  - title: Study
+    children:
+      - title: "-CoreJavascript (#corejavascript)"
+        url: /categories/#corejavascript
+      - title: "-ReactDeepDive (#reactdeepdive)"
+        url: /categories/#reactdeepdive
+
+  - title: CS
+    children:
+      - title: "-자료구조 (#datastructure)"
+        url: /categories/#datastructure
+      - title: "-운영체제 (#operationsystem)"
+        url: /categories/#operationsystem
+      - title: "-알고리즘 (#algorithm)"
+        url: /categories/#algorithm
+      - title: "-네트워크 (#network)"
+        url: /categories/#network
+      - title: "-데이터베이스 (#database)"
+        url: /categories/#database
+      - title: "-컴퓨터 구조 (#computerstructure)"
+        url: /categories/#computerstructure
+
+  - title: bookmark
+    children:
+      - title: "-React (#reactbookmark)"
+        url: /categories/#reactbookmark
+      - title: "-CSS (#cssbookmark)"
+        url: /categories/#cssbookmark
+      - title: "-JS (#jsbookmark)"
+        url: /categories/#jsbookmark
+      - title: "-etc (#etcbookmark)"
+        url: /categories/#etcbookmark

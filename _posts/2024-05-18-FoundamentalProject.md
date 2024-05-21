@@ -4,11 +4,22 @@ excerpt: "infinite scroll, fetch api, modal, skeleton"
 toc: true
 toc_sticky: true
 categories:
-  - project
+  - fandomK
 last_modified_at: 2024-05-18T23:00:00
 header:
   teaser: /assets/images/Logo/Codeit.png
 ---
+
+1. 스켈레톤
+2. infinite scroll
+3. modal
+   
+4. fetch
+5. scroll to top
+   
+7. CICD
+8. 라이브러리 제거하는 과정
+9. 후기
 
 ## React
 
