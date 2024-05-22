@@ -1,6 +1,6 @@
 ---
 title: "Fandom-k 프로젝트 회고3 (CICD, 라이브러리 제거)"
-excerpt: "CICD, 라이브러리 제거, readme 작성"
+excerpt: "CICD, 최종 회고"
 toc: true
 toc_sticky: true
 categories:
@@ -12,6 +12,14 @@ header:
 ## 팀 프로젝트 세팅
 
 ![alt text](image.png)
+
+## Netlify 배포
+
+배포중 npm 자체의 에러가 존재했다.
+
+https://github.com/npm/cli/issues/4828
+
+
 
 >
 > 코드잇 프로젝트 진행 중에 겪은 경험들입니다. 
