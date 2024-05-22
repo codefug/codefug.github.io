@@ -1,18 +1,17 @@
 ---
-title: "Fandom-k 프로젝트 회고1"
-excerpt: "팀 프로젝트 세팅, infinite scroll, skeleton"
+title: "Fandom-k 프로젝트 회고3 (CICD, 라이브러리 제거)"
+excerpt: "CICD, 라이브러리 제거, readme 작성"
 toc: true
 toc_sticky: true
 categories:
   - fandomk
-last_modified_at: 2024-05-18T23:00:00
+last_modified_at: 2024-05-20T23:30:00
 header:
-  teaser: /assets/images/2024-05-18/infinite-scroll.png
+  teaser: /assets/images/2024-05-20/githubActions.png
 ---
-
 ## 팀 프로젝트 세팅
 
-
+![alt text](image.png)
 
 >
 > 코드잇 프로젝트 진행 중에 겪은 경험들입니다. 

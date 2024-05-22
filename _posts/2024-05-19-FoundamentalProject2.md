@@ -1,13 +1,13 @@
 ---
-title: "Fandom-k 프로젝트 회고3 (CICD, 라이브러리 제거)"
-excerpt: "CICD, 라이브러리 제거, readme 작성"
+title: "Fandom-k 프로젝트 회고2"
+excerpt: "fetch, scroll to Top"
 toc: true
 toc_sticky: true
 categories:
   - fandomk
-last_modified_at: 2024-05-20T23:30:00
+last_modified_at: 2024-05-19T23:00:00
 header:
-  teaser: /assets/images/2024-05-20/githubActions.png
+  teaser: /assets/images/2024-05-19/fetch.png
 ---
 ## 팀 프로젝트 세팅
 

@@ -12,6 +12,8 @@ header:
 
 _site 지우고 bundle exec jekyll serve
 
+../assets/ ~~ 하고 마지막에 ../만 https://codefug.github.io/ 로 바꾸면 됨.
+
 >
 > 프로젝트 진행 중에 겪은 경험들입니다. 추후에 정리합니다.
 >
