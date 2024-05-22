@@ -1,15 +1,14 @@
 ---
-title: "Fandom-k 프로젝트 회고1"
-excerpt: "팀 프로젝트 세팅, infinite scroll, skeleton"
+title: "Fandom-k 프로젝트 회고2"
+excerpt: "fetch, modal, scroll to Top"
 toc: true
 toc_sticky: true
 categories:
   - fandomk
-last_modified_at: 2024-05-18T23:00:00
+last_modified_at: 2024-05-19T23:00:00
 header:
-  teaser: /assets/images/2024-05-18/infinite-scroll.png
+  teaser: /assets/images/2024-05-19/fetch.png
 ---
-
 ## 팀 프로젝트 세팅
 
 
