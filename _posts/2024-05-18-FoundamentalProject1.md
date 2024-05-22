@@ -211,8 +211,6 @@ infinite scroll을 생각해보면 inView가 보일때 true, 다음 데이터를
 
 #### <mark style="background: #BBFABBA6;">구현</mark>
 
-<img src="https://codefug.github.io/assets/images/2024-05-18/fandom-k-infinite-scroll.gif" class="full"/>
-
 styled-components의 css를 쓰면 css 파일 자체를 css그 자체로 상속할 수 있다.
 
 ```js
