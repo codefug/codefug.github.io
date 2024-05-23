@@ -1,5 +1,5 @@
 ---
-title: "0장 들어가며"
+title: "리액트의 역사"
 excerpt: "리액트 과거, 현재, 미래"
 toc: true
 toc_sticky: true
@@ -9,8 +9,6 @@ last_modified_at: 2024-05-23T18:00:00
 header:
   teaser: /assets/images/Logo/reactdeepdive.jpg
 ---
-
-# <mark style="background: #FF5582A6;">리액트</mark>
 
 <img src="https://codefug.github.io/assets/images/2024-05-23/Pastedimage20240523085413.png" class="full" />
 
