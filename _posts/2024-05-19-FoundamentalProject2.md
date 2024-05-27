@@ -13,9 +13,9 @@ header:
 
 ### <mark style="background: #FFF3A3A6;">투표를 하기 위한 POST 요청</mark>
 
- setState의 비동기처리
+ setState의 비동기 호출
 
-setState는 비동기로 처리하기 때문에 fetch에 state를 담아서 전달할 때 이전 state가 들어가는 경우가 발생할 수 있다. 이때 필요한 게 useEffect이다.
+setState는 비동기로 호출되기 때문에(setState 호출이 비동기인 거임, setState 자체는 동기 함수이다. https://velog.io/@jay/setStateisnotasync ) fetch에 state를 담아서 전달할 때 이전 state가 들어가는 경우가 발생할 수 있다. 이때 필요한 게 useEffect이다.
 
 ```jsx	
 	const [id, setId] = useState(false);
