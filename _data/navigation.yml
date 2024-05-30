@@ -17,6 +17,8 @@ History:
     children:
       - title: "-TS (#typescript)"
         url: /categories/#typescript
+      - title: "-NEXT (#nextjs)"
+        url: /categories/#nextjs
 
   - title: Study
     children:
@@ -39,14 +41,3 @@ History:
         url: /categories/#database
       - title: "-컴퓨터 구조 (#computerstructure)"
         url: /categories/#computerstructure
-
-  - title: bookmark
-    children:
-      - title: "-React (#reactbookmark)"
-        url: /categories/#reactbookmark
-      - title: "-CSS (#cssbookmark)"
-        url: /categories/#cssbookmark
-      - title: "-JS (#jsbookmark)"
-        url: /categories/#jsbookmark
-      - title: "-etc (#etcbookmark)"
-        url: /categories/#etcbookmark
