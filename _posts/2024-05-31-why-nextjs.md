@@ -64,9 +64,19 @@ Next.js 내에서 `getServerSideProps` 함수를 통해서 구현되며 모든 R
 
 ### SSG
 
+빌드 시간에 서버가 페이지를 pre-rendering하는 방식
+
+
+
 #### 예시
 
 ### ISR
+
+사이트를 구축한 후 정적 페이지를 생성하거나 업데이트하는 방식
+
+전체 사이트를 구축할 필요 없이 페이지 별로 정적 생성을 사용할 수 있다.
+
+`getStaticProps`에 revalidate props를 추가하면 사용가능하다.
 
 ## Reference
 
