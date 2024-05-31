@@ -43,9 +43,12 @@ next/head를 이용한 메타 데이터 삽입이나 app router, pages router를
 
 모든 Request 마다 서버에서 HTML page를 만든다.
 
-![alt text](<Pasted image 20240530181448.png>)
+<img src="https://codefug.github.io/assets/images/2024-05-31/Pasted%20image%2020240530181448.png
+" class="full"/>
 
 Next.js 내에서 `getServerSideProps` 함수를 통해서 구현되며 모든 Request마다 해당 함수가 서버단에서 구현된다.
+
+이후 클라이언트에서 나머지 JS를 적용시키는데 이를 hydration이라고 한다.
 
 자주 업데이트되는 데이터 (fetch로 받아오는 외부데이터 등)를 pre-render할 때 사용하면 좋다.
 
@@ -64,15 +67,108 @@ Next.js 내에서 `getServerSideProps` 함수를 통해서 구현되며 모든 R
 
 ### SSG
 
-빌드 시간에 서버가 페이지를 pre-rendering하는 방식
+**Static Site Generation**
 
+빌드 시간에 서버가 HTML을 만들고 모든 요청마다 이걸 재사용하는 방식
 
+data를 fetching하지 않는 경우 Next.js는 자동으로 SSG 방식을 사용한다.
+
+Next.js 공식문서에는 이를 사용하는 두가지 상황을 제시한다.
+
+#### content가 외부 데이터에 의존하는 경우 (`getStaticProps`)
+
+```jsx
+export default function Blog({ posts }) {
+  // Render posts...
+}
+ 
+// This function gets called at build time
+export async function getStaticProps() {
+  // Call an external API endpoint to get posts
+  const res = await fetch('https://.../posts')
+  const posts = await res.json()
+ 
+  // By returning { props: { posts } }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      posts,
+    },
+  }
+}
+```
+
+위의 경우 getStaticProps 안에서 fetch로 데이터를 가져와서 빌드 타임에 posts라는 prop에 내려준다.
+
+#### paths가 외부 데이터에 의존하는 경우 (`getStaticPaths`, `getStaticProps`)
+
+Next.js의 Dynamic Routes를 이용한 경우이다.
+
+```jsx
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const res = await fetch('https://.../posts')
+  const posts = await res.json()
+ 
+  // Get the paths we want to pre-render based on posts
+  const paths = posts.map((post) => ({
+    params: { id: post.id },
+  }))
+ 
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false }
+}
+```
+
+`pages/posts/[id].js`의 형태로 Dynamic Routes를 구성했을 경우 fetch로 id에 들어갈 전체 데이터를 미리 가져온 후에 params라는 곳에 key-value 형태로 받아온다.
+
+```jsx
+export default function Post({ post }) {
+  // Render post...
+}
+ 
+export async function getStaticPaths() {
+  // ...
+}
+ 
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+ 
+  // Pass post data to the page via props
+  return { props: { post } }
+}
+```
+
+이 데이터는 이후에 `getStaticProps`의 인자가 되어 정적 페이지 최적화에 사용될 수 있다.
 
 #### 예시
 
+```tsx
+export const getStaticProps = (async (context) => {
+  const likeRes = await fetch(`${BASE_URL}/articles?pageSize=3&&orderBy=like`);
+  const likeData: ArticleData = await likeRes.json();
+  const likeList = likeData.list ?? [];
+  return { props: { likeList } };
+}) satisfies GetStaticProps<{
+  likeList: Article[] | [];
+}>;
+```
+
+프로젝트 시 사용했던 코드의 일부이다.
+
+best게시물 세개를 화면에 띄우는 작업이었는데 유동적으로 데이터를 바꾸지 않아도 되기에 SSG를 사용하여 렌더링을 최적화할 때 사용했다.
+
 ### ISR
 
-사이트를 구축한 후 정적 페이지를 생성하거나 업데이트하는 방식
+**Incremental Static Regeneration**
+
+사이트를 구축한 후에도 정적 페이지를 생성하거나 업데이트하는 방식
 
 전체 사이트를 구축할 필요 없이 페이지 별로 정적 생성을 사용할 수 있다.
 
