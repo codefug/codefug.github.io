@@ -44,7 +44,7 @@ next/head를 이용한 메타 데이터 삽입이나 app router, pages router를
 모든 Request 마다 서버에서 HTML page를 만든다.
 
 <img src="https://codefug.github.io/assets/images/2024-05-31/Pasted%20image%2020240530181448.png
-" class="full"/>
+" class="full" alt="ssr image"/>
 
 Next.js 내에서 `getServerSideProps` 함수를 통해서 구현되며 모든 Request마다 해당 함수가 서버단에서 구현된다.
 
@@ -146,6 +146,8 @@ export async function getStaticProps({ params }) {
 ```
 
 이 데이터는 이후에 `getStaticProps`의 인자가 되어 정적 페이지 최적화에 사용될 수 있다.
+
+덤으로 getStaticProps는 서버에서 실행되기 때문에 CORS 문제를 겪지 않을 수 있다.
 
 #### 예시
 
