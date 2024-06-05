@@ -4,7 +4,7 @@ excerpt: "리액트 과거, 현재, 미래"
 toc: true
 toc_sticky: true
 categories:
-  - reactdeepdive
+  - react
 last_modified_at: 2024-05-23T18:00:00
 header:
   teaser: /assets/images/Logo/reactdeepdive.jpg

@@ -15,17 +15,12 @@ History:
 
   - title: FETECH
     children:
+      - title: "-React (#react)"
+        url: /categories/#react
       - title: "-TS (#typescript)"
         url: /categories/#typescript
       - title: "-NEXT (#nextjs)"
         url: /categories/#nextjs
-
-  - title: Study
-    children:
-      - title: "-CoreJavascript (#corejavascript)"
-        url: /categories/#corejavascript
-      - title: "-ReactDeepDive (#reactdeepdive)"
-        url: /categories/#reactdeepdive
 
   - title: CS
     children:
