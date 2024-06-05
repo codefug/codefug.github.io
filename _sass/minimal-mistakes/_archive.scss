@@ -6,6 +6,9 @@
   gap: 24px;
   display: grid;
   grid-template: repeat(12, 1fr) / repeat(1, 1fr);
+  @include breakpoint($small) {
+    grid-template: repeat(4, 1fr) / repeat(3, 1fr);
+  }
   @include breakpoint($medium) {
     grid-template: repeat(3, 1fr) / repeat(4, 1fr);
   }
