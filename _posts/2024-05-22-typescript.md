@@ -175,6 +175,56 @@ article.id='수정이지롱'
 
 위처럼 TS는 id가 원래 number인데 string이 들어갔다는 경고문과 함께 에러를 찍어주며 전자의 문제를 해결한다.
 
+### 문법 오류 설명
+
+```tsx
+const [images, setImages] = useState<string[]>([]);
+// ...
+const handleFileSelect = () => {
+    if (fileRef?.current?.files == null) {
+      return;
+    }
+    const newFile = Array.from(fileRef.current.files).map((file) =>
+      URL.createObjectURL(file)
+    );
+    setImages((prevImages) => [...prevImages, newFile]);
+  };
+```
+
+위 코드는 input type="file" 을 리액트에서 useRef를 이용해서 참조하여 값을 받은 후 URL.createObjectURL(file)를 이용하여 FakePath를 진짜 url로 변경, 그 이후 preview를 보여주는 로직이다.
+
+setImages에 들어가는 값에는 spread 연산자를 이용하여 prevImages를 넣고 새로운 File도 넣고 있다.
+
+**여기서 문제점은 무엇일까???**
+
+바로 newFile도 spread로 분해해야 했던 것이다.
+
+만약 js환경이었다면 이러한 오류를 표시하지 않고 넘어갔을 것이다. 실제 ts는 다음과 같은 오류를 보여준다.
+
+>
+> Argument of type '(prevImages: string[]) => (string | string[])[]' is not assignable to parameter of type `'SetStateAction<string[]>'`.
+  Type '(prevImages: string[]) => (string | string[])[]' is not assignable to type '(prevState: string[]) => string[]'.
+    Type '(string | string[])[]' is not assignable to type 'string[]'.
+      Type 'string | string[]' is not assignable to type 'string'.
+        Type 'string[]' is not assignable to type 'string'.
+>
+
+엄청 길지만 간단하다. (string | string[])[] (string 이중 배열이거나 string 배열) 을 넣었지만 이는 `setStateAction<string[]>`와 맞지 않는다는 것. 이를 통해 (string[])[] 부분이 잘못되었다는 걸 알 수 있다.
+
+```tsx
+  const handleFileSelect = () => {
+    if (fileRef?.current?.files == null) {
+      return;
+    }
+    const newFile = Array.from(fileRef.current.files).map((v) =>
+      URL.createObjectURL(v)
+    );
+    setImages((prevImages) => [...prevImages, ...newFile]);
+  };
+```
+
+위와 같이 수정하면 해결할 수 있다.
+
 사실 이건 일부에 불과하다. 사용하면서 느낀 것은 문법적으로 자유로운 게 늘 좋지는 않다는 것이다. Type을 지정하거나 Interface 상속 혹은 Key type을 설정하면서 초반에 시간을 많이 뺏기기도 하였으나 한번 타입을 지정하고 코드를 진행하면서 휴먼 에러가 발생할 뻔한 곳을 미리 처리하는 모습을 보았고 이래서 쓰는구나 생각했다.
 
 결론적으로 JS 생태계는 TS를 통해 JS가 갖고 있는 스크립트 언어의 단점을 어느정도 극복한 것 같다.
