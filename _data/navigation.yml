@@ -21,6 +21,8 @@ History:
         url: /categories/#typescript
       - title: "-NEXT (#nextjs)"
         url: /categories/#nextjs
+      - title: "-WEB"
+        url: /categories/#web
 
   - title: CS
     children:
