@@ -652,11 +652,11 @@ instance.interceptors.response.use(
 
 두 가지로 분기를 나눠야 한다.
 
-1. 요청 전
+### 요청 전
 
 zustand로 accessToken을 저장하고 있으니 꺼내와주고 Authorization에 토큰을 담는다. 끝
 
-2. 요청 후
+### 요청 후
 
 성공한 경우는 똑같지만 실패했을 때 refresh Token으로 accessToken을 받아와 줘야 한다.
 
