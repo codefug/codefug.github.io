@@ -1,0 +1,185 @@
+{
+  "main": {
+    "id": "4c4643c9929bd0dc",
+    "type": "split",
+    "children": [
+      {
+        "id": "1ad45482fdda2eb8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ab1cb8a69522650a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f213f9c24fda6e85",
+    "type": "split",
+    "children": [
+      {
+        "id": "6466e4be29ef90d2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9ac53227bcab46ee",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "13dafd92578dff69",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "d480b348cbf698d9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "4e1619efd09bb23a",
+    "type": "split",
+    "children": [
+      {
+        "id": "4c6288e0ea4c9736",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5d9b7af29fb65e89",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "5d659c33c9ed7e7f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ecc38ff6dbe89b52",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "19e685809a286a48",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "ab1cb8a69522650a",
+  "lastOpenFiles": [
+    "_site/kkom-kkom/kkom-kkom-1/index.html",
+    "_site/kkom-kkom/kkom-kkom-1",
+    "_site/kkom-kkom/kkom-kkom-2/index.html",
+    "_site/kkom-kkom/kkom-kkom-2",
+    "_site/kkom-kkom/kkom-kkom-3/index.html",
+    "_site/kkom-kkom/kkom-kkom-3",
+    "_site/kkom-kkom/kkom-kkom-4/index.html",
+    "_site/kkom-kkom/kkom-kkom-4",
+    "_site/kkom-kkom/kkom-kkom-5/index.html",
+    "_site/kkom-kkom/kkom-kkom-5",
+    "_site/kkom-kkom",
+    "_site/screenshot.png",
+    "_site/screenshot-layouts.png",
+    "_site/assets/images/Logo/zustand.png",
+    "_site/assets/images/Logo/zod.png",
+    "_site/assets/images/Logo/vercel.png",
+    "_site/assets/images/Logo/velogLogo.jpg",
+    "_site/assets/images/Logo/TS.png",
+    "_site/assets/images/Logo/toss.png",
+    "_site/assets/images/Logo/tanstackQuery.png",
+    "_site/assets/images/Logo/storybook.png",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-5.md",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-4.md",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-3.md",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-2.md",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+    "_posts/2024-07-22/2024-07-22-중급프로젝트2.md",
+    "_posts/2024-05-17-first.md",
+    "_posts/2024-07-21/2024-07-21-중급프로젝트.md",
+    "_posts/2024-07-22/2024-07-22-중급프로젝트3.md",
+    "CHANGELOG.md",
+    "README.md",
+    "_posts/2024-06-18-react-test.md"
+  ]
+}
