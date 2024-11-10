@@ -22,6 +22,8 @@ History:
         url: /categories/#react
       - title: "-TS (#typescript)"
         url: /categories/#typescript
+      - title: "-JS (#javascript)"
+        url: /categories/#javascript
       - title: "-NEXT (#nextjs)"
         url: /categories/#nextjs
       - title: "-WEB"
