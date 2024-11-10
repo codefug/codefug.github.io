@@ -13,10 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "file": "_posts/2024-11-10/2024-11-10-asynchronous.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "2024-11-10-asynchronous"
             }
           }
         ]
@@ -39,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -54,7 +58,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -62,14 +68,17 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "4e1619efd09bb23a",
@@ -85,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "file": "_posts/2024-11-10/2024-11-10-asynchronous.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -93,7 +102,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 2024-11-10-asynchronous"
             }
           },
           {
@@ -102,10 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
+                "file": "_posts/2024-11-10/2024-11-10-asynchronous.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 2024-11-10-asynchronous"
             }
           },
           {
@@ -116,7 +129,9 @@
               "state": {
                 "sortOrder": "frequency",
                 "useHierarchy": true
-              }
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -125,8 +140,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md"
-              }
+                "file": "_posts/2024-11-10/2024-11-10-asynchronous.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 2024-11-10-asynchronous"
             }
           }
         ]
@@ -148,6 +165,13 @@
   },
   "active": "ab1cb8a69522650a",
   "lastOpenFiles": [
+    "_posts/2024-06-18-react-test.md",
+    "_posts/2024-11-10/2024-11-10-asynchronous.md",
+    "screenshot-layouts.png",
+    "screenshot.png",
+    "CHANGELOG.md",
+    "README.md",
+    "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
     "_site/kkom-kkom/kkom-kkom-1/index.html",
     "_site/kkom-kkom/kkom-kkom-1",
     "_site/kkom-kkom/kkom-kkom-2/index.html",
@@ -158,7 +182,6 @@
     "_site/kkom-kkom/kkom-kkom-4",
     "_site/kkom-kkom/kkom-kkom-5/index.html",
     "_site/kkom-kkom/kkom-kkom-5",
-    "_site/kkom-kkom",
     "_site/screenshot.png",
     "_site/screenshot-layouts.png",
     "_site/assets/images/Logo/zustand.png",
@@ -167,19 +190,13 @@
     "_site/assets/images/Logo/velogLogo.jpg",
     "_site/assets/images/Logo/TS.png",
     "_site/assets/images/Logo/toss.png",
-    "_site/assets/images/Logo/tanstackQuery.png",
-    "_site/assets/images/Logo/storybook.png",
     "_posts/2024-09-11/2024-09-11-kkom-kkom-5.md",
     "_posts/2024-09-11/2024-09-11-kkom-kkom-4.md",
     "_posts/2024-09-11/2024-09-11-kkom-kkom-3.md",
     "_posts/2024-09-11/2024-09-11-kkom-kkom-2.md",
-    "_posts/2024-09-11/2024-09-11-kkom-kkom-1.md",
     "_posts/2024-07-22/2024-07-22-중급프로젝트2.md",
     "_posts/2024-05-17-first.md",
     "_posts/2024-07-21/2024-07-21-중급프로젝트.md",
-    "_posts/2024-07-22/2024-07-22-중급프로젝트3.md",
-    "CHANGELOG.md",
-    "README.md",
-    "_posts/2024-06-18-react-test.md"
+    "_posts/2024-07-22/2024-07-22-중급프로젝트3.md"
   ]
 }
