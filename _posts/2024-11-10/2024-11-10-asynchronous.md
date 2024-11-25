@@ -10,45 +10,46 @@ header:
   teaser: /assets/images/Logo/JS.svg
 ---
 ![](https://velog.velcdn.com/images/codefug/post/1863b8a0-6521-495b-85f2-22b0f35b6380/image.png)
+
 # <mark style="background: #FF5582A6;">이벤트 루프와 비동기 통신의 이해</mark>
 
-JavaScript는 싱글 스레드에서 작동한다. 그래서 한 번에 하나의 task만 동기 방식으로 처리할 수 있다.
+JS는 Single Thread에서 작동한다. 즉 한 번에 하나의 작업만 동기 방식으로 처리할 수 있다.
 
-**동기(synchronous)** : 직렬 방식으로 작업을 처리하는 것, 요청이 시작하고 응답을 받은 후에야 다음 작업 처리
+> 동기(synchronous) : 직렬 방식으로 작업을 처리하는 것, 요청이 시작하고 응답을 받은 후에야 다음 작업 처리
 
-**비동기(Asynchronous)** : 병렬 방식으로 작업을 처리하는 것, 요청이 시작한 후 응답과 관계 없이 다음 작업 처리
+> 비동기(Asynchronous) : 병렬 방식으로 작업을 처리하는 것, 요청이 시작한 후 응답과 관계 없이 다음 작업 처리
 
-사용자가 검색어를 입력해 검색을 위한 네트워크 요청이 발생한 순간에도 다른 작업을 처리할 수 있다. (비동기)
+사용자가 검색어를 입력해 검색을 위한 네트워크 요청이 발생한 순간에도 다른 작업을 처리할 수 있다. (비동기적 작업 방식)
 
-# <mark style="background: #FF5582A6;">싱글 스레드 자바스크립트</mark>
+> 리액트에서는 16 버전에 접어들면서 비동기식으로 작동하는 방법이 소개 되었다.
 
-과거, 프로그램을 실행하는 단위가 오직 Process뿐이었다.
+## <mark style="background: #FFB86CA6;">싱글 스레드 자바스크립트</mark>
 
-Process : 프로그램을 구동해 프로그램의 상태가 메모리상에서 실행되는 작업 단위
+과거, 프로그램을 실행하는 단위가 오직 **Process** 뿐이었다.
 
-현재, 하나의 프로그램에 여러 가지 작업이 필요해졌고 더 작은 실행 단위인 thread가 탄생했다.
+> **Process**
+> 
+> 프로그램을 구동해 프로그램의 상태가 메모리 상에서 실행되는 작업 단위
 
-thread: 하나의 process에는 여러 개의 thread를 만들 수 있고, thread 끼리 메모리를 공유할 수 있다. 여러 작업 동시 수행
+현재, 하나의 프로그램에 여러가지 작업이 필요해졌고 더 작은 실행 단위인 **thread**가 탄생했다.
 
-JavaScript는 기본적으로 Single Thread 이다.
+thread: 하나의 process에는 여러 개의 thread를 만들 수 있고, thread 끼리 메모리를 공유할 수 있다. 여러 작업을 동시 수행
 
-## <mark style="background: #FFB86CA6;">JS가 Multi Thread가 아닌 이유</mark>
+JavaScript는 기본적으로 싱글 쓰레드 이다.
 
-1. Multi Thread는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요하다.
-2. 각각 격리된 process와 다르게 하나의 thread가 문제가 생기면 다른 thread도 문제가 발생할 수 있다.
-3. JS이 Multi Thread를 지원해서 동시에 여러 thread가 DOM을 조작할 수 있었다면 메모리 공유 때문에 동시에 같은 자원에 접근하게 되고  이 때문에 타이밍 이슈가 발생할 수 있으며 DOM 표시에 큰 문제를 일으킬 수 있다.
+## <mark style="background: #FFF3A3A6;">JS가 멀티 쓰레드가 아닌 이유</mark>
+
+1. 멀티 쓰레드는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요하다.
+2. 각각 격리되어 있는 **Process**와 다르게 하나의 **Thread**가 문제가 생기면 다른 **Thread**도 문제가 발생할 수 있다.
+3. JS이 **멀티 스레딩**을 지원해서 동시에 여러 쓰레드가 DOM을 조작할 수 있었다면 메모리 공유로 인해 동시에 같은 자원에 접근하게 되고  이 때문에 타이밍 이슈가 발생할 수 있고 DOM 표시에 큰 문제를 발생시킬 수 있다.
 
 # <mark style="background: #FF5582A6;">비동기 작업의 역사와 개념</mark>
 
 ## <mark style="background: #FFB86CA6;">콜백</mark>
 
-호스트 환경이 제공하는 함수를 사용하면 비동기 동작을 스케줄링할 수 있다.
+호스트 환경이 제공하는 함수를 사용하면 비동기 동작을 스케줄링할 수 있다. ( `setTimeout` 같은 함수)
 
-`setTimeout`이 대표적인 함수이다.
-
-스크립트나 모듈을 로딩하는 것도 비동기 동작이다.
-
-예를 들면 src에 있는 스크립트를 읽어오는 함수를 예시로 보자.
+스크립트나 모듈을 로드하는 함수도 비동기라고 할 수 있는데 이를 예시로 살펴보자.
 
 ```js
 function loadScript(src) {
@@ -902,9 +903,10 @@ Promise.all([
 ]).catch(alert); // Error: 에러 발생!
 ```
 
-> **Promise rejected가 일어나도 호출은 계속 일어난다.**
+> **Promise reject가 일어나도 호출은 계속 일어난다.**
 > 
 > 별도의 처리 (AbortController) 가 없다면 Promise rejected가 일어나도 다른 Promise 처리가 취소되진 않는다. 단, 결과는 무시된다.
+> 
 > ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108152428.png)
 > 
 > 위 예시는 rejected되는 Promise를 배열에 넣고 Promise.all을 돌린 예시이다. 
@@ -1622,11 +1624,11 @@ button.addEventListener('click',()=>{
 ![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
 
 단, 만약 중간에 다른 `Macrotask`(마우스 이벤트 등등)가 `Macrotask queue`로 들어와서 먼저 실행 가능 상태가 된다면 `queue`에서는 해당 `Macrotask`를 처리할 것이다.
-# <mark style="background: #FF5582A6;">async, await</mark>
+## <mark style="background: #FFB86CA6;">async, await</mark>
 
 `Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 존재한다.
 
-## <mark style="background: #FFB86CA6;">async function</mark>
+### <mark style="background: #FFF3A3A6;">async function</mark>
 
 ```js
 async funciton f(){
@@ -1636,6 +1638,7 @@ async funciton f(){
 
 `function` 앞에 `async`를 붙이면 해당 함수는 항상 Promise를 반환한다.
 만약 Promise가 아닌 값을 반환하더라도 fulfilled 상태의 Promise로 값을 감싸서 반환한다.
+
 ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110152440.png)
 
 즉 다음의 코드들은 같은 기능을 한다.
@@ -1649,7 +1652,7 @@ async funciton f2(){
 }
 ```
 
-## <mark style="background: #FFB86CA6;">await</mark>
+### <mark style="background: #FFF3A3A6;">await</mark>
 
 ```js
 // await는 async function 안에서만 동작한다.
@@ -1753,7 +1756,7 @@ new Waiter()
   .then(alert); // 1
 ```
 
-## <mark style="background: #FFB86CA6;">에러 핸들링</mark>
+### <mark style="background: #FFF3A3A6;">에러 핸들링</mark>
 
 `await promise`는 Promise 객체의 `result`에 저장된 값을 반환한다.
 반면 `Promise`가 거부되면 마치 `throw`문을 작성한 것처럼 에러를 던진다.
@@ -1848,12 +1851,12 @@ export const testFn = async () => {
 
 ## <mark style="background: #FFB86CA6;">풀이</mark>
 
-|                    | 1번째 task (testFn이라는 Macrotask 실행)                                                                                | 2번째 task (testFn 관련 Microtask 전부 실행)                                                                             | 코드 실행부터 500ms 지남                                       | 3번째 task ( 2를 출력하는 Macrotask 실행 )                      | Microtask Queue 비어있는 것 확인하고 다음으로 넘어감                   | 코드 실행부터 5000ms 지남  | 4번째 task ( 4를 출력하는 Macrotask 실행) |
-| :----------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------------ | ------------------ | -------------------------------- |
-| Macrotask queue 상태 |                                                                                                                  |                                                                                                                  | ()=>console.log(2)                                     |                                                        |                                                        | ()=>console.log(4) |                                  |
-| Microtask queue 상태 | console.log(4, "다음"), resolve(4), console.log(t), console.log(7)                                                 |                                                                                                                  |                                                        |                                                        |                                                        |                    |                                  |
-| Web API            | 500ms를 기다리면 ()=>console.log(2)를 task queue로 넘기는 동작 실행,<br>5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 500ms를 기다리면 ()=>console.log(2)를 task queue로 넘기는 동작 실행,<br>5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 |                    |                                  |
-| 출력                 | 1, 3, 4 '전', 5, 6                                                                                                | 4 "다음", a, 7                                                                                                     |                                                        | 2                                                      |                                                        |                    | 4                                |
+|                      | 1번째 task (testFn이라는 Macrotask 실행)                                                                                                     | 2번째 task (testFn 관련 Microtask 전부 실행)                                                                                                 | 코드 실행부터 500ms 지남                                             | 3번째 task ( 2를 출력하는 Macrotask 실행 )                           | Microtask Queue 비어있는 것 확인하고 다음으로 넘어감                 | 코드 실행부터 5000ms 지남 | 4번째 task ( 4를 출력하는 Macrotask 실행) |
+| :------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------- | ----------------------------------------- |
+| Macrotask queue 상태 |                                                                                                                                              |                                                                                                                                              | ()=>console.log(2)                                                   |                                                                      |                                                                      | ()=>console.log(4)        |                                           |
+| Microtask queue 상태 | console.log(4, "다음"), resolve(4), console.log(t), console.log(7)                                                                           |                                                                                                                                              |                                                                      |                                                                      |                                                                      |                           |                                           |
+| Web API              | 500ms를 기다리면 ()=>console.log(2)를 task queue로 넘기는 동작 실행,<br>5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 500ms를 기다리면 ()=>console.log(2)를 task queue로 넘기는 동작 실행,<br>5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 | 5,000ms를 기다리면 ()=>console.log(4)를 taskqueue로 넘기는 동작 실행 |                           |                                           |
+| 출력                 | 1, 3, 4 '전', 5, 6                                                                                                                           | 4 "다음", a, 7                                                                                                                               |                                                                      | 2                                                                    |                                                                      |                           | 4                                         |
 
 > `Macrotask` > `Microtask` > `requestAnimationFrame` > `브라우저 렌더링` 순서로 렌더링이 진행되기 때문에 위의 코드 실행 중간에 이벤트가 발생해서 `Macrotask`가 하나 생기게 되면 해당 `Macrotask`에 관련된 브라우저 렌더링이 일어나고 위의 코드로 복귀하게 될 수 있다.
 
