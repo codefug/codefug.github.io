@@ -11,7 +11,7 @@ header:
 ---
 ![](https://velog.velcdn.com/images/codefug/post/1863b8a0-6521-495b-85f2-22b0f35b6380/image.png)
 
-# <mark style="background: #FF5582A6;">이벤트 루프와 비동기 통신의 이해</mark>
+# <mark style="background: #FF5582A6;">비동기 통신의 이해</mark>
 
 JS는 Single Thread에서 작동한다. 즉 한 번에 하나의 작업만 동기 방식으로 처리할 수 있다.
 
@@ -42,6 +42,325 @@ JavaScript는 기본적으로 싱글 쓰레드 이다.
 1. 멀티 쓰레드는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요하다.
 2. 각각 격리되어 있는 **Process**와 다르게 하나의 **Thread**가 문제가 생기면 다른 **Thread**도 문제가 발생할 수 있다.
 3. JS이 **멀티 스레딩**을 지원해서 동시에 여러 쓰레드가 DOM을 조작할 수 있었다면 메모리 공유로 인해 동시에 같은 자원에 접근하게 되고  이 때문에 타이밍 이슈가 발생할 수 있고 DOM 표시에 큰 문제를 발생시킬 수 있다.
+
+
+## <mark style="background: #FFB86CA6;">Event Loop</mark>
+
+비동기 동작과 뗄 수 없는 개념은 `Event Loop`이다.
+
+`Node.js`와 마찬가지로 브라우저 측 자바스크립트 실행 흐름도 `Event Loop`에 기반을 둔다.
+
+`Event Loop`를 잘 알고 있어야 올바른 아키텍처 설계가 가능하다.
+
+### <mark style="background: #FFF3A3A6;">자바스크립트 엔진 동작 방식</mark>
+
+자바스크립트 엔진은 다음의 알고리즘을 갖고 있다.
+1. 처리해야 할 task가 있는 경우
+	1. 먼저 들어온 task부터 차례대로 처리한다.
+2. 처리해야 할 task가 없는 경우
+	1. 잠들어 있다가 새로운 task가 추가되면 다시 1번 과정으로 돌아간다.
+
+자바스크립트 엔진은 대부분 시간을 아무런 일도 하지 않고 쉬다가 스크립트나 핸들러, 이벤트가 활성화될 때만 돌아간다.
+
+자바스크립트 엔진을 활성화하는 task는 다음과 같다.
+1. 외부 스크립트 `<script src="...">`가 로드될 때, 이 스크립트를 실행하는 것
+2. 사용자가 마우스를 움직일 때 `mousemove` 이벤트와 이벤트 핸들러를 실행하는 것
+3. `setTimeout`에서 설정한 시간이 다 된 경우, 콜백 함수를 실행하는 것
+4. 기타 등등
+
+task는 하나의 집합을 이룬다. 자바스크립트 엔진은 해당 task를 차례대로 처리하며 새로운 task가 추가될 때까지 기다린다. task를 기다리는 동안 CPU 자원 소비는 0에 가까워지고 엔진은 잠들게 된다.
+
+엔진이 바쁠 때 task가 추가되면 해당 task는 **Macrotask queue**에 추가된다.
+
+> 참고로 `task queue`의 구조는 `queue`가 아닌 `set`이다. 선택된 큐에서 실행 가능한 가장 오래된 task를 가져와야 하기 때문이다.
+> 무조건 먼저 들어온 첫번째 큐를 `dequeue`하는 것이 아니라 실행 가능한 것들 중에 가장 오래된 task를 차례대로 실행시킨다.
+>
+> https://html.spec.whatwg.org/multipage/webappapis.html#definitions-3
+
+![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108212123.png)
+
+(`script`를 처리하는데 중간에 `mousemove` 핸들러도 실행되고 `setTimeout`에서 설정한 시간이 지나서 콜백이 들어온 경우의 상태를 그림으로 나타냄)
+
+JavaScript 엔진은 이들을 차례대로 처리한다.
+
+이때 알아야 할 두가지는
+1. 엔진이 task를 처리하는 동안은 렌더링이 일어나지 않는다. 처리를 완료하면 DOM 변경을 화면에 반영한다.
+2. task에 긴 시간이 걸리면 task를 처리하는 동안 발생한 새로운 task를 처리하지 못한다. ( 응답 없는 페이지라는 alert 창은 페이지 전체와 함께 현재 task를 최소시킬지 말지를 선택하게 한다. )
+### <mark style="background: #FFF3A3A6;">예시 1: CPU 소모가 많은 task 쪼개기</mark>
+
+CPU 소모가 아주 많은 task 하나가 있다고 가정해보자.
+
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+
+  // CPU 소모가 많은 무거운 작업을 수행
+  for (let j = 0; j < 1e9; j++) {
+    i++;
+  }
+
+  alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
+}
+
+count();
+```
+1e9 (0이 9개)을 센 다음 alert를 하는 코드인데 해당 count()가 실행되는 동안 브라우저는 사용자 이벤트 처리나 DOM 관련 작업을 완전히 멈추게 되는 것을 확인할 수 있다.
+( 실행시키고 페이지에 마우스 우클릭을 하면 alert가 나올때까지 아무것도 안 보이다가 alert가 나오고 마우스 우클릭시 나오는 메뉴가 나온다. )
+
+코드를 쪼개서 이를 개선해보자.
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+
+  // 무거운 작업을 쪼갠 후 이를 수행 (*)
+  do {
+    i++;
+	// 2* 1e6, 3* 1e6 등 1e6의 배수에서 do while 문을 나가게 된다.
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    // 위의 do while문을 1e3번 반복하면 도착
+    alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
+  } else {
+    // 1e6의 배수이지만 1e9가 아닐 경우
+    setTimeout(count); // 새로운 호출을 스케줄링 (**)
+  }
+
+}
+
+count();
+```
+
+do while문을 1e3번 반복해서 alert가 나오게 되는데 그 이전까지 setTimeout으로 count를 넘기기 때문에 동기적인 코드들은 돌아갈 수 있게 되고 이 때문에 이벤트 핸들러, DOM 관련 동작 들을 해결할 수 있게 된다.
+
+위 코드는 사실 조금의 시간차가 존재한다. 다음처럼 setTimeout을 앞으로 끌어오면 이를 해결할 수 있다.
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+
+  // 스케줄링 코드를 함수 앞부분으로 옮김
+  if (i < 1e9 - 1e6) {
+    setTimeout(count); // 새로운 호출을 스케줄링함
+  }
+
+  do {
+    i++;
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
+  }
+
+}
+
+count();
+```
+
+부분 카운팅 (`do...while`)이 일어나기 전에 부분 재스케줄링(`setTimeout`)이 일어나게 된다.
+
+setTimeout 호출이 많은 경우, 브라우저 최소 대기 시간이 4밀리초이기 때문에 숫자 세기 전에 스케줄링을 하면 숫자를 세면서 대기 시간을 소모하기 때문에 실행이 더 빨라진다.
+(setTimeout 로직이 뒤쪽에 있으면 setTimeout(count) 실행되고 바로 다음 macrotask로 count 함수가 실행돼야 되는데 안 가고 4ms 있다가 실행된다는 뜻)
+
+### <mark style="background: #FFF3A3A6;">예시 2: Progress bar</mark>
+
+task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `progress bar`를 만들 때도 드러난다.
+
+```js
+<div id="progress"></div>
+
+<script>
+
+  function count() {
+    for (let i = 0; i < 1e6; i++) {
+      i++;
+      progress.innerHTML = i;
+    }
+  }
+
+  count();
+</script>
+```
+
+브라우저는 시간이 오래 걸리든 아니든 상관 없이 현재 작업 중인 task가 끝나야 DOM 변경분을 화면에 렌더링한다.
+
+그래서 위의 코드는 `progress bar`의 기능을 완수하지 못한다. i가 전부 지나가야(현재 작업 중인 task가 끝나야) DOM을 렌더링하기 때문이다.
+
+```js
+<div id="progress"></div>
+
+<script>
+  let i = 0;
+
+  function count() {
+
+    // 무거운 작업을 쪼갠 후 이를 수행
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+
+    if (i < 1e7) {
+      setTimeout(count);
+    }
+
+  }
+
+  count();
+</script>
+```
+위처럼 코드를 분할하게 되면 i가 변화하는 과정을 출력해 줄 수 있다, `setTimeout`으로 `count`를 넘기기 때문에 count와 count 함수 사이에서 동기적인 동작들을 수행할 수 있게 되고 결론적으로 `progress.innerHTML`이 변경되었다는 DOM 변경 동작이 일어나게 된다.
+
+### <mark style="background: #FFF3A3A6;">예시 3: 이벤트 처리가 끝난 이후에 작업</mark>
+
+이벤트 핸들러를 만들 때 특정 액션을 모든 이벤트 버블링이 끝나고 실행시키고 싶다면 `ms`가 0인 `setTimeout`을 사용하면 된다.
+
+```js
+menu.onclick = function() {
+  // ...
+
+  // 클릭한 메뉴 내 항목 정보가 담긴 커스텀 이벤트 생성
+  let customEvent = new CustomEvent("menu-open", {
+    bubbles: true
+  });
+
+  // 비동기로 커스텀 이벤트를 디스패칭
+  setTimeout(() => menu.dispatchEvent(customEvent));
+};
+```
+
+위를 살펴보면 "menu-open" 이라는 커스텀 이벤트를 만든 후 해당 이벤트를 setTimeout으로 넘겼다.
+
+이제 menu의 click 이벤트가 완전히 핸들링된 후에 `menu-open` 이벤트를 dispatching하게 된다.
+
+## <mark style="background: #FFB86CA6;">Macrotask와 Microtask</mark>
+
+### <mark style="background: #FFF3A3A6;">Microtask</mark>
+
+`Microtask`는 주로 `Promise`를 사용해 만든다.
+
+`Promise`와 함께 쓰이는 `.then/catch/finally`의 핸들러 (소비 함수)가 `Microtask`가 된다. 또는 `Promise`를 핸들링하는 `await`를 사용해 만들기도 한다.
+
+> 이 외에도 표준 API인 `queueMicrotask(func)`를 사용해서 함수 `func`를 `Microtask Queue`에 넣어서 처리할 수 있다.
+
+> 자바스크립트 엔진은 **Macrotask**를 하나 처리할 때마다 js 엔진은 다른 `Macrotask`를 수행하거나 렌더링하는 등의 작업을 하기 전에 **Microtask Queue**에 있는 모든 task를 실행한다.
+
+```js
+setTimeout(() => alert("timeout"));
+
+Promise.resolve()
+  .then(() => alert("promise"));
+
+alert("code");
+
+// (현재 호출 스택에서 script 태그에 있는 코드를 읽는 Macrotask중이며 코드를 한 줄씩 넣으면서 실행 중에 있음)
+// 1. setTimeout(()=>alert("timeout")) - 호출 스택에서 실행, ms가 지나면 콜백 함수를 Macrotask queue에 등록
+// 2. Promise.resolve().then(()=>alert("promise")) - 콜백 함수를 Microtask Queue에 등록
+// 3. alert("code") - 바로 호출된다. (현재 script 태그를 읽는 Macrotask를 수행 중이다.)
+// 4. script 태그에 있는 코드를 읽는 Macrotask 종료
+// 5. Microtask queue에 있는 then() 콜백 함수 실행 (호출 스택으로 이동해서 실행, 이 과정에서 이벤트 루프는 다 비워질 때까지 안 돌아감)
+// 6. Microtask queue 비워짐
+// 7. ()=>alert("timeout") - 다음 Macrotask 실행 (호출 스택에서 Macrotask 하나 이동) 
+// (해당 Macrotask가 끝나면 다시 Microtask 실행해서 Microtask queue 비우고 렌더링 > 다음 Macrotask 실행 반복)
+```
+
+### <mark style="background: #FFF3A3A6;">처리 로직</mark>
+
+![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109193930.png)
+
+`Macrotask (script, mousemove, setTimeout 등)` 하나가 처리되고 난 후 `Microtask` 전부가 처리되고 그 이후 렌더링이 진행되는 것을 확인할 수 있다.
+
+**Microtask는 다른 이벤트 핸들러나 렌더링 작업, 혹은 다른 Macrotask가 실행되기 전에 전부 처리된다.**
+
+script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에 script 코드를 한 줄씩 호출 스택에 담고 실행하는 과정이 끝난 후에 Microtask들을 실행한다.
+
+이런 처리순서가 아주 중요한 이유는 마우스 좌표 변경이나 네트워크 통신에 의한 데이터 변경같이 애플리케이션 환경에 변화를 주는 작업에 영향을 받지 않고 모든 `Microtask`를 동일한 환경에서 처리할 수 있기 때문이다.
+
+"현재 실행 중인 macrotask 실행이 끝나면 > 현재 존재하는 모든 microtask 실행 > 렌더링 > 다음 macrotask 실행" 의 순서를 가진다.
+
+위 과정을 확인하기 위해서 리페인트 전에 콜백 함수를 호출하는 **requestAnimationFrame**으로 확인해보자.
+
+![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109221737.png)
+
+> **requestAnimationFrame**
+> 
+> ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109214448.png)
+> 
+> 브라우저 리페인트 전에 애니메이션 처리를 하기 위해 사용하는 윈도우 메소드, 
+> 
+> 별도의 큐에서 관리되어 프레임 단위로 렌더링할 수 있도록 보장한다. ( 초당 프레임 기준은 모니터 주사율에 의해 설정된다. )
+> 
+> 프레임 단위의 렌더링을 보장하기 때문에 애니메이션 동작이 더 부드러워진다.
+
+만약 임의로 특정 함수를 `Microtask Queue`로 보내고 싶다면 `queueMicrotask` 함수를 사용하면 된다. 
+( `setTimeout`과 다른 점은 만약 `ms`가 0초인 `setTimeout`을 이용할 때는 `Macrotask queue`로 보내져서 기존의 `Microtask Queue`가 다 끝나고 다음 `Macrotask`가 실행될 때 특정 함수가 실행될 것이다.)
+```js
+<div id="progress"></div>
+
+<script>
+  let i = 0;
+
+  function count() {
+    // 무거운 작업을 쪼갠 후 이를 수행
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+    
+    if (i < 1e6) {
+      queueMicrotask(count);
+    }
+  }
+
+  count();
+</script>
+```
+
+렌더링이 되기 전에 Microtask Queue에 있는 count 함수가 재귀 호출을 하며 Microtask Queue에 새로운 count 함수를 추가하는 방식이므로 실제 화면에는 최종값만 보이게 된다. ( microtask queue가 비워져야 브라우저 렌더링이 일어남. )
+
+다음 예제를 통해 확실히 알아가보자.
+```js
+// sync, macro, micro 원소 안에 숫자가 있고 button으로 이들을 제어한다고 가정.
+button.addEventListener('click',()=>{
+	for (let i =0; i<=100000; i++){
+		sync.innerHTML = i;
+		
+		setTimeout(()=>{
+			macro.innerHTML = i;
+		},0)
+		
+		queueMicrotask(()=>{
+			micro.innerHTML = i;
+		})
+	}
+})
+```
+
+위 핸들러를 실행시키면 다음의 결과가 나온다.
+1. `sync`는 렌더링이 일어나지 않다가 100,000 상태가 된다.
+2. `micro`는 렌더링이 일어나지 않다가 100,000 상태가 된다.
+3. `macro`는 잠시 기다리다가 1부터 100,000까지 차례대로 렌더링된다.
+
+![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
+
+이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) 이 실행되고 있을 때는 브라우저에서 다른 동작을 할 수 없다. ( 콜 스택에 있는거 다 버리고 동작을 진행할 수는 없으니 )
+
+> `setTimeout`의 타이밍 함수 (시간을 새서 콜백을 던져주는 함수)같은 WEB API는 `Macrotask queue`가 할당되는 외부 쓰레드에서 진행된다. 작업을 할당해 처리하는 것은 브라우저나 Node.js의 역할이다.
+
+![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
+![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
+
+단, 만약 중간에 다른 `Macrotask`(마우스 이벤트 등등)가 `Macrotask queue`로 들어와서 먼저 실행 가능 상태가 된다면 `queue`에서는 해당 `Macrotask`를 처리할 것이다.
+
+이제 "왜" 사용하는지 알게 되었으니 비동기 작업을 "어떻게" 사용하는지, 그 흐름을 더 자세히 알아보자.
 
 # <mark style="background: #FF5582A6;">비동기 작업의 역사와 개념</mark>
 
@@ -216,11 +535,11 @@ showCircle(cx, cy, radius, callback)은 천천히 커지는 원을 만드는 함
 
 시간이 얼마나 걸리던 상관없이 약속한 결과를 만들어내는 "제작 코드"가 준비되었을 때, 모든 "소비 코드"가 결과를 사용할 수 있도록 해준다.
 
-> 제작 코드
+> **제작 코드**
 > 
 > 원격에서 스크립트를 불러오는 것 같은 시간이 걸리는 일
 
-> 소비 코드
+> **소비 코드**
 > 
 > 제작 코드의 결과를 기다렸다가 이를 소비한다. 소비의 주체(함수)는 여럿이 될 수 있다.
 
@@ -1225,11 +1544,11 @@ f = promisify(f, true);
 f(...).then(arrayOfResults => ..., err => ...);
 ```
 
-> 단, `Promisification` 은 콜백을 완전히 대체하지는 못한다. 콜백은 여러 번 호출할 수 있고 Promise는 하나의 결과만 가질 수 있기 때문이다. (Promisification한 함수의 콜백을 여러 번 호출해도 두 번째부터는 무시된다.)
+> 단, `Promisification` 은 콜백을 완전히 대체하지는 못한다. 콜백은 여러 번 호출할 수 있고 Promise는 하나의 결과만 가질 수 있기 때문이다. ( Promisification한 함수의 콜백을 여러 번 호출해도 두 번째부터는 무시된다. )
 
 사실 이를 미리 처리해주는 `promisify` 라이브러리나 `Node.js` 내장 함수가 존재한다.
 
-### <mark style="background: #FFF3A3A6;">Microtask</mark>
+### <mark style="background: #FFF3A3A6;">Microtask 처리</mark>
 
 `Promise` 핸들러 (`.then/catch/finally`)는 항상 비동기적으로 실행된다.
 
@@ -1286,7 +1605,7 @@ window.addEventListener('unhandledrejection', event => alert(event.reason));
 > **unhandled rejection**
 > 
 > 자바스크립트 엔진은 처리되지 못한 거부(unhandled rejection)를 찾을 때 `Microtask Queue`를 확인한다. 
-> Microtask Queue 끝에 Promise error가 처리되지 못할 때 발생한다.
+> Microtask Queue 끝에도 Promise error가 처리되지 않았다면 발생한다.
 
 ##### <mark style="background: #ABF7F7A6;">만약 catch를 나중에 처리한다면</mark>
 
@@ -1311,322 +1630,9 @@ window.addEventListener('unhandledrejection', event => console.log(event.reason)
 6. `rejected Promise`가 담겨있는 변수 `promise`를 `.catch`핸들러로 찍었기에 `()=>console.log('잡았다!')`를 `Microtask Queue`로 이동시킨다. 
 7. 이동이 끝나면 `Macrotask` 하나가 끝났으니 `Microtask Queue`를 비워질 때까지 실행한다. 여기서 `()=>console.log('잡았다!')`가 실행된다.
 
-### <mark style="background: #FFF3A3A6;">Event Loop, Macrotask, Microtask</mark>
-
-`Node.js`와 마찬가지로 브라우저 측 자바스크립트 실행 흐름도 `Event Loop`에 기반을 둔다.
-
-`Event Loop`를 잘 알고 있어야 올바른 아키텍처 설계가 가능하다.
-
-#### <mark style="background: #BBFABBA6;">Event Loop</mark>
-
-task가 들어오길 기다렸다가 task가 들어오면 처리하고 처리할 task가 없는 경우엔 잠드는, 끊임없이 돌아가는 자바스크립트 내 Loop이다.
-
-자바스크립트 엔진은 다음의 알고리즘을 갖고 있다.
-1. 처리해야 할 task가 있는 경우
-	1. 먼저 들어온 task부터 차례대로 처리한다.
-2. 처리해야 할 task가 없는 경우
-	1. 잠들어 있다가 새로운 task가 추가되면 다시 1로 돌아간다.
-
-자바스크립트 엔진은 대부분 시간을 아무런 일도 하지 않고 쉬다가 스크립트나 핸들러, 이벤트가 활성화될 때만 돌아간다.
-
-자바스크립트 엔진을 활성화하는 task는 다음과 같다.
-1. 외부 스크립트 `<script src="...">`가 로드될 때, 이 스크립트를 실행하는 것
-2. 사용자가 마우스를 움직일 때 `mousemove` 이벤트와 이벤트 핸들러를 실행하는 것
-3. `setTimeout`에서 설정한 시간이 다 된 경우, 콜백 함수를 실행하는 것
-4. 기타 등등
-
-task는 하나의 집합을 이룬다. 자바스크립트 엔진은 해당 task를 차례대로 처리하며 새로운 task가 추가될 때까지 기다린다. task를 기다리는 동안 CPU 자원 소비는 0에 가까워지고 엔진은 잠들게 된다.
-
-엔진이 바쁠 때 task가 추가되면 해당 task는 **Macrotask queue**에 추가된다.
-
-> `task queue`는 자료구조의 `queue`가 아닌 `set`이다. 선택된 큐에서 실행 가능한 가장 오래된 task를 가져온다.
-> 무조건 먼저 들어온 첫번째 큐를 `dequeue`하는 것이 아니라 실행 가능한 것들 중에 가장 오래된 task를 차례대로 실행시킨다.
->
-> https://html.spec.whatwg.org/multipage/webappapis.html#definitions-3
-
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108212123.png)
-
-(`script`를 처리하는데 중간에 `mousemove` 핸들러도 실행되고 `setTimeout`에서 설정한 시간이 지나서 콜백이 들어온 경우의 상태를 그림으로 나타냄)
-
-JavaScript 엔진은 이들을 차례대로 처리한다.
-
-이때 알아야 할 두가지는
-1. 엔진이 task를 처리하는 동안은 렌더링이 일어나지 않는다. 처리를 완료하면 DOM 변경을 화면에 반영한다.
-2. task에 긴 시간이 걸리면 task를 처리하는 동안 발생한 새로운 task를 처리하지 못한다. ( 응답 없는 페이지라는 alert 창은 페이지 전체와 함께 해당 task를 최소시킬지 말지를 선택하게 한다. )
-#### <mark style="background: #BBFABBA6;">예시 1: CPU 소모가 많은 task 쪼개기</mark>
-
-CPU 소모가 아주 많은 task 하나가 있다고 가정해보자.
-
-```js
-let i = 0;
-
-let start = Date.now();
-
-function count() {
-
-  // CPU 소모가 많은 무거운 작업을 수행
-  for (let j = 0; j < 1e9; j++) {
-    i++;
-  }
-
-  alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
-}
-
-count();
-```
-1e9 (0이 9개)을 센 다음 alert를 하는 코드인데 해당 count()가 실행되는 동안 브라우저는 사용자 이벤트 처리나 DOM 관련 작업을 완전히 멈추게 되는 것을 확인할 수 있다.
-( 실행시키고 페이지에 마우스 우클릭을 하면 alert가 나올때까지 아무것도 안 보이다가 alert가 나오고 마우스 우클릭시 나오는 메뉴가 나온다. )
-
-코드를 쪼개서 이를 개선해보자.
-```js
-let i = 0;
-
-let start = Date.now();
-
-function count() {
-
-  // 무거운 작업을 쪼갠 후 이를 수행 (*)
-  do {
-    i++;
-	// 2* 1e6, 3* 1e6 등 1e6의 배수에서 do while 문을 나가게 된다.
-  } while (i % 1e6 != 0);
-
-  if (i == 1e9) {
-    // 위의 do while문을 1e3번 반복하면 도착
-    alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
-  } else {
-    // 1e6의 배수이지만 1e9가 아닐 경우
-    setTimeout(count); // 새로운 호출을 스케줄링 (**)
-  }
-
-}
-
-count();
-```
-
-do while문을 1e3번 반복해서 alert가 나오게 되는데 그 이전까지 setTimeout으로 count를 넘기기 때문에 동기적인 코드들은 돌아갈 수 있게 되고 이 때문에 이벤트 핸들러, DOM 관련 동작 들을 해결할 수 있게 된다.
-
-위 코드는 사실 조금의 시간차가 존재한다. 다음처럼 setTimeout을 앞으로 끌어오면 이를 해결할 수 있다.
-```js
-let i = 0;
-
-let start = Date.now();
-
-function count() {
-
-  // 스케줄링 코드를 함수 앞부분으로 옮김
-  if (i < 1e9 - 1e6) {
-    setTimeout(count); // 새로운 호출을 스케줄링함
-  }
-
-  do {
-    i++;
-  } while (i % 1e6 != 0);
-
-  if (i == 1e9) {
-    alert("처리에 걸린 시간: " + (Date.now() - start) + "ms");
-  }
-
-}
-
-count();
-```
-
-부분 카운팅 (`do...while`)이 일어나기 전에 부분 재스케줄링(`setTimeout`)이 일어나게 된다.
-
-setTimeout 호출이 많은 경우, 브라우저 최소 대기 시간이 4밀리초이기 때문에 숫자 세기 전에 스케줄링을 하면 숫자를 세면서 대기 시간을 소모하기 때문에 실행이 더 빨라진다.
-(setTimeout 로직이 뒤쪽에 있으면 setTimeout(count) 실행되고 바로 다음 macrotask로 count 함수가 실행돼야 되는데 안 가고 4ms 있다가 실행된다는 뜻)
-
-#### <mark style="background: #BBFABBA6;">예시 2: Progress bar</mark>
-
-task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `progress bar`를 만들 때도 드러난다.
-
-```js
-<div id="progress"></div>
-
-<script>
-
-  function count() {
-    for (let i = 0; i < 1e6; i++) {
-      i++;
-      progress.innerHTML = i;
-    }
-  }
-
-  count();
-</script>
-```
-
-브라우저는 시간이 오래 걸리든 아니든 상관 없이 현재 작업 중인 task가 끝나야 DOM 변경분을 화면에 렌더링한다.
-
-그래서 위의 코드는 `progress bar`의 기능을 완수하지 못한다. i가 전부 지나가야(현재 작업 중인 task가 끝나야) DOM을 렌더링하기 때문이다.
-
-```js
-<div id="progress"></div>
-
-<script>
-  let i = 0;
-
-  function count() {
-
-    // 무거운 작업을 쪼갠 후 이를 수행
-    do {
-      i++;
-      progress.innerHTML = i;
-    } while (i % 1e3 != 0);
-
-    if (i < 1e7) {
-      setTimeout(count);
-    }
-
-  }
-
-  count();
-</script>
-```
-위처럼 코드를 분할하게 되면 i가 변화하는 과정을 출력해 줄 수 있다, `setTimeout`으로 `count`를 넘기기 때문에 count와 count 함수 사이에서 동기적인 동작들을 수행할 수 있게 되고 결론적으로 `progress.innerHTML`이 변경되었다는 DOM 변경 동작이 일어나게 된다.
-
-#### <mark style="background: #BBFABBA6;">예시 3: 이벤트 처리가 끝난 이후에 작업</mark>
-
-이벤트 핸들러를 만들 때 특정 액션을 모든 이벤트 버블링이 끝나고 실행시키고 싶다면 `ms`가 0인 `setTimeout`을 사용하면 된다.
-
-```js
-menu.onclick = function() {
-  // ...
-
-  // 클릭한 메뉴 내 항목 정보가 담긴 커스텀 이벤트 생성
-  let customEvent = new CustomEvent("menu-open", {
-    bubbles: true
-  });
-
-  // 비동기로 커스텀 이벤트를 디스패칭
-  setTimeout(() => menu.dispatchEvent(customEvent));
-};
-```
-
-위를 살펴보면 "menu-open" 이라는 커스텀 이벤트를 만든 후 해당 이벤트를 setTimeout으로 넘겼다.
-
-이제 menu의 click 이벤트가 완전히 핸들링된 후에 `menu-open` 이벤트를 dispatching하게 된다.
-
-### <mark style="background: #FFF3A3A6;">Macrotask와 Microtask</mark>
-
-#### <mark style="background: #BBFABBA6;">Microtask</mark>
-
-`Microtask`는 주로 `Promise`를 사용해 만든다.
-
-`Promise`와 함께 쓰이는 `.then/catch/finally`의 핸들러 (소비 함수)가 `Microtask`가 된다. 또는 `Promise`를 핸들링하는 `await`를 사용해 만들기도 한다.
-
-> 이 외에도 표준 API인 `queueMicrotask(func)`를 사용해서 함수 `func`를 `Microtask Queue`에 넣어서 처리할 수 있다.
-
-> 자바스크립트 엔진은 **Macrotask**를 하나 처리할 때마다 js 엔진은 다른 `Macrotask`를 수행하거나 렌더링하는 등의 작업을 하기 전에 **Microtask Queue**에 있는 모든 task를 실행한다.
-
-```js
-setTimeout(() => alert("timeout"));
-
-Promise.resolve()
-  .then(() => alert("promise"));
-
-alert("code");
-
-// (현재 호출 스택에서 script 태그에 있는 코드를 읽는 Macrotask중이며 코드를 한 줄씩 넣으면서 실행 중에 있음)
-// 1. setTimeout(()=>alert("timeout")) - 호출 스택에서 실행, ms가 지나면 콜백 함수를 Macrotask queue에 등록
-// 2. Promise.resolve().then(()=>alert("promise")) - 콜백 함수를 Microtask Queue에 등록
-// 3. alert("code") - 바로 호출된다. (현재 script 태그를 읽는 Macrotask를 수행 중이다.)
-// 4. script 태그에 있는 코드를 읽는 Macrotask 종료
-// 5. Microtask queue에 있는 then() 콜백 함수 실행 (호출 스택으로 이동해서 실행, 이 과정에서 이벤트 루프는 다 비워질 때까지 안 돌아감)
-// 6. Microtask queue 비워짐
-// 7. ()=>alert("timeout") - 다음 Macrotask 실행 (호출 스택에서 Macrotask 하나 이동) 
-// (해당 Macrotask가 끝나면 다시 Microtask 실행해서 Microtask queue 비우고 렌더링 > 다음 Macrotask 실행 반복)
-```
-
-#### <mark style="background: #BBFABBA6;">처리 로직</mark>
-
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109193930.png)
-
-`Macrotask (script, mousemove, setTimeout 등)` 하나가 처리되고 난 후 `Microtask` 전부가 처리되고 그 이후 렌더링이 진행되는 것을 확인할 수 있다.
-
-**Microtask는 다른 이벤트 핸들러나 렌더링 작업, 혹은 다른 Macrotask가 실행되기 전에 처리된다.**
-
-script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에 script 코드를 한 줄씩 호출 스택에 담고 실행하는 과정이 끝난 후에 Microtask들을 실행한다.
-
-이런 처리순서가 아주 중요한 이유는 마우스 좌표 변경이나 네트워크 통신에 의한 데이터 변경같이 애플리케이션 환경에 변화를 주는 작업에 영향을 받지 않고 모든 `Microtask`를 동일한 환경에서 처리할 수 있기 때문이다.
-
-"현재 실행 중인 macrotask 실행이 끝나면 > 현재 존재하는 모든 microtask 실행 > 렌더링 > 다음 macrotask 실행" 의 순서를 가진다.
-
-위 과정을 확인하기 위해서 리페인트 전에 콜백 함수를 호출하는 **requestAnimationFrame**으로 확인해보자.
-
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109221737.png)
-
-> **requestAnimationFrame**
-> 
-> ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109214448.png)
-> 
-> 브라우저 리페인트 전에 애니메이션 처리를 하기 위해 사용하는 윈도우 메소드, 별도의 큐에서 관리되어 프레임 단위로 렌더링할 수 있도록 보장한다. ( 초당 프레임 기준은 모니터 주사율에 의해 설정된다. )
-> 
-> 프레임 단위의 렌더링을 보장하기 때문에 애니메이션 동작이 더 부드러워진다.
-
-만약 임의로 특정 함수를 `Microtask Queue`로 보내고 싶다면 `queueMicrotask` 함수를 사용하면 된다. 
-( `setTimeout`과 다른 점은 만약 `ms`가 0초인 `setTimeout`을 이용할 때는 `Macrotask queue`로 보내져서 기존의 `Microtask Queue`가 다 끝나고 다음 `Macrotask`가 실행될 때 특정 함수가 실행될 것이다.)
-```js
-<div id="progress"></div>
-
-<script>
-  let i = 0;
-
-  function count() {
-    // 무거운 작업을 쪼갠 후 이를 수행
-    do {
-      i++;
-      progress.innerHTML = i;
-    } while (i % 1e3 != 0);
-    
-    if (i < 1e6) {
-      queueMicrotask(count);
-    }
-  }
-
-  count();
-</script>
-```
-
-렌더링이 되기 전에 Microtask Queue에 있는 count 함수가 재귀 호출을 하며 Microtask Queue에 새로운 count 함수를 추가하는 방식이므로 실제 화면에는 최종값만 보이게 된다. ( microtask queue가 비워져야 브라우저 렌더링이 일어남. )
-
-다음 예제를 통해 확실히 알아가보자.
-```js
-// sync, macro, micro 원소 안에 숫자가 있고 button으로 이들을 제어한다고 가정.
-button.addEventListener('click',()=>{
-	for (let i =0; i<=100000; i++){
-		sync.innerHTML = i;
-		
-		setTimeout(()=>{
-			macro.innerHTML = i;
-		},0)
-		
-		queueMicrotask(()=>{
-			micro.innerHTML = i;
-		})
-	}
-})
-```
-
-위 핸들러를 실행시키면 다음의 결과가 나온다.
-1. `sync`는 렌더링이 일어나지 않다가 100,000 상태가 된다.
-2. `micro`는 렌더링이 일어나지 않다가 100,000 상태가 된다.
-3. `macro`는 잠시 기다리다가 1부터 100,000까지 차례대로 렌더링된다.
-
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
-
-이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) 이 실행되고 있을 때는 브라우저에서 다른 동작을 할 수 없다. ( 콜 스택에 있는거 다 버리고 동작을 진행할 수는 없으니 )
-
-> `setTimeout`의 타이밍 함수 (시간을 새서 콜백을 던져주는 함수)는 `Macrotask queue`가 할당해주는 외부 쓰레드에서 진행되는데 대표적으로 브라우저의 `Web API`가 있다.
-
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
-
-단, 만약 중간에 다른 `Macrotask`(마우스 이벤트 등등)가 `Macrotask queue`로 들어와서 먼저 실행 가능 상태가 된다면 `queue`에서는 해당 `Macrotask`를 처리할 것이다.
 ## <mark style="background: #FFB86CA6;">async, await</mark>
 
-`Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 존재한다.
+`Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 탄생하게 되었다.
 
 ### <mark style="background: #FFF3A3A6;">async function</mark>
 
