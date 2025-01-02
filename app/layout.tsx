@@ -1,28 +1,40 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-import ThemeProvider from '@/app/provider/theme-provider'
-import Header from '@/components/ui/header'
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import ThemeProvider from "@/provider/theme-provider";
+import Header from "@/components/ui/header";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
 const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'Codefug Blog',
-  description: 'project experiences and development notes',
-}
+  title: "Codefug Blog",
+  description: "project experiences and development notes",
+  openGraph: {
+    title: "Codefug Blog",
+    description: "project experiences and development notes",
+    url: "https://codefug-blog.vercel.app",
+    type: "website",
+    images: [
+      {
+        url: "/images/main-logo.png",
+        alt: "Codefug Blog",
+      },
+    ],
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -42,5 +54,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

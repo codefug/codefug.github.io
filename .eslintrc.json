@@ -12,7 +12,8 @@
     "prettier",
     "next/typescript",
     "eslint:recommended",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "plugin:mdx/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 12,
@@ -54,5 +55,8 @@
     "react/require-default-props": "off", // let it handle by TypeScript
     "nonblock-statement-body-position": "off", // let it handle by prettier
     "react/jsx-one-expression-per-line": "off" // let it handle by prettier
+  },
+  "settings": {
+    "mdx/code-blocks": true
   }
 }

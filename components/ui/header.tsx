@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { useTheme } from 'next-themes'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { NAVIGATION_ITEMS } from '@/constants/navigation'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import Switch from './switch'
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import Switch from "./switch";
 
 export default function Header() {
-  const [isChecked, setIsChecked] = useState(false)
-  const { setTheme, theme } = useTheme()
-  const pathName = `/${usePathname().split('/')[1]}`
+  const [isChecked, setIsChecked] = useState(false);
+  const { setTheme, theme } = useTheme();
+  const pathName = `/${usePathname().split("/")[1]}`;
   useEffect(() => {
-    if (theme === 'dark') setIsChecked(true)
-    else setIsChecked(false)
-  }, [theme])
+    if (theme === "dark") setIsChecked(true);
+    else setIsChecked(false);
+  }, [theme]);
 
   return (
     <header className="fixed left-0 right-0 top-0 bg-background shadow-lg dark:shadow-white">
@@ -33,7 +33,6 @@ export default function Header() {
             width={0}
             className="h-7 w-full"
             sizes="28px"
-            priority
           />
           <div className="hidden whitespace-nowrap text-lg font-bold text-black dark:text-white md:block">
             Codefug Blog
@@ -46,8 +45,8 @@ export default function Header() {
             className={cn(
               `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
               pathName === NAVIGATION_ITEMS.portfolio.href
-                ? 'text-black dark:text-white'
-                : ''
+                ? "text-black dark:text-white"
+                : "",
             )}
           >
             {NAVIGATION_ITEMS.portfolio.label}
@@ -58,8 +57,8 @@ export default function Header() {
             className={cn(
               `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
               pathName === NAVIGATION_ITEMS.categories.href
-                ? 'text-black dark:text-white'
-                : ''
+                ? "text-black dark:text-white"
+                : "",
             )}
           >
             {NAVIGATION_ITEMS.categories.label}
@@ -70,8 +69,8 @@ export default function Header() {
             className={cn(
               `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
               pathName === NAVIGATION_ITEMS.about.href
-                ? 'text-black dark:text-white'
-                : ''
+                ? "text-black dark:text-white"
+                : "",
             )}
           >
             {NAVIGATION_ITEMS.about.label}
@@ -79,11 +78,11 @@ export default function Header() {
           <Switch
             checked={isChecked}
             onCheckedChange={() =>
-              theme === 'light' ? setTheme('dark') : setTheme('light')
+              theme === "light" ? setTheme("dark") : setTheme("light")
             }
           />
         </section>
       </div>
     </header>
-  )
+  );
 }
