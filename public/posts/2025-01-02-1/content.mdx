@@ -1,3 +1,19 @@
+---
+title: (급페이 프로젝트) 카드 렌더링을 최적화하여 UX를 향상시키기 위한 머나먼 여정
+excerpt: server component 설계를 이용한 suspense 적극 활용, 이를 위해서 next cookie를 사용하면서 겪은 문제들을 적은 글입니다.
+toc: true
+toc_sticky: true
+categories:
+  - gheuppay
+last_modified_at: 2024-07-21T24:00:00
+header:
+  teaser: /assets/images/Logo/next-cookie.png
+---
+
+import Youtube from "../../../components/mdx/youtube.tsx";
+
+<Youtube id="0ZRBJwnGYpc" />
+
 ## <mark style={{background: "#FF5582A6"}}>팀 프로젝트 세팅</mark>
 
 ### <mark style={{background: "#FFB86CA6"}}>역할</mark>
@@ -7,6 +23,7 @@
 목록 페이지 widget 제작: 투표 리스트 관련 Skeleton,
 
 CICD : Netlify와 GithubAction을 통해서 PR event에 반응하여 자동 배포하는 로직 구현
+![순록의 편지](public/posts/2025-01-02-1/images/KakaoTalk_20241224_205703575_02.png)
 
 ### <mark style={{background: "#FFB86CA6"}}>기간별 업무</mark>
 
@@ -90,15 +107,15 @@ interception observer API라는 요소가 프레임 안에 보여지는 것을 �
 #### <mark style={{background: "#BBFABBA6"}}>useInView</mark>
 
 ```jsx
-const rootRef = useRef(null)
+const rootRef = useRef(null);
 const { ref, inView, entry } = useInView({
   threshold: 1,
   root: rootRef.current,
-})
+});
 
 useEffect(() => {
-  if (inView) setMoreItems((prevMoreItems) => prevMoreItems + 5)
-}, [inView])
+  if (inView) setMoreItems((prevMoreItems) => prevMoreItems + 5);
+}, [inView]);
 
 return (
   <ChartList $numbers={numberOfItem} ref={rootRef}>
@@ -118,7 +135,7 @@ return (
       </>
     )}
   </ChartList>
-)
+);
 ```
 
 useInView 라이브러리는 먼저 rootRef로 찍힌 element를 root(프레임의 기준이 되는 요소) 옵션에 넣어서 root임을 표시한 후
@@ -131,33 +148,33 @@ useInView의 ref가 threshold만큼 root에서 보여지면 inView가 true로 �
 
 ```jsx
 export default function useInfiniteScroll(fetchFunction, options) {
-  const rootRef = useRef(null)
-  const [items, setItems] = useState([])
-  const [cursor, setCursor] = useState(0)
-  const [status, wrappedFunction] = useGetData(fetchFunction)
+  const rootRef = useRef(null);
+  const [items, setItems] = useState([]);
+  const [cursor, setCursor] = useState(0);
+  const [status, wrappedFunction] = useGetData(fetchFunction);
   const { ref, inView } = useInView({
     threshold: 0,
     root: rootRef.current,
-  })
+  });
   async function executeRefresh() {
     const { idols, nextCursor } = await wrappedFunction({
       ...options,
       cursor,
-    })
-    if (!idols) return
-    setCursor(nextCursor)
-    setItems([...items, ...idols])
+    });
+    if (!idols) return;
+    setCursor(nextCursor);
+    setItems([...items, ...idols]);
   }
 
   useEffect(() => {
     if (inView && cursor !== null && cursor !== 0) {
-      executeRefresh()
+      executeRefresh();
     } else if (items.length === 0) {
-      executeRefresh()
+      executeRefresh();
     }
-  }, [inView])
+  }, [inView]);
 
-  return { items, ref, status, rootRef }
+  return { items, ref, status, rootRef };
 }
 ```
 
@@ -213,8 +230,8 @@ styled-components의 css를 쓰면 css 파일 자체를 css그 자체로 상속�
 
 ```js
 // css
-import { css } from 'styled-components'
-import { skeleton } from './keyframes'
+import { css } from "styled-components";
+import { skeleton } from "./keyframes";
 
 export default css`
   background-color: #363636;
@@ -242,14 +259,14 @@ export default css`
     animation-timing-function: ease-in-out;
     animation-direction: normal;
   }
-`
+`;
 // ...
 // keyframe
 export const skeleton = keyframes`
   100% {
     transform: translateX(100%);
   }
-`
+`;
 ```
 
 위 코드처럼 스켈레톤에 기본 css를 작성한다.
@@ -262,7 +279,7 @@ const SkeletonNameBlock = styled.div`
   height: 15px;
   border-radius: 10px;
   ${skeletonStyle};
-`
+`;
 ```
 
 데이터가 들어가는 요소와 비슷한 요소에 해당 애니메이션을 넣어주고 이를 infinite scroll과 연결하여 데이터를 받아오는 동안에는 스켈레톤 이미지가 대신 보이도록 구현해준다.
@@ -271,25 +288,25 @@ const SkeletonNameBlock = styled.div`
 export default function MonthChartList({ gender, isactive }) {
   const { items, ref, status, rootRef } = useInfiniteScroll(getCharts, {
     gender,
-  })
+  });
 
   return (
     <ChartList
       ref={rootRef}
-      style={{ display: isactive === true ? 'grid' : 'none' }}
+      style={{ display: isactive === true ? "grid" : "none" }}
     >
-           {' '}
+           {" "}
       {items?.map((item, index) => (
         <IdolChartCard key={item.id} item={item} index={index} ref={ref} />
       ))}
-           {' '}
+           {" "}
       {status.isLoading &&
         Array.from(Array(10)).map((_, index) => (
           <IdolChartCardSkeleton key={index} />
         ))}
-         {' '}
+         {" "}
     </ChartList>
-  )
+  );
 }
 ```
 
