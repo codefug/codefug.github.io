@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/provider/theme-provider";
 import Header from "@/components/ui/header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,9 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistMono.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -49,7 +43,9 @@ export default function RootLayout({
         >
           <Header />
           <main className="min-h-screen pt-20">
-            <div className="mx-auto max-w-[1400px] px-4">{children}</div>
+            <div className="mx-auto flex max-w-[1400px] flex-col px-4 md:flex-row">
+              {children}
+            </div>
           </main>
         </ThemeProvider>
       </body>

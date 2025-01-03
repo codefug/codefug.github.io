@@ -41,13 +41,13 @@ export default function Callout({
       <div
         className={cn(
           QUOTE_TITLE_STYLE({ type: type && CALL_OUT_TYPE_COLOR[type] }),
-          "flex items-center gap-1 text-2xl font-bold",
+          "flex items-center gap-1 text-lg font-bold md:text-2xl",
         )}
       >
         {type !== null && CALL_OUT_TYPE_ICON[type]}
         <div>{title}</div>
       </div>
-      <section className="text-black">
+      <section className="text-sm font-semibold text-black md:text-base">
         {contentArr.map((child) => {
           if (child.content === "\n") return <br key={child.id} />;
           return <div key={child.id}>{child.content}</div>;
