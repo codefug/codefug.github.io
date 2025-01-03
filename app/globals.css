@@ -33,6 +33,14 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --quote-blue: 217.89deg 57.58% 93.53%;
+    --quote-green: 144deg 43.48% 90.98%;
+    --quote-sky-blue: 198.46deg 65% 92.16%;
+    --quote-yellow: 55.94deg 65% 92.16%;
+    --quote-orange: 34.62deg 65% 92.16%;
+    --quote-red: 338.4deg 60.98% 91.96%;
+    --quote-purple: 256.67deg 56.25% 93.73%;
+    --quote-gray: 0deg 0% 93.33%;
   }
   .dark {
     --background: 240 10% 3.9%;
