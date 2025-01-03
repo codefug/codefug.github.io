@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/provider/theme-provider";
-import Header from "@/components/ui/header";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -41,12 +42,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main className="min-h-screen pt-20">
-            <div className="mx-auto flex max-w-[1400px] flex-col px-4 md:flex-row">
-              {children}
-            </div>
-          </main>
+          <SidebarProvider defaultOpen={false}>
+            <AppSidebar />
+            <main className="min-h-screen w-full">
+              <div className="mx-auto flex max-w-[1400px] flex-col px-4 md:flex-row">
+                {children}
+              </div>
+            </main>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
