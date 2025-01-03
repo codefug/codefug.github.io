@@ -6,5 +6,7 @@ import { cn } from "@/lib/utils";
 export default function Layout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return <div className={cn("prose dark:prose-invert")}>{children}</div>;
+  return (
+    <div className={cn("prose max-w-full dark:prose-invert")}>{children}</div>
+  );
 }
