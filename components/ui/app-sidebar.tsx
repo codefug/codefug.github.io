@@ -5,8 +5,11 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
@@ -15,6 +18,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
+import { PanelLeftClose } from "lucide-react";
 import SidebarButton from "../sidebar/sidebar-button";
 
 export function AppSidebar() {
@@ -32,7 +36,7 @@ export function AppSidebar() {
     <Sidebar ref={ref}>
       <SidebarContent className="dark:border-r dark:border-r-gray-500">
         <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center justify-between pl-4 pr-0">
+          <SidebarGroupLabel className="mb-4 flex items-center justify-between pl-4 pr-0">
             <Link
               href="/"
               passHref
@@ -50,45 +54,33 @@ export function AppSidebar() {
                 Codefug
               </div>
             </Link>
-            <SidebarButton />
+            <SidebarButton>
+              <PanelLeftClose size={20} />
+            </SidebarButton>
           </SidebarGroupLabel>
-          <SidebarContent>
-            <SidebarMenu>
-              <Link
-                href={NAVIGATION_ITEMS.portfolio.href}
-                passHref
-                className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
-                )}
-                onClick={toggleSidebar}
-              >
-                {NAVIGATION_ITEMS.portfolio.label}
-              </Link>
-            </SidebarMenu>
-            <SidebarMenu>
-              <Link
-                href={NAVIGATION_ITEMS.categories.href}
-                passHref
-                className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
-                )}
-                onClick={toggleSidebar}
-              >
-                {NAVIGATION_ITEMS.categories.label}
-              </Link>
-            </SidebarMenu>
-            <SidebarMenu>
-              <Link
-                href={NAVIGATION_ITEMS.about.href}
-                passHref
-                className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white`,
-                )}
-                onClick={toggleSidebar}
-              >
-                {NAVIGATION_ITEMS.about.label}
-              </Link>
-            </SidebarMenu>
+          <SidebarContent className="group min-h-full px-2">
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {NAVIGATION_ITEMS.map((item) => (
+                    <SidebarMenuItem key={item.label}>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          href={item.href}
+                          passHref
+                          className={cn(
+                            `rounded-md px-2 text-gray-400 transition duration-500 ease-in-out hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black hover:dark:text-white group-hover:dark:text-white`,
+                          )}
+                          onClick={toggleSidebar}
+                        >
+                          {item.label}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </SidebarContent>
         </SidebarGroup>
       </SidebarContent>

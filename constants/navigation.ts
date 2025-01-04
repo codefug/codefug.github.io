@@ -1,18 +1,14 @@
-export const NAVIGATION_ITEMS = {
-  home: {
-    label: 'Home',
-    href: '/',
+export const NAVIGATION_ITEMS = [
+  {
+    label: "Portfolio",
+    href: "/portfolio",
   },
-  portfolio: {
-    label: 'Portfolio',
-    href: '/portfolio',
+  {
+    label: "Categories",
+    href: "/categories",
   },
-  categories: {
-    label: 'Categories',
-    href: '/categories',
+  {
+    label: "About",
+    href: "/about",
   },
-  about: {
-    label: 'About',
-    href: '/about',
-  },
-}
+];

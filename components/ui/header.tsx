@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
-import { SidebarTrigger, useSidebar } from "./sidebar";
+import { PanelLeftOpen } from "lucide-react";
+import { useSidebar } from "./sidebar";
 import Switch from "./switch";
+import SidebarButton from "../sidebar/sidebar-button";
 
 export default function Header() {
   const [isChecked, setIsChecked] = useState(false);
@@ -25,7 +27,9 @@ export default function Header() {
     <header className="fixed left-0 right-0 top-0 bg-background shadow-lg dark:shadow-white">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
-          <SidebarTrigger />
+          <SidebarButton>
+            <PanelLeftOpen size={20} />
+          </SidebarButton>
           <Link
             href="/"
             passHref
@@ -46,38 +50,21 @@ export default function Header() {
         </section>
         <section className="flex items-center gap-4 text-sm font-semibold md:text-base">
           {!isMobile && (
-            <section className="flex items-center gap-4 text-sm font-semibold md:text-base">
-              <Link
-                href={NAVIGATION_ITEMS.portfolio.href}
-                passHref
-                className={cn(
-                  `hidden text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white md:block`,
-                  pathName === NAVIGATION_ITEMS.portfolio.href && "text-black",
-                )}
-              >
-                {NAVIGATION_ITEMS.portfolio.label}
-              </Link>
-              <Link
-                href={NAVIGATION_ITEMS.categories.href}
-                passHref
-                className={cn(
-                  `hidden text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white md:block`,
-                  pathName === NAVIGATION_ITEMS.categories.href && "text-black",
-                )}
-              >
-                {NAVIGATION_ITEMS.categories.label}
-              </Link>
-              <Link
-                href={NAVIGATION_ITEMS.about.href}
-                passHref
-                className={cn(
-                  `hidden text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white md:block`,
-                  pathName === NAVIGATION_ITEMS.about.href && "text-black",
-                )}
-              >
-                {NAVIGATION_ITEMS.about.label}
-              </Link>
-            </section>
+            <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
+              {NAVIGATION_ITEMS.map((item) => (
+                <Link
+                  href={item.href}
+                  passHref
+                  key={item.label}
+                  className={cn(
+                    `hidden text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white lg:block`,
+                    pathName === item.href && "text-black dark:text-white",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           )}
           <Switch
             checked={isChecked}
