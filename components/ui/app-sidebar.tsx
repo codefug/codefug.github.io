@@ -18,11 +18,14 @@ import { useRef } from "react";
 import SidebarButton from "../sidebar/sidebar-button";
 
 export function AppSidebar() {
-  const { toggleSidebar, state } = useSidebar();
+  const { toggleSidebar, state, isMobile } = useSidebar();
   const ref = useRef<HTMLDivElement>(null);
 
   useOutsideClick(ref, () => {
-    if (state === "expanded") toggleSidebar();
+    if (state === "expanded") {
+      toggleSidebar();
+      console.log(isMobile);
+    }
   });
 
   return (

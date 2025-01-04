@@ -3,9 +3,8 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeftOpen } from "lucide-react";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsTablet } from "@/hooks/use-tablet";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -71,7 +71,7 @@ const SidebarProvider = React.forwardRef<
     },
     ref,
   ) => {
-    const isMobile = useIsMobile();
+    const isTablet = useIsTablet();
     const [openMobile, setOpenMobile] = React.useState(false);
 
     // This is the internal state of the sidebar.
@@ -92,10 +92,10 @@ const SidebarProvider = React.forwardRef<
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
-      return isMobile
+      return isTablet
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
-    }, [isMobile, setOpen, setOpenMobile]);
+    }, [isTablet, setOpen, setOpenMobile]);
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -122,7 +122,7 @@ const SidebarProvider = React.forwardRef<
         state,
         open,
         setOpen,
-        isMobile,
+        isMobile: isTablet,
         openMobile,
         setOpenMobile,
         toggleSidebar,
@@ -131,7 +131,7 @@ const SidebarProvider = React.forwardRef<
         state,
         open,
         setOpen,
-        isMobile,
+        isTablet,
         openMobile,
         setOpenMobile,
         toggleSidebar,
@@ -287,7 +287,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <PanelLeft />
+      <PanelLeftOpen />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
