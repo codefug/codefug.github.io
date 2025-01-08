@@ -10,7 +10,7 @@ export default function Layout({
   return (
     <>
       <Header />
-      <div className={cn("prose max-w-full pt-20 dark:prose-invert")}>
+      <div className={cn("prose mx-auto overflow-auto dark:prose-invert")}>
         {children}
       </div>
     </>

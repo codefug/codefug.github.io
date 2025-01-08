@@ -3,7 +3,7 @@ import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/provider/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/ui/app-sidebar";
+import AppSidebar from "@/components/ui/app-sidebar";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -45,9 +45,7 @@ export default function RootLayout({
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <main className="min-h-screen w-full">
-              <div className="mx-auto flex max-w-[1400px] flex-col px-4 md:flex-row">
-                {children}
-              </div>
+              <div className="mx-auto max-w-[1400px] px-4">{children}</div>
             </main>
           </SidebarProvider>
         </ThemeProvider>

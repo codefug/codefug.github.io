@@ -24,7 +24,7 @@ export default function Header() {
   }, [theme]);
 
   return (
-    <header className="fixed left-0 right-0 top-0 bg-background shadow-lg dark:shadow-white">
+    <header className="sticky left-0 right-0 top-0 z-10 bg-background">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
           <SidebarButton>
