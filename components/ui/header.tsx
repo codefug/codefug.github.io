@@ -1,16 +1,16 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 import { PanelLeftOpen } from "lucide-react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import SidebarButton from "../sidebar/sidebar-button";
 import { useSidebar } from "./sidebar";
 import Switch from "./switch";
-import SidebarButton from "../sidebar/sidebar-button";
 
 export default function Header() {
   const [isChecked, setIsChecked] = useState(false);
@@ -24,16 +24,18 @@ export default function Header() {
   }, [theme]);
 
   return (
-    <header className="sticky left-0 right-0 top-0 z-10 bg-background">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 p-4">
+    <header className="sticky left-0 right-0 top-0 z-10 bg-background xl:relative xl:z-0">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 py-4">
         <section className="flex items-center gap-4">
-          <SidebarButton>
-            <PanelLeftOpen size={20} />
-          </SidebarButton>
+          <section className="xl:fixed xl:left-4 xl:top-4">
+            <SidebarButton>
+              <PanelLeftOpen size={20} />
+            </SidebarButton>
+          </section>
           <Link
             href="/"
             passHref
-            className="flex flex-shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg"
+            className="flex flex-shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg xl:ml-10"
           >
             <Image
               src="/images/main-logo.png"
