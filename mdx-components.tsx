@@ -6,7 +6,7 @@ import CustomLink from "./components/mdx/custom-link";
 import processCallout from "./util/callout";
 
 function getHeadingIndexWithCloser() {
-  let headingIndex = 0;
+  let headingIndex = -1;
   return function callBack() {
     headingIndex += 1;
     return headingIndex;
