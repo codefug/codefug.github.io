@@ -84,6 +84,8 @@ export default [
       "react/require-default-props": "off",
       "nonblock-statement-body-position": "off",
       "react/jsx-one-expression-per-line": "off",
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 ];
