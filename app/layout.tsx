@@ -4,6 +4,8 @@ import ThemeProvider from "@/provider/theme-provider";
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/ui/footer";
+import Header from "@/components/ui/header";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -45,7 +47,9 @@ export default function RootLayout({
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <main className="min-h-screen w-full">
+              <Header />
               <div className="mx-auto max-w-[1400px] px-4">{children}</div>
+              <Footer />
             </main>
           </SidebarProvider>
         </ThemeProvider>

@@ -1,1 +1,1 @@
-export const MAX_POST_LIST_LENGTH = 8;
+export const MAX_POST_LIST_LENGTH = 6;
