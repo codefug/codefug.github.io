@@ -5,14 +5,14 @@ export default function PostHeader({
   categories,
   excerpt,
   header,
-  last_modified_at,
+  date,
 }: FrontMatter) {
   return (
     <header>
       <h1>{title}</h1>
       <p>{excerpt}</p>
       <p>{categories}</p>
-      <p>{last_modified_at.toISOString()}</p>
+      <p>{date.toLocaleDateString()}</p>
       <img src={header.teaser} alt={title} />
     </header>
   );

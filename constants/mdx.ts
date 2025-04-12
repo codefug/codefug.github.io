@@ -4,7 +4,7 @@ export type FrontMatter = {
   toc: boolean;
   toc_sticky: boolean;
   categories: string[];
-  last_modified_at: Date;
+  date: Date;
   header: {
     teaser: string;
   };
