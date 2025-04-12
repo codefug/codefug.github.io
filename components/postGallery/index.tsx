@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { MAX_POST_LIST_LENGTH } from "@/constants/post";
 import PostCard, { PostInfo } from "../postCard";
+import BlockHeader from "../ui/block-header";
 
 export default function PostGallery({
   postInfoList,
@@ -14,14 +15,14 @@ export default function PostGallery({
     postInfoList,
   });
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <BlockHeader title="Post Gallery">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredFrontMatterList.map((postInfo: PostInfo) => (
           <PostCard key={postInfo.id} {...postInfo} />
         ))}
       </div>
       <div ref={ref} />
-    </>
+    </BlockHeader>
   );
 }
 
