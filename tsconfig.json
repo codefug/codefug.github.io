@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -28,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/posts/[id]/page.mdx"
+    "app/posts/[id]/page.mdx",
+    "scripts/generateMdxMap.mjs"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,31 +1,33 @@
-import PostHeader from "@/components/ui/post-header";
-import { readdir } from "fs/promises";
+import { readdir, readFile } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
-import { FrontMatter } from "@/constants/mdx";
-import { MDXContent } from "mdx/types";
+import PostHeader from "@/components/ui/post-header";
 import MenuBar from "@/components/postMenuBar/menu-bar";
+import { ParsedFrontMatter } from "@/constants/mdx";
+import { mdxMap } from "@/lib/mdxMap";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
-  const {
-    default: Post,
-    frontmatter,
-  }: { default: MDXContent; frontmatter: string } = await import(
-    `@/public/posts/${id}/content.mdx`
+
+  const mdxFilePath = path.join(
+    process.cwd(),
+    "markdown",
+    id,
+    "frontmatter.mdx",
   );
-  const { data } = matter(frontmatter);
+  const fileContent = await readFile(mdxFilePath, "utf8");
+  const { data } = matter(fileContent);
+
+  const mdxModule = mdxMap[id];
+  if (!mdxModule) return <div>해당 포스트를 찾을 수 없습니다.</div>;
+  const Content = mdxModule.default;
   return (
     <section>
-      <PostHeader {...(data as FrontMatter)} />
+      <PostHeader {...(data as ParsedFrontMatter)} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar id={id} />
         <section className="max-w-full">
-          <Post />
+          <Content />
         </section>
       </section>
     </section>
@@ -33,7 +35,7 @@ export default async function Page({
 }
 
 export async function generateStaticParams() {
-  const posts = path.join("public/posts");
+  const posts = path.join(process.cwd(), "markdown");
   const directories = await readdir(posts);
   const paths = directories.map((id) => ({
     id,
