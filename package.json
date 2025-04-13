@@ -2,15 +2,17 @@
   "name": "codefug.blog",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://codefug.github.io",
   "scripts": {
     "generate-mdx": "ts-node scripts/generateMdxMap.mjs",
     "prebuild": "npm run generate-mdx",
     "predev": "npm run generate-mdx",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npx serve@latest out",
     "lint": "next lint --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "type nul > out/.nojekyll && gh-pages -d out --dotfiles"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
@@ -51,6 +53,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-mdx": "^3.1.5",
     "eslint-plugin-prettier": "^5.2.1",
+    "gh-pages": "^6.3.0",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",

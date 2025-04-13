@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   // Optionally, add any other Next.js config below
   images: {
+    unoptimized: true,
+    loader: "imgix",
+    path: "https://codefug.github.io",
     remotePatterns: [
       {
         protocol: "https",
@@ -26,6 +29,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  assetPrefix:
+    process.env.NODE_ENV === "production" ? "https://codefug.github.io" : "",
+  output: "export",
 };
 
 const withMDX = createMDX({
