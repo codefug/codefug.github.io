@@ -86,6 +86,7 @@ export default [
       "react/jsx-one-expression-per-line": "off",
       "no-use-before-define": "off",
       "@typescript-eslint/no-require-imports": "off",
+      "prefer-arrow-callback": "off",
     },
   },
 ];
