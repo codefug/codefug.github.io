@@ -3,7 +3,7 @@ import { Button } from "./button";
 
 export default function Banner() {
   return (
-    <figure className="relative mb-12 overflow-hidden rounded-xl">
+    <figure className="relative mb-12 mt-4 overflow-hidden rounded-xl">
       <div className="flex h-[300px] w-full justify-end rounded-2xl bg-gradient-to-r from-[#1f1d80] to-[#000000]">
         <div className="absolute inset-0 z-[2] flex items-center">
           <div className="max-w-2xl p-8 text-white">
