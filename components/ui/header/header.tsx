@@ -9,17 +9,22 @@ import { usePathname } from "next/navigation";
 import { memo, useEffect, useState } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useScroll, motion, useTransform, useSpring } from "motion/react";
-import { useSidebar } from "./sidebar";
-import Switch from "./switch";
-import SidebarButton from "../sidebar/sidebar-button";
+import { POSTS } from "@/constants/path";
+import { useSidebar } from "../sidebar";
+import Switch from "../switch";
+import SidebarButton from "../../sidebar/sidebar-button";
+import headerVariant from "./variant";
 
 export default function Header() {
   const { showFloatingHeader } = useShowFloatingHeader();
-
+  const pathName = usePathname();
   return (
     <>
       <DefaultHeader isShow={!showFloatingHeader} />
-      <FloatingHeader isShow={showFloatingHeader} />
+      <FloatingHeader
+        isShow={showFloatingHeader}
+        isShowVerticalScrollbar={pathName === POSTS}
+      />
     </>
   );
 }
@@ -68,9 +73,6 @@ const DefaultHeader = memo(function DefaultHeader({
 
 const HeaderNavigation = memo(function HeaderNavigation() {
   const pathName = usePathname();
-  const { isMobile } = useSidebar();
-
-  if (!isMobile) return null;
 
   return (
     <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
@@ -80,7 +82,7 @@ const HeaderNavigation = memo(function HeaderNavigation() {
           passHref
           key={item.label}
           className={cn(
-            `hidden text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg hover:dark:text-white lg:block`,
+            `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg`,
             pathName === item.href && "text-black dark:text-white",
           )}
         >
@@ -127,16 +129,13 @@ const SideBarToggleButton = memo(function SideBarToggleButton() {
 
 const FloatingHeader = memo(function FloatingHeader({
   isShow,
+  isShowVerticalScrollbar = true,
 }: {
   isShow: boolean;
+  isShowVerticalScrollbar?: boolean;
 }) {
   return (
-    <header
-      className={cn(
-        "sticky left-0 right-0 top-0 z-10 transform bg-background transition-transform duration-300",
-        isShow ? "translate-y-0" : "-translate-y-[60px]",
-      )}
-    >
+    <header className={cn(headerVariant({ isShow, isShowVerticalScrollbar }))}>
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 py-4">
         <section className="flex items-center gap-4">
           <SideBarToggleButton />
@@ -163,7 +162,7 @@ const FloatingHeader = memo(function FloatingHeader({
           <HeaderSwitch />
         </section>
       </div>
-      <VerticalScrollbar />
+      {isShowVerticalScrollbar && <VerticalScrollbar />}
     </header>
   );
 });

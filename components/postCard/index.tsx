@@ -19,13 +19,13 @@ export default function PostCard({
   return (
     <Link href={linkHref}>
       <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-52 overflow-hidden">
           <Image
             priority
             src={header.teaser}
             alt={title}
             fill
-            className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
+            className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
           />
         </div>
         <div className="p-5">
@@ -35,8 +35,8 @@ export default function PostCard({
             </span>
             <span className="text-sm text-gray-500">{date}</span>
           </div>
-          <h3 className="mb-2 line-clamp-2 text-lg font-bold">{title}</h3>
-          <p className="mb-4 line-clamp-3 text-sm text-gray-600 dark:text-gray-400">
+          <h3 className="mb-2 line-clamp-1 text-lg font-bold">{title}</h3>
+          <p className="mb-4 line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
             {excerpt}
           </p>
         </div>
