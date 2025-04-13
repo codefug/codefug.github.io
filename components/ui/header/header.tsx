@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useScroll, motion, useTransform, useSpring } from "motion/react";
 import { POSTS } from "@/constants/path";
@@ -18,12 +18,16 @@ import headerVariant from "./variant";
 export default function Header() {
   const { showFloatingHeader } = useShowFloatingHeader();
   const pathName = usePathname();
+  const isShowVerticalScrollbar = useMemo(
+    () => pathName.includes(POSTS),
+    [pathName],
+  );
   return (
     <>
       <DefaultHeader isShow={!showFloatingHeader} />
       <FloatingHeader
         isShow={showFloatingHeader}
-        isShowVerticalScrollbar={pathName === POSTS}
+        isShowVerticalScrollbar={isShowVerticalScrollbar}
       />
     </>
   );
