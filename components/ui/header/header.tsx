@@ -66,7 +66,7 @@ const HeaderNavigation = memo(function HeaderNavigation() {
           passHref
           key={item.label}
           className={cn(
-            `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg`,
+            `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
             pathName === item.href && "text-black dark:text-white",
           )}
         >
