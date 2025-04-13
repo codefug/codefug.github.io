@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { POST_ITEM_PER_PAGE } from "@/constants/post";
+import { memo, useEffect, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import PostCard, { PostInfo } from "../postCard";
 
-export default function PostGallery({
+const PostGallery = memo(function PostGallery({
   postInfoList,
 }: {
   postInfoList: PostInfo[];
@@ -23,7 +23,9 @@ export default function PostGallery({
       {postInfoList.length / POST_ITEM_PER_PAGE > page && <div ref={ref} />}
     </>
   );
-}
+});
+
+export default PostGallery;
 
 function usePostListRender({ postInfoList }: { postInfoList: PostInfo[] }) {
   const [page, setPage] = useState(1);
