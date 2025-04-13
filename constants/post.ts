@@ -1,1 +1,1 @@
-export const MAX_POST_LIST_LENGTH = 6;
+export const POST_ITEM_PER_PAGE = 8;

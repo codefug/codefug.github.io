@@ -2,27 +2,26 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { MAX_POST_LIST_LENGTH } from "@/constants/post";
+import { POST_ITEM_PER_PAGE } from "@/constants/post";
 import PostCard, { PostInfo } from "../postCard";
-import BlockHeader from "../ui/block-header";
 
 export default function PostGallery({
   postInfoList,
 }: {
   postInfoList: PostInfo[];
 }) {
-  const { filteredFrontMatterList, ref } = usePostListRender({
+  const { filteredFrontMatterList, ref, page } = usePostListRender({
     postInfoList,
   });
   return (
-    <BlockHeader title="Post Gallery">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {filteredFrontMatterList.map((postInfo: PostInfo) => (
           <PostCard key={postInfo.id} {...postInfo} />
         ))}
       </div>
-      <div ref={ref} />
-    </BlockHeader>
+      {postInfoList.length / POST_ITEM_PER_PAGE > page && <div ref={ref} />}
+    </>
   );
 }
 
@@ -33,7 +32,7 @@ function usePostListRender({ postInfoList }: { postInfoList: PostInfo[] }) {
     threshold: 0.1,
   });
   const filteredFrontMatterList = useMemo(
-    () => postInfoList.slice(0, page * MAX_POST_LIST_LENGTH),
+    () => postInfoList.slice(0, page * POST_ITEM_PER_PAGE),
     [page, postInfoList],
   );
 
@@ -42,6 +41,7 @@ function usePostListRender({ postInfoList }: { postInfoList: PostInfo[] }) {
   }, [inView]);
 
   return {
+    page,
     ref,
     filteredFrontMatterList,
   };
