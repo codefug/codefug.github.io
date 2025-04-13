@@ -13,21 +13,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import useOutsideClick from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { PanelLeftClose } from "lucide-react";
-import SidebarButton from "../sidebar/sidebar-button";
 
 export default function AppSidebar() {
-  const { toggleSidebar, state } = useSidebar();
+  const { toggleSidebar } = useSidebar();
   const ref = useRef<HTMLDivElement>(null);
-
-  useOutsideClick(ref, () => {
-    if (state === "expanded") toggleSidebar();
-  });
 
   return (
     <Sidebar ref={ref}>
@@ -51,9 +44,6 @@ export default function AppSidebar() {
                 Codefug
               </div>
             </Link>
-            <SidebarButton>
-              <PanelLeftClose size={20} />
-            </SidebarButton>
           </SidebarGroupLabel>
           <SidebarContent className="group min-h-full px-2">
             <SidebarGroup>
