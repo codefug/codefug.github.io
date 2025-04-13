@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { POST_PATH } from "@/constants/path";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { FrontMatter } from "@/constants/mdx";
 import { Card } from "../ui/card";
@@ -15,18 +14,44 @@ export default function PostCard({
   title,
   id,
 }: PostInfo) {
+  const [isLoading, setIsLoading] = useState(false);
   const linkHref = useMemo(() => POST_PATH + id, [id]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // 미리 링크 리소스 가져오기
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = linkHref;
+    document.head.appendChild(link);
+
+    // 전환 애니메이션 효과
+    window.location.href = linkHref;
+  };
+
   return (
-    <Link href={linkHref}>
+    // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )
+    <a
+      href={linkHref}
+      onClick={handleClick}
+      aria-label={`${title} 포스트 읽기`}
+      rel="bookmark"
+      className={isLoading ? "pointer-events-none opacity-70" : ""}
+    >
       <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
         <Image
-          priority
+          priority={false}
           src={header.teaser}
           alt={title}
           height={208}
           width={0}
           sizes="(max-width: 768px) 100vw, 50vw"
+          loading="lazy"
           className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFdQJ2aSZHpAAAAABJRU5ErkJggg==" // 추가: 단색 플레이스홀더
         />
         <div className="p-5">
           <div className="mb-3 flex items-center justify-between">
@@ -41,6 +66,6 @@ export default function PostCard({
           </p>
         </div>
       </Card>
-    </Link>
+    </a>
   );
 }
