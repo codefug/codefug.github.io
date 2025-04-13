@@ -19,15 +19,15 @@ export default function PostCard({
   return (
     <Link href={linkHref}>
       <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
-        <div className="relative h-52 overflow-hidden">
-          <Image
-            priority
-            src={header.teaser}
-            alt={title}
-            fill
-            className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
-          />
-        </div>
+        <Image
+          priority
+          src={header.teaser}
+          alt={title}
+          height={208}
+          width={0}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
+        />
         <div className="p-5">
           <div className="mb-3 flex items-center justify-between">
             <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-300 text-blue-700 dark:bg-blue-900/30">
