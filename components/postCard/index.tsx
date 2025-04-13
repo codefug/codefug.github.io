@@ -1,7 +1,8 @@
-import { POST_PATH } from "@/constants/path";
-import { useMemo, useState } from "react";
-import Image from "next/image";
 import { FrontMatter } from "@/constants/mdx";
+import { POST_PATH } from "@/constants/path";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useMemo, useState } from "react";
 import { Card } from "../ui/card";
 
 export type PostInfo = { id: string } & FrontMatter;
@@ -16,6 +17,7 @@ export default function PostCard({
 }: PostInfo) {
   const [isLoading, setIsLoading] = useState(false);
   const linkHref = useMemo(() => POST_PATH + id, [id]);
+  const [isShowSkeleton, setIsShowSkeleton] = useState(true);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -41,17 +43,24 @@ export default function PostCard({
       className={isLoading ? "pointer-events-none opacity-70" : ""}
     >
       <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
+        {isShowSkeleton && (
+          <div className="h-52 w-full animate-pulse bg-gray-300" />
+        )}
         <Image
           priority={false}
           src={header.teaser}
           alt={title}
           height={208}
-          width={0}
+          width={208}
           sizes="(max-width: 768px) 100vw, 50vw"
-          loading="lazy"
-          className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
-          placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFdQJ2aSZHpAAAAABJRU5ErkJggg==" // 추가: 단색 플레이스홀더
+          onLoad={() => {
+            setIsShowSkeleton(false);
+          }}
+          placeholder="empty"
+          className={cn(
+            "hidden !h-52 w-full object-cover object-center transition-transform duration-300 hover:scale-105",
+            !isShowSkeleton && "block",
+          )}
         />
         <div className="p-5">
           <div className="mb-3 flex items-center justify-between">
