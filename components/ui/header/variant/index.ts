@@ -10,7 +10,7 @@ const headerVariant = cva(
       },
       isShowVerticalScrollbar: {
         true: "",
-        false: "shadow-md",
+        false: "",
       },
     },
     compoundVariants: [
