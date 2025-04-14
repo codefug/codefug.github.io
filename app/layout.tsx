@@ -46,9 +46,11 @@ export default function RootLayout({
         >
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
-            <main className="min-h-screen w-full">
+            <main className="flex min-h-screen w-full flex-col">
               <Header />
-              <div className="mx-auto max-w-[1400px] px-4">{children}</div>
+              <div className="mx-auto max-w-[1400px] flex-1 px-4">
+                {children}
+              </div>
               <Footer />
             </main>
           </SidebarProvider>
