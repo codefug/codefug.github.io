@@ -22,14 +22,6 @@ export default function PostCard({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // 미리 링크 리소스 가져오기
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.href = linkHref;
-    document.head.appendChild(link);
-
-    // 전환 애니메이션 효과
     window.location.href = linkHref;
   };
 
