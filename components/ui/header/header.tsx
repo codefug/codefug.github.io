@@ -24,7 +24,7 @@ export default function Header() {
   );
   return (
     <header className={cn(headerVariant({ isShow, isShowVerticalScrollbar }))}>
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 py-4">
+      <div className="flex items-center justify-between gap-6 py-4">
         <section className="flex items-center gap-4">
           <SideBarToggleButton />
           <Link
@@ -35,9 +35,8 @@ export default function Header() {
             <Image
               src="/images/main-logo.png"
               alt="logo"
-              height={0}
-              width={0}
-              className="h-7 w-full"
+              height={28}
+              width={28}
               sizes="28px"
             />
             <div className="hidden whitespace-nowrap text-lg font-bold text-black dark:text-white md:block">
