@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://codefug.github.io",
   "scripts": {
-    "generate-mdx": "ts-node scripts/generateMdxMap.mjs",
+    "generate-mdx": "node scripts/generateMdxMap.mjs",
     "prebuild": "npm run generate-mdx",
     "predev": "npm run generate-mdx",
     "dev": "next dev",
