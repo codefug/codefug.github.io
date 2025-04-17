@@ -49,7 +49,7 @@ export default function PostCard({
         />
         <div className="p-5">
           <div className="mb-3 flex items-center justify-between">
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-300 text-blue-700 dark:bg-blue-900/30">
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-white">
               {categories.map((category) => category)}
             </span>
             <span className="text-sm text-gray-500">{date}</span>
