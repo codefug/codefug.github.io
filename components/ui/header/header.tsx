@@ -59,19 +59,36 @@ const HeaderNavigation = memo(function HeaderNavigation() {
 
   return (
     <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
-      {NAVIGATION_ITEMS.map((item) => (
-        <Link
-          href={item.href}
-          passHref
-          key={item.label}
-          className={cn(
-            `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
-            pathName === item.href && "text-black dark:text-white",
-          )}
-        >
-          {item.label}
-        </Link>
-      ))}
+      {NAVIGATION_ITEMS.map((item) => {
+        if (item.label === "Portfolio")
+          return (
+            <a
+              href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
+              target="_blank"
+              key={item.label}
+              className={cn(
+                `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                pathName === item.href && "text-black dark:text-white",
+              )}
+            >
+              {item.label}
+            </a>
+          );
+
+        return (
+          <Link
+            href={item.href}
+            passHref
+            key={item.label}
+            className={cn(
+              `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+              pathName === item.href && "text-black dark:text-white",
+            )}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
     </nav>
   );
 });

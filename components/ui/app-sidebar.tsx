@@ -61,16 +61,29 @@ export default function AppSidebar() {
                 {NAVIGATION_ITEMS.map((item) => (
                   <SidebarMenuItem key={item.label}>
                     <SidebarMenuButton asChild>
-                      <Link
-                        href={item.href}
-                        passHref
-                        className={cn(
-                          `rounded-md px-2 text-gray-400 transition duration-500 ease-in-out hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black hover:dark:text-white group-hover:dark:text-white`,
-                        )}
-                        onClick={toggleSidebar}
-                      >
-                        {item.label}
-                      </Link>
+                      {item.label === "Portfolio" ? (
+                        <a
+                          href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
+                          target="_blank"
+                          key={item.label}
+                          className={cn(
+                            `rounded-md px-2 text-gray-400 transition duration-500 ease-in-out hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black hover:dark:text-white group-hover:dark:text-white`,
+                          )}
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          passHref
+                          className={cn(
+                            `rounded-md px-2 text-gray-400 transition duration-500 ease-in-out hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black hover:dark:text-white group-hover:dark:text-white`,
+                          )}
+                          onClick={toggleSidebar}
+                        >
+                          {item.label}
+                        </Link>
+                      )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
