@@ -14,7 +14,7 @@ export default function BlockHeader({
     <div>
       <h1
         className={cn(
-          "mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100",
+          "mb-4 text-lg font-bold text-gray-900 dark:text-gray-100 md:text-xl",
           className,
         )}
       >
