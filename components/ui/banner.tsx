@@ -1,7 +1,17 @@
-import { POSTS } from "@/constants/path";
+"use client";
+
+import { POST_PATH } from "@/constants/path";
+import { useCallback, useState } from "react";
+import { LucideLoader2 } from "lucide-react";
 import { Button } from "./button";
 
-export default function Banner() {
+export default function Banner({ firstPostId }: { firstPostId: string }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const moveToPost = useCallback(() => {
+    setIsLoading(true);
+    window.location.href = POST_PATH + firstPostId;
+  }, [firstPostId]);
+
   return (
     <figure className="relative mb-12 mt-4 overflow-hidden rounded-xl">
       <div className="flex h-[300px] w-full justify-end rounded-2xl bg-gradient-to-r from-[#1f1d80] to-[#000000]">
@@ -14,11 +24,21 @@ export default function Banner() {
               제가 모르는 누군가가 이 블로그를 보고 지식을 얻고 문제를 해결하고
               더 나은 개발자가 되기를 바랍니다.
             </p>
-            <Button className="md:text-md cursor-pointer whitespace-nowrap bg-black text-sm font-semibold text-white hover:bg-[#2b2b2b]">
-              <a href={POSTS} className="hover:opacity-95">
-                블로그 글 보기
-              </a>
-            </Button>
+            {isLoading ? (
+              <Button
+                onClick={moveToPost}
+                className="md:text-md w-[107px] cursor-pointer whitespace-nowrap bg-black text-sm font-semibold text-white opacity-95 hover:cursor-wait hover:bg-black"
+              >
+                <LucideLoader2 className="animate-spin stroke-[3] text-white" />
+              </Button>
+            ) : (
+              <Button
+                onClick={moveToPost}
+                className="md:text-md w-[107px] cursor-pointer whitespace-nowrap bg-black text-sm font-semibold text-white hover:bg-[#2b2b2b] hover:opacity-95"
+              >
+                최신 글 보기
+              </Button>
+            )}
           </div>
         </div>
       </div>

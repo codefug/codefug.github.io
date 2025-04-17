@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div>
-      <Banner />
+      <Banner firstPostId={totalFrontMatterList[0].id} />
       <section className="mb-2">
         <NewPostSwiperDescription
           cardNumber={10}
