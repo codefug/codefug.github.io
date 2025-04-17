@@ -4,11 +4,12 @@ import Header from "@/components/ui/header/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import ThemeProvider from "@/provider/theme-provider";
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Gothic_A1 } from "next/font/google";
 import "./globals.css";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const gothicA1 = Gothic_A1({
+  variable: "--gothic-a1",
+  weight: "500",
   subsets: ["latin"],
   display: "block",
 });
@@ -37,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistMono.className} antialiased`}>
+      <body className={`${gothicA1.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
