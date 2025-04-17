@@ -29,4 +29,5 @@ jobs:
 
       - name: Deploy 🚀
         run: |
-          npm run deploy
+          touch out/.nojekyll
+          gh-pages -d out --dotfiles
