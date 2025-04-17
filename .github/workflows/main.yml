@@ -30,4 +30,9 @@ jobs:
       - name: Deploy 🚀
         run: |
           touch out/.nojekyll
-          gh-pages -d out --dotfiles
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.ACCESS_TOKEN }}
+          publish_dir: build
