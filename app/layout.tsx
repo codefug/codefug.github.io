@@ -1,11 +1,10 @@
 import AppSidebar from "@/components/ui/app-sidebar";
-import Footer from "@/components/ui/footer";
-import Header from "@/components/ui/header/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import ThemeProvider from "@/provider/theme-provider";
 import type { Metadata } from "next";
 import { Gothic_A1 } from "next/font/google";
 import "./globals.css";
+import Layout from "@/components/layout";
 
 const gothicA1 = Gothic_A1({
   variable: "--gothic-a1",
@@ -47,13 +46,7 @@ export default function RootLayout({
         >
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
-            <main className="flex min-h-screen w-full flex-col">
-              <Header />
-              <div className="mx-auto w-full max-w-[1400px] flex-1 px-4">
-                {children}
-              </div>
-              <Footer />
-            </main>
+            <Layout>{children}</Layout>
           </SidebarProvider>
         </ThemeProvider>
       </body>
