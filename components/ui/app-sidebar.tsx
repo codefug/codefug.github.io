@@ -37,18 +37,18 @@ export default function AppSidebar() {
             className="absolute h-[150px] w-full object-cover"
           />
           <SidebarGroup>
-            <SidebarGroupLabel className="flex justify-center px-4 text-sm font-bold text-white">
-              About Me
+            <SidebarGroupLabel className="mb-2 mt-4 flex justify-center px-4 text-sm font-bold text-white">
+              Codefug
             </SidebarGroupLabel>
             <SidebarGroupContent className="flex min-h-full flex-col items-center px-2">
-              <Avatar className="h-52 w-52">
+              <Avatar className="h-40 w-40">
                 <AvatarImage src="/images/me.jpg" />
                 <AvatarFallback className="group-hover:text-black group-hover:dark:text-white">
-                  Codefug
+                  이승현
                 </AvatarFallback>
               </Avatar>
               <h1 className="mt-4 text-center text-lg font-bold text-gray-400 group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
-                Codefug
+                이승현
               </h1>
               <p className="text-sm text-gray-400 group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
                 Web Frontend Developer
