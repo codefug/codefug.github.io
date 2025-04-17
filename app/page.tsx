@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Banner from "@/components/ui/banner";
 import BlockHeader from "@/components/ui/block-header";
 import getFrontMatterList from "@/lib/posts";
+import { Flame, Notebook } from "lucide-react";
 import { useMemo } from "react";
 
 export default function Home() {
@@ -22,7 +23,14 @@ export default function Home() {
         <PostSwiper cardNumber={10} postInfoList={totalFrontMatterList} />
       </div>
       <div>
-        <BlockHeader title="모든 게시물">
+        <BlockHeader
+          className="mb-7 flex justify-center"
+          title={
+            <span className="flex gap-1">
+              최근 게시물 <Notebook className="text-green-400" />
+            </span>
+          }
+        >
           <PostGallery postInfoList={totalFrontMatterList} />
         </BlockHeader>
       </div>
@@ -72,14 +80,21 @@ function NewPostSwiperDescription({
 
   return (
     <div>
-      <h2 className="mb-2 text-lg font-bold md:text-xl">최신 게시물</h2>
-      <p className="text-sm font-light text-gray-400">최근 연구했던 카테고리</p>
-      <div>
-        {categoryList.map(({ category, id }) => (
-          <Badge variant="outline" key={id} className="mr-1">
-            {category}
-          </Badge>
-        ))}
+      <h2 className="mb-2 flex justify-center gap-1 text-lg font-bold md:text-xl">
+        최신 게시물
+        <Flame className="text-red-500" />
+      </h2>
+      <div className="">
+        <p className="text-sm font-light text-gray-400">
+          최근 연구했던 카테고리
+        </p>
+        <div>
+          {categoryList.map(({ category, id }) => (
+            <Badge variant="outline" key={id} className="mr-1">
+              {category}
+            </Badge>
+          ))}
+        </div>
       </div>
     </div>
   );
