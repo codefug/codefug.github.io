@@ -33,7 +33,7 @@ export default function PostCard({
       rel="bookmark"
       className={cn(isLoading ? "pointer-events-none opacity-70" : "")}
     >
-      <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
+      <Card className="group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
         <Image
           priority={false}
           src={header.teaser}
@@ -44,7 +44,7 @@ export default function PostCard({
           placeholder="blur"
           blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
           className={cn(
-            "!h-52 w-full object-cover object-center transition-transform duration-300 hover:scale-105",
+            "!h-52 w-full object-cover object-center transition-transform duration-300 group-hover:scale-105",
           )}
         />
         <div className="p-5">
