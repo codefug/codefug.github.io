@@ -28,7 +28,7 @@ const PostGallery = memo(function PostGallery({
 export default PostGallery;
 
 function usePostListRender({ postInfoList }: { postInfoList: PostInfo[] }) {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const { ref, inView } = useInView({
     delay: 0,
     threshold: 0.1,

@@ -5,7 +5,7 @@ import grayMatter from "gray-matter";
 
 const postsDirectory = join(process.cwd(), "markdown");
 const folderNames = readdirSync(postsDirectory);
-export const getFrontMatterList = () =>
+const getFrontMatterList = () =>
   folderNames.map((folderName) => {
     const fullPath = join(postsDirectory, folderName, "frontmatter.mdx");
     const fileContents = readFileSync(fullPath, "utf8");
@@ -16,3 +16,5 @@ export const getFrontMatterList = () =>
       ...(matterResult.data as FrontMatter),
     };
   });
+
+export default getFrontMatterList;
