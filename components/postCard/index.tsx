@@ -17,7 +17,6 @@ export default function PostCard({
 }: PostInfo) {
   const [isLoading, setIsLoading] = useState(false);
   const linkHref = useMemo(() => POST_PATH + id, [id]);
-  const [isShowSkeleton, setIsShowSkeleton] = useState(true);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -32,12 +31,9 @@ export default function PostCard({
       onClick={handleClick}
       aria-label={`${title} 포스트 읽기`}
       rel="bookmark"
-      className={isLoading ? "pointer-events-none opacity-70" : ""}
+      className={cn(isLoading ? "pointer-events-none opacity-70" : "")}
     >
       <Card className="cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
-        {isShowSkeleton && (
-          <div className="h-52 w-full animate-pulse bg-gray-300" />
-        )}
         <Image
           priority={false}
           src={header.teaser}
@@ -45,13 +41,10 @@ export default function PostCard({
           height={208}
           width={208}
           sizes="(max-width: 768px) 100vw, 50vw"
-          onLoad={() => {
-            setIsShowSkeleton(false);
-          }}
-          placeholder="empty"
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
           className={cn(
-            "hidden !h-52 w-full object-cover object-center transition-transform duration-300 hover:scale-105",
-            !isShowSkeleton && "block",
+            "!h-52 w-full object-cover object-center transition-transform duration-300 hover:scale-105",
           )}
         />
         <div className="p-5">
