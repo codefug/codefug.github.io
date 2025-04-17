@@ -96,11 +96,15 @@ const HeaderSwitch = memo(function HeaderSwitch() {
 });
 
 const SideBarToggleButton = memo(function SideBarToggleButton() {
-  const { state } = useSidebar();
+  const { isMobile, state } = useSidebar();
+  const isNeedCloseButton = useMemo(
+    () => state === "expanded" && !isMobile,
+    [state, isMobile],
+  );
   return (
     <div className="ml-2">
       <SidebarButton>
-        {state === "expanded" ? (
+        {isNeedCloseButton ? (
           <PanelLeftClose size={20} />
         ) : (
           <PanelLeftOpen size={20} />
