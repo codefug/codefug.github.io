@@ -165,7 +165,8 @@ const useShowFloatingHeader = () => {
       const currentScrollY = window.scrollY;
 
       // 스크롤 방향이 위쪽일 때 (이전 스크롤 위치보다 현재가 작을 때)
-      if (currentScrollY < lastScrollY) setShowFloatingHeader(true);
+      if (currentScrollY < lastScrollY || currentScrollY < 70)
+        setShowFloatingHeader(true);
       else setShowFloatingHeader(false);
 
       setLastScrollY(currentScrollY);
