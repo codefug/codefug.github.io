@@ -22,6 +22,18 @@ jobs:
           node-version: "18"
           cache: "pnpm"
 
+      - uses: actions/cache@v4
+        with:
+          # `yarn`을 사용하여 캐싱 하거나 https://github.com/actions/cache/blob/main/examples.md#node---yarn, actions/setup-node를 사용하여 https://github.com/actions/setup-node 캐싱을 활용할 수 있습니다.
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          # 패키지 또는 소스 파일이 변경될 때마다 새로운 캐시를 생성합니다.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # 소스 파일이 변경되었지만 패키지가 변경되지 않은 경우 이전 캐시에서 다시 빌드합니다.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
       - name: Install and Build 🔧
         run: |
           pnpm install
