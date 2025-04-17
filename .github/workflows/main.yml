@@ -17,6 +17,11 @@ jobs:
         with:
           version: 9.15.4
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "pnpm"
+
       - name: Install and Build 🔧
         run: |
           pnpm install
