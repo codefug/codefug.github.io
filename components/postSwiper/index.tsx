@@ -1,18 +1,15 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { FrontMatter } from "@/constants/mdx";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
 import PostCard from "../postCard";
+import {
+  AppCarouselNext,
+  AppCarouselPrevious,
+} from "../ui/app-carousel-button";
 
 export default function PostSwiper({
   postInfoList,
@@ -21,8 +18,6 @@ export default function PostSwiper({
   postInfoList: FrontMatter[];
   cardNumber: number;
 }) {
-  const prevButtonRef = useRef<HTMLButtonElement>(null);
-  const nextButtonRef = useRef<HTMLButtonElement>(null);
   const filteredPostInfoList = useMemo(
     () => postInfoList.slice(0, cardNumber),
     [postInfoList, cardNumber],
@@ -60,34 +55,8 @@ export default function PostSwiper({
           ),
         )}
       </CarouselContent>
-      <div className="group/next hover:cursor-pointer">
-        <CarouselNext
-          ref={nextButtonRef}
-          className="right-0 h-full w-20 rounded-none border-none bg-transparent group-hover/next:bg-accent group-hover/next:text-accent-foreground"
-        />
-        <ChevronsRight
-          className="absolute -right-1 top-1/2 -translate-y-[50%] duration-300 group-hover/next:right-4 group-hover/next:opacity-50 group-hover/next:transition-opacity"
-          height={80}
-          width={40}
-          onClick={() => {
-            nextButtonRef.current?.click();
-          }}
-        />
-      </div>
-      <div className="group/prev hover:cursor-pointer">
-        <CarouselPrevious
-          ref={prevButtonRef}
-          className="left-0 h-full w-20 rounded-none border-none bg-transparent group-hover/prev:bg-accent group-hover/prev:text-accent-foreground"
-        />
-        <ChevronsLeft
-          className="absolute -left-1 top-1/2 -translate-y-[50%] duration-300 group-hover/prev:left-4 group-hover/prev:opacity-50 group-hover/prev:transition-opacity"
-          width={40}
-          height={80}
-          onClick={() => {
-            prevButtonRef.current?.click();
-          }}
-        />
-      </div>
+      <AppCarouselPrevious />
+      <AppCarouselNext />
     </Carousel>
   );
 }

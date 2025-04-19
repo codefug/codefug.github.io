@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Card } from "../ui/card";
+import { Badge } from "../ui/badge";
 
 export default function PostCard({
   categories,
@@ -47,15 +48,21 @@ export default function PostCard({
         />
         <div className="p-5">
           <div className="mb-3 flex items-center justify-between">
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-white">
-              {categories.map((category) => category)}
-            </span>
-            <span className="text-sm text-gray-500">{date}</span>
+            <div>
+              {categories.map((category) => (
+                <Badge key={category + id} variant="outline">
+                  {category}
+                </Badge>
+              ))}
+            </div>
           </div>
           <h3 className="mb-2 line-clamp-1 text-lg font-bold">{title}</h3>
-          <p className="mb-4 line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
+          <p className="line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
             {excerpt}
           </p>
+        </div>
+        <div className="flex justify-end px-5 pb-5">
+          <time className="text-sm text-gray-500">{date}</time>
         </div>
       </Card>
     </a>

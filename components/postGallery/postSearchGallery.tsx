@@ -12,7 +12,7 @@ import BlockHeader from "../ui/block-header";
 import { Input } from "../ui/input";
 import PostGallery from ".";
 
-export default function PostCategoryGallery({
+export default function PostSearchGallery({
   totalFrontMatterList,
 }: {
   totalFrontMatterList: FrontMatter[];
