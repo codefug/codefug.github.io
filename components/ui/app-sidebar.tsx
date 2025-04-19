@@ -16,7 +16,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import Link, { LinkProps } from "next/link";
 import { AnchorHTMLAttributes, useMemo, useRef } from "react";
 import { FrontMatter } from "@/constants/mdx";
@@ -58,13 +57,7 @@ export default function AppSidebar({
     <Sidebar ref={ref}>
       <ScrollArea className="h-full w-full overflow-y-auto">
         <SidebarContent className="group relative gap-0">
-          <Image
-            src="/images/sidebar-profile-background.jpg"
-            alt="Profile Background"
-            width={300}
-            height={150}
-            className="absolute h-[150px] w-full object-cover"
-          />
+          <div className="absolute h-[150px] w-full bg-primary" />
           <SidebarGroup>
             <SidebarGroupLabel className="mb-2 mt-4 flex justify-center px-4 text-sm font-bold text-gray-400 group-hover:text-white">
               Codefug
