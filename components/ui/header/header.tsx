@@ -3,7 +3,7 @@
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { POST_PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -60,34 +60,52 @@ const HeaderNavigation = memo(function HeaderNavigation() {
   return (
     <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
       {NAVIGATION_ITEMS.map((item) => {
-        if (item.label === "Portfolio")
-          return (
-            <a
-              href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
-              target="_blank"
-              key={item.label}
-              className={cn(
-                `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
-                pathName === item.href && "text-black dark:text-white",
-              )}
-            >
-              {item.label}
-            </a>
-          );
-
-        return (
-          <Link
-            href={item.href}
-            passHref
-            key={item.label}
-            className={cn(
-              `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
-              pathName === item.href && "text-black dark:text-white",
-            )}
-          >
-            {item.label}
-          </Link>
-        );
+        switch (item.label) {
+          case "Portfolio":
+            return (
+              <a
+                href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
+                target="_blank"
+                key={item.label}
+                className={cn(
+                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  pathName === item.href && "text-black dark:text-white",
+                )}
+              >
+                {item.label}
+              </a>
+            );
+          case "About":
+            return (
+              <Link
+                href={item.href}
+                passHref
+                key={item.label}
+                className={cn(
+                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  pathName === item.href && "text-black dark:text-white",
+                )}
+              >
+                {item.label}
+              </Link>
+            );
+          case "Search":
+            return (
+              <Link
+                href={item.href}
+                passHref
+                key={item.label}
+                className={cn(
+                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  pathName === item.href && "text-black dark:text-white",
+                )}
+              >
+                <Search height={20} width={20} className="h-5 w-5" />
+              </Link>
+            );
+          default:
+            throw new Error("올바르지 않은 아이템 입니다 - HeaderNavigation");
+        }
       })}
     </nav>
   );

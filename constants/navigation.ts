@@ -4,11 +4,11 @@ export const NAVIGATION_ITEMS = [
     href: "/portfolio",
   },
   {
-    label: "Categories",
-    href: "/categories",
-  },
-  {
     label: "About",
     href: "/about",
   },
-];
+  {
+    label: "Search",
+    href: "/search",
+  },
+] as const;
