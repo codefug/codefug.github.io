@@ -1,3 +1,8 @@
+import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
+import getFrontMatterList from "@/lib/posts";
+
 export default function Page() {
-  return <div className="pt-20">categories</div>;
+  const totalFrontMatterList = getFrontMatterList();
+
+  return <PostCategoryGallery totalFrontMatterList={totalFrontMatterList} />;
 }

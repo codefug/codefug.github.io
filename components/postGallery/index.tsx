@@ -45,6 +45,10 @@ function usePostListRender({ postInfoList }: { postInfoList: FrontMatter[] }) {
   );
 
   useEffect(() => {
+    setPage(1);
+  }, [postInfoList]);
+
+  useEffect(() => {
     if (inView) setPage((p) => p + 1);
   }, [inView]);
 
