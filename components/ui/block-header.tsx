@@ -14,7 +14,7 @@ export default function BlockHeader({
     <div>
       <h1
         className={cn(
-          "mb-4 text-lg font-bold text-gray-900 dark:text-gray-100 md:text-xl",
+          "mb-7 flex justify-center text-lg font-bold text-gray-900 dark:text-gray-100 md:text-xl",
           className,
         )}
       >

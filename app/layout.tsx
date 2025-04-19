@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Gothic_A1 } from "next/font/google";
 import "./globals.css";
 import Layout from "@/components/layout";
+import getFrontMatterList from "@/lib/posts";
 
 const gothicA1 = Gothic_A1({
   variable: "--gothic-a1",
@@ -35,6 +36,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const totalFrontMatterList = getFrontMatterList();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${gothicA1.className} antialiased`}>
@@ -45,7 +47,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider defaultOpen={false}>
-            <AppSidebar />
+            <AppSidebar totalFrontMatterList={totalFrontMatterList} />
             <Layout>{children}</Layout>
           </SidebarProvider>
         </ThemeProvider>

@@ -3,6 +3,7 @@ import PostSwiper from "@/components/postSwiper";
 import { Badge } from "@/components/ui/badge";
 import Banner from "@/components/ui/banner";
 import BlockHeader from "@/components/ui/block-header";
+import { FrontMatter } from "@/constants/mdx";
 import getFrontMatterList from "@/lib/posts";
 import { Flame, Notebook } from "lucide-react";
 import { useMemo } from "react";
@@ -35,7 +36,7 @@ export default function Home() {
         <BlockHeader
           title={
             <span className="flex gap-1">
-              최근 게시물 <Notebook className="text-green-400" />
+              모든 게시물 <Notebook className="text-green-400" />
             </span>
           }
         >
@@ -50,16 +51,7 @@ function RecentCategoryList({
   totalFrontMatterList,
   cardNumber,
 }: {
-  totalFrontMatterList: {
-    title: string;
-    excerpt: string;
-    categories: string[];
-    date: string;
-    header: {
-      teaser: string;
-    };
-    id: string;
-  }[];
+  totalFrontMatterList: FrontMatter[];
   cardNumber: number;
 }) {
   const filteredPostInfoList = useMemo(

@@ -6,6 +6,7 @@ export type FrontMatter = {
   header: {
     teaser: string;
   };
+  id: string;
 };
 
 export type ParsedFrontMatter = {
@@ -16,4 +17,5 @@ export type ParsedFrontMatter = {
   header: {
     teaser: string;
   };
+  id: string;
 };

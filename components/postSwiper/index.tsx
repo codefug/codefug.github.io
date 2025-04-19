@@ -2,8 +2,8 @@
 
 import { useMemo, useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { FrontMatter } from "@/constants/mdx";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { FrontMatter } from "@/constants/mdx";
 import {
   Carousel,
   CarouselContent,
@@ -14,22 +14,11 @@ import {
 
 import PostCard from "../postCard";
 
-export type PostInfo = { id: string } & FrontMatter;
-
 export default function PostSwiper({
   postInfoList,
   cardNumber,
 }: {
-  postInfoList: {
-    title: string;
-    excerpt: string;
-    categories: string[];
-    date: string;
-    header: {
-      teaser: string;
-    };
-    id: string;
-  }[];
+  postInfoList: FrontMatter[];
   cardNumber: number;
 }) {
   const prevButtonRef = useRef<HTMLButtonElement>(null);
