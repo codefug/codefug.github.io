@@ -66,7 +66,7 @@ export default function AppSidebar({
             className="absolute h-[150px] w-full object-cover"
           />
           <SidebarGroup>
-            <SidebarGroupLabel className="mb-2 mt-4 flex justify-center px-4 text-sm font-bold text-white">
+            <SidebarGroupLabel className="mb-2 mt-4 flex justify-center px-4 text-sm font-bold text-gray-400 group-hover:text-white">
               Codefug
             </SidebarGroupLabel>
             <SidebarGroupContent className="flex min-h-full flex-col items-center px-2">
