@@ -13,7 +13,7 @@ export default function Home() {
 
   return (
     <div>
-      <Banner firstPostId={totalFrontMatterList[0].id} />
+      <Banner firstPostName={totalFrontMatterList[0].id} />
       <section className="mb-2">
         <BlockHeader
           title={

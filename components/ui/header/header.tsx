@@ -1,7 +1,7 @@
 "use client";
 
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { POSTS } from "@/constants/path";
+import { POST_PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
@@ -19,7 +19,7 @@ export default function Header() {
   const { showFloatingHeader: isShow } = useShowFloatingHeader();
   const pathName = usePathname();
   const isShowVerticalScrollbar = useMemo(
-    () => pathName.includes(POSTS),
+    () => pathName.includes(POST_PATH),
     [pathName],
   );
   return (

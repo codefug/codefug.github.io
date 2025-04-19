@@ -21,7 +21,7 @@ import Link, { LinkProps } from "next/link";
 import { AnchorHTMLAttributes, useMemo, useRef } from "react";
 import { FrontMatter } from "@/constants/mdx";
 import { ChevronDown } from "lucide-react";
-import { POSTS } from "@/constants/path";
+import { POST_PATH } from "@/constants/path";
 import { ScrollArea } from "./scroll-area";
 import {
   Collapsible,
@@ -153,7 +153,7 @@ function CollapsiblePostList({
             {frontMatterList.map((frontMatter) => (
               <SidebarAnchorButton
                 navType="a"
-                href={`${POSTS}/${frontMatter.title}`}
+                href={POST_PATH + frontMatter.id}
                 key={frontMatter.id}
                 className="w-full text-center"
               >
