@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Card } from "../ui/card";
 
-export type PostInfo = { id: string } & FrontMatter;
-
 export default function PostCard({
   categories,
   date,
@@ -14,7 +12,7 @@ export default function PostCard({
   header,
   title,
   id,
-}: PostInfo) {
+}: FrontMatter) {
   const [isLoading, setIsLoading] = useState(false);
   const linkHref = useMemo(() => POST_PATH + id, [id]);
 

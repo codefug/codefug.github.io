@@ -4,12 +4,13 @@ import { POST_ITEM_PER_PAGE } from "@/constants/post";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Loader2Icon } from "lucide-react";
-import PostCard, { PostInfo } from "../postCard";
+import { FrontMatter } from "@/constants/mdx";
+import PostCard from "../postCard";
 
 const PostGallery = memo(function PostGallery({
   postInfoList,
 }: {
-  postInfoList: PostInfo[];
+  postInfoList: FrontMatter[];
 }) {
   const { filteredFrontMatterList, ref, page } = usePostListRender({
     postInfoList,
@@ -17,7 +18,7 @@ const PostGallery = memo(function PostGallery({
   return (
     <>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredFrontMatterList.map((postInfo: PostInfo) => (
+        {filteredFrontMatterList.map((postInfo) => (
           <PostCard key={postInfo.id} {...postInfo} />
         ))}
       </div>
@@ -32,7 +33,7 @@ const PostGallery = memo(function PostGallery({
 
 export default PostGallery;
 
-function usePostListRender({ postInfoList }: { postInfoList: PostInfo[] }) {
+function usePostListRender({ postInfoList }: { postInfoList: FrontMatter[] }) {
   const [page, setPage] = useState(1);
   const { ref, inView } = useInView({
     rootMargin: "300px 0px",
