@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useRef } from "react";
 import { CarouselNext, CarouselPrevious } from "./carousel";

@@ -1,6 +1,6 @@
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
-import { Badge } from "@/components/ui/badge";
+import PostCategorySwiper from "@/components/postSwiper/postCategorySwiper";
 import Banner from "@/components/ui/banner";
 import BlockHeader from "@/components/ui/block-header";
 import { FrontMatter } from "@/constants/mdx";
@@ -65,15 +65,9 @@ function RecentCategoryList({
   );
 
   return (
-    <div className="">
+    <div>
       <p className="text-sm font-light text-gray-400">최근 연구했던 카테고리</p>
-      <div>
-        {categoryList.map(({ category, id }) => (
-          <Badge variant="outline" key={category + id} className="mr-1">
-            {category}
-          </Badge>
-        ))}
-      </div>
+      <PostCategorySwiper categoryList={categoryList} />
     </div>
   );
 }
