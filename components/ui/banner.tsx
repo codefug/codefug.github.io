@@ -5,12 +5,12 @@ import { useCallback, useState } from "react";
 import { LucideLoader2 } from "lucide-react";
 import { Button } from "./button";
 
-export default function Banner({ firstPostId }: { firstPostId: string }) {
+export default function Banner({ firstPostName }: { firstPostName: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const moveToPost = useCallback(() => {
     setIsLoading(true);
-    window.location.href = POST_PATH + firstPostId;
-  }, [firstPostId]);
+    window.location.href = POST_PATH + firstPostName;
+  }, [firstPostName]);
 
   return (
     <figure className="relative mb-12 mt-4 overflow-hidden rounded-xl">
