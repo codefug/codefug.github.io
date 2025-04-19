@@ -14,17 +14,25 @@ export default function Home() {
     <div>
       <Banner firstPostId={totalFrontMatterList[0].id} />
       <section className="mb-2">
-        <NewPostSwiperDescription
-          cardNumber={10}
-          totalFrontMatterList={totalFrontMatterList}
-        />
+        <BlockHeader
+          title={
+            <span className="flex gap-1">
+              최신 게시물
+              <Flame className="text-red-500" />
+            </span>
+          }
+        >
+          <RecentCategoryList
+            cardNumber={10}
+            totalFrontMatterList={totalFrontMatterList}
+          />
+        </BlockHeader>
       </section>
       <div className="mb-14 rounded-lg py-3">
         <PostSwiper cardNumber={10} postInfoList={totalFrontMatterList} />
       </div>
       <div>
         <BlockHeader
-          className="mb-7 flex justify-center"
           title={
             <span className="flex gap-1">
               최근 게시물 <Notebook className="text-green-400" />
@@ -38,7 +46,7 @@ export default function Home() {
   );
 }
 
-function NewPostSwiperDescription({
+function RecentCategoryList({
   totalFrontMatterList,
   cardNumber,
 }: {
@@ -79,22 +87,14 @@ function NewPostSwiperDescription({
   }, [filteredPostInfoList]);
 
   return (
-    <div>
-      <h2 className="mb-2 flex justify-center gap-1 text-lg font-bold md:text-xl">
-        최신 게시물
-        <Flame className="text-red-500" />
-      </h2>
-      <div className="">
-        <p className="text-sm font-light text-gray-400">
-          최근 연구했던 카테고리
-        </p>
-        <div>
-          {categoryList.map(({ category, id }) => (
-            <Badge variant="outline" key={id} className="mr-1">
-              {category}
-            </Badge>
-          ))}
-        </div>
+    <div className="">
+      <p className="text-sm font-light text-gray-400">최근 연구했던 카테고리</p>
+      <div>
+        {categoryList.map(({ category, id }) => (
+          <Badge variant="outline" key={id} className="mr-1">
+            {category}
+          </Badge>
+        ))}
       </div>
     </div>
   );
