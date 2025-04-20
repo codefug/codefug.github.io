@@ -1,9 +1,12 @@
 "use client";
 
 import useIntersectionObserver from "@/hooks/use-interception";
+import useOutsideClick from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 
 function getHeadingStyles(level: number, isActive: boolean) {
   // 기본 스타일 - 모든 레벨에 적용
@@ -43,37 +46,63 @@ export default function MenuList({
     id: string;
   }[];
 }) {
+  const menuListRef = useRef<HTMLDivElement>(null);
+  const [isShow, setIsShow] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useIntersectionObserver(setActiveId, activeId, headings);
+
+  const handleShowMenuList = useCallback(() => {
+    setIsShow(true);
+  }, []);
+
+  const handleHideMenuList = useCallback(() => {
+    setIsShow(false);
+  }, []);
+
+  useOutsideClick(menuListRef, handleHideMenuList);
 
   if (!headings.length) return null;
 
   return (
-    <div className="fixed right-0 top-24 hidden lg:block">
-      <div className="rounded-lg border bg-card p-4 shadow-sm">
-        <h4 className="mb-3 text-sm font-medium text-foreground">목차</h4>
-        <nav className="max-h-[80vh] space-y-0.5 overflow-auto pr-2">
-          {headings.map((heading) => (
-            <Link
-              href={`#${heading.id}`}
-              key={heading.id}
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector(`#${heading.id}`)?.scrollIntoView({
-                  behavior: "smooth",
-                });
-              }}
-              className={getHeadingStyles(
-                heading.level,
-                activeId === heading.id,
-              )}
-            >
-              {heading.text}
-            </Link>
-          ))}
-        </nav>
+    <>
+      <button
+        className="fixed right-0 top-1/2 block lg:hidden"
+        onClick={handleShowMenuList}
+      >
+        <ChevronLeft className="h-6 w-6 text-muted-foreground" />
+      </button>
+      <div
+        ref={menuListRef}
+        className={cn(
+          "fixed right-0 top-24 hidden lg:block",
+          isShow && "block",
+        )}
+      >
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
+          <button className="lg:hidden" onClick={handleHideMenuList}>
+            <X className="absolute right-4 top-4 h-5 w-5 cursor-pointer text-muted-foreground" />
+          </button>
+          <h4 className="mb-3 mt-0 text-sm font-medium text-foreground">
+            목차
+          </h4>
+          <nav className="max-h-[60vh] space-y-0.5 overflow-auto pr-2">
+            {headings.map((heading) => (
+              <Link
+                href={`${pathname}#${heading.id}`}
+                key={heading.id}
+                className={getHeadingStyles(
+                  heading.level,
+                  activeId === heading.id,
+                )}
+              >
+                {heading.text}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
