@@ -35,7 +35,21 @@ export default function PostCategoryGallery({
       <h2 className="mb-2 text-sm font-light text-gray-400">태그 목록</h2>
       <Carousel className="mb-4 px-10">
         <CarouselContent>
-          {categoryList.map(({ category, id }) => (
+          <CarouselItem className="basis-auto">
+            <button
+              onClick={() => {
+                setValue("");
+              }}
+            >
+              <Badge
+                className="h-8 text-sm"
+                variant={value === "" ? "default" : "outline"}
+              >
+                전체({totalFrontMatterList.length})
+              </Badge>
+            </button>
+          </CarouselItem>
+          {categoryList.map(({ category, id, total }) => (
             <CarouselItem key={id + category} className="basis-auto">
               <button
                 onClick={() => {
@@ -46,7 +60,7 @@ export default function PostCategoryGallery({
                   className="h-8 text-sm"
                   variant={category === value ? "default" : "outline"}
                 >
-                  {category}
+                  {category}({total})
                 </Badge>
               </button>
             </CarouselItem>
