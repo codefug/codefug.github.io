@@ -1,0 +1,188 @@
+---
+title: "Fandom-k 프로젝트 회고2"
+excerpt: "fetch, scroll to Top, infinite scroll 라이브러리 제거"
+toc: true
+toc_sticky: true
+categories:
+  - fandomk
+last_modified_at: 2024-05-19T23:00:00
+header:
+  teaser: /assets/images/2024-05-19/fetch.png
+---
+## <mark style="background: #FFB86CA6;">fetch</mark>
+
+### <mark style="background: #FFF3A3A6;">투표를 하기 위한 POST 요청</mark>
+
+ setState의 비동기 호출
+
+setState는 비동기로 호출되기 때문에(setState 호출이 비동기인 거임, setState 자체는 동기 함수이다. https://velog.io/@jay/setStateisnotasync ) fetch에 state를 담아서 전달할 때 이전 state가 들어가는 경우가 발생할 수 있다. 이때 필요한 게 useEffect이다.
+
+```jsx	
+	const [id, setId] = useState(false);
+	let idolId = false;
+
+	const handleClick = (e) => {
+		if (!idolId) return;
+		setCredit(credit - 1000);
+		wrappedFunction(idolId);
+	};
+
+	useEffect(() => {
+		if (id !== false) {
+			idolId = id;
+		}
+	}, [id]);
+```
+
+wrappedFunction에 fetch가 들어가 있다. fetch에 state인 id를 그대로 전달하게 되면 setId가 바뀐지 아닌지 모르는 상태에서 id가 전달되기 때문에 로직이 꼬일 수 있다.
+
+이때 id가 바뀌면 변수 하나가 바뀐다고 해놓고 handler에는 해당 변수를 넣는 식으로 비동기 함수가 처리완료 된 state를 얻을 수 있다.
+
+리액트에서는 가상돔에서의 변경사항들을 한번에 보내는 batching이라는 방법을 사용하는데 한번에 보내기 전에 fetch를 보내면서 에러가 났었다. 
+
+useEffect로 id에따라서 idolId가 갱신되는 식으로 sideEffect처리를 해주면 이를 해결하고 바뀐 Id로 fetch요청을 보낼 수 있다. 
+
+**fetch에서 POST를 보낼 때 header에 존재하는 Content-Type은 실제 보내는 데이터의 Type과 일치해야 한다.** 
+```js
+export async function postVotes(Id) {
+	const URL = `${BASE_URL}/votes`;
+	const response = await fetch(URL, {
+		method: "POST",
+		mode: "cors",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ idolId: +Id }),
+	});
+	return response.json();
+}
+```
+<img src="https://codefug.github.io/assets/images/2024-05-19/requestheader.png" class="full">
+
+### <mark style="background: #FFF3A3A6;">Trouble Shooting</mark>
+
+1. setter와 state 무한 루프
+
+네트워크 처리를 할 때 관련 state를 정의하는 함수에 해당 state의 setter함수를 같은 스코프에 넣을 경우에 setter가 돌아가면서 state를 바꾸고 다시 렌더링 되는 식으로 무한 루프가 발생할 수 있다.
+
+```jsx
+	const [status, setStatus] = useState({
+		isLoading: true,
+		errorMessage: null,
+	});
+	const wrappedFunction = async (...args) => {
+		try {
+			setStatus((prevStatus) => ({
+				...prevStatus,
+				isLoading: true,
+				errorMessage: null,
+			}));
+			return await funcAsync(...args);
+		} catch (error) {
+			setStatus((prevStatus) => ({
+				...prevStatus,
+				errorMessage: error,
+			}));
+		} finally {
+			setStatus((prevStatus) => ({
+				...prevStatus,
+				isLoading: false,
+			}));
+		}
+	};
+```
+
+이것 뿐만 아니라 그냥 일단 state가 돌아가고 있는 곳에 fetch처리를 하면 계속 fetch를 하게 되서 오류가 발생한다. useEffect를 이용해서 deps에 따라서만 fetch를 호출하도록 해준다.
+
+```jsx
+useEffect(() => {
+		const fetchData = async () => {
+			const data = await wrappedFunction({ gender });
+			console.log(data);
+		};
+		fetchData();
+	}, [gender]);
+```
+
+2. useEffect로 인한 fetch 중복
+
+1번과 얻은 지식은 비슷했다.
+
+useEffect는 렌더링마다 cleanup > setup > cleanup 로직을 갖는데 development환경에서는 2번을 더하게 된다.
+
+이번에 inView deps인 useEffect에 fetch를 넣고 다른 곳에서도  넣었더니 기본 4번 fetch에 첫 화면에 interception observer api도 작동하게끔 로직을 짜서 fetch를 8번 보내버렸다.  <s>대참사가 벌여지며 컴퓨터가 꺼졌었다 하하..</s>
+
+useEffect는 deps가 있어도 첫 렌더링 때 실행되기 때문에 useEffect에 들어간 fetch는 같은 로직에 다른 deps일경우 둘을 합쳐서 한번만 쓰도록 해야 한다.
+
+## <mark style="background: #FFB86CA6;">scroll to Top</mark>
+
+페이지 이동시 router를 사용하게 되는데 이때 router의 기본 동작이 브라우저의 기본 동작을 막기 때문에 스크롤 위치를 따로 처리하기 힘들게 된다.
+
+또한 React는 기본적으로 SPA 특성을 가지고 있어 페이지가 직접 바뀌는 것이 아니라 JS로 페이지의 일부만 변경하기 때문에 단일 페이지가 변화하는 방식이다. 따라서 스크롤 위치가 그대로인 것은 어떻게 보면 당연하다.
+
+```jsx
+// ScrollToTop.js
+
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+export default function ScrollToTop(props) {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return <>{props.children}</>;
+}
+```
+
+코드로 위와 같이 해결한다.
+
+useLocation 훅으로 현재 위치를 가져온 후에 useEffect로 현재위치가 변경되면 sideEffect로 window.scrollTo로 상단으로 올린다.
+
+## <mark style="background: #FFB86CA6;">useInview 제거</mark>
+
+팀원 중에 라이브러리 없이 순수 interception observer API를 사용해서 infinite scroll을 구현해보자는 의견이 있었다.
+
+useInView를 기존에 사용했기 때문에 useInView를 interception observer API로 구현하는 방법을 찾아서 구현하였다.
+
+```jsx
+import { useEffect, useRef, useState } from "react";
+  
+export default function useCustomInView(option) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([{ isIntersecting }]) => {
+        setInView(isIntersecting);
+      },
+      { ...option },
+    );
+  
+    if (ref.current && ref.current instanceof Element) {
+      observer.observe(ref.current);
+    }
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, [option]);
+  
+  return { ref, inView };
+}
+```
+
+useInview와 똑같이 ref와 inView를 받기 때문에 기존 코드에서 useInView를 useCustomInView로 바꾸는 작업 이외에는 추가 작업이 없었다.
+
+<details>
+<summary>기타 구현 지식</summary>
+svg component를 사용해서 svg 타입 이미지를 쉽게 커스터마이징 할 수 있다.
+svgr 사이트를 통해서 svg를 컴포넌트로 변환하고 export로 받아오면 된다.
+</details>
+
+>
+> 코드잇 프로젝트 진행 중에 겪은 경험들입니다. 
+> 
+> 문제가 되는 부분이 있다고 요청 주시면 삭제하겠습니다.
+> 
+> 감사합니다.
+> 

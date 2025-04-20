@@ -1,0 +1,238 @@
+---
+title: "TS는 왜 쓸까 (위대한 TS)"
+excerpt: "JS를 완벽하게 하기 위한 여정"
+toc: true
+toc_sticky: true
+categories:
+  - typescript
+last_modified_at: 2024-05-22T08:00:00
+header:
+  teaser: /assets/images/Logo/TS.png
+---
+
+## 이 글을 쓰는 이유
+
+기술을 사용할 때는 항상 이유가 있어야 한다.
+
+그냥 기술을 갖다 박는건 이제 gpt가 더 잘하기 때문에 항상 `왜`에 집중해보자.
+
+FE 환경에서는 TS가 이제는 또 하나의 언어처럼 자리 잡아 순수 JS보다도 더 많이 쓰고 있는 상황인데 
+
+그냥 사용하기 보다는 `왜 사용하는가` 에 집중하는 글로 정리를 해보고자 한다.
+
+## JS의 특징들
+
+JS는 특이한 특징을 가지고 있다.
+
+여러 특징들이 복합적으로 합쳐져서 불편함을 만드는데 그런 특징들만 
+
+간단하게 설명해보자면 다음과 같다.
+
+### 1. JS에서 자주 쓰는 자료형들
+
+
+| 변수 선언 방법 | 스코프 범위 | 재할당 가능 여부 | hoisting 여부      | 중복 선언 가능 여부   |
+| -------------- | ----------- | ---------------- | ------------------ | --------------------- |
+| var            | 함수 스코프 | 가능             | o                  | 가능                  |
+| let            | 블록 스코프 | 가능             | x (ReferenceError) | 불가능 (Syntax Error) |
+| const          | 블록 스코프 | 불가능           | x (ReferenceError) | 불가능 (Syntax Error) |
+
+예전 코드나 바벨로 변환된 코드에서 자주 보이는 var라는 자료형이 있다.
+
+실행 컨텍스트의 EnvironmentRecord가 함수 선언문, 변수명 등을 실행전에 등록시키는 걸 Hoisting이라는 개념으로 나타내는데 (실제 엔진에서 변환하는 것이 아니라 이론적으로 만든 개념이다.) 코드가 진행됨에 따라 int에서 float, string 등으로 변할 수 있는 JS 문법이다. (<s>JS스러운 문법</s>)
+
+다른 정적타입 언어(C, Java, Kotlin, C# ...)들은 다양한 자료형으로 먼저 지정을 하고 해당 자료형이 아닌 데이터를 할당했을 때 오류를 내기 때문에 유지보수를 생각하지 않으면 JS가 편할 수도 있지만 규모가 커지고 한번 짠 코드를 확장, 수정 해야되는 경우가 생기게 되면 정적 타입의 이러한 특징이 절실해진다.
+
+### 2. 필요 이상으로 자유로움
+
+함수 내의 this를 개선하기 위해 화살표 함수를 만들고 이를 통해 부가적으로 호이스팅을 방지하면서 (화살표 함수는 함수 선언문이 아니기 때문에) 불필요한 자유로움을 해결하기 위한 많은 진화가 있었지만 여전히 너무 자유로운 것이 안정성에서는 단점으로 작용한다.
+
+### 3. 개발자도 쓸 수 있는 `undefined`
+
+JS엔진은 실행컨텍스트에서 데이터가 할당되지 않은 변수명을 사용해야할 때 `undefined`로 자동으로 만들고 출력시킨다. 
+
+`null`은 개발자가 만든 `비어있다` 는 자료형이고 `undefined`는 JS엔진이 만든 `비어있다` 는 자료형으로 전통처럼 남아있지만 그렇다고 개발자가 `undefined`를 명시했다고 오류를 출력하진 않는다.
+<s>심지어 null은 내부적으로 Object 자료형으로 취급됨.</s>
+
+이것 또한 작성할 때는 편할 수 있지만 추후에 유지보수시 어디가 틀렸는지 눈으로 추적해야되는 일이 생길 수도 있다. <s>왜 됨? 왜 안됨?</s>
+
+사실 위의 것들이 있다고 해도 실행되기 전에 이 모든 것들을 검사해서 개발자가 실행 전에 코드를 검사할 수 있다면 상관 없는 일이다. 결국 핵심 문제는 규격에 맞지 않은 자유로움을 가지고도 이를 처리하는 장치가 없다시피 하다는 것이다.
+
+그래서 이를 해결하기 위한, 이것들을 처리하기 위한 장치를 만들게 된다.
+
+## TS의 등장
+
+기존 JS와 문법은 공유하면서 여기에 정적인 타입을 넣고 이를 검사하는 장치가 탄생하게 된다.
+
+## TS 작동 방식
+
+> TS >tsc (컴파일러)로 변환 > JS > JS 실행 (node 환경)
+
+tsc는 두가지 역할을 하는데 하나는 이전에 말했던 `변환` 이고 다른 하나는 타입 검사이다.
+(타입 검사에 통과 못해도 JS로 변환은 된다.)
+
+<details>
+<summary>참고</summary>
+ts를 온전히 돌릴 수 있는 deno, Bun 등의 환경이 있지만 아직 대중화되지 않았다.
+</details>
+
+## 실제 몸으로 느낀 장점
+
+### API에서 받은 데이터의 자료형 지정
+
+보통 정적 타입 언어를 사용했던 백엔드라면 export 시 데이터 내부의 타입들은 지정되어 있다.
+
+```json
+{
+  "totalCount": 0,
+  "list": [
+    {
+      "updatedAt": "2024-06-05T04:30:04.759Z",
+      "createdAt": "2024-06-05T04:30:04.759Z",
+      "likeCount": 0,
+      "writer": {
+        "nickname": "닉네임",
+        "id": 1
+      },
+      "image": "string",
+      "content": "게시글 내용입니다.",
+      "title": "게시글 제목입니다.",
+      "id": 1
+    }
+  ]
+}
+```
+
+문제는 위의 데이터를 fetch로 받아서 변수에 놓을 때 const로 객체 자체의 변경(메모리 공간 고정)은 가능하지만 그 객체 내부 프로퍼티의 변경은 불가능하다는 것이다.
+
+다음과 같은 참사가 날 수 있다.
+
+```js
+const Article = {
+  "totalCount": 0,
+  "list": [
+    {
+      "updatedAt": "2024-06-05T04:30:04.759Z",
+      "createdAt": "2024-06-05T04:30:04.759Z",
+      "likeCount": 0,
+      "writer": {
+        "nickname": "닉네임",
+        "id": 1
+      },
+      "image": "string",
+      "content": "게시글 내용입니다.",
+      "title": "게시글 제목입니다.",
+      "id": 1
+    }
+  ]
+}
+//...
+Article.id='수정이지롱'
+//...
+console.log(Article.id) // '수정이지롱'으로 number에서 string으로 자료형 변경
+```
+
+짧은 코드라면 위 같은 실수는 안하겠지만 코드가 길어질수록 휴먼 에러는 반드시 발생하기에 이를 방지해야 한다.
+
+TS에서는 이 문제를 간단하게 해결한다.
+
+TS에서는 fetch로 받아온 데이터의 자료형을 지정한다.
+
+이를 통해 위의 예시를 그대로 해보면 다음과 같다.
+
+```ts
+type Article = {
+  id: number;
+  title: string;
+  content: string;
+  image: string | null;
+  likeCount: number;
+  createdAt: string;
+  updatedAt: string;
+  writer: {
+    id: number;
+    nickname: string;
+  };
+};
+
+const article:Article = {
+    "updatedAt": "2024-06-05T04:30:04.759Z",
+    "createdAt": "2024-06-05T04:30:04.759Z",
+    "likeCount": 0,
+    "writer": {
+    "nickname": "닉네임",
+    "id": 1
+    },
+    "image": "string",
+    "content": "게시글 내용입니다.",
+    "title": "게시글 제목입니다.",
+    "id": 1
+}
+
+article.id='수정이지롱'
+// Type 'string' is not assignable to type 'number'.
+```
+
+위처럼 TS는 id가 원래 number인데 string이 들어갔다는 경고문과 함께 에러를 찍어주며 전자의 문제를 해결한다.
+
+### 문법 오류 설명
+
+```tsx
+const [images, setImages] = useState<string[]>([]);
+// ...
+const handleFileSelect = () => {
+    if (fileRef?.current?.files == null) {
+      return;
+    }
+    const newFile = Array.from(fileRef.current.files).map((file) =>
+      URL.createObjectURL(file)
+    );
+    setImages((prevImages) => [...prevImages, newFile]);
+  };
+```
+
+위 코드는 input type="file" 을 리액트에서 useRef를 이용해서 참조하여 값을 받은 후 URL.createObjectURL(file)를 이용하여 FakePath를 진짜 url로 변경, 그 이후 preview를 보여주는 로직이다.
+
+setImages에 들어가는 값에는 spread 연산자를 이용하여 prevImages를 넣고 새로운 File도 넣고 있다.
+
+**여기서 문제점은 무엇일까???**
+
+바로 newFile도 spread로 분해해야 했던 것이다.
+
+만약 js환경이었다면 이러한 오류를 표시하지 않고 넘어갔을 것이다. 실제 ts는 다음과 같은 오류를 보여준다.
+
+>
+> Argument of type '(prevImages: string[]) => (string | string[])[]' is not assignable to parameter of type `'SetStateAction<string[]>'`.
+  Type '(prevImages: string[]) => (string | string[])[]' is not assignable to type '(prevState: string[]) => string[]'.
+    Type '(string | string[])[]' is not assignable to type 'string[]'.
+      Type 'string | string[]' is not assignable to type 'string'.
+        Type 'string[]' is not assignable to type 'string'.
+>
+
+엄청 길지만 간단하다. (string | string[])[] (string 이중 배열이거나 string 배열) 을 넣었지만 이는 `setStateAction<string[]>`와 맞지 않는다는 것. 이를 통해 (string[])[] 부분이 잘못되었다는 걸 알 수 있다.
+
+```tsx
+  const handleFileSelect = () => {
+    if (fileRef?.current?.files == null) {
+      return;
+    }
+    const newFile = Array.from(fileRef.current.files).map((v) =>
+      URL.createObjectURL(v)
+    );
+    setImages((prevImages) => [...prevImages, ...newFile]);
+  };
+```
+
+위와 같이 수정하면 해결할 수 있다.
+
+사실 이건 일부에 불과하다. 사용하면서 느낀 것은 문법적으로 자유로운 게 늘 좋지는 않다는 것이다. Type을 지정하거나 Interface 상속 혹은 Key type을 설정하면서 초반에 시간을 많이 뺏기기도 하였으나 한번 타입을 지정하고 코드를 진행하면서 휴먼 에러가 발생할 뻔한 곳을 미리 처리하는 모습을 보았고 이래서 쓰는구나 생각했다.
+
+결론적으로 JS 생태계는 TS를 통해 JS가 갖고 있는 스크립트 언어의 단점을 어느정도 극복한 것 같다.
+
+>
+> TS를 입문하면서 알게된 지식들, 감탄하면서 본 것들 정리입니다. 감탄할 때마다 내용을 조금씩 보정해보겠습니다.
+> 
+> 잘못된 정보가 있거나 더 알면 좋은 정보들이 있다면 댓글로 적어주세요
+> 
+> 감사합니다.
+> 
