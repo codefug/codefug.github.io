@@ -1,6 +1,6 @@
 import { ParsedFrontMatter } from "@/constants/mdx";
 import Image from "next/image";
-import { CalendarDays, Tag, Clock } from "lucide-react";
+import { CalendarDays, Tag } from "lucide-react";
 import { Badge } from "./badge";
 
 export default function PostHeader({
@@ -49,18 +49,14 @@ export default function PostHeader({
 
       {/* 포스트 메타데이터 */}
       <div className="mb-6 space-y-4">
-        <h1 className="font-gothicA1 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl md:text-5xl">
+        <h1 className="mb-0 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl md:text-5xl">
           {title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-end gap-4 text-sm text-gray-600 dark:text-gray-400">
           <div className="flex items-center">
             <CalendarDays className="mr-2 h-4 w-4" />
             <time dateTime={date}>{date}</time>
-          </div>
-          <div className="flex items-center">
-            <Clock className="mr-2 h-4 w-4" />
-            <span>{Math.ceil(excerpt.length / 100)} min read</span>
           </div>
         </div>
 
