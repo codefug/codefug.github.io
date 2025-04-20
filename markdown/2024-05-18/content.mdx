@@ -10,7 +10,7 @@ CICD : Netlify와 GithubAction을 통해서 PR event에 반응하여 자동 배�
 
 ### <mark style={{background: "#FFB86CA6"}}>기간별 업무</mark>
 
-<img src="/images/2024-05-18/plan.png" />
+<img src="/images/2024-05-18/plan.png" alt="plan" />
 
 ### <mark style={{background: "#FFB86CA6"}}>폴더 구조</mark>
 
@@ -166,7 +166,7 @@ useEffect로 inView를 감지하여 내부적으로 state를 통해 데이터가
 
 **1. Event Bubbling으로 인해서 특정 부분 자식요소 클릭시 부모 요소를 클릭하지 않았던 문제**
 
-<img src="/images/2024-05-18/image-1.png" />
+<img src="/images/2024-05-18/image-1.png" alt="event bubbling" />
 
 Event가 요소가 처음 발생한 target을 찍으려면 currentTarget이라는 Event Property를 사용해서 해결하였다.
 
@@ -188,7 +188,10 @@ infinite scroll을 생각해보면 inView가 보일때 true, 다음 데이터를
 
 #### <mark style={{background: "#BBFABBA6"}}>결과</mark>
 
-<img src="/images/2024-05-18/fandom-k-infinite-scroll.gif" />
+<img
+  src="/images/2024-05-18/fandom-k-infinite-scroll.gif"
+  alt="fandom-k infinite scroll"
+/>
 
 ### <mark style={{background: "#FFF3A3A6"}}>skeleton</mark>
 
@@ -286,7 +289,7 @@ export default function MonthChartList({ gender, isactive }) {
 
 #### <mark style={{background: "#BBFABBA6"}}>결과</mark>
 
-<img src="/images/2024-05-18/fandom-k-skeleton.gif" />
+<img src="/images/2024-05-18/fandom-k-skeleton.gif" alt="fandom-k skeleton" />
 
 #### <mark style={{background: "#BBFABBA6"}}>Trouble Shooting</mark>
 
