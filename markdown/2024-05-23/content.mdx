@@ -1,60 +1,55 @@
----
-title: "리액트는 왜 쓸까"
-excerpt: "리액트 과거, 현재, 미래"
-toc: true
-toc_sticky: true
-categories:
-  - react
-last_modified_at: 2024-05-23T18:00:00
-header:
-  teaser: /assets/images/Logo/reactdeepdive.jpg
----
-
-<img src="https://codefug.github.io/assets/images/2024-05-23/Pastedimage20240523085413.png" class="full" />
+<img src="/images/2024-05-23/Pastedimage20240523085413.png" className="full" />
 
 위 사진은 2023년 기준 stackoverflow에서 제공하는 most common web tech Chart이다.
 
 전자정부 프레임워크 표준으로도 들어간 리액트는 2024년에도 여전히 가장 흔한 프레임워크로 자리 잡고 있다.
 
-## <mark style="background: #FFB86CA6;">개발자들이 리액트를 선호하는 이유들</mark>
+## <mark style={{background:"#FFB86CA6"}}>개발자들이 리액트를 선호하는 이유들</mark>
 
-### <mark style="background: #FFF3A3A6;">1. 명시적 상태 변경</mark>
-   리액트는 단방향 바인딩만을 지원한다. 이는 데이터가 한쪽으로만 흐른다는 것이다. (Angular는 양방향이라고 한다.)
-   큐모가 커질수록 상태 변화를 명시적으로 일으키는 함수만 찾으면 되는 단방향 바인딩이 유리하다.
+### <mark style={{background:"#FFF3A3A6"}}>1. 명시적 상태 변경</mark>
+
+리액트는 단방향 바인딩만을 지원한다. 이는 데이터가 한쪽으로만 흐른다는 것이다. (Angular는 양방향이라고 한다.)
+큐모가 커질수록 상태 변화를 명시적으로 일으키는 함수만 찾으면 되는 단방향 바인딩이 유리하다.
+
 ```jsx
 	function App {
 		const [name, setName] = useState('')
-	// name이 변경되는 이유는 setName이 호출될 때 뿐이기 때문에 name이 바뀌면 setName 로직만 들여다 보면 된다. 
+	// name이 변경되는 이유는 setName이 호출될 때 뿐이기 때문에 name이 바뀌면 setName 로직만 들여다 보면 된다.
 		function onChange(e){
 			setName(e.target.value)
 		}
-	
+
 		return <input value={name} onChange={onChange}/>
 	}
 ```
 
-### <mark style="background: #FFF3A3A6;">2. JSX (JavaScript XML)</mark>
-   HTML에 JS문법을 더한 리액트에서 사용하는 형태
+### <mark style={{background:"#FFF3A3A6"}}>2. JSX (JavaScript XML)</mark>
+
+HTML에 JS문법을 더한 리액트에서 사용하는 형태
+
 ```jsx
-   {condition ? <div>condition이 true일때만 렌더링.</div> : null}
+{
+  condition ? <div>condition이 true일때만 렌더링.</div> : null;
+}
 ```
 
-### <mark style="background: #FFF3A3A6;">3. 러닝 커브가 낮다.</mark>
-   입문하기 좋게 간결하다. (성능 최적화는 어려운 편이긴 하다.)
+### <mark style={{background:"#FFF3A3A6"}}>3. 러닝 커브가 낮다.</mark>
 
-### <mark style="background: #FFF3A3A6;">4. community가 강력하고 Meta가 존재한다.</mark>
-   리액트가 만들어질 때 UI를 위한 라이브러리로 작동하고 나머지는 자유롭게 풀어놨기 때문에 커뮤니티가 굉장히 성장하였고 무엇보다 메인 스폰서가 Meta이기 때문에 망할 일이 없음.
-   
-   
-## <mark style="background: #FFB86CA6;">리액트의 역사</mark>
+입문하기 좋게 간결하다. (성능 최적화는 어려운 편이긴 하다.)
 
-### <mark style="background: #FFF3A3A6;">2010 리액트 출시</mark>
+### <mark style={{background:"#FFF3A3A6"}}>4. community가 강력하고 Meta가 존재한다.</mark>
+
+리액트가 만들어질 때 UI를 위한 라이브러리로 작동하고 나머지는 자유롭게 풀어놨기 때문에 커뮤니티가 굉장히 성장하였고 무엇보다 메인 스폰서가 Meta이기 때문에 망할 일이 없음.
+
+## <mark style={{background:"#FFB86CA6"}}>리액트의 역사</mark>
+
+### <mark style={{background:"#FFF3A3A6"}}>2010 리액트 출시</mark>
 
 당시 웹 개발 방식은 DB에서 데이터를 불러오고 서버에서 HTML을 만들어서 클라이언트로 제공하는 방식이었다.
 
 콘텐츠는 서버에서 동적으로 생성 > 웹 브라우저는 그걸 다운로드받아 렌더링 (JS는 form 처리 같은 부수적인 역할)
 
-#### <mark style="background: #FFF3A3A6;">브라우저 역할 추가</mark>
+#### <mark style={{background:"#FFF3A3A6"}}>브라우저 역할 추가</mark>
 
 Jquery, 로컬 스토리지, WebSocket, Canvas, SVG, Geolocation 등등 다양한 기능을 브라우저가 지원하기 시작했다.
 
@@ -62,11 +57,11 @@ DOM로 인터렉션을 더 해준다던가 Ajax처럼 클라이언트에서도 �
 
 이로 인해 AngularJS나 Backbone.js 같은 프레임워크가 생겨나게 되었다. (MVVM(Model-View-ViewModel)과 MVC(Model-View-Controller) 패턴으로 체계화 되어 있다.)
 
-#### <mark style="background: #BBFABBA6;">페이스북</mark>
+#### <mark style={{background:"#BBFABBA6"}}>페이스북</mark>
 
 이 시기 페이스북은 유래없는 성공을 하게 되어 브라우저의 부담을 줄이기 위해 자바스크립트 번들 크기를 줄여서 다운로드, 파싱, 실행 부담을 줄이는데에 고민이 깊었다.
 
-<img src="https://codefug.github.io/assets/images/2024-05-23/Pastedimage20240523104931.png" class="full" />
+<img src="/images/2024-05-23/Pastedimage20240523104931.png" className="full" />
 
 위는 2011년 페이스북 페이지이다.
 
@@ -74,14 +69,14 @@ DOM로 인터렉션을 더 해준다던가 Ajax처럼 클라이언트에서도 �
 
 거기에 실시간으로 데이터가 바뀌는 것들이 많기 때문에 실시간으로 페이지를 받아오고 파싱하고 보여주는 건 UX가 최악이었을 것이다.
 
-##### <mark style="background: #ABF7F7A6;">스파르탄 프로젝트</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>스파르탄 프로젝트</mark>
 
 애플의 앱 규제에 반발해서 만들어진 프로젝트로 애플의 사파리(웹)용 페이스북을 만들기 위해 추진되었다.
 
 HTML5기반 하이브리드 앱은 당시 부족한 기술력으로 네이티브 앱을 이길 수 없었고 모두 대체하자는 본래의 취지는 실패하게 된다.
 (지금의 플러터나 리액트 네이티브를 생각하면 다시 부활하고 있는 것 같다.)
 
-##### <mark style="background: #ABF7F7A6;">BoltJS의 등장</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>BoltJS의 등장</mark>
 
 페이스북에서 만들었지만 실무에서 사용되진 않았고 추후에 함수형을 지향하는 새로운 버전으로 발전되어 리액트의 시초가 된다.
 
@@ -89,9 +84,9 @@ HTML5기반 하이브리드 앱은 당시 부족한 기술력으로 네이티브
 
 는 방식으로 기존의 방식을 초월하는 제안이 오게 되었는데 이로써 리액트 프로젝트가 시작되었다.
 
-#### <mark style="background: #BBFABBA6;">리액트 출시</mark>
+#### <mark style={{background:"#BBFABBA6"}}>리액트 출시</mark>
 
-<img src="https://codefug.github.io/assets/images/2024-05-23/Pastedimage20240523110538.png" class="full" />
+<img src="/images/2024-05-23/Pastedimage20240523110538.png" className="full" />
 
 위의 `UFI` 를 만드는 것이 리액트의 첫 프로젝트였다.
 
@@ -99,52 +94,59 @@ HTML5기반 하이브리드 앱은 당시 부족한 기술력으로 네이티브
 
 인스타그램 인수 후 인스타그램도 리액트로 웹 버전을 만들게 되면서 JSConf US에서 오픈소스로 공개하게 되는 기반이 되었다.
 
-#### <mark style="background: #BBFABBA6;">회의적인 시각</mark>
+#### <mark style={{background:"#BBFABBA6"}}>회의적인 시각</mark>
 
 JSX구문의 특징인 HTML과 JS가 섞이는 것에 호의적이지 않은 사람들이 있었다.
 
 이는 CS의 기초적인 원칙인 관심사 분리를 위배했다는 논리인데 리액트는 컴포넌트 기반으로 관심사를 분리하기 때문에 생긴 오해였다.
 
-#### <mark style="background: #BBFABBA6;">기업들의 선택</mark>
+#### <mark style={{background:"#BBFABBA6"}}>기업들의 선택</mark>
 
 추후 컴포넌트 기반으로 재사용하는 것, 부분적으로 렌더링하는 것이 성능적으로 이점이 크다는 것을 사람들이 알게되고 커뮤니티가 생성되며 부족한 부분들이 라이브러리 형태로 채워지기 시작했다. (상태 관리, 라우터, 서버 사이드 렌더링)
 
 야후! 메일, 넷플릭스 등이 리액트를 선택하게 되었는데 넷플릭스는 리액트로 사이트를 리뉴얼하기 전 테스트를 통해 몇가지 장점을 추출하였다.
 
-<mark style="background: #ABF7F7A6;"> 1. 자바스크립트 코드의 크기 감소</mark>
+<mark style={{ background: "#ABF7F7A6" }}>
+  {" "}
+  1. 자바스크립트 코드의 크기 감소
+</mark>
 
 상태를 관리하기 위한 컨트롤러 대신 선언적으로 상태에 따른 UI를 구현할 수 있었다.
 
-<mark style="background: #ABF7F7A6;">2. 러닝커브 완만</mark>
+<mark style={{ background: "#ABF7F7A6" }}>2. 러닝커브 완만</mark>
 
 JS와 HTML 문법과 비슷
 
-<mark style="background: #ABF7F7A6;">3. 빠른 기능 추가</mark>
+<mark style={{ background: "#ABF7F7A6" }}>3. 빠른 기능 추가</mark>
 
 기능을 추가하고 빌드하는 시간이 기존 자바 기반 앱보다 빨랐다.
 
-#### <mark style="background: #BBFABBA6;">다양한 라이브러리들</mark>
+#### <mark style={{background:"#BBFABBA6"}}>다양한 라이브러리들</mark>
 
 리액트는 웹 개발을 위한 프레임워크를 지향하지 않고 있기 때문에 다양한 라이브러리와 함께 쓴다.
 
-<mark style="background: #ABF7F7A6;">상태 관리: Redux, Zustand, Recoil, Jotai</mark>
+<mark style={{ background: "#ABF7F7A6" }}>
+  상태 관리: Redux, Zustand, Recoil, Jotai
+</mark>
 
-<mark style="background: #ABF7F7A6;">SSR: Next.js, Remix, Hydrogen</mark>
+<mark style={{ background: "#ABF7F7A6" }}>SSR: Next.js, Remix, Hydrogen</mark>
 
-<mark style="background: #ABF7F7A6;">애니메이션: Framer Motion, react-spring, React Move</mark>
+<mark style={{ background: "#ABF7F7A6" }}>
+  애니메이션: Framer Motion, react-spring, React Move
+</mark>
 
-<mark style="background: #ABF7F7A6;">차트: Recharts, visx, nivo</mark>
+<mark style={{ background: "#ABF7F7A6" }}>차트: Recharts, visx, nivo</mark>
 
-<mark style="background: #ABF7F7A6;">폼: React Hook Form, Formik, React Final Form</mark>
+<mark style={{ background: "#ABF7F7A6" }}>
+  폼: React Hook Form, Formik, React Final Form
+</mark>
 
-#### <mark style="background: #BBFABBA6;">리액트의 행보</mark>
+#### <mark style={{background:"#BBFABBA6"}}>리액트의 행보</mark>
 
 서버에서의 리액트의 활용이 현 리액트 개발자들의 개발 방향성이라고 한다.
 
 실제 서버 컴포넌트가 등장하고 간단한 api정도는 Next.js 단에서 만들 수 있게 되면서 이 행보를 이어가는 듯하다.
 
->
 > 모던 리액트 딥다이브 스터디를 위해서 정리하고 살을 붙힌 내용입니다.
-> 
+>
 > 잘못된 내용이 있다면 말씀 부탁드립니다. 감사합니다.
->  
