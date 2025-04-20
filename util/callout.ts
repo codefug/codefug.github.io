@@ -3,7 +3,11 @@ import { CalloutType } from "@/constants/callout";
 type childProps = "\n" | { props: { children: string } };
 
 export function isCallout(children: childProps[]) {
-  if (children[1] !== "\n" && children[1].props.children.startsWith("[!"))
+  if (
+    children[1] !== "\n" &&
+    typeof children[1].props.children === "string" &&
+    children[1].props.children.startsWith("[!")
+  )
     return true;
   return false;
 }
