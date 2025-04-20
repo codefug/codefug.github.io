@@ -4,7 +4,7 @@ import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { POST_PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useScroll, useSpring } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,7 +49,7 @@ export default function Header() {
           <HeaderSwitch />
         </section>
       </div>
-      {isShowVerticalScrollbar && <VerticalScrollbar />}
+      {isShowVerticalScrollbar && <HorizontalScrollbar />}
     </header>
   );
 }
@@ -149,7 +149,7 @@ const SideBarToggleButton = memo(function SideBarToggleButton() {
   );
 });
 
-const VerticalScrollbar = memo(function VerticalScrollbar() {
+const HorizontalScrollbar = memo(function VerticalScrollbar() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -157,18 +157,11 @@ const VerticalScrollbar = memo(function VerticalScrollbar() {
     restDelta: 0.001,
   });
 
-  const backgroundColor = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    ["#f00", "#0f0", "#00f"],
-  );
-
   return (
     <motion.div
-      className="h-2 origin-left"
+      className="h-2 origin-left bg-primary"
       style={{
         scaleX,
-        backgroundColor,
       }}
     />
   );
