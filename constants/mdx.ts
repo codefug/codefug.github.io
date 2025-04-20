@@ -13,7 +13,7 @@ export type ParsedFrontMatter = {
   title: string;
   excerpt: string;
   categories: string[];
-  date: Date;
+  date: string;
   header: {
     teaser: string;
   };
