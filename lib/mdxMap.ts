@@ -1,5 +1,6 @@
 // 자동 생성된 파일입니다. 직접 수정하지 마세요.
 
+import * as MDX_2024_05_18 from "@/markdown/2024-05-18/content.mdx";
 import * as MDX_2025_01_02_1 from "@/markdown/2025-01-02-1/content.mdx";
 import * as MDX_2025_01_02_1copy from "@/markdown/2025-01-02-1copy/content.mdx";
 import * as MDX_2025_01_02_1copy2 from "@/markdown/2025-01-02-1copy2/content.mdx";
@@ -17,6 +18,7 @@ import * as MDX_2025_01_06 from "@/markdown/2025-01-06/content.mdx";
 import { MDXModule } from "mdx/types";
 
 export const mdxMap: Record<string, MDXModule> = {
+  "2024-05-18": MDX_2024_05_18,
   "2025-01-02-1": MDX_2025_01_02_1,
   "2025-01-02-1copy": MDX_2025_01_02_1copy,
   "2025-01-02-1copy2": MDX_2025_01_02_1copy2,
