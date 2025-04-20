@@ -2,7 +2,7 @@ import { FrontMatter } from "@/constants/mdx";
 import { POST_PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 
@@ -14,24 +14,11 @@ export default function PostCard({
   title,
   id,
 }: FrontMatter) {
-  const [isLoading, setIsLoading] = useState(false);
   const linkHref = useMemo(() => POST_PATH + id, [id]);
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    window.location.href = linkHref;
-  };
 
   return (
     // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )
-    <a
-      href={linkHref}
-      onClick={handleClick}
-      aria-label={`${title} 포스트 읽기`}
-      rel="bookmark"
-      className={cn(isLoading ? "pointer-events-none opacity-70" : "")}
-    >
+    <a href={linkHref} aria-label={`${title} 포스트 읽기`} rel="bookmark">
       <Card className="group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
         <Image
           priority={false}
