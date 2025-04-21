@@ -31,7 +31,6 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      {/* TODO: 색깔 바꾸고 swiper로 변경 이거만 끝내면 홈라우트 끝, 포스트 쪽만 살펴보자 */}
       <h2 className="mb-2 text-sm font-light text-gray-400">태그 목록</h2>
       <Carousel className="mb-4 px-10">
         <CarouselContent>
