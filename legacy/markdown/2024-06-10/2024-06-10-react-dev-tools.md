@@ -315,7 +315,7 @@ preview라는 부모 state가 바뀜에 따라 부모 컴포넌트 리렌더링 
 
 ## 출처
 
-<a src="https://wikibook.co.kr/react-deep-dive">React Deep Dive. 김용찬, chapter 6</a>
+<a href="https://wikibook.co.kr/react-deep-dive">React Deep Dive. 김용찬, chapter 6</a>
 
 >
 > 모던 리액트 딥다이브 스터디를 위해서 정리한 내용입니다.
