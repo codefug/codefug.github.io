@@ -67,21 +67,18 @@ export default function MenuList({
 
   return (
     <>
-      <button
-        className="fixed right-0 top-1/2 block lg:hidden"
-        onClick={handleShowMenuList}
-      >
-        <ChevronLeft className="h-6 w-6 text-muted-foreground" />
+      <button className="fixed right-0 top-1/2" onClick={handleShowMenuList}>
+        <ChevronLeft className="h-6 w-6 text-muted-foreground lg:size-8" />
       </button>
       <div
         ref={menuListRef}
         className={cn(
-          "fixed right-0 top-24 hidden lg:block",
+          "fixed right-0 top-24 hidden min-w-[300px]",
           isShow && "block",
         )}
       >
         <div className="rounded-lg border bg-card p-4 shadow-sm">
-          <button className="lg:hidden" onClick={handleHideMenuList}>
+          <button onClick={handleHideMenuList}>
             <X className="absolute right-4 top-4 h-5 w-5 cursor-pointer text-muted-foreground" />
           </button>
           <h4 className="mb-3 mt-0 text-sm font-medium text-foreground">
