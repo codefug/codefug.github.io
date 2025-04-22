@@ -1,32 +1,20 @@
----
-title: "Dev tool"
-excerpt: "리액트 과거, 현재, 미래"
-toc: true
-toc_sticky: true
-categories:
-  - web
-last_modified_at: 2024-06-15T18:26:00
-header:
-  teaser: /assets/images/Logo/reactdeepdive.jpg
----
-
 애플리케이션에서 발생하는 버그와 디버깅 이슈는 리액트 밖에서 일어날 때도 있다.
 
 자바스크립트 메모리, 네트워크, 소스, 실제 HTML 및 CSS 등 리액트 이외에 환경의 디버깅을 사용하려면 브라우저 개발자 도구가 필요하다.
 
 # Chrome Dev Tool
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615101247.png)
+![](/images/2024-06-15/Pasted%20image%2020240615101247.png)
 
 위 사진처럼 dev tool은 해당 페이지의 다양한 정보를 보여준다.
 
 이러한 개발자 도구는 시크릿 모드로 보기를 권장하는데
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615101714.png)
+![](/images/2024-06-15/Pasted%20image%2020240615101714.png)
 
 위처럼 확장 프로그램이 전역 변수를 저장시킬 수 있기 때문이다 만약 시크릿 모드라면
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615101851.png)
+![](/images/2024-06-15/Pasted%20image%2020240615101851.png)
 
 시크릿 모드에서 사용가능한 확장 프로그램이 없다면 확장 프로그램이 저장시키는 전역 변수는 존재하지 않게 된다.
 
@@ -34,39 +22,39 @@ header:
 
 현재 웹페이지를 구성하고 있는 HTML, CSS 등의 정보를 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615102351.png)
+![](/images/2024-06-15/Pasted%20image%2020240615102351.png)
 
 ### Element 화면
 
-현재 웹페이지를 구성하는 HTML을 나타낸다. 
+현재 웹페이지를 구성하는 HTML을 나타낸다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615102820.png)
+![](/images/2024-06-15/Pasted%20image%2020240615102820.png)
 
 요소를 추가하거나 삭제, 수정할 수 있고 중단점을 이용해서 변화를 일으킨 코드를 추적할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615103356.png)
+![](/images/2024-06-15/Pasted%20image%2020240615103356.png)
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615103504.png)
+![](/images/2024-06-15/Pasted%20image%2020240615103504.png)
 
 해당 부분을 php를 사용했고 이와 관련된 코드가 무엇인지 확인할 수 있다.
 
-### Element  정보
+### Element 정보
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615104728.png)
+![](/images/2024-06-15/Pasted%20image%2020240615104728.png)
 
-Styles: 요소와 관련된 스타일 정보 확인  
+Styles: 요소와 관련된 스타일 정보 확인
 
-Computed: 패딩, 보더, 마진, 각종 CSS 적용 결괏값을 알 수 있는 탭이다. 결과적으로 어떤 결과물인지 확인  
+Computed: 패딩, 보더, 마진, 각종 CSS 적용 결괏값을 알 수 있는 탭이다. 결과적으로 어떤 결과물인지 확인
 
-Layout: css 그리드나 레이아웃과 관련된 정보 확인  
+Layout: css 그리드나 레이아웃과 관련된 정보 확인
 
-Event listeners: 이벤트 리스너들 확인, Ancestor를 해제하면 정확히 요소에 지정된 이벤트만 볼 수 있다.  
+Event listeners: 이벤트 리스너들 확인, Ancestor를 해제하면 정확히 요소에 지정된 이벤트만 볼 수 있다.
 
-DOM Breakpoints: 중단점이 있는지 알려주는 탭  
+DOM Breakpoints: 중단점이 있는지 알려주는 탭
 
-Properties: 해당 요소가 가지고 있는 모든 속성값, js의 .attributes와의 차이는 지정된 속성 뿐만 아니라 모든 속성값이 나온다는 것  
+Properties: 해당 요소가 가지고 있는 모든 속성값, js의 .attributes와의 차이는 지정된 속성 뿐만 아니라 모든 속성값이 나온다는 것
 
-Accessibility: 웹 이용에 어려움을 겪는 장애인, 노약자를 위한 스크린리더기 등이 활용하는 값 (seo시 이거 보면 될듯)  
+Accessibility: 웹 이용에 어려움을 겪는 장애인, 노약자를 위한 스크린리더기 등이 활용하는 값 (seo시 이거 보면 될듯)
 
 ## Source
 
@@ -75,34 +63,34 @@ JS, CSS, HTML, Font 여러가지 파일 정보를 확인할 수 있다.
 
 ### 해당 페이지에서 생성된 파일 확인
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615105916.png)
+![](/images/2024-06-15/Pasted%20image%2020240615105916.png)
 
 inflearn 사이트로 가서 개발자도구 > ctrl+p 를 누른 모습이다.
 이걸로 파일에 들어가면 실제 코드 내용을 확인할 수 있다.
 
 프로덕션 모드일 때는 파일이 압축되어 있어 확인하기 어렵지만 개발 모드에서는 리액트 코드도 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615111323.png)
+![](/images/2024-06-15/Pasted%20image%2020240615111323.png)
 
 실제 코드처럼 중단점을 찍은 후에 디버깅할 수도 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615111411.png)
+![](/images/2024-06-15/Pasted%20image%2020240615111411.png)
 
 ### 코드 내용 확인
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615112247.png)
+![](/images/2024-06-15/Pasted%20image%2020240615112247.png)
 
 Source 의 오른쪽에는 위와 같은 정보가 있다.
 
-Watch : 감시하고 싶은 변수를 선언하고, 해당 변수의 정보를 확인할 수 있는 메뉴  
+Watch : 감시하고 싶은 변수를 선언하고, 해당 변수의 정보를 확인할 수 있는 메뉴
 
-Breakpoints : 현재 웹사이트에서 추가한 중단점 확인, 소스탭에서 추가한 모든 중단점 확인 가능  
+Breakpoints : 현재 웹사이트에서 추가한 중단점 확인, 소스탭에서 추가한 모든 중단점 확인 가능
 
-Scope : 로컬 스코프, 클로저, 전역 스코프 등 확인  
+Scope : 로컬 스코프, 클로저, 전역 스코프 등 확인
 
-Call Stack : 현재 중단점의 콜스택 확인  
+Call Stack : 현재 중단점의 콜스택 확인
 
-Global Listeners : 전역 스코프에 추가된 리스너 목록  
+Global Listeners : 전역 스코프에 추가된 리스너 목록
 
 XHR/fetch Breakpoints, DOM Breakpoints, Event Listener Breakpoints
 
@@ -113,17 +101,17 @@ CSP Violation Breakpoints : 다양한 종류의 중단점 확인
 해당 페이지를 접속하는 순간부터 발생하는 모든 네트워크 관련 작동이 기록된다.
 외부 데이터와 통신하는 정보가 다 들어가 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615113622.png)
+![](/images/2024-06-15/Pasted%20image%2020240615113622.png)
 
 3번째 줄에 Fetch/XHR, Doc 등으로 tag를 만들어놨는데 이걸로 네트워크 요청의 종류를 필터링할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615113806.png)
+![](/images/2024-06-15/Pasted%20image%2020240615113806.png)
 
 특정 네트워크의 상태를 확인할 수도 있다.
 
 개발자 모드로 실행되면 웹 소켓을 통해 핫 리로딩 된다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615120838.png)
+![](/images/2024-06-15/Pasted%20image%2020240615120838.png)
 
 하단에는 페이지를 불러오는 기간 동안 발생한 request의 건수, 다운로드한 업로드 리소스의 크기를 확인할 수 있다.
 
@@ -131,11 +119,11 @@ CSP Violation Breakpoints : 다양한 종류의 중단점 확인
 
 `gzip`이나 `brotli`를 활용해서 리소스를 압축하거나 이미지 최적화를 할 필요가 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615121057.png)
+![](/images/2024-06-15/Pasted%20image%2020240615121057.png)
 
 왼쪽 위에 설정을 누르고 Screenshots를 누르면 웹페이지 로딩을 네트워크 요청 흐름에 따라 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615121335.png)
+![](/images/2024-06-15/Pasted%20image%2020240615121335.png)
 
 시간별로 웹페이지를 스크린샷처럼 찍어서 보여줄 수 있다.
 
@@ -151,7 +139,7 @@ CSP Violation Breakpoints : 다양한 종류의 중단점 확인
 
 메모리 관련 정보 확인, 애플리케이션에서 발생하는 메모리 누수, 속도 저하, 웹페이지 프리징 현상을 확인할 수 있는 도구이다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615122034.png)
+![](/images/2024-06-15/Pasted%20image%2020240615122034.png)
 
 React-dev-tool과 비슷하게 프로파일링 작업을 거쳐야 원하는 정보를 볼 수 있다.
 
@@ -164,12 +152,13 @@ Allocation instrumentation of timeline : 시간의 흐름에 따라 메모리의
 Allocation sampling : 메모리 공간을 차지하고 있는 자바스크립트 함수 확인
 
 ### Select JavaScript VM instance
+
 `
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615122625.png)
+![](/images/2024-06-15/Pasted%20image%2020240615122625.png)
 
-디버깅하고 있는 JS VM 환경을 선택해서 실제 해당 페이지가 자바스크립트 힙을 얼마나 점유하고 있는지 확인할 수 있다. 
+디버깅하고 있는 JS VM 환경을 선택해서 실제 해당 페이지가 자바스크립트 힙을 얼마나 점유하고 있는지 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615122833.png)
+![](/images/2024-06-15/Pasted%20image%2020240615122833.png)
 
 Google의 예시이다. JS 실행에 따라서 실시간으로 크기가 변하며 이 크기만큼 브라우저에 부담을 주기 때문에 눈여겨 볼만하다.
 
@@ -191,44 +180,44 @@ export default function App(){
 }//컴포넌트 외부에 있는 배열에 천만 개의 랜덤한 값을 push하는 컴포넌트
 ```
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124114.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124114.png)
 
 누르기 전 메모리 모습
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124158.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124158.png)
 
 누른 후의 메모리 모습 세번째 줄에 array에 어마무시한 크기가 들어간 것을 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124324.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124324.png)
 
 이런 식으로 Objects allocated between snapshot 1 and snapshot 2을 눌러주면
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124451.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124451.png)
 
 둘의 교집합만 나오게 되는데 array의 토글을 열면 그 안의 객체들을 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124752.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124752.png)
 
 위처럼 전역 객체로 지정하면 어떤 값이 들어있는지도 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615124939.png)
+![](/images/2024-06-15/Pasted%20image%2020240615124939.png)
 
 window의 temp1에 저장된다. shallow size와 Retained Size는 참조값을 포함하냐 안하냐의 차이 이다.
 
 ```js
-function Y(){
-	this.j = 5;
+function Y() {
+  this.j = 5;
 }
-function X(){
-	this.x = 3;
-	this.y = new Y();
+function X() {
+  this.x = 3;
+  this.y = new Y();
 }
 
-export default function App(){
-	function handleClick(){
-		instances.push(new X())
-	}
-	return <button onClick={handleClick}>+</button>
+export default function App() {
+  function handleClick() {
+    instances.push(new X());
+  }
+  return <button onClick={handleClick}>+</button>;
 }
 ```
 
@@ -270,31 +259,34 @@ function App(){
 
 내려주는 number props는 고정이지만 부모 컴포넌트인 App이 재렌더링됨에 따라 자식 컴포넌트인 Component도 재렌더링 된다. 이때 useCallback을 사용한 callbackHandleClick은 재호출되지 않는 것을 확인해보자.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615163357.png)
+![](/images/2024-06-15/Pasted%20image%2020240615163357.png)
 
 이전과 이후의 snap shot을 비교해보면 위와 같다. callbackHandleClick()은 없고 noCallbakHandleClick()만 존재하는 것을 확인할 수 있다.
 
 아래 () @163297 은 익명 함수이다. (setToggle의 콜백)
 
 ```js
-setToggle(function toggle(){return !toggle})
+setToggle(function toggle() {
+  return !toggle;
+});
 ```
 
 기명 함수로 적어주면 다음과 같이 된다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615164016.png)
+![](/images/2024-06-15/Pasted%20image%2020240615164016.png)
+
 ### Allocation instrumentation on timeline
 
 시간의 흐름에 따라 메모리 변화 기록
 
 구간을 정해서 어떠한 변화가 있었는지 그 객체를 확인해볼 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615164419.png)
+![](/images/2024-06-15/Pasted%20image%2020240615164419.png)
 
 전역 변수로 지정도 할 수 있다.
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615164611.png)
+![](/images/2024-06-15/Pasted%20image%2020240615164611.png)
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615164544.png)
+![](/images/2024-06-15/Pasted%20image%2020240615164544.png)
 
 ## Allocation sampling
 
@@ -326,7 +318,7 @@ function App() {
 
 sampling을 돌리면 toString이 가장 많이 차지한 것을 확인할 수 있다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615165927.png)
+![](/images/2024-06-15/Pasted%20image%2020240615165927.png)
 
 맨 오른쪽 파일 경로로 소스코드에 접근할 수도 있다.
 
@@ -361,22 +353,22 @@ cross-env를 설치한 후에
 https://www.npmjs.com/package/cross-env
 
 ```json
-{ "scripts": { "dev": "cross-env NODE_OPTIONS='--inspect' next dev" }}
+{ "scripts": { "dev": "cross-env NODE_OPTIONS='--inspect' next dev" } }
 ```
 
 이렇게 해야 실행된다.
 
 #### 개발자 도구 열기
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615171833.png)
+![](/images/2024-06-15/Pasted%20image%2020240615171833.png)
 
 chrome://inspect 로 이동하면 위와 같은 화면이 나온다.
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615173042.png)
+![](/images/2024-06-15/Pasted%20image%2020240615173042.png)
 
 Open dedicated DevTools for Node 클릭
 
-![](http://codefug.github.io/assets/images/2024-06-15/Pasted%20image%2020240615173118.png)
+![](/images/2024-06-15/Pasted%20image%2020240615173118.png)
 
 이제 해당 VM 인스턴스 (node 서버 환경) 를 활용해서 디버깅을 할 수 있다.
 
@@ -398,8 +390,6 @@ https://stackoverflow.com/questions/49893994/apachebench-installation-on-windows
 
 SSR에서 메모리가 누수되면 서버에서 계속 쌓여서 과부하가 오기 때문에 순수함수로 구현해야만 한다.
 
->
 > 모던 리액트 딥다이브 스터디를 위해서 정리하고 살을 붙힌 내용입니다.
 >
 > 잘못된 내용이 있다면 말씀 부탁드립니다. 감사합니다.
->
