@@ -7,11 +7,11 @@ categories:
   - javascript
 last_modified_at: 2024-11-10T23:00:00
 header:
-  teaser: /assets/images/Logo/JS.svg
+  teaser: /images/logos/JS.svg
 ---
 ![](https://velog.velcdn.com/images/codefug/post/1863b8a0-6521-495b-85f2-22b0f35b6380/image.png)
 
-# <mark style="background: #FF5582A6;">비동기 통신의 이해</mark>
+# <mark style={{background:"#FF5582A6"}}>비동기 통신의 이해</mark>
 
 JS는 Single Thread에서 작동한다. 즉 한 번에 하나의 작업만 동기 방식으로 처리할 수 있다.
 
@@ -23,7 +23,7 @@ JS는 Single Thread에서 작동한다. 즉 한 번에 하나의 작업만 동�
 
 > 리액트에서는 16 버전에 접어들면서 비동기식으로 작동하는 방법이 소개 되었다.
 
-## <mark style="background: #FFB86CA6;">싱글 스레드 자바스크립트</mark>
+## <mark style={{background:"#FFB86CA6"}}>싱글 스레드 자바스크립트</mark>
 
 과거, 프로그램을 실행하는 단위가 오직 **Process** 뿐이었다.
 
@@ -37,14 +37,14 @@ thread: 하나의 process에는 여러 개의 thread를 만들 수 있고, threa
 
 JavaScript는 기본적으로 싱글 쓰레드 이다.
 
-## <mark style="background: #FFF3A3A6;">JS가 멀티 쓰레드가 아닌 이유</mark>
+## <mark style={{background:"#FFF3A3A6"}}>JS가 멀티 쓰레드가 아닌 이유</mark>
 
 1. 멀티 쓰레드는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요하다.
 2. 각각 격리되어 있는 **Process**와 다르게 하나의 **Thread**가 문제가 생기면 다른 **Thread**도 문제가 발생할 수 있다.
 3. JS이 **멀티 스레딩**을 지원해서 동시에 여러 쓰레드가 DOM을 조작할 수 있었다면 메모리 공유로 인해 동시에 같은 자원에 접근하게 되고  이 때문에 타이밍 이슈가 발생할 수 있고 DOM 표시에 큰 문제를 발생시킬 수 있다.
 
 
-## <mark style="background: #FFB86CA6;">Event Loop</mark>
+## <mark style={{background:"#FFB86CA6"}}>Event Loop</mark>
 
 비동기 동작과 뗄 수 없는 개념은 `Event Loop`이다.
 
@@ -52,7 +52,7 @@ JavaScript는 기본적으로 싱글 쓰레드 이다.
 
 `Event Loop`를 잘 알고 있어야 올바른 아키텍처 설계가 가능하다.
 
-### <mark style="background: #FFF3A3A6;">자바스크립트 엔진 동작 방식</mark>
+### <mark style={{background:"#FFF3A3A6"}}>자바스크립트 엔진 동작 방식</mark>
 
 자바스크립트 엔진은 다음의 알고리즘을 갖고 있다.
 1. 처리해야 할 task가 있는 경우
@@ -77,7 +77,7 @@ task는 하나의 집합을 이룬다. 자바스크립트 엔진은 해당 task�
 >
 > https://html.spec.whatwg.org/multipage/webappapis.html#definitions-3
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108212123.png)
+![](/images/2024-11-10/Pasted%20image%2020241108212123.png)
 
 (`script`를 처리하는데 중간에 `mousemove` 핸들러도 실행되고 `setTimeout`에서 설정한 시간이 지나서 콜백이 들어온 경우의 상태를 그림으로 나타냄)
 
@@ -86,7 +86,7 @@ JavaScript 엔진은 이들을 차례대로 처리한다.
 이때 알아야 할 두가지는
 1. 엔진이 task를 처리하는 동안은 렌더링이 일어나지 않는다. 처리를 완료하면 DOM 변경을 화면에 반영한다.
 2. task에 긴 시간이 걸리면 task를 처리하는 동안 발생한 새로운 task를 처리하지 못한다. ( 응답 없는 페이지라는 alert 창은 페이지 전체와 함께 현재 task를 최소시킬지 말지를 선택하게 한다. )
-### <mark style="background: #FFF3A3A6;">예시 1: CPU 소모가 많은 task 쪼개기</mark>
+### <mark style={{background:"#FFF3A3A6"}}>예시 1: CPU 소모가 많은 task 쪼개기</mark>
 
 CPU 소모가 아주 많은 task 하나가 있다고 가정해보자.
 
@@ -170,7 +170,7 @@ count();
 setTimeout 호출이 많은 경우, 브라우저 최소 대기 시간이 4밀리초이기 때문에 숫자 세기 전에 스케줄링을 하면 숫자를 세면서 대기 시간을 소모하기 때문에 실행이 더 빨라진다.
 (setTimeout 로직이 뒤쪽에 있으면 setTimeout(count) 실행되고 바로 다음 macrotask로 count 함수가 실행돼야 되는데 안 가고 4ms 있다가 실행된다는 뜻)
 
-### <mark style="background: #FFF3A3A6;">예시 2: Progress bar</mark>
+### <mark style={{background:"#FFF3A3A6"}}>예시 2: Progress bar</mark>
 
 task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `progress bar`를 만들 때도 드러난다.
 
@@ -219,7 +219,7 @@ task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `
 ```
 위처럼 코드를 분할하게 되면 i가 변화하는 과정을 출력해 줄 수 있다, `setTimeout`으로 `count`를 넘기기 때문에 count와 count 함수 사이에서 동기적인 동작들을 수행할 수 있게 되고 결론적으로 `progress.innerHTML`이 변경되었다는 DOM 변경 동작이 일어나게 된다.
 
-### <mark style="background: #FFF3A3A6;">예시 3: 이벤트 처리가 끝난 이후에 작업</mark>
+### <mark style={{background:"#FFF3A3A6"}}>예시 3: 이벤트 처리가 끝난 이후에 작업</mark>
 
 이벤트 핸들러를 만들 때 특정 액션을 모든 이벤트 버블링이 끝나고 실행시키고 싶다면 `ms`가 0인 `setTimeout`을 사용하면 된다.
 
@@ -241,9 +241,9 @@ menu.onclick = function() {
 
 이제 menu의 click 이벤트가 완전히 핸들링된 후에 `menu-open` 이벤트를 dispatching하게 된다.
 
-## <mark style="background: #FFB86CA6;">Macrotask와 Microtask</mark>
+## <mark style={{background:"#FFB86CA6"}}>Macrotask와 Microtask</mark>
 
-### <mark style="background: #FFF3A3A6;">Microtask</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Microtask</mark>
 
 `Microtask`는 주로 `Promise`를 사용해 만든다.
 
@@ -272,9 +272,9 @@ alert("code");
 // (해당 Macrotask가 끝나면 다시 Microtask 실행해서 Microtask queue 비우고 렌더링 > 다음 Macrotask 실행 반복)
 ```
 
-### <mark style="background: #FFF3A3A6;">처리 로직</mark>
+### <mark style={{background:"#FFF3A3A6"}}>처리 로직</mark>
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109193930.png)
+![](/images/2024-11-10/Pasted%20image%2020241109193930.png)
 
 `Macrotask (script, mousemove, setTimeout 등)` 하나가 처리되고 난 후 `Microtask` 전부가 처리되고 그 이후 렌더링이 진행되는 것을 확인할 수 있다.
 
@@ -288,11 +288,11 @@ script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에 s
 
 위 과정을 확인하기 위해서 리페인트 전에 콜백 함수를 호출하는 **requestAnimationFrame**으로 확인해보자.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109221737.png)
+![](/images/2024-11-10/Pasted%20image%2020241109221737.png)
 
 > **requestAnimationFrame**
 > 
-> ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241109214448.png)
+> ![](/images/2024-11-10/Pasted%20image%2020241109214448.png)
 > 
 > 브라우저 리페인트 전에 애니메이션 처리를 하기 위해 사용하는 윈도우 메소드, 
 > 
@@ -349,22 +349,22 @@ button.addEventListener('click',()=>{
 2. `micro`는 렌더링이 일어나지 않다가 100,000 상태가 된다.
 3. `macro`는 잠시 기다리다가 1부터 100,000까지 차례대로 렌더링된다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
 
 이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) 이 실행되고 있을 때는 브라우저에서 다른 동작을 할 수 없다. ( 콜 스택에 있는거 다 버리고 동작을 진행할 수는 없으니 )
 
 > `setTimeout`의 타이밍 함수 (시간을 새서 콜백을 던져주는 함수)같은 WEB API는 `Macrotask queue`가 할당되는 외부 쓰레드에서 진행된다. 작업을 할당해 처리하는 것은 브라우저나 Node.js의 역할이다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
-![](https://codefug.github.io/assets/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
 
 단, 만약 중간에 다른 `Macrotask`(마우스 이벤트 등등)가 `Macrotask queue`로 들어와서 먼저 실행 가능 상태가 된다면 `queue`에서는 해당 `Macrotask`를 처리할 것이다.
 
 이제 "왜" 사용하는지 알게 되었으니 비동기 작업을 "어떻게" 사용하는지, 그 흐름을 더 자세히 알아보자.
 
-# <mark style="background: #FF5582A6;">비동기 작업의 역사와 개념</mark>
+# <mark style={{background:"#FF5582A6"}}>비동기 작업의 역사와 개념</mark>
 
-## <mark style="background: #FFB86CA6;">콜백</mark>
+## <mark style={{background:"#FFB86CA6"}}>콜백</mark>
 
 호스트 환경이 제공하는 함수를 사용하면 비동기 동작을 스케줄링할 수 있다. ( `setTimeout` 같은 함수)
 
@@ -424,7 +424,7 @@ loadScript('/my/script.js', function() {
 
 loadScript에 콜백 함수를 전해줘서 newFunction이 비동기 실행과 나란히 일어날 수 있게 해준다.
 
-### <mark style="background: #FFF3A3A6;">에러 핸들링</mark>
+### <mark style={{background:"#FFF3A3A6"}}>에러 핸들링</mark>
 
 스크립트 로딩이 실패하는 경우 발생하는 에러를 핸들링할 수 있어야 한다.
 
@@ -456,7 +456,7 @@ loadScript('/my/script.js', function(error, script) {
 1. callback의 첫 번째 인수는 에러를 위해 남겨둔다.
 2. 두 번째 혹은 그 이상의 인수들은 에러가 발생하지 않았을 때 콜백 함수에 넘겨줄 인수들이다.
 
-### <mark style="background: #FFF3A3A6;">콜백 속 콜백</mark>
+### <mark style={{background:"#FFF3A3A6"}}>콜백 속 콜백</mark>
 
 만약 두 개의 스크립트를 차례대로 불러오려 한다면 콜백 안에 콜백을 넣어야 한다.
 
@@ -470,9 +470,9 @@ loadScript('/my/script.js', function(script) {
 });
 ```
 
-#### <mark style="background: #BBFABBA6;">콜백 지옥</mark>
+#### <mark style={{background:"#BBFABBA6"}}>콜백 지옥</mark>
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107193715.png)
+![](/images/2024-11-10/Pasted%20image%2020241107193715.png)
 
 위 방식은 멸망의 피라미드, 콜백 지옥이라 부르는 상황을 만든다.
 (코드가 오른쪽으로 점점 옮겨지면서 가독성도 해치고 코드 재사용이 어려운 상황)
@@ -511,7 +511,7 @@ function step3(error, script) {
 
 이는 모양만 개선되었지 내부 로직은 결국 위아래 옮겨 다니면서 파악해야 하고 재사용이 어려운 문제를 그대로 갖고 있다.
 
-### <mark style="background: #FFF3A3A6;">무조건 콜백을 사용하면 안될까?</mark>
+### <mark style={{background:"#FFF3A3A6"}}>무조건 콜백을 사용하면 안될까?</mark>
 
 아니다.
 
@@ -531,7 +531,7 @@ showCircle(cx, cy, radius, callback)은 천천히 커지는 원을 만드는 함
 > 콜백을 활용하면 해당 task를 Microtask Queue가 아니라 Macrotask queue로 task를 이동시킨다. ( `setTimeout`의 동작 방식 )
 > Microtask Queue와 Macrotask queue의 차이는 이 글의 하단 부분에서 이해할 수 있다.
 
-## <mark style="background: #FFB86CA6;">Promise</mark>
+## <mark style={{background:"#FFB86CA6"}}>Promise</mark>
 
 시간이 얼마나 걸리던 상관없이 약속한 결과를 만들어내는 "제작 코드"가 준비되었을 때, 모든 "소비 코드"가 결과를 사용할 수 있도록 해준다.
 
@@ -551,7 +551,7 @@ let promise = new Promise(function(resolve, reject) {
 // promise.then/catch/finally 등등
 ```
 
-### <mark style="background: #FFF3A3A6;">executor 함수</mark>
+### <mark style={{background:"#FFF3A3A6"}}>executor 함수</mark>
 
 `new Promise`에 전달되는 콜백은 executor라고 해서 `new Promise`가 만들어질 때 자동으로 실행되며 결과를 최종적으로 만들어내는 제작 코드를 포함한다.
 
@@ -559,24 +559,24 @@ executor에서는 resolve, reject를 신경 쓰지 않고 코드를 작성하면
 1. resolve(value) - 일이 성공적으로 끝났을 때 그 결과를 나타내는 value와 함께 호출
 2. reject(error) - 에러 발생 시 에러 객체를 나타내는 `error`와 함께 호출
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107200211.png)
+![](/images/2024-11-10/Pasted%20image%2020241107200211.png)
 
 new Promise 생성자가 반환하는 promise 객체는 PromiseState, PromiseResult라는 내부 프로퍼티를 가진다.
 
 resolve, reject 둘 다 일어나지 않았을 때
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107195926.png)
+![](/images/2024-11-10/Pasted%20image%2020241107195926.png)
 
 resolve일 때
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107195831.png)
+![](/images/2024-11-10/Pasted%20image%2020241107195831.png)
 
 
 reject일 때
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107200104.png)
+![](/images/2024-11-10/Pasted%20image%2020241107200104.png)
 
-#### <mark style="background: #BBFABBA6;">executor 예시</mark>
+#### <mark style={{background:"#BBFABBA6"}}>executor 예시</mark>
 
 1. executor는 `new Promise`에 의해 자동으로 그리고 즉각적으로 호출된다.
 2. executor는 인자로 `resolve`와 `reject` 함수를 받는다. 이 함수들은 자바스크립트 엔진이 미리 정의한 함수이므로 개발자가 따로 만들 필요가 없다. 다만, `resolve`나 `reject` 중 하나는 반드시 호출해야 합니다.
@@ -589,7 +589,7 @@ let promise = new Promise(function(resolve, reject) {
   setTimeout(() => resolve("완료"), 1000);
 });
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107200545.png)
+![](/images/2024-11-10/Pasted%20image%2020241107200545.png)
 
 ```js
 let promise = new Promise(function(resolve, reject) {
@@ -597,13 +597,13 @@ let promise = new Promise(function(resolve, reject) {
   setTimeout(() => reject(new Error("에러 발생!")), 1000);
 });
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107200740.png)
+![](/images/2024-11-10/Pasted%20image%2020241107200740.png)
 
 `resolve`나 `reject`가 완료된 `Promise`를 `settled Promise` 라고 부른다.
 
-### <mark style="background: #FFF3A3A6;">주의사항</mark>
+### <mark style={{background:"#FFF3A3A6"}}>주의사항</mark>
 
-#### <mark style="background: #BBFABBA6;">1. 한번 처리된 Promise는 바뀌지 않는다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>1. 한번 처리된 Promise는 바뀌지 않는다.</mark>
 ```js
 let promise = new Promise(function(resolve, reject) {
   resolve("완료");
@@ -613,9 +613,9 @@ let promise = new Promise(function(resolve, reject) {
 });
 ```
 
-#### <mark style="background: #BBFABBA6;">2. Error 객체와 함께 reject해야 한다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>2. Error 객체와 함께 reject해야 한다.</mark>
 
-#### <mark style="background: #BBFABBA6;">3. 꼭 Promise가 비동기적인 것을 다루지 않아도 된다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>3. 꼭 Promise가 비동기적인 것을 다루지 않아도 된다.</mark>
 ```js
 let promise = new Promise(function(resolve, reject) {
   // 일을 끝마치는 데 시간이 들지 않음
@@ -624,13 +624,13 @@ let promise = new Promise(function(resolve, reject) {
 ```
 위 방식대로 하면 즉시 이행 상태가 된다.
 
-#### <mark style="background: #BBFABBA6;">4. PromiseState와 PromiseResult는 내부 프로퍼티이기 때문에 직접 접근할 수 있다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>4. PromiseState와 PromiseResult는 내부 프로퍼티이기 때문에 직접 접근할 수 있다.</mark>
 
-### <mark style="background: #FFF3A3A6;">소비함수</mark>
+### <mark style={{background:"#FFF3A3A6"}}>소비함수</mark>
 
 소비 함수는 `.then`, `.catch`, `.finally` 메서드를 사용해 등록된다.
 
-#### <mark style="background: #BBFABBA6;">.then</mark>
+#### <mark style={{background:"#BBFABBA6"}}>.then</mark>
 
 Promise fulfilled 혹은 rejected가 완료되면 이후에 실행되는 소비함수
 
@@ -648,7 +648,7 @@ promise.then(
 
 성공 처리만 하고 싶다면 두번째 인수를 생략하면 된다.
 
-#### <mark style="background: #BBFABBA6;">.catch</mark>
+#### <mark style={{background:"#BBFABBA6"}}>.catch</mark>
 
 `.then(null, 에러처리함수)` 형태로 에러만을 처리해도 되지만 `.catch`를 활용해서 간결하게 표현할 수 있다.
 
@@ -661,7 +661,7 @@ let promise = new Promise((resolve, reject) => {
 promise.catch(alert); // 1초 뒤 "Error: 에러 발생!" 출력
 ```
 
-#### <mark style="background: #BBFABBA6;">.finally</mark>
+#### <mark style={{background:"#BBFABBA6"}}>.finally</mark>
 
 Promise가 처리되면 항상 실행되는 메소드
 
@@ -697,7 +697,7 @@ new Promise((resolve, reject) => {
 // "에러 발생"
 ```
 
-#### <mark style="background: #BBFABBA6;">실제 사용 예시</mark>
+#### <mark style={{background:"#BBFABBA6"}}>실제 사용 예시</mark>
 
 ```js
 function loadScript(src, callback) {
@@ -740,9 +740,9 @@ promise.then(script => alert('또 다른 핸들러...'));
 
 이제 then, catch, finally 메소드를 활용해서 소비 함수만 던져주면 저장된 promise에서 알아서 소비 함수 안에 인자를 넣어서 실행시킨다.
 
-### <mark style="background: #FFF3A3A6;">Promise Chaining</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Promise Chaining</mark>
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107204412.png)
+![](/images/2024-11-10/Pasted%20image%2020241107204412.png)
 
 Promise를 연결해서 비동기 작업을 차례대로 처리하는 방법
 
@@ -773,7 +773,7 @@ new Promise(function(resolve, reject) {
 
 위의 코드가 가능한 이유는 `.then`이 Promise를 반환하기 때문이다.  `.then`의 리턴값이 해당 Promise의 `result`가 된다.
 
-#### <mark style="background: #BBFABBA6;">또 다른 Promise를 소비 함수 안에서 반환하기</mark>
+#### <mark style={{background:"#BBFABBA6"}}>또 다른 Promise를 소비 함수 안에서 반환하기</mark>
 
 기본적으로 `.then`이 리턴할 값을 `Promise`로 만들어서 리턴하지만 `.then`에서 `Promise`를 만들어서 리턴시킬 수도 있다.
 
@@ -805,7 +805,7 @@ new Promise(function(resolve, reject) {
 });
 ```
 
-#### <mark style="background: #BBFABBA6;">실제 예시</mark>
+#### <mark style={{background:"#BBFABBA6"}}>실제 예시</mark>
 
 ```js
 loadScript("/article/promise-chaining/one.js")
@@ -845,9 +845,9 @@ loadScript("/article/promise-chaining/one.js").then(script1 => {
 
 이때 가장 내부에 있는 loadScript는 외부 스코프에 전부 접근할 수 있어서 필요에 의해선 위 코드처럼 사용하는 게 좋을 수도 있다.
 
-#### <mark style="background: #BBFABBA6;">참고 사항</mark>
+#### <mark style={{background:"#BBFABBA6"}}>참고 사항</mark>
 
-##### <mark style="background: #ABF7F7A6;">thenable</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>thenable</mark>
 
 핸들러(executor, 소비함수 등등)는 Promise가 아닌 `thenable` 객체를 반환하기도 한다.
 
@@ -871,9 +871,9 @@ new Promise(resolve => resolve(1))
   })
   .then(alert); // 1,000밀리 초 후 2를 보여줌
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110210716.png)
+![](/images/2024-11-10/Pasted%20image%2020241110210716.png)
 
-### <mark style="background: #FFF3A3A6;">fetch와 체이닝 함께 응용</mark>
+### <mark style={{background:"#FFF3A3A6"}}>fetch와 체이닝 함께 응용</mark>
 
 프론트 단에서 네트워크 요청 시 `Promise`를 자주 사용한다.
 
@@ -986,9 +986,9 @@ loadJson('/article/promise-chaining/user.json')
 
 결론적으로 Promise Chaining은 다음의 구조이다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107212119.png)
+![](/images/2024-11-10/Pasted%20image%2020241107212119.png)
 
-### <mark style="background: #FFF3A3A6;">Promise와 Error Handling</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Promise와 Error Handling</mark>
 
 ```js
 // 없는 url일 경우
@@ -1022,7 +1022,7 @@ fetch('/article/promise-chaining/user.json')
 
 체인 끝에 catch를 붙이면 위쪽 Promise 중 하나라도 거부되면 해당 catch가 에러를 잡게 된다.
 
-#### <mark style="background: #BBFABBA6;">암시적 try...catch</mark>
+#### <mark style={{background:"#BBFABBA6"}}>암시적 try...catch</mark>
 
 `Promise executor`와 `Promise` 핸들러 코드 주위에는 암시적 `try...catch`가 존재한다. 예외가 발생하면 암시적 `try...catch`에서 예외를 잡고 이를 `reject`처럼 다룬다.
 
@@ -1046,7 +1046,7 @@ new Promise((resolve, reject) => {
   throw new Error("에러 발생!"); // Promise가 거부됨
 }).catch((error)=>{ alert(error); return 3}); // Error: 에러 발생!
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110214430.png)
+![](/images/2024-11-10/Pasted%20image%2020241110214430.png)
 
 해당 암시적 `try... catch`는 핸들러 위쪽에서 발생한 비정상 에러 또한 잡는다.
 
@@ -1068,7 +1068,7 @@ new Promise(function(resolve, reject) {
 }).catch(alert);
 ```
 
-#### <mark style="background: #BBFABBA6;">다시 던지기</mark>
+#### <mark style={{background:"#BBFABBA6"}}>다시 던지기</mark>
 
 `.catch`가 정상적으로 종료되면 `fulfilled`인 `Promise`를 리턴할 것이다. 그래서 다음과 같은 로직이 가능하다.
 
@@ -1114,7 +1114,7 @@ new Promise((resolve, reject) => {
 });
 ```
 
-#### <mark style="background: #BBFABBA6;">처리되지 못한 거부</mark>
+#### <mark style={{background:"#BBFABBA6"}}>처리되지 못한 거부</mark>
 
 ```js
 new Promise(function() {
@@ -1145,11 +1145,11 @@ new Promise(function() {
   throw new Error("에러 발생!");
 }); // 에러를 처리할 수 있는 .catch 핸들러가 없음
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241107214313.png)
+![](/images/2024-11-10/Pasted%20image%2020241107214313.png)
 
-### <mark style="background: #FFF3A3A6;">Promise API</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Promise API</mark>
 
-#### <mark style="background: #BBFABBA6;">Promise.all</mark>
+#### <mark style={{background:"#BBFABBA6"}}>Promise.all</mark>
 
 여러 개의 Promise를 동시에 실행시키고 모든 Promise가 준비될 때까지 기다린다.
 
@@ -1166,7 +1166,7 @@ Promise.all([
 
 각 Promise 요청이 다 끝나면 배열의 순서에 따라서 결과 값이 또 다른 배열 형태로 소비 함수로 전달된다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108150808.png)
+![](/images/2024-11-10/Pasted%20image%2020241108150808.png)
 
 `fetch`는 인수에 존재하는 url에 요청을 보내서 `response`를 `Promise` 형태로 리턴하는 함수이다. 이를 활용한 예제를 살펴보면
 
@@ -1186,7 +1186,7 @@ Promise.all(requests)
     response => alert(`${response.url}: ${response.status}`)
   ));
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108151347.png)
+![](/images/2024-11-10/Pasted%20image%2020241108151347.png)
 
 `Promise.all`을 이용해서 요청 응답을 배열로 받은 후 그 배열을 다시 `Promise.all`을 이용해서 `json()`으로 파싱, 다음 소비 함수에서 해당 파싱된 데이터를 콘솔 창에 띄우는 로직이다.
 
@@ -1211,7 +1211,7 @@ Promise.all(requests)
   .then(users => users.forEach(user => alert(user.name)));
 ```
 
-##### <mark style="background: #ABF7F7A6;">Promise.all의 에러 핸들링</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>Promise.all의 에러 핸들링</mark>
 
 내부 배열에서 하나라도 rejected가 일어나면 전체를 에러라고 판단한다.
 ```js
@@ -1226,13 +1226,13 @@ Promise.all([
 > 
 > 별도의 처리 (AbortController) 가 없다면 Promise rejected가 일어나도 다른 Promise 처리가 취소되진 않는다. 단, 결과는 무시된다.
 > 
-> ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108152428.png)
+> ![](/images/2024-11-10/Pasted%20image%2020241108152428.png)
 > 
 > 위 예시는 rejected되는 Promise를 배열에 넣고 Promise.all을 돌린 예시이다. 
 > 첫 번째 인수인 Promise가 rejected되어 전역 에러가 일어났다. (catch 메소드가 뒤에 없으므로) 
 > 이때 네트워크 요청에서 보면 fetch 자체는 일어난 것을 확인할 수 있다.
 > 
-> ![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108152443.png)
+> ![](/images/2024-11-10/Pasted%20image%2020241108152443.png)
 
 > **Promise.all의 인수에 있는 배열**
 > 
@@ -1247,7 +1247,7 @@ Promise.all([
 ]).then(alert); // 1, 2, 3
 ```
 
-#### <mark style="background: #BBFABBA6;">Promise.allSettled</mark>
+#### <mark style={{background:"#BBFABBA6"}}>Promise.allSettled</mark>
 
 Promise.all은 하나라도 에러가 나면 전부 결과를 못 받는다.
 
@@ -1279,9 +1279,9 @@ Promise.allSettled(urls.map(url => fetch(url)))
     });
   });
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108154631.png)
+![](/images/2024-11-10/Pasted%20image%2020241108154631.png)
 
-#### <mark style="background: #BBFABBA6;">Promise.race</mark>
+#### <mark style={{background:"#BBFABBA6"}}>Promise.race</mark>
 
 Promise.all과 유사하게 Promise 배열 전체를 처리하지만 가장 먼저 처리되는 Promise의 결과를 반환한다.
 ```js
@@ -1294,12 +1294,12 @@ Promise.race([
 ]).then(alert); // 1
 ```
 
-#### <mark style="background: #BBFABBA6;">Promise.resolve와 Promise.reject</mark>
+#### <mark style={{background:"#BBFABBA6"}}>Promise.resolve와 Promise.reject</mark>
 
 resolve와 reject 메소드는 async/ await의 등장으로 잘 사용되지 않는다. 하지만 추후 나올 폴리 필을 이해하기 위해서라도 필요하기에 한번 알아보도록 하자.
 ( `async function`은 리턴값을 무조건 Promise로 꺼내고 내부에 throw Error해주면 rejected 상태의 Promise를 리턴한다. )
 
-##### <mark style="background: #ABF7F7A6;">Promise.resolve</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>Promise.resolve</mark>
 
 Promise.resolve(value)는 결과값이 value인 fulfilled한 Promise를 생성한다.
 
@@ -1325,7 +1325,7 @@ function loadCached(url) {
 `loadCached`는 `fetch`를 할 때 `cache`에 해당 데이터를 저장해두고 다음에 같은 요청을 보냈을 때 `cache`에서 꺼내서 전달한다.
 이때 `Promise.resolve`를 이용해서 `loadCached`가 항상 `Promise`를 반환한다는 걸 정해둬서 사용하는 단에서는 `loadCached` 함수에 `.then/catch` 등의 메소드를 통해서 소비 함수를 넣을 수 있게 된다.
 
-###### <mark style="background: #ADCCFFA6;">Promise.resolve를 이용한 Promise allSettled의 폴리필</mark>
+###### <mark style={{background:"#ADCCFFA6"}}>Promise.resolve를 이용한 Promise allSettled의 폴리필</mark>
 
 allSettled는 나온 지 얼마 안 되어서 구식 브라우저에서는 폴리 필이 필요하다.
 
@@ -1343,22 +1343,22 @@ if(!Promise.allSettled) {
 }
 ```
 
-##### <mark style="background: #ABF7F7A6;">Promise.reject</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>Promise.reject</mark>
 
 `Promise.reject(error)`는 결과값이 `error`인 `rejected Promise`를 반환한다.
 
 ```js
 let promise = Promise.reject(error);ㄴ
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108160624.png)
+![](/images/2024-11-10/Pasted%20image%2020241108160624.png)
 
-### <mark style="background: #FFF3A3A6;">Fetch: Abort</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Fetch: Abort</mark>
 > 글 흐름을 위해 Promise 파트에 넣어놓긴 했지만 엄밀히 말하면 Promise API는 아니다.
 
 Promise.all 에서도 에러 발생시 Promise 결과는 무시되나 호출은 막을 수 없다고 하였다.
 AbortController라는 빌트인 객체를 활용하면 Promise 호출 자체를 막을 수 있다.
 
-#### <mark style="background: #BBFABBA6;">AbortController Object</mark>
+#### <mark style={{background:"#BBFABBA6"}}>AbortController Object</mark>
 
 ```js
 let controller = new AbortController();
@@ -1366,7 +1366,7 @@ let controller = new AbortController();
 
 AbortController는 프로퍼티 하나, 메소드 하나를 갖고 있다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108161157.png)
+![](/images/2024-11-10/Pasted%20image%2020241108161157.png)
 
 1. `signal`은 프로토타입 체인을 가치지 않고 바로 인스턴스에서 찾을 수 있으며 `event listener`를 세팅할 수 있는 프로퍼티이다.
 2. `abort`는 프로토타입 체인을 이용해서 `AbortController`에 있는 메소드를 가져오는 것이며 `abort`가 실행되면 다음의 과정이 일어난다.
@@ -1392,7 +1392,7 @@ alert(signal.aborted); // true
 
 다른 event를 구현해서 동일 기능을 만들어서 fetch와 쓸 수도 있지만, 내부적으로 fetch는 `AbortController`를 인식하기 때문에 `AbortController`를 사용하는 것이 좋다.
 
-#### <mark style="background: #BBFABBA6;">fetch와 함께 사용</mark>
+#### <mark style={{background:"#BBFABBA6"}}>fetch와 함께 사용</mark>
 
 `fetch` 옵션에 `signal`이라는 프로퍼티가 존재한다.
 
@@ -1407,7 +1407,7 @@ fetch(url, {
 
 > 단, fetch가 abort하는 시기보다 더 빨리 끝나면 이미 나온 결과를 없애진 않는다.
 
-#### <mark style="background: #BBFABBA6;">AbortController는 확장성 있다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>AbortController는 확장성 있다.</mark>
 
 ```js
 let urls = [...]; // a list of urls to fetch in parallel
@@ -1448,7 +1448,7 @@ let results = await Promise.all([...fetchJobs, ourJob]);
 // it aborts all fetches and ourJob
 ```
 
-### <mark style="background: #FFF3A3A6;">Promisification</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Promisification</mark>
 
 콜백을 받는 함수를 Promise를 반환하는 함수로 바꾸는 것을 `Promisification` 이라고 한다.
 
@@ -1548,7 +1548,7 @@ f(...).then(arrayOfResults => ..., err => ...);
 
 사실 이를 미리 처리해주는 `promisify` 라이브러리나 `Node.js` 내장 함수가 존재한다.
 
-### <mark style="background: #FFF3A3A6;">Microtask 처리</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Microtask 처리</mark>
 
 `Promise` 핸들러 (`.then/catch/finally`)는 항상 비동기적으로 실행된다.
 
@@ -1565,7 +1565,7 @@ alert("코드 종료");
 // alert("Promise 성공!");
 ```
 
-#### <mark style="background: #BBFABBA6;">Microtask Queue</mark>
+#### <mark style={{background:"#BBFABBA6"}}>Microtask Queue</mark>
 
 비동기 작업을 처리하려면 적절한 관리가 필요하다.
 이를 위해 ECMA에선 `PromiseJobs`라는 내부 큐(`Internal Queue`)를 명시한다. ( `V8`엔진에서 이를 `Microtask Queue` 라고 부르기 때문에 `Microtask Queue`를 더 자주 쓴다. )
@@ -1578,7 +1578,7 @@ alert("코드 종료");
 
 이후 현재 코드에서 자유로운 상태가 되었을 때 자바스크립트 엔진은 큐에서 작업을 꺼내 실행한다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108195640.png)
+![](/images/2024-11-10/Pasted%20image%2020241108195640.png)
 
 `Promise` 핸들러는 항상 내부 큐(`Promise jobs`이자 `Microtask Queue`)를 통과하게 된다.
 
@@ -1591,7 +1591,7 @@ Promise.resolve()
 ```
 위와 같이 하면 비동기 동작을 차례대로 진행할 수 있다.
 
-#### <mark style="background: #BBFABBA6;">처리되지 못한 거부</mark>
+#### <mark style={{background:"#BBFABBA6"}}>처리되지 못한 거부</mark>
 
 `unhandledrejection` 이벤트는 `Promise`를 실행할 때 `.catch` 없이 에러가 전달돼서 전역 에러가 난 것을 의미한다.
 
@@ -1607,7 +1607,7 @@ window.addEventListener('unhandledrejection', event => alert(event.reason));
 > 자바스크립트 엔진은 처리되지 못한 거부(unhandled rejection)를 찾을 때 `Microtask Queue`를 확인한다. 
 > Microtask Queue 끝에도 Promise error가 처리되지 않았다면 발생한다.
 
-##### <mark style="background: #ABF7F7A6;">만약 catch를 나중에 처리한다면</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>만약 catch를 나중에 처리한다면</mark>
 
 ```js
 let promise = Promise.reject(new Error("Promise 실패!"));
@@ -1616,7 +1616,7 @@ setTimeout(() => promise.catch(err => console.log('잡았다!')), 1000);
 // Error: Promise 실패!
 window.addEventListener('unhandledrejection', event => console.log(event.reason));
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241108205243.png)
+![](/images/2024-11-10/Pasted%20image%2020241108205243.png)
 
 `unhandledrejection`의 핸들러 함수 > rejected Promise 있다고 알림 > catch 소비 함수
 순서인 것을 확인할 수 있다.
@@ -1630,11 +1630,11 @@ window.addEventListener('unhandledrejection', event => console.log(event.reason)
 6. `rejected Promise`가 담겨있는 변수 `promise`를 `.catch`핸들러로 찍었기에 `()=>console.log('잡았다!')`를 `Microtask Queue`로 이동시킨다. 
 7. 이동이 끝나면 `Macrotask` 하나가 끝났으니 `Microtask Queue`를 비워질 때까지 실행한다. 여기서 `()=>console.log('잡았다!')`가 실행된다.
 
-## <mark style="background: #FFB86CA6;">async, await</mark>
+## <mark style={{background:"#FFB86CA6"}}>async, await</mark>
 
 `Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 탄생하게 되었다.
 
-### <mark style="background: #FFF3A3A6;">async function</mark>
+### <mark style={{background:"#FFF3A3A6"}}>async function</mark>
 
 ```js
 async funciton f(){
@@ -1645,7 +1645,7 @@ async funciton f(){
 `function` 앞에 `async`를 붙이면 해당 함수는 항상 Promise를 반환한다.
 만약 Promise가 아닌 값을 반환하더라도 fulfilled 상태의 Promise로 값을 감싸서 반환한다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110152440.png)
+![](/images/2024-11-10/Pasted%20image%2020241110152440.png)
 
 즉 다음의 코드들은 같은 기능을 한다.
 ```js
@@ -1658,7 +1658,7 @@ async funciton f2(){
 }
 ```
 
-### <mark style="background: #FFF3A3A6;">await</mark>
+### <mark style={{background:"#FFF3A3A6"}}>await</mark>
 
 ```js
 // await는 async function 안에서만 동작한다.
@@ -1762,7 +1762,7 @@ new Waiter()
   .then(alert); // 1
 ```
 
-### <mark style="background: #FFF3A3A6;">에러 핸들링</mark>
+### <mark style={{background:"#FFF3A3A6"}}>에러 핸들링</mark>
 
 `await promise`는 Promise 객체의 `result`에 저장된 값을 반환한다.
 반면 `Promise`가 거부되면 마치 `throw`문을 작성한 것처럼 에러를 던진다.
@@ -1796,15 +1796,15 @@ f();
 
 원래 `async function`에 리턴값이 없으면 `fulfilled Promise`에 `undefined`가 담겨서 리턴되지만
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110193617.png)
+![](/images/2024-11-10/Pasted%20image%2020241110193617.png)
 
 `async function`에서 `await`한 `Promise`가 `reject`된다면 `rejected`된 `Promise`에 에러가 담겨서 리턴된다. (또한,에러도 발생한다.)
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110193853.png)
+![](/images/2024-11-10/Pasted%20image%2020241110193853.png)
 
 위의 코드에서 `.catch`를 이어서 사용해서 해당 `Error`를 핸들링할 수 있다.
 
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110193713.png)
+![](/images/2024-11-10/Pasted%20image%2020241110193713.png)
 
 > 여기서 `.catch`로 핸들링 되지 않은 에러는 전역 에러로 처리되는데 이는 `unhandledrejection`이벤트의 핸들러로 처리할 수 있다.
 
@@ -1823,7 +1823,7 @@ let results = await Promise.all([
 > 감을 익히기 위한 세 가지 과제가 있습니다. 한번 풀어보면 좋을 것 같다.
 > https://ko.javascript.info/async-await#tasks
 
-# <mark style="background: #FF5582A6;">비동기 관련 문제 풀이</mark>
+# <mark style={{background:"#FF5582A6"}}>비동기 관련 문제 풀이</mark>
 
 다음은 비동기 관련 로직을 완벽하게 이해하기 위해서 만들어 본 문제이다. 
 각 `queue`와 `Web API`를 생각하면서 결과값은 무엇이고 왜인지 생각해보자.
@@ -1853,9 +1853,9 @@ export const testFn = async () => {
   console.log(7);
 };
 ```
-![](https://codefug.github.io/assets/images/2024-11-10/Pasted%20image%2020241110155653.png)
+![](/images/2024-11-10/Pasted%20image%2020241110155653.png)
 
-## <mark style="background: #FFB86CA6;">풀이</mark>
+## <mark style={{background:"#FFB86CA6"}}>풀이</mark>
 
 |                      | 1번째 task (testFn이라는 Macrotask 실행)                                                                                                     | 2번째 task (testFn 관련 Microtask 전부 실행)                                                                                                 | 코드 실행부터 500ms 지남                                             | 3번째 task ( 2를 출력하는 Macrotask 실행 )                           | Microtask Queue 비어있는 것 확인하고 다음으로 넘어감                 | 코드 실행부터 5000ms 지남 | 4번째 task ( 4를 출력하는 Macrotask 실행) |
 | :------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------- | ----------------------------------------- |
@@ -1866,7 +1866,7 @@ export const testFn = async () => {
 
 > `Macrotask` > `Microtask` > `requestAnimationFrame` > `브라우저 렌더링` 순서로 렌더링이 진행되기 때문에 위의 코드 실행 중간에 이벤트가 발생해서 `Macrotask`가 하나 생기게 되면 해당 `Macrotask`에 관련된 브라우저 렌더링이 일어나고 위의 코드로 복귀하게 될 수 있다.
 
-# <mark style="background: #FF5582A6;">마무리</mark>
+# <mark style={{background:"#FF5582A6"}}>마무리</mark>
 
 > 기존에는 비동기 코드가 Microtask Queue와 이벤트 루프를 활용해서 돌아간다는 정도만 알고 있었다면, 이제는 브라우저 렌더링 흐름과 함께 이해하면서 
 > **비동기 방식이 왜 필요한지**를 더 정확히 알 수 있었다.  
@@ -1874,7 +1874,7 @@ export const testFn = async () => {
 > **이 기술이 왜 필요한지에** 집중하면서부터는 좀 더 다양한 시각으로 볼 수 있게 된 것 같다.  
 > 이제 더 나아가 보자.
 
-# <mark style="background: #FF5582A6;">참고 문헌</mark>
+# <mark style={{background:"#FF5582A6"}}>참고 문헌</mark>
 - https://wikibook.co.kr/react-deep-dive/
 - https://ko.javascript.info/async
 - https://product.kyobobook.co.kr/detail/S000001766397

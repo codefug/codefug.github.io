@@ -1,7 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import { createElement, ReactNode } from "react";
-import Callout from "./components/mdx/callout";
 import processCallout from "./util/callout";
+import Callout from "./components/mdx/callout";
 
 function getHeadingIndexWithCloser() {
   let headingIndex = -1;
@@ -67,6 +67,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     blockquote: (props) => {
       const { children } = props;
       const { type, title, content } = processCallout(children);
+      if (type === null) return createElement("blockquote", props);
       return <Callout type={type} title={title} content={content} />;
     },
     // a: CustomLink,

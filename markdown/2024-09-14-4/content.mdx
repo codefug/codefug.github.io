@@ -1,15 +1,4 @@
----
-title: (꼼꼼 프로젝트) streaming 방식의 tanstack query
-excerpt: infinite scroll, optimistic update 그리고 streaming 방식이 결합된 쿼리 처리 ( useSuspenseQuery, useSuspenseInfiniteQuery )
-toc: true
-toc_sticky: true
-categories:
-  - kkom-kkom
-last_modified_at: 2024-09-14T19:54:00
-header:
-  teaser: /assets/images/Logo/tanstackQuery.png
----
-# <mark style="background: #FF5582A6;">배경</mark>
+# <mark style={{background:"#FF5582A6"}}>배경</mark>
 
 꼼꼼 프로젝트에서는 tanstack query를 적극 활용하였다.
 
@@ -17,11 +6,12 @@ tanstack query가 서버 상태를 관리하는데는 좋지만 Next.js와 함�
 
 예를 들면 자유게시판 전체 페이지의 페이지 네이션을 생각해보자.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240914202641.png)
+![](/images/2024-09-14/Pasted%20image%2020240914202641.png)
 
-## <mark style="background: #FFB86CA6;">기존 CSR를 이용한 페이지네이션 방식의 단점</mark>
+## <mark style={{background:"#FFB86CA6"}}>기존 CSR를 이용한 페이지네이션 방식의 단점</mark>
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240816005045.png)
+![](/images/2024-09-14/Pasted%20image%2020240816005045.png)
+
 1. Streaming을 이용한 Next.js 만의 fetch 방식을 사용할 수 없다.
 2. SSR시에 장점인 Hydration 이전의 HTML 구조를 가져와서 TTFB를 줄일 수 있다는 장점을 누릴 수 없다.
 3. SSR시 스켈레톤을 Suspense fallback으로도 넣을 수 있기 때문에 tanstack query의 isPending을 활용한 스켈레톤을 그대로 구현할 수 있다.
@@ -30,13 +20,13 @@ tanstack query가 서버 상태를 관리하는데는 좋지만 Next.js와 함�
 
 Promise.all을 이용한 병렬 fetch를 사용해도 비슷한 효과가 나오겠지만 최선이 아니기 때문에 결합할 수 있는 방법이 있다면 결합하고 방법이 없다면 SSR (Streaming) 과 Tanstack query (병렬 fetching) 사이의 규칙을 만들어서 둘다 쓰는 것이 좋아보였다.
 
-# <mark style="background: #FF5582A6;">구현</mark>
+# <mark style={{background:"#FF5582A6"}}>구현</mark>
 
-## <mark style="background: #FFB86CA6;">streaming 방식의 query</mark>
+## <mark style={{background:"#FFB86CA6"}}>streaming 방식의 query</mark>
 
 이를 해결하기 위해 찾아보던 중 공식문서에서 답을 찾게 되었다.
 
-<a href="https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#streaming-with-server-components">https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#streaming-with-server-components</a>
+https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#streaming-with-server-components
 
 읽어보면 streaming 방식과 tanstackquery를 동시에 쓸 수 있는 단서를 찾을 수 있다.
 
@@ -47,6 +37,7 @@ prefetchQuery 자체를 SSR로 생각해서 스켈레톤을 먼저 던지고 그
 문서를 참고해서 queryClient를 처리해준 후
 
 useQuery > useSuspenseQuery
+
 ```tsx
 export function useArticleQuery(articleId: number) {
   return useSuspenseQuery({
@@ -60,6 +51,7 @@ export function useArticleQuery(articleId: number) {
 prefetchQuery를 사용하는 queryClient를 dehydrate해서 껍데기로 만든 후 내려준다.
 
 Suspense로 감싸져 있는 컴포넌트들은 내부에서 사용하는 query가 fetch되기 전까지 fallback이 그 자리를 대신하게 된다. (Streaming 방식)
+
 ```tsx
 export default async function Page({ params: { boardId } }: Props) {
   const articleId = Number(boardId);
@@ -86,7 +78,7 @@ export default async function Page({ params: { boardId } }: Props) {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <GtmPageView pageTitle={`boardId: ${boardId}`} />
       <section className="border-b border-black border-opacity-10 dark:border-b dark:border-white dark:border-opacity-10">
-        <header className="mb-1 flex items-center gap-1 text-base font-medium text-text-primary">
+        <header className="text-text-primary mb-1 flex items-center gap-1 text-base font-medium">
           <Image src="/icons/medal.svg" alt="Medal" width={16} height={16} />
           <h2 className="selection:bg-inherit">베스트 랭킹</h2>
         </header>
@@ -114,14 +106,15 @@ export default async function Page({ params: { boardId } }: Props) {
 }
 ```
 
-![](https://codefug.github.io/assets/images/2024-09-14/자유게시판%20streaming%20방식%20렌더링.gif)
+![](/images/2024-09-14/자유게시판%20streaming%20방식%20렌더링.gif)
 
 위 영상은 아래 코드로 통신 처리를 늘린 영상이다.
+
 ```js
 new Promise((r) => setTimeout(r, ms));
 ```
 
-### <mark style="background: #FFF3A3A6;">트러블 슈팅</mark>
+### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅</mark>
 
 페이지네이션에 Suspense가 적용되지 않는 버그가 있었다.
 
@@ -130,15 +123,12 @@ SearchParams가 변경되는 것을 Suspense가 읽지 못하여 Streaming 방�
 Suspense 자체에 SeachParams를 key로 넣어서 각 Suspense가 다른 것으로 인식하도록 하여 문제를 해결하였다.
 
 ```tsx
-<Suspense
-    key={JSON.stringify(searchParams)}
-    fallback={<SkeletonCardList />}
-    >
-    <ArticlesList searchParams={searchParams} />
+<Suspense key={JSON.stringify(searchParams)} fallback={<SkeletonCardList />}>
+  <ArticlesList searchParams={searchParams} />
 </Suspense>
 ```
 
-## <mark style="background: #FFB86CA6;">낙관적 업데이트</mark>
+## <mark style={{background:"#FFB86CA6"}}>낙관적 업데이트</mark>
 
 UX를 향상시키는 방법에는 Streaming 이외에도 존재한다.
 
@@ -148,7 +138,7 @@ UX를 향상시키는 방법에는 Streaming 이외에도 존재한다.
 2. 현재 쿼리를 저장한다.
 3. 성공했다고 가정하고 쿼리를 변경시킨다.
 4. 쿼리가 성공하면 쿼리를 실제 데이터와 연결 (fetch 완료 이후)
-	1. 쿼리가 실패하면 쿼리를 2번에서 저장된 쿼리로 되돌린다.
+   1. 쿼리가 실패하면 쿼리를 2번에서 저장된 쿼리로 되돌린다.
 
 fetch 실행전은 onMutation, fetch 완료 이후는 onError, onSettled를 이용해서 구현한다.
 
@@ -156,7 +146,7 @@ fetch 실행전은 onMutation, fetch 완료 이후는 onError, onSettled를 이�
 
 좋아요 버튼을 아무리 연타해도 좋아요, 좋아요 취소가 느려진 경험은 없을 것이다.
 
-### <mark style="background: #FFF3A3A6;">좋아요 버튼 구현</mark>
+### <mark style={{background:"#FFF3A3A6"}}>좋아요 버튼 구현</mark>
 
 이번 프로젝트에서도 실제로 좋아요 버튼을 구현해야 했다.
 
@@ -219,8 +209,9 @@ export function useHandleArticleLikeMutation() {
 
 결과적으로 아무리 좋아요를 눌러도 느리게 동작하지 않는 것을 확인할 수 있다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/좋아요,%20좋아요%20취소%20버튼.gif)
-## <mark style="background: #FFB86CA6;">무한스크롤</mark>
+![](/images/2024-09-14/좋아요,%20좋아요%20취소%20버튼.gif)
+
+## <mark style={{background:"#FFB86CA6"}}>무한스크롤</mark>
 
 무한스크롤은 특정 부분이 감지되면 fetch를 보내는 로직을 활용해서 마치 스크롤이 무한으로 있는 것처럼 데이터를 늘려나가는 방식이다.
 
@@ -233,7 +224,7 @@ const {
   isError,
   fetchNextPage,
 } = useInfiniteQuery({
-  queryKey: ['posts'],
+  queryKey: ["posts"],
   queryFn: ({ pageParam }) => getPosts(pageParam, PAGE_LIMIT),
   initialPageParam: 0,
   getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
@@ -244,9 +235,10 @@ const {
 `fetchNextPage`라는 함수를 이용해서 fetch를 보내고 getNextPageParam을 이용해서 마지막인지를 판별한다.
 
 하지만 이는 Suspense를 사용할 수는 없는데 다행히 Tanstack Query에서는 Suspense가 첨가된 InfiniteQuery인 useSuspenseInfiniteQuery를 지원해주고 있었다.
-<a href="https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense">https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense</a>
 
-## <mark style="background: #FFB86CA6;">Streaming + 무한스크롤 + 낙관적 업데이트</mark>
+https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense
+
+## <mark style={{background:"#FFB86CA6"}}>Streaming + 무한스크롤 + 낙관적 업데이트</mark>
 
 고민을 해보니 위의 세가지 (suspense, 무한스크롤, 낙관적 업데이트) 를 모두 적용할 수 있는 부분이 댓글 이라는 생각이 들었다.
 
@@ -377,6 +369,7 @@ pages 단위의 배열과 pageParams를 가진 객체가 최상단 구조이다.
 추가 로직을 구현했으니 삭제, 수정 로직도 비슷하게 구현할 수 있다.
 
 댓글 삭제의 코드는 다음과 같다.
+
 ```tsx
 export function useDeleteCommentsMutation() {
   const queryClient = useQueryClient();
@@ -440,6 +433,7 @@ export function useDeleteCommentsMutation() {
 ```
 
 댓글 수정 코드
+
 ```tsx
 export function usePatchCommentsMutation() {
   const queryClient = useQueryClient();
@@ -504,15 +498,17 @@ export function usePatchCommentsMutation() {
   });
 }
 ```
+
 사실 코드 구현보다도 setQueryData와 InfiniteData의 타입을 읽으려고 더 노력했던 것 같다.
 
 결론적으로는 다음의 구조만 알면 쉬웠다.
-1. setQueryData<받는 데이터, 쿼리 키, 주는 데이터>
-2. InfiniteData<전체 데이터 구조, pageParam의 구조>
 
-### <mark style="background: #FFF3A3A6;">트러블 슈팅 </mark>
+1. `setQueryData<받는 데이터, 쿼리 키, 주는 데이터>`
+2. `InfiniteData<전체 데이터 구조, pageParam의 구조>`
 
-#### <mark style="background: #BBFABBA6;">댓글을 연속으로 넣으면 두개씩 생겨버렸다.</mark>
+### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅 </mark>
+
+#### <mark style={{background:"#BBFABBA6"}}>댓글을 연속으로 넣으면 두개씩 생겨버렸다.</mark>
 
 생각해보니 댓글을 올리는 mutation이 pending 상태일 때나 그것과 연결된 쿼리가 아직 fetch하는 중일 때 댓글을 날려버리면 mutation이 엉켜서 문제가 발생한다.
 
@@ -557,7 +553,7 @@ export default function CommentForm({ boardId }: ArticleCommentProps) {
   };
 ```
 
-#### <mark style="background: #BBFABBA6;">하이드레이션 에러</mark>
+#### <mark style={{background:"#BBFABBA6"}}>하이드레이션 에러</mark>
 
 댓글 수정을 구현할 때 하이드레이션 에러가 발생했다.
 
@@ -569,15 +565,14 @@ new Date()로 구현되어 있기 때문에 다를 수 밖에 없었다.
 
 ```tsx
 <time
-    className="border-l border-border-primary border-opacity-10 pl-4 text-xs font-medium leading-3 text-text-disabled md:text-sm md:leading-[14px]"
-    suppressHydrationWarning
-    >
-    {timeDiff}{" "}
-    {comment.updatedAt !== comment.createdAt && "(수정됨)"}
+  className="border-border-primary text-text-disabled border-l border-opacity-10 pl-4 text-xs font-medium leading-3 md:text-sm md:leading-[14px]"
+  suppressHydrationWarning
+>
+  {timeDiff} {comment.updatedAt !== comment.createdAt && "(수정됨)"}
 </time>
 ```
 
-# <mark style="background: #FF5582A6;">후기</mark>
+# <mark style={{background:"#FF5582A6"}}>후기</mark>
 
 Tanstack Query에 푹 빠져서 쿼리 관리를 했던 소중한 경험이었다.
 
@@ -587,10 +582,8 @@ Tanstack Query에 푹 빠져서 쿼리 관리를 했던 소중한 경험이었�
 
 더 성장해보자.
 
+> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요!
 >
-> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요! 
-> 
 > 읽어주셔서 감사합니다! 지켜봐주세요!
 >
 > 감사합니다.
->

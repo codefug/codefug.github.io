@@ -1,38 +1,28 @@
----
-title: (꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민
-excerpt: progress bar 로직 연구하기(startTransition), next-nprogress-bar
-toc: true
-toc_sticky: true
-categories:
-  - kkom-kkom
-last_modified_at: 2024-09-14T14:00:00
-header:
-  teaser: /assets/images/Logo/nprogress.png
----
-# <mark style="background: #FF5582A6;">배경</mark>
+# <mark style={{background:"#FF5582A6"}}>배경</mark>
 
-![](https://codefug.github.io/assets/images/2024-09-14/progressbar%20예시.gif)
+![](/images/2024-09-14/progressbar%20예시.gif)
 
 위의 사진은 Next.js로 만든 코드잇 사이트이다.
 
-Link 컴포넌트인 탭 요소를 누르면 주소가 바뀌면서 progress bar가 동작하는 것을 확인할 수 있다. 
+Link 컴포넌트인 탭 요소를 누르면 주소가 바뀌면서 progress bar가 동작하는 것을 확인할 수 있다.
 
 꼼꼼 프로젝트는 Next.js로 만들어졌기 때문에 url이 변경되면서 렌더링이 일어나는 경우가 많다. (searchParams와 관련된 렌더링도 많다.)
 
 이때 progress bar를 추가하면 UX가 크게 향상될 것이라고 생각하고 고민을 시작했다.
 
-# <mark style="background: #FF5582A6;">구현</mark>
+# <mark style={{background:"#FF5582A6"}}>구현</mark>
 
 Next는 router event를 외부에 노출시키지 않아서 페이지 바꿀 때 로딩 생기는 걸 구현하는게 매우 어렵다.
 
 이를 해결한 간단한 라이브러리도 찾았으나 실제 동작 과정을 알고 싶어서 실제로 구현된 코드를 위주로 연구를 시작했다.
 
-## <mark style="background: #FFB86CA6;">코드 분석</mark>
+## <mark style={{background:"#FFB86CA6"}}>코드 분석</mark>
 
-<a href="https://buildui.com/posts/global-progress-in-nextjs">https://buildui.com/posts/global-progress-in-nextjs</a>
+https://buildui.com/posts/global-progress-in-nextjs
+
 위의 포스팅을 분석해보았다.
 
-### <mark style="background: #FFF3A3A6;">layout.tsx</mark>
+### <mark style={{background:"#FFF3A3A6"}}>layout.tsx</mark>
 
 ```tsx
 // layout.tsx
@@ -59,7 +49,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 ```
 
-### <mark style="background: #FFF3A3A6;">progress-bar</mark>
+### <mark style={{background:"#FFF3A3A6"}}>progress-bar</mark>
 
 ```tsx
 // progress-bar
@@ -86,7 +76,7 @@ import {
 
 // createContext로 전역 상태 지정
 const ProgressBarContext = createContext<ReturnType<typeof useProgress> | null>(
-  null
+  null,
 );
 
 // useProgressBar 라는 훅으로 useProgress와 연결해서 사용하고자 함.
@@ -100,20 +90,26 @@ export function useProgressBar() {
 }
 
 // Progress Bar 컴포넌트 그 자체
-export function ProgressBar({ className, children }: { className: string, children: ReactNode }) {
+export function ProgressBar({
+  className,
+  children,
+}: {
+  className: string;
+  children: ReactNode;
+}) {
   // useProgress 사용
   let progress = useProgress();
   // useMotionTemplate: 여러 motion value를 하나의 motion value로 만드는 훅
   // 여기서는 width: ~% 이런식으로 길어지게 만들어 놓음. 내부적으로 progress.value가 100이 되면 complete임
-  let width = useMotionTemplate`${progress.value}%`; 
+  let width = useMotionTemplate`${progress.value}%`;
 
   return (
     <ProgressBarContext.Provider value={progress}>
-    // 존재하는 모든 노드의 애니메이션이 완료되면 progress.reset
-    // AnimatePresence가 progress.state가 complete된걸 감지해서 exit 애니메이션을 실행시킬 수 있게 해주고
-    // 이후에 reset 함수가 실행된다.
+      // 존재하는 모든 노드의 애니메이션이 완료되면 progress.reset //
+      AnimatePresence가 progress.state가 complete된걸 감지해서 exit 애니메이션을
+      실행시킬 수 있게 해주고 // 이후에 reset 함수가 실행된다.
       <AnimatePresence onExitComplete={progress.reset}>
-      // 마운트시키는 상태를 progress에서 가져옴
+        // 마운트시키는 상태를 progress에서 가져옴
         {progress.state !== "complete" && (
           <motion.div
             style={{ width }}
@@ -134,7 +130,7 @@ export function ProgressBarLink({
   ...rest
 }: ComponentProps<typeof Link>) {
   // useProgress를 context에서 꺼낸다.
-  let progress = useProgressBar(); 
+  let progress = useProgressBar();
   let router = useRouter();
 
   return (
@@ -152,11 +148,11 @@ export function ProgressBarLink({
           // startTransition은 내부의 함수들이 UI 렌더링 없이 한번에 업데이트 되게 해준다.
           // 이를 통해 router.push와 progress.done은 한번에 업데이트 되게 된다.
 
-		  // 클릭시 progress.start라는 상태 변화는 바로 일어나지만 progress.done이라는 상태 변화는 router.push가 끝나야 진행된다.
-		  // 상태 계의 async라고 보면 될 것 같다.
-		  
+          // 클릭시 progress.start라는 상태 변화는 바로 일어나지만 progress.done이라는 상태 변화는 router.push가 끝나야 진행된다.
+          // 상태 계의 async라고 보면 될 것 같다.
+
           // push가 끝나면 done으로 progress를 끝낸다. (initial이거나 in-progress면 complete으로 만듬.)
-          progress.done(); 
+          progress.done();
         });
       }}
       {...rest}
@@ -168,24 +164,24 @@ export function ProgressBarLink({
 
 // useProgress (본체)
 function useProgress() {
-// 현재 상태
+  // 현재 상태
   const [state, setState] = useState<
     "initial" | "in-progress" | "completing" | "complete"
   >("initial");
 
-// Spring으로 애니메이션 value 넣음.
+  // Spring으로 애니메이션 value 넣음.
   let value = useSpring(0, {
-  // 반대쪽에 가해지는 힘
+    // 반대쪽에 가해지는 힘
     damping: 25,
-  // 무기력해지는 정도
+    // 무기력해지는 정도
     mass: 0.5,
-  // sudden movement 정도
+    // sudden movement 정도
     stiffness: 300,
-  // 거리가 이것보다 낮아지면 애니메이션을 끝낸다.
+    // 거리가 이것보다 낮아지면 애니메이션을 끝낸다.
     restDelta: 0.1,
   });
 
-// interval로 콜백함수를 실행시켜주는 훅
+  // interval로 콜백함수를 실행시켜주는 훅
   useInterval(
     () => {
       // progress를 시작하는데 bar가 complete 상태면 reset부터 한다.
@@ -193,13 +189,13 @@ function useProgress() {
         // motionValue를 0으로 만들어서 멈춘다.
         value.jump(0);
       }
-      
+
       // motionValue를 가져와서
       let current = value.get();
 
       // 바뀌는 정도인듯?
       let diff;
-      
+
       // 0이면 한번에 15움직이고
       if (current === 0) {
         diff = 15;
@@ -215,21 +211,21 @@ function useProgress() {
       value.set(Math.min(current + diff, 99));
     },
     // in-progress 상태이면 delay (시간텀) 을 750 (0.75s) 아니면 없앰
-    state === "in-progress" ? 750 : null
+    state === "in-progress" ? 750 : null,
   );
 
   useEffect(() => {
     // initia이면 0으로
     if (state === "initial") {
       value.jump(0);
-    // completing이면 100으로 간다.
+      // completing이면 100으로 간다.
     } else if (state === "completing") {
       value.set(100);
     }
 
     // value가 변화할 때 latest가 100이면 complete 상태로 만든다.
     return value.on("change", (latest) => {
-    // on 이벤트는 motionValue를 가져올 수 있다. lastest가 motionValue임
+      // on 이벤트는 motionValue를 가져올 수 있다. lastest가 motionValue임
       if (latest === 100) {
         setState("complete");
       }
@@ -238,19 +234,19 @@ function useProgress() {
   }, [value, state]);
 
   function reset() {
-  // initial로 만듬
+    // initial로 만듬
     setState("initial");
   }
 
   function start() {
-  // start로 만듬
+    // start로 만듬
     setState("in-progress");
   }
 
   function done() {
-  // initial이거나 in-progress면 completing아니면 원상태로 돌리는 함수
+    // initial이거나 in-progress면 completing아니면 원상태로 돌리는 함수
     setState((state) =>
-      state === "initial" || state === "in-progress" ? "completing" : state
+      state === "initial" || state === "in-progress" ? "completing" : state,
     );
   }
   return { state, value, start, done, reset };
@@ -265,7 +261,7 @@ function rand(min: number, max: number) {
 function useInterval(callback: () => void, delay: number | null) {
   // callback을 저장하는 클로저
   const savedCallback = useRef(callback);
-  
+
   useEffect(() => {
     // callback을 변경하는 함수
     savedCallback.current = callback;
@@ -280,7 +276,7 @@ function useInterval(callback: () => void, delay: number | null) {
     if (delay !== null) {
       // 일단 실행
       tick();
-      
+
       // 타이머 켜라
       let id = setInterval(tick, delay);
       // 언마운트 될 때 타이머 지워라
@@ -290,7 +286,7 @@ function useInterval(callback: () => void, delay: number | null) {
 }
 ```
 
-### <mark style="background: #FFF3A3A6;">분석 결과</mark>
+### <mark style={{background:"#FFF3A3A6"}}>분석 결과</mark>
 
 굉장히 복잡한 코드가 나왔지만 결론적으로는 progress bar가 실제 로딩 퍼센트와 관련이 없어도 된다는 아이디어로 시작되는 것 같다.
 
@@ -304,10 +300,11 @@ function useInterval(callback: () => void, delay: number | null) {
 분석은 끝났으니 이제 활용할 방법을 찾아보자.
 
 우리 프로젝트를 리팩토링할만한 것들은 다음과 같다.
+
 1. 우리 만의 LinkButton이 있기 때문에 Link를 따로 만들지 않고 훅에서 로직을 받아와서 내려주는 방식으로 리팩토링이 쉽게 해줘야 한다. => 훅으로 따로 생성, 내부 로직은 감춤
 2. useReducer를 이용해서 state 관리를 가독성 있게 하자.
 
-## <mark style="background: #FFB86CA6;">리팩토링 결과</mark>
+## <mark style={{background:"#FFB86CA6"}}>리팩토링 결과</mark>
 
 ```tsx
 import { rand } from "@/utils/get-rand";
@@ -466,6 +463,7 @@ export function useProgress() {
 ```
 
 정리하자면 다음과 같다.
+
 1. Progress Bar처럼 로딩을 표시하는 view 컴포넌트에 내려줄 useProgress 훅은 useReducer를 이용한 flux 패턴으로 세부 상태 관리는 감추어서 가독성을 높였다.
 2. start, done으로 나누어져 사용하는 쪽에서 startTransition을 직접 구현해야했던 패턴에서 useProgress 훅으로 해당 훅을 숨기게 되었다.
 
@@ -514,7 +512,7 @@ progress에 콜백을 넘기는 것 만으로도 progress Bar와 연결될 수 �
 기존 LinkButton 에 progress를 추가해보면 다음과 같다.
 
 ```tsx
-"use client"
+"use client";
 //...
 export function LinkButton({
   href,
@@ -554,16 +552,15 @@ useReducer를 활용한 flux 패턴으로 상태 관리를 처리하는 리팩�
 
 복잡한 로직이 나올 때 useReducer나 zustand 같은 flux 패턴을 사용하여 구현된 기법을 사용하는 이유를 알게 되었다.
 
-늘 느끼지만 모든 기술이 자신의 문제를 해결하기 위해 찾아볼 때 기억에 잘 새겨지는 것 같다. 이번에도 많이 배웠다. 
+늘 느끼지만 모든 기술이 자신의 문제를 해결하기 위해 찾아볼 때 기억에 잘 새겨지는 것 같다. 이번에도 많이 배웠다.
 
-### <mark style="background: #FFF3A3A6;">끝이 아니었다...</mark>
+### <mark style={{background:"#FFF3A3A6"}}>끝이 아니었다...</mark>
 
-![](https://codefug.github.io/assets/images/2024-09-14/progress%20bar%20리렌더링%20에러.gif)
+![](/images/2024-09-14/progress%20bar%20리렌더링%20에러.gif)
 
 리렌더링 에러 ㅎㅎ... 너무 느려서 확인해봤더니..
 
-
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240818002733.png)
+![](/images/2024-09-14/Pasted%20image%2020240818002733.png)
 
 progress라는 함수를 받는 컴포넌트도 progress bar로 인해서 리렌더링 되는 상황이다
 
@@ -573,15 +570,15 @@ progress bar라는 상태가 빈번하게 변화하는 컴포넌트가 최상위
 
 zustand를 이용해서 상태를 "관리"하여 이를 해결해보려고 했지만
 
-<a href="https://github.com/pmndrs/zustand/discussions/885">https://github.com/pmndrs/zustand/discussions/885
-</a>
+https://github.com/pmndrs/zustand/discussions/885
 
 useSyncExternalStore를 활용하는 zustand는 별도의 추가 없이는 startTransition과 함께 호환되지 않는다고 한다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240828114258.png)
+![](/images/2024-09-14/Pasted%20image%2020240828114258.png)
 
 찾아보니 zustand 개발자가 커스텀 훅을 만들어놨다.
-<a href="https://www.npmjs.com/package/use-zustand">https://www.npmjs.com/package/use-zustand</a>
+
+https://www.npmjs.com/package/use-zustand
 
 이걸 사용했지만 next.js와 context api를 활용해서 연결된 방식과 결합하는 것이다 보니 개발자가 구상했었던 예외처리가 아닌 것 같았다.
 
@@ -591,16 +588,16 @@ useSyncExternalStore를 활용하는 zustand는 별도의 추가 없이는 start
 
 이는startTransition을 활용하는 방식이 아니었다. 시도해보기로 한다.
 
-## <mark style="background: #FFB86CA6;">next-nprogress-bar</mark>
+## <mark style={{background:"#FFB86CA6"}}>next-nprogress-bar</mark>
 
 ```terminal
 pnpm install next-nprogress-bar
 ```
 
 ```tsx
-'use client';
+"use client";
 
-import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -625,11 +622,11 @@ html 자체에 스타일링을 줘서 작동하는 방식인 것 같았다. 여�
 
 이제 Link 자체에 특별한 옵션을 안 넣으면 자동으로 progress bar가 동작한다고 한다.
 
-### <mark style="background: #FFF3A3A6;">트러블 슈팅</mark>
+### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅</mark>
 
 Next.js에서는 SearchParams에 따른 컴포넌트 렌더링이 많다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240914151931.png)
+![](/images/2024-09-14/Pasted%20image%2020240914151931.png)
 (searchParams에 따라서 정렬을 다르게 하는 자유게시판 페이지의 예시)
 
 인기순에서 최신순으로 정렬기준을 바꿨을 때도 progress bar가 나오는데 좀더 자연스러울 것이다.
@@ -678,7 +675,7 @@ export default function ProgressBarProvider({
 
 이제 정렬을 해도 progress bar가 움직이는 것을 확인할 수 있다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/progressbar게시판.gif)
+![](/images/2024-09-14/progressbar게시판.gif)
 
 ## 후기
 
@@ -688,10 +685,8 @@ progress bar를 구현하기 위한 아이디어는 무엇이고 next.js에서�
 
 더 성장해보자.
 
+> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요!
 >
-> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요! 
-> 
 > 읽어주셔서 감사합니다! 지켜봐주세요!
 >
 > 감사합니다.
->
