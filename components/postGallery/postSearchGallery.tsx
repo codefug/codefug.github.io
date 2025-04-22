@@ -18,15 +18,20 @@ export default function PostSearchGallery({
   totalFrontMatterList: FrontMatter[];
 }) {
   const [value, setValue] = useState("");
+  const regexValue = useMemo(() => new RegExp(value, "i"), [value]);
   const filteredFrontMatterList = useMemo(
-    () => totalFrontMatterList.filter((v) => v.title.includes(value)),
-    [value, totalFrontMatterList],
+    () =>
+      totalFrontMatterList.filter((v) => {
+        if (!value.trim()) return false;
+        return regexValue.test(v.title);
+      }),
+    [value, totalFrontMatterList, regexValue],
   );
   const searchInputRef = useRef<HTMLInputElement>(null);
   const handleSubmit: FormEventHandler = useCallback((e) => {
     e.preventDefault();
-    const searchValue = searchInputRef.current?.value;
-    setValue(searchValue ?? "");
+    const searchValue = searchInputRef.current?.value || "";
+    setValue(searchValue);
   }, []);
   return (
     <div>
