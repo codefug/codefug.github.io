@@ -161,17 +161,19 @@ export function useHandleArticleLikeMutation() {
         ? deleteArticlesArticleIdLike({ articleId })
         : postArticlesArticleIdLike({ articleId }),
     onMutate: async ({ articleId, isLiked }) => {
-    //  쿼리 취소
+      //  쿼리 취소
       await queryClient.cancelQueries({
         queryKey: ["article", { articleId }],
       });
-      const previousArticle 소
+
       // 현재 쿼리 가져옴.
+      const previousArticle =
         queryClient.getQueryData<GetArticlesArticleIdResponse>([
           "article",
           { articleId },
         ]);
-        // 됐다고 가정하고 쿼리 수정
+
+      // 됐다고 가정하고 쿼리 수정
       queryClient.setQueryData<
         GetArticlesArticleIdResponse,
         [string, { articleId: number }],
