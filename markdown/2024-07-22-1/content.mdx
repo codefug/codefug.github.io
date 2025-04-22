@@ -1,17 +1,8 @@
----
-title: (급페이 프로젝트) 알림창 무한 스크롤을 위한 여정 (mock fetching을 위한 MSW 도입기)
-excerpt: msw를 활용해서 프론트엔드 개발이 다 되어있지 않은 상태에서도 무한 스크롤 구현을 확인할 수 있게 되었습니다.
-toc: true
-toc_sticky: true
-categories:
-  - gheuppay
-last_modified_at: 2024-07-21T24:00:00
-header:
-  teaser: /assets/images/Logo/msw.png
----
-# <mark style="background: #FF5582A6;">설계</mark>
+import VimeoPlayer from "@/components/mdx/vimeo.tsx";
 
-![](https://codefug.github.io/assets/images/2024-07-22/Pasted%20image%2020240722170554.png)
+# <mark style={{background:"#FF5582A6"}}>설계</mark>
+
+![](/images/2024-07-22/Pasted%20image%2020240722170554.png)
 
 급페이 헤더의 일부분이다. 클릭시 열리는 알림창을 구현하는데 해당 데이터는 무한 스크롤로 구현합니다.
 
@@ -29,11 +20,12 @@ header:
 그래서 찾아보다가 MSW라는 것을 알게 되었습니다.
 
 MSW는 server를 mocking함으로써 요청을 가로채서 지정된 response를 리턴하게 해주는 mocking server worker입니다. MSW를 일부 도입하여 다른 개발이 끝나지 않은 환경에서 인피니티 스크롤 구현을 확인하고자 하였습니다.
-# <mark style="background: #FF5582A6;">구현</mark>
 
-## <mark style="background: #FFB86CA6;">MSW</mark>
+# <mark style={{background:"#FF5582A6"}}>구현</mark>
 
-### <mark style="background: #FFF3A3A6;">환경 설정</mark>
+## <mark style={{background:"#FFB86CA6"}}>MSW</mark>
+
+### <mark style={{background:"#FFF3A3A6"}}>환경 설정</mark>
 
 ```terminal
 npx msw init ./public --save
@@ -69,19 +61,19 @@ import { useEffect, useState } from "react";
 
 export const MSWComponent = ({ children }: { children: React.ReactNode }) => {
   const [mswReady, setMswReady] = useState(false);
-  
+ 
   useEffect(() => {
     const init = async () => {
       const initMsw = await import("./index").then((res) => res.initMsw);
       await initMsw();
       setMswReady(true);
     };
-  
+
     if (!mswReady) {
       init();
     }
   }, [mswReady]);
-  
+
   return <>{children}</>;
 };
 ```
@@ -120,46 +112,46 @@ export default function RootLayout({
 
 MSWComponent를 Root에 넣어줘서 Root에 접근시 msw가 작동되도록 해줍니다.
 
-### <mark style="background: #FFF3A3A6;">핸들러 설계</mark>
+### <mark style={{background:"#FFF3A3A6"}}>핸들러 설계</mark>
 
 ```ts
 /**
- * @author 이승현
- * @description
- * handlers를 이용해서 msw를 사용할 수 있습니다.
- * 1. app 에 있는 layout.tsx에서 MswComponent 주석 해제합니다.
- * 2. msw의 문법을 이용해서 handlers 배열에 원하는 api를 추가합니다.
- * 3. npx msw init ./public --save 로 변경된 사항에 대한 mock 파일을 생성합니다.
- *
- * @error 해결 방법
- * 무언가를 지워서 mock파일과 달라졌을 경우 에러가 발생할 수 있습니다.
- *
- * npx msw init ./public --save 으로 다시 빌딩하셔서 해결하시면 됩니다.
- */
+ * @author 이승현
+ * @description
+ * handlers를 이용해서 msw를 사용할 수 있습니다.
+ * 1. app 에 있는 layout.tsx에서 MswComponent 주석 해제합니다.
+ * 2. msw의 문법을 이용해서 handlers 배열에 원하는 api를 추가합니다.
+ * 3. npx msw init ./public --save 로 변경된 사항에 대한 mock 파일을 생성합니다.
+ *
+ * @error 해결 방법
+ * 무언가를 지워서 mock파일과 달라졌을 경우 에러가 발생할 수 있습니다.
+ *
+ * npx msw init ./public --save 으로 다시 빌딩하셔서 해결하시면 됩니다.
+ */
 export const handlers = [
-  http.get(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/users/*/alerts`,
-    ({ request, params, cookies }) => {
-      // params는 첫번째 인수의 *을 받습니다. 고로 searchParams를 이용해야만
-      // 원하는 query를 얻을 수 있습니다.
-      const offset = new URL(request.url).searchParams.get("offset");
-      if (offset === "0") {
-        // makeAlertMockData는 임의로 만든 Mock 함수입니다. id를 랜덤으로 주기 위해 만들었습니다.
-        // 내부적으로 Math.random()을 통해서 Node.js 환경에서 랜덤한 값을 얻은 후에 id를 만들어 보내줍니다.
-        const alertMockData1 = makeAlertMockData(); // 클로저를 이용해서 함수의 리턴값을 private화 합니다.
-        // MSW에서 권장하는 Response 객체입니다. json, text, xml 등 다양한 형태로
-        // 응답을 보낼 수 있습니다.
-        return HttpResponse.json(alertMockData1);
-      } else if (offset === "6") {
-        const alertMockData2 = makeAlertMockData();
-        console.log("다음 offset으로 이동");
-        return HttpResponse.json(alertMockData2);
-      } else {
-        const alertMockData3 = makeAlertMockData();
-        return HttpResponse.json(alertMockData3);
-      }
-    },
-  ),
+  http.get(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/users/*/alerts`,
+    ({ request, params, cookies }) => {
+      // params는 첫번째 인수의 *을 받습니다. 고로 searchParams를 이용해야만
+      // 원하는 query를 얻을 수 있습니다.
+      const offset = new URL(request.url).searchParams.get("offset");
+      if (offset === "0") {
+        // makeAlertMockData는 임의로 만든 Mock 함수입니다. id를 랜덤으로 주기 위해 만들었습니다.
+        // 내부적으로 Math.random()을 통해서 Node.js 환경에서 랜덤한 값을 얻은 후에 id를 만들어 보내줍니다.
+        const alertMockData1 = makeAlertMockData(); // 클로저를 이용해서 함수의 리턴값을 private화 합니다.
+        // MSW에서 권장하는 Response 객체입니다. json, text, xml 등 다양한 형태로
+        // 응답을 보낼 수 있습니다.
+        return HttpResponse.json(alertMockData1);
+      } else if (offset === "6") {
+        const alertMockData2 = makeAlertMockData();
+        console.log("다음 offset으로 이동");
+        return HttpResponse.json(alertMockData2);
+      } else {
+        const alertMockData3 = makeAlertMockData();
+        return HttpResponse.json(alertMockData3);
+      }
+    },
+  ),
 ];
 ```
 
@@ -173,7 +165,7 @@ export const handlers = [
 2. 다음 데이터가 잘 오는지 확인하고 offset이 움직이는지 두번째 데이터인지 확실히 확인 (`offset==='6'`)
 3. 이후부턴 console.log가 없는 채로 데이터가 오기 때문에 인피니티 스크롤 구현이 되었는지 확실하게 확인할 수 있습니다.
 
-### <mark style="background: #FFF3A3A6;">mock data 설계</mark>
+### <mark style={{background:"#FFF3A3A6"}}>mock data 설계</mark>
 
 이후 mock data 설계가 매우 중요한데요.
 
@@ -225,26 +217,24 @@ export const makeAlertMockData = (): alertMockData => {
 
 mock data에 Math.random()을 넣은 이유를 이제 조금 이해가 되실 겁니다!
 
-Math.random()은 항상 다른 값을 호출하기 때문에 같은 데이터인지 아닌지 쉽게 확인할 수 있는 것입니다. 같은 데이터를 주었다면 경고창이 나오게 되겠죠. 
+Math.random()은 항상 다른 값을 호출하기 때문에 같은 데이터인지 아닌지 쉽게 확인할 수 있는 것입니다. 같은 데이터를 주었다면 경고창이 나오게 되겠죠.
 
-### <mark style="background: #FFF3A3A6;">MSW 실행</mark>
+### <mark style={{background:"#FFF3A3A6"}}>MSW 실행</mark>
 
-![](https://codefug.github.io/assets/images/2024-07-22/Pasted%20image%2020240702221704.png)
+![](/images/2024-07-22/Pasted%20image%2020240702221704.png)
 
 씨익
 
 이후 성공적으로 인피니티 스크롤을 확인했습니다.
 
-{% include video id="kJrTBYZtssQ" provider="youtube" %}
+<VimeoPlayer id="kJrTBYZtssQ" />
 
-# <mark style="background: #FF5582A6;">reference</mark>
+# <mark style={{background:"#FF5582A6"}}>reference</mark>
 
 https://oliveyoung.tech/blog/2024-01-23/msw-frontend/
 https://www.handongryong.com/post/msw/
 https://velog.io/@sangpok/Next.js-App-Router-MSW
 
->
 > 급페이 프로젝트 중 고민했던 방식, 부딪히게 된 문제, 그것의 해결과정을 담은 글입니다!
 >
 > 잘못된 내용이 있다면 말씀 부탁드립니다. 감사합니다.
->
