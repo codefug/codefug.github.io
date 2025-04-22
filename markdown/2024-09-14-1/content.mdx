@@ -1,26 +1,14 @@
----
-title: (꼼꼼 프로젝트) toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현
-excerpt: stacking context, compound pattern, 전역 상태를 활용한다는 것의 의미, 토스 개발자 실력 흡수하기
-toc: true
-toc_sticky: true
-categories:
-  - kkom-kkom
-last_modified_at: 2024-09-14T13:00:00
-header:
-  teaser: /assets/images/Logo/toss.png
----
-
-# <mark style="background: #FF5582A6;">배경</mark>
+# <mark style={{background:"#FF5582A6"}}>배경</mark>
 
 이번 프로젝트에는 정말 많은 종류의 모달이 존재한다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240731004520.png)
+![](/images/2024-09-14/Pasted%20image%2020240731004520.png)
 
 심지어 디자인 시안이 아직 다 완성되지 않은 상황이었기에 더 추가될지도 모르는 상황이었다.
 
-# <mark style="background: #FF5582A6;">구현</mark>
+# <mark style={{background:"#FF5582A6"}}>구현</mark>
 
-## <mark style="background: #FFB86CA6;">상황 분석</mark>
+## <mark style={{background:"#FFB86CA6"}}>상황 분석</mark>
 
 모달들이 전부 조금씩 다르게 생겼으나 공통적으로 존재하는 것들을 생각해보았다.
 
@@ -31,13 +19,13 @@ header:
 
 1,2,3 의 경우 "모달" 이라는 컴포넌트를 만들어서 조립할 수 있게 만들어주고
 
-4 의 경우 자주 쓰이는 경우 Compound Pattern으로 묶어서 컴포넌트 간의 결합성을 높히게 되긴 하지만  조립하는 쪽에서 쉽게 할 수 있도록 구현하는게 좋다고 생각하였다.
+4 의 경우 자주 쓰이는 경우 Compound Pattern으로 묶어서 컴포넌트 간의 결합성을 높히게 되긴 하지만 조립하는 쪽에서 쉽게 할 수 있도록 구현하는게 좋다고 생각하였다.
 
 컴포넌트 자체의 구현 방식은 해결되었고 이제 렌더링은 어떻게 시킬지 생각해야 했다.
 
-## <mark style="background: #FFB86CA6;">렌더링 방법</mark>
+## <mark style={{background:"#FFB86CA6"}}>렌더링 방법</mark>
 
-### <mark style="background: #FFF3A3A6;">전역 상태 관리</mark>
+### <mark style={{background:"#FFF3A3A6"}}>전역 상태 관리</mark>
 
 부끄럽지만 기존에 모달을 구현할 때는 마감 기한에 밀려서 좋은 코드를 생각하지 못했던 것 같다...
 
@@ -60,7 +48,7 @@ export default function Modal({ children, button }: ModalProps) {
         <div className="fixed inset-0 z-40 flex items-end bg-black bg-opacity-50 md:items-center md:justify-center">
           <div
             ref={modalRef}
-            className="z-50 w-full rounded-t-xl bg-background-secondary md:w-[384px] md:rounded-b-xl"
+            className="bg-background-secondary z-50 w-full rounded-t-xl md:w-[384px] md:rounded-b-xl"
           >
             {children}
           </div>
@@ -73,11 +61,11 @@ export default function Modal({ children, button }: ModalProps) {
 
 이렇게 context api를 사용한 모달은
 
-![](https://codefug.github.io/assets/images/2024-09-14/context%20api를%20활용한%20모달.png)
+![](/images/2024-09-14/context%20api를%20활용한%20모달.png)
 
 모달을 열었을 때 모달을 여는 버튼도 리렌더링된다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/context%20api를%20활용한%20모달%20profiler.png)
+![](/images/2024-09-14/context%20api를%20활용한%20모달%20profiler.png)
 
 이는 어쩔수가 없는게 context가 결국 상위 컴포넌트에 있는 상태를 바꾸기 때문
 
@@ -85,7 +73,7 @@ export default function Modal({ children, button }: ModalProps) {
 
 이번 프로젝트에서 전역 상태 관리 라이브러리로 zustand을 세팅했으니 우선 이를 활용해서 만들어 보자 하고 고민을 시작했다.
 
-### <mark style="background: #FFF3A3A6;">toss slash</mark>
+### <mark style={{background:"#FFF3A3A6"}}>toss slash</mark>
 
 그러던 중 toss의 오픈 소스 라이브러리에 overlay를 다루는 훅이 있는 것을 발견했다.
 
@@ -93,38 +81,47 @@ overlay란 위에 까는 것을 의미하며 여기서는 화면 위에 화면�
 
 즉, 모달 뿐만 아니라 사이드바, 토스트 등 존재하는 화면 위에 있는 컴포넌트도 overlay라고 한다.
 
-#### <mark style="background: #BBFABBA6;">useOverlay 상세 분석</mark>
+#### <mark style={{background:"#BBFABBA6"}}>useOverlay 상세 분석</mark>
 
 https://github.com/toss/slash/blob/main/packages/react/use-overlay/src/useOverlay.ko.md
 
-##### <mark style="background: #ABF7F7A6;">OverlayProvider</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>OverlayProvider</mark>
 
 ```tsx
 // OverlayProvider.tsx
 /** @tossdocs-ignore */
-import React, { createContext, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 
 // context api로 저장
 export const OverlayContext = createContext<{
-// 마운트 되는지 안되는지 확인하는 context
+  // 마운트 되는지 안되는지 확인하는 context
   mount(id: string, element: ReactNode): void;
   unmount(id: string): void;
 } | null>(null);
 // 배포 단계에서는
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   // displayName을 설정
-  OverlayContext.displayName = 'OverlayContext';
+  OverlayContext.displayName = "OverlayContext";
 }
 
 // children을 받는 Provider 생성
 export function OverlayProvider({ children }: PropsWithChildren) {
   // id와 컴포넌트를 저장하는 state 생성
-  const [overlayById, setOverlayById] = useState<Map<string, ReactNode>>(new Map());
+  const [overlayById, setOverlayById] = useState<Map<string, ReactNode>>(
+    new Map(),
+  );
 
   // mount 함수 생성
   const mount = useCallback((id: string, element: ReactNode) => {
     // mount를 계속 호출하지 않고 처음 마운트 될때만 호출 (useCallback)
-    setOverlayById(overlayById => {
+    setOverlayById((overlayById) => {
       const cloned = new Map(overlayById);
       cloned.set(id, element);
       return cloned;
@@ -134,7 +131,7 @@ export function OverlayProvider({ children }: PropsWithChildren) {
   // unmount 함수 생성
   const unmount = useCallback((id: string) => {
     // unmount를 계속 호출하지 않고 처음 언마운트 될때만 호출 (useCallback)
-    setOverlayById(overlayById => {
+    setOverlayById((overlayById) => {
       const cloned = new Map(overlayById);
       cloned.delete(id);
       return cloned;
@@ -157,27 +154,28 @@ export function OverlayProvider({ children }: PropsWithChildren) {
 ```
 
 OverlayProvider의 역할
+
 1. 컴포넌트를 저장하는 상태를 갖고 context api로 바꿀 수 있게 전역으로 내려준다.
 2. 상태를 이용해서 컴포넌트를 열어놓는다. (비어져 있을 때는 열려있어도 아무것도 보이지 않는다.)
 
-> ++ 2024-11-29 추가
-> 
+> 2024-11-29 추가
+>
 > 위 코드를 보면 `overlayById` 라는 상태에 `id:string`과 `element:ReactNode`를 `Map`의 요소로 넣어둔 후 `Provider` 내부에서 쓰는 것을 볼 수 있다.
-> 
+>
 > 이때 `Provider` 내부에서 `Fragment`의 `children`으로 `element:ReactNode`를 사용하는 것을 볼 수 있는데 이는 `element:ReactNode`가 `createElement(tag, props, ...children)` 이라는 함수이기 때문이다. ( 정확히는 `JSX.Element`이고 `ReactNode`는 `string, number` 등을 포함하는 좀 더 큰 개념이다. )
-> 
+>
 > 실제 `<ComponentName/>` 같은 `JSX.Element`은 `React` 내부적으로 `createElement` 함수의 실행으로 바뀌어서 JS 객체를 반환하고 더 나아가 이를 Fiber, Fiber Tree로 만든다.
-> 
+>
 > 우린 이 중간 단계를 직접 사용한 것이다. 그래서 overlayById 상태의 element를 컴포넌트를 사용하는 것처럼 `<element key={id}/>`로 사용할 수 없고 `children`으로써 사용해야 한다.
 
-##### <mark style="background: #ABF7F7A6;">useOverlay</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>useOverlay</mark>
 
 ```tsx
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { OverlayContext } from './OverlayProvider';
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { OverlayContext } from "./OverlayProvider";
 /** @tossdocs-ignore */
-import { OverlayController, OverlayControlRef } from './OverlayController';
-import { CreateOverlayElement } from './types';
+import { OverlayController, OverlayControlRef } from "./OverlayController";
+import { CreateOverlayElement } from "./types";
 
 let elementId = 1;
 
@@ -191,7 +189,7 @@ export function useOverlay({ exitOnUnmount = true }: Options = {}) {
 
   // context가 없으면 에러 발생 (Provider 내부에서만 사용 가능)
   if (context == null) {
-    throw new Error('useOverlay is only available within OverlayProvider.');
+    throw new Error("useOverlay is only available within OverlayProvider.");
   }
 
   // 비구조 할당으로 mount, unmount를 분리
@@ -230,7 +228,7 @@ export function useOverlay({ exitOnUnmount = true }: Options = {}) {
             onExit={() => {
               unmount(id);
             }}
-          />
+          />,
         );
       },
       close: () => {
@@ -240,7 +238,7 @@ export function useOverlay({ exitOnUnmount = true }: Options = {}) {
         unmount(id);
       },
     }),
-    [id, mount, unmount]
+    [id, mount, unmount],
   );
 }
 ```
@@ -250,13 +248,20 @@ useOverlay의 역할
 1. context를 읽고 mount, unmount할 수 있는 함수 제공 (여기서 mount와 unmount는 메모리에 담는 것(전역 상태))
 2. context 내부적으로 사용할 id 생성, 주입
 
-##### <mark style="background: #ABF7F7A6;">OverlayController</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>OverlayController</mark>
 
 ```tsx
 /** @tossdocs-ignore */
-import { forwardRef, Ref, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 
-import { CreateOverlayElement } from './types';
+import { CreateOverlayElement } from "./types";
 
 interface Props {
   // 결과물
@@ -268,25 +273,20 @@ export interface OverlayControlRef {
   close: () => void;
 }
 
-
 export const OverlayController = forwardRef(function OverlayController(
-  { overlayElement:OverlayElement, onExit }: Props,
-  ref: Ref<OverlayControlRef>
+  { overlayElement: OverlayElement, onExit }: Props,
+  ref: Ref<OverlayControlRef>,
 ) {
   // 메모리가 아닌 실제 DOM에 렌더링되는지 여부
   const [isOpenOverlay, setIsOpenOverlay] = useState(false);
 
-  // DOM에서 Overlay를 닫는 함수 
+  // DOM에서 Overlay를 닫는 함수
   const handleOverlayClose = useCallback(() => setIsOpenOverlay(false), []);
 
   // ref로 전달된 객체에 close 함수를 추가
-  useImperativeHandle(
-    ref,
-    () => {
-      return { close: handleOverlayClose };
-    },
-    [handleOverlayClose]
-  );
+  useImperativeHandle(ref, () => {
+    return { close: handleOverlayClose };
+  }, [handleOverlayClose]);
 
   // 컴포넌트가 마운트되면 Overlay를 열기
   useEffect(() => {
@@ -298,7 +298,13 @@ export const OverlayController = forwardRef(function OverlayController(
   }, []);
 
   // OverlayElement를 렌더링
-  return <OverlayElement isOpen={isOpenOverlay} close={handleOverlayClose} exit={onExit} />;
+  return (
+    <OverlayElement
+      isOpen={isOpenOverlay}
+      close={handleOverlayClose}
+      exit={onExit}
+    />
+  );
 });
 ```
 
@@ -309,11 +315,11 @@ OverlayController의 역할
 3. useOverlay의 open으로 모달을 끄는 handler 올리기
 4. Element 내리기
 
-##### <mark style="background: #ABF7F7A6;">전체 구조도</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>전체 구조도</mark>
 
 종합적으로 구조도를 구려보면 다음과 같다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240828112132.png)
+![](/images/2024-09-14/Pasted%20image%2020240828112132.png)
 
 이를 통해 해결되는 점은
 
@@ -321,12 +327,12 @@ OverlayController의 역할
 2. 컴포넌트에서 모달 컴포넌트를 직접 주입할 수 있다.
 3. 같은 페이지에서 여러 모달이 나올 수 있고 동시에도 있을 수 있다.
 
-> **쌓임 맥락**(stacking context)은 가상의 Z축을 사용한 HTML 요소의 3차원 개념화입니다. Z축은 사용자 기준이며, 사용자는 뷰포트 혹은 웹페이지를 바라보고 있을 것으로 가정합니다. 각각의 HTML 요소는 자신의 속성에 따른 우선순위를 사용해 3차원 공간을 차지합니다. 
-> ![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240914114250.png)
+> **쌓임 맥락**(stacking context)은 가상의 Z축을 사용한 HTML 요소의 3차원 개념화입니다. Z축은 사용자 기준이며, 사용자는 뷰포트 혹은 웹페이지를 바라보고 있을 것으로 가정합니다. 각각의 HTML 요소는 자신의 속성에 따른 우선순위를 사용해 3차원 공간을 차지합니다.
+> ![](/images/2024-09-14/Pasted%20image%2020240914114250.png)
 > 어렵게 되어 있지만 쉽게 말하자면 z-index는 부모의 z-index를 이길 수 없다는 것이다. 자신이 z-index: 6이더라도 부모가 4라면 부모 단에 있는 4보다 높은 요소들을 z-index로 이길 수 없다.
 > (`DIV #4는 z-index:6이지만 z-index:5인 DIV #1보다 뒤에 있다.`)
 
-### <mark style="background: #FFF3A3A6;">프로젝트에 맞게 개선</mark>
+### <mark style={{background:"#FFF3A3A6"}}>프로젝트에 맞게 개선</mark>
 
 분석이 끝난 후 관련된 공부를 다 한 나는 강해진 느낌이 들었다. 하핳..
 
@@ -336,11 +342,11 @@ OverlayController의 역할
 2. slash의 라이브러리는 이전에 구현된 라이브러리 같았다. (React를 import 받고 있었음.) 현재 기준으로 어느정도 리팩토링을 하게 되면 가독성을 늘릴 수 있을 것이다. 간단하게는 컴포넌트의 id를 받는 부분에서 전역 변수를 지정해서 id를 넣어주고 있었는데 이는 react에서 id를 만들 때 쓰라고 만든 훅인 `useId`를 사용하여 리팩토링할 수 있는 식이다.
 3. OverlayController 단은 마운트, 언마운트 관련해서 애니메이션 처리 (Framer-Motion의 AnimatePresense 같은)를 위해 exit, close로 따로 분리되어 있는데 이는 가독성을 해친다고 생각했다. 훅에 넣지 말고 모달, 사이드바 같은 컴포넌트를 만드는 부분에서 애니메이션 처리를 할 때 상태를 하나 만들어서 처리해도 된다고 생각했다. 기존 라이브러리에서도 이 부분 때문에 주석이 길게 되어 있는 것을 확인할 수 있었는데 개인적으로는 주석 없이도 잘 읽히는 코드가 더 좋은 것 같다. 우리 프로젝트에서는 마운트, 언마운트 시의 애니메이션에 큰 비중을 두지 않았기 때문에 들어내기로 했다.
 
-#### <mark style="background: #BBFABBA6;">useCustomOverlay 구조도</mark>
+#### <mark style={{background:"#BBFABBA6"}}>useCustomOverlay 구조도</mark>
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240828112816.png)
+![](/images/2024-09-14/Pasted%20image%2020240828112816.png)
 
-##### <mark style="background: #ABF7F7A6;">OverlayStore</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>OverlayStore</mark>
 
 ```ts
 import { ReactNode } from "react";
@@ -399,13 +405,13 @@ export const createOverlayStore = (
 
 zustand store 방식으로 함으로써 mount, unmount 관련된 로직을 store에 숨길수 있게 되었다. (로직 분리 굳)
 
-###### <mark style="background: #ADCCFFA6;">트러블 슈팅</mark>
+###### <mark style={{background:"#ADCCFFA6"}}>트러블 슈팅</mark>
 
 짧은 트러블 슈팅으로는 zustand에서는 shallow equal을 사용하여 상태의 변화를 감지하는데 delete만 지워서 리렌더링이 막 일어나게 되었었다.
 
 데이터 변경시 return으로 새로운 Map을 넣어줘야 리렌더링이 정상적으로 일어난다.
 
-##### <mark style="background: #ABF7F7A6;">OverlayStoreProvider</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>OverlayStoreProvider</mark>
 
 ```ts
 "use client";
@@ -470,7 +476,7 @@ OverlayStore와 연결된 컴포넌트이다. 쌓임 맥락을 해결하기 위�
 
 Map의 entries로 Map을 전개해서 안에 있는 컴포넌트들을 꺼내주는데 순차적으로 렌더링되기 때문에 뒤에 구현되는 컴포넌트가 쌓임 맥락에서 이기게 되어 덮어써지게 된다.
 
-##### <mark style="background: #ABF7F7A6;">useCustomOverlay</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>useCustomOverlay</mark>
 
 ```ts
 "use client";
@@ -522,7 +528,6 @@ export function useCustomOverlay(overlayElement: CreateOverlayElement) {
     [id, mount, unmount, overlayElement],
   );
 }
-
 ```
 
 구현하면서 제일 맘에 들었던 useCustomOverlay이다.
@@ -534,7 +539,7 @@ const modalSendEmailOverlay = useCustomOverlay(({ close }) => (
     <ModalSendEmail close={close} />
   ));
  //...
-onClick={modalSendEmailOverlay.open}     
+onClick={modalSendEmailOverlay.open}    
 ```
 
 open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
@@ -548,10 +553,11 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 이로써 모달뿐만 아니라 사이드바, 토스트에도 넣을 수 있는 만능 훅을 구현했다!!!!!
 
 > ++ 2024-11-29
-> 
+>
 > 돌이켜보면 이 방식은 `useOverlay`의 기능을 너무 많이 줄인 방식이다.
-> 
+>
 > toss의 useOverlay에서는 `Promise`를 활용해서 모달을 여는 함수가 아닌 특정 동작을 하는 핸들링 함수로 모달을 동시에 핸들링할 수 있다.
+>
 > ```jsx
 > // purchase 모달을 여는 함수가 아닌 purchase라는 동작을 관리하는 함수
 > const handlePurchase = useCallback(async () => {
@@ -570,7 +576,7 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 >       />
 >     ));
 >   });
-> 
+>
 >   if (isOk) {
 >     alert("결제가 완료되었습니다.");
 >   } else {
@@ -578,14 +584,12 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 >   }
 > }, [overlay]);
 > ```
-> 
-> 이는 선언적으로 프로그래밍을 할 수 있게 하여 가독성이나 확장성 측면에서 훨씬 좋은 방식이다. 이는 프로덕트가 커질 수록 더 빛을 낼 것이다.
 >
+> 이는 선언적으로 프로그래밍을 할 수 있게 하여 가독성이나 확장성 측면에서 훨씬 좋은 방식이다. 이는 프로덕트가 커질 수록 더 빛을 낼 것이다.
 
+## <mark style={{background:"#FFB86CA6"}}>Compound Pattern + useCustomOverlay 예제 (공통 모달 컴포넌트)</mark>
 
-## <mark style="background: #FFB86CA6;">Compound Pattern + useCustomOverlay 예제 (공통 모달 컴포넌트)</mark>
-
-```ts
+````ts
 interface ModalContextType {
   close: () => void;
 }
@@ -697,13 +701,13 @@ function HeaderWithClose({ className }: HeaderWithCloseProps) {
   );
 }
 HeaderWithClose.displayName = "Modal.HeaderWithClose";
-```
+````
 
 useCustomOverlay 분석에서 이야기 했듯이 마운트, 언마운트 관련 애니메이션 처리는 컴포넌트 내부에 구현되어져 있는 것을 확인할 수 있다.
 
 이번 프로젝트에서는 비슷한 내부 요소를 가진 모달이 다양하게 있기 때문에 compound pattern으로 구성 요소들도 구현하였다.
 
-> compound pattern이란 프론트엔드 환경에서 사용되는 디자인 패턴 중에 하나로, 
+> compound pattern이란 프론트엔드 환경에서 사용되는 디자인 패턴 중에 하나로,
 > context api를 이용해서 내부 상태가 구현된 하나의 컴포넌트만 가져와서 프로퍼티 안에 있는 컴포넌트를 활용, 마치 조립하듯이 다양한 컴포넌트를 구현할 수 있는 패턴입니다.
 > 단, 트리 쉐이킹이 불가능하다는 단점도 갖고 있어 사용하는데 주의가 필요합니다.
 
@@ -754,15 +758,15 @@ export default function HandleArticleModal({
 
 이를 활용한 모달 조립 예시이다. 조립하는 쪽에서는 모달을 구현하는 내부 로직, 스타일을 알 필요 없이 Modal안에 컴포넌트와 필요한 로직을 넣기만 하면 구현되는 것을 확인할 수 있다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/게시글%20추가.gif)
+![](/images/2024-09-14/게시글%20추가.gif)
 
-# <mark style="background: #FF5582A6;">후기</mark>
+# <mark style={{background:"#FF5582A6"}}>후기</mark>
 
 좋은 문제 상황을 만나서 이번에 toss slash의 훅을 분석하는 시간을 가질 수 있게 되었다.
 
 requestAnimateFrame이나 useImperative 훅 등 분석하지 않았다면 몰랐을 지식들을 많이 알게된 경험이었다.
 
-이번 useOverlay는 다른 오픈 소스 라이브러리에 비하면 작은 크기이지만 
+이번 useOverlay는 다른 오픈 소스 라이브러리에 비하면 작은 크기이지만
 
 추후에 좋은 문제를 만나면 이제 두려움 없이 커다란 오픈 소스라도 분석할 수 있을 것 같다.
 
@@ -770,10 +774,8 @@ requestAnimateFrame이나 useImperative 훅 등 분석하지 않았다면 몰랐
 
 https://github.com/772-company/kkom-kkom/pull/80
 
+> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요!
 >
-> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요! 
-> 
 > 읽어주셔서 감사합니다! 지켜봐주세요!
 >
 > 감사합니다.
->

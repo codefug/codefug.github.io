@@ -25,6 +25,7 @@ export default function Callout({
   const contentArr = [];
   for (let i = 0; i < children.length; i += 1) {
     if (children[i] === "\n") contentArr.push({ id: `${i}`, content: "\n" });
+
     if (children[i].includes("\n")) {
       const subChildren = children[i].split("\n");
       for (let j = 0; j < subChildren.length; j += 1)

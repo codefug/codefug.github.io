@@ -16,6 +16,10 @@ import * as MDX_2024_07_21 from "@/markdown/2024-07-21/content.mdx";
 import * as MDX_2024_07_22_1 from "@/markdown/2024-07-22-1/content.mdx";
 import * as MDX_2024_07_22_2 from "@/markdown/2024-07-22-2/content.mdx";
 import * as MDX_2024_09_11 from "@/markdown/2024-09-11/content.mdx";
+import * as MDX_2024_09_14_1 from "@/markdown/2024-09-14-1/content.mdx";
+import * as MDX_2024_09_14_2 from "@/markdown/2024-09-14-2/content.mdx";
+import * as MDX_2024_09_14_3 from "@/markdown/2024-09-14-3/content.mdx";
+import * as MDX_2024_09_14_4 from "@/markdown/2024-09-14-4/content.mdx";
 import * as MDX_2025_01_02_1 from "@/markdown/2025-01-02-1/content.mdx";
 import * as MDX_2025_01_02_1copy from "@/markdown/2025-01-02-1copy/content.mdx";
 import * as MDX_2025_01_02_1copy2 from "@/markdown/2025-01-02-1copy2/content.mdx";
@@ -49,6 +53,10 @@ export const mdxMap: Record<string, MDXModule> = {
   "2024-07-22-1": MDX_2024_07_22_1,
   "2024-07-22-2": MDX_2024_07_22_2,
   "2024-09-11": MDX_2024_09_11,
+  "2024-09-14-1": MDX_2024_09_14_1,
+  "2024-09-14-2": MDX_2024_09_14_2,
+  "2024-09-14-3": MDX_2024_09_14_3,
+  "2024-09-14-4": MDX_2024_09_14_4,
   "2025-01-02-1": MDX_2025_01_02_1,
   "2025-01-02-1copy": MDX_2025_01_02_1copy,
   "2025-01-02-1copy2": MDX_2025_01_02_1copy2,

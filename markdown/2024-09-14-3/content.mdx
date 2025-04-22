@@ -1,15 +1,4 @@
----
-title: (꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현
-excerpt: 서버 액션을 활용한 refresh token rotation, 커링 함수를 이용한 리팩토링
-toc: true
-toc_sticky: true
-categories:
-  - kkom-kkom
-last_modified_at: 2024-09-14T18:52:00
-header:
-  teaser: /assets/images/Logo/fetch.png
----
-# <mark style="background: #FF5582A6;">배경</mark>
+# <mark style={{background:"#FF5582A6"}}>배경</mark>
 
 next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같은 유익한 기능을 추가했다.
 
@@ -17,11 +6,11 @@ next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같�
 
 여기서 문제는 access token과 refresh token이 들어갈 때이다.
 
-서버 컴포넌트에서는 next/headers의 쿠키를 사용하여 쿠키에 접근하고 클라이언트 컴포넌트에서는 브라우저 쿠키로 쿠키에 접근한다. 
+서버 컴포넌트에서는 next/headers의 쿠키를 사용하여 쿠키에 접근하고 클라이언트 컴포넌트에서는 브라우저 쿠키로 쿠키에 접근한다.
 
 서로 다른 방식은 refresh token rotation을 위한 함수를 구현할 때 문제가 된다.
 
-# <mark style="background: #FF5582A6;">구현</mark>
+# <mark style={{background:"#FF5582A6"}}>구현</mark>
 
 아래의 코드는 나에게 업무가 넘어오기 전 다른 팀원이 짠 코드다. middleware 활용하여 구현된 방식이었다.
 
@@ -118,7 +107,7 @@ export const config = {
 
 고민해본 결과 axios의 interceptor처럼 fetch 요청 자체에 refreshToken을 처리해야 한다는 결론에 이르렀다.
 
-## <mark style="background: #FFB86CA6;">서버 액션을 이용한 import</mark>
+## <mark style={{background:"#FFB86CA6"}}>서버 액션을 이용한 import</mark>
 
 next/headers는 클라이언트 단에 있을 수 없고 서버 컴포넌트, 서버 액션에서 호출할 수 있었다. (클라이언트 단에서 호출하면 에러 처리)
 
@@ -128,7 +117,7 @@ next/headers는 클라이언트 단에 있을 수 없고 서버 컴포넌트, �
 
 그러곤 다음의 코드를 작성했다.
 
-### <mark style="background: #FFF3A3A6;">myFetch</mark>
+### <mark style={{background:"#FFF3A3A6"}}>myFetch</mark>
 
 ```ts
 import { clientFetch } from "./clientFetch";
@@ -165,7 +154,7 @@ export async function myFetch<T>(
 
 토큰 처리 기능이 붙혀진 fetch, myFetch 이다.
 
-### <mark style="background: #FFF3A3A6;">clientFetch</mark>
+### <mark style={{background:"#FFF3A3A6"}}>clientFetch</mark>
 
 ```ts
 import { getCookie, setCookie } from "cookies-next";
@@ -177,24 +166,24 @@ export async function clientFetch(
   input: string | URL | globalThis.Request,
   init?: MyFetchOptions,
 ) {
-// accessToken를 읽는다.
+  // accessToken를 읽는다.
   const accessToken = getCookie("accessToken");
 
   let newInit = init;
 
-// withCredentials는 토큰 인증 처리를 하겠다는 flag이다.
+  // withCredentials는 토큰 인증 처리를 하겠다는 flag이다.
   if (newInit?.withCredentials === true) {
     const headers = new Headers(init?.headers);
     headers.set("Authorization", `Bearer ${accessToken}`);
     newInit = { ...init, headers };
   }
 
-// 토큰 처리를 한다.
+  // 토큰 처리를 한다.
   const res = await fetch(input, newInit);
 
-// 만약 토큰이 만료되었다면
+  // 만약 토큰이 만료되었다면
   if (res.status === 401) {
-  // refresh token rotation 처리
+    // refresh token rotation 처리
     const refreshTokenValue = getCookie("refreshToken");
     if (refreshTokenValue) {
       const newAccessToken = await fetch(
@@ -235,7 +224,7 @@ export async function clientFetch(
 
 클라이언트 (`window !== undefined`) 상태일 때 실행될 함수이다. refresh token rotation이 필요한 경우에 받고 fetch를 다시 하도록 하는 로직을 갖고 있다.
 
-### <mark style="background: #FFF3A3A6;">serverFetch</mark>
+### <mark style={{background:"#FFF3A3A6"}}>serverFetch</mark>
 
 ```tsx
 "use server";
@@ -305,18 +294,18 @@ export async function serverFetch(
 
 1. 서버 액션을 클라이언트단에서 import하기 때문에 런타임 에러가 무시된다.
 2. next/header를 에러처리 안하고 넘어간다.
-3. `window===undefined` 로 분기처리했기 때문에 클라이언트에서 서버 함수를 사용하는 경우의 수는 차단된다. 
+3. `window===undefined` 로 분기처리했기 때문에 클라이언트에서 서버 함수를 사용하는 경우의 수는 차단된다.
 4. 서버, 클라이언트 모두 사용 가능해짐
 
-## <mark style="background: #FFB86CA6;">axios의 base url 기능 구현</mark>
+## <mark style={{background:"#FFB86CA6"}}>axios의 base url 기능 구현</mark>
 
 코드 리뷰를 하던 중에 URL을 상수로 받아서 myFetch에 내려받는 코드를 발견하였다.
 
-![](https://codefug.github.io/assets/images/2024-09-14/Pasted%20image%2020240914193655.png)
+![](/images/2024-09-14/Pasted%20image%2020240914193655.png)
 
 axios에서는 base url을 저장해놓고 사용하는 쪽에서는 해당 url 뒤에 있는 라우트만 적어서 사용하는 기능이 있다.
 
-### <mark style="background: #FFF3A3A6;">커링 함수</mark>
+### <mark style={{background:"#FFF3A3A6"}}>커링 함수</mark>
 
 함수형 프로그래밍에서는 이걸 어떻게 구현할까 고민을 하다가 이전에 학습했던 커링 함수가 생각났다.
 
@@ -339,8 +328,9 @@ const instance = newFetch(`{url}`);
 위의 함수로 타입까지 다 처리된 base_url 첨가 myFetch를 사용할 수 있게 되었다.
 
 사용하는 쪽에서는 이제 엄청 간단해졌다.
+
 ```ts
-// 호출부 
+// 호출부
 export async function getUserHistory() {
   try {
     const response = await instance<GetTeamIdUserHistoryResponse>(
@@ -360,6 +350,7 @@ export async function getUserHistory() {
 세부 로직은 속으로 숨겨져 있는 상태에서 instance와 withCredentials만 사용해서 token이 처리되었다!!!
 
 제일 좋은 점은 api만 변경되었기 때문에 다른 코드를 변경할 필요 없이 myFetch를 instance로 변경만 하면 된다는 것이다.
+
 ```ts
 // getUserHistory를 사용하는 쪽
 import { GetTeamIdUserHistoryResponse } from "@/lib/apis/type";
@@ -386,7 +377,7 @@ export default async function DateBoxList() {
 }
 ```
 
-# <mark style="background: #FF5582A6;">후기</mark>
+# <mark style={{background:"#FF5582A6"}}>후기</mark>
 
 서버 액션을 사용해서 토큰 처리를 해보는 경험을 했다.
 
@@ -396,20 +387,18 @@ export default async function DateBoxList() {
 
 지식은 차곡차곡 쌓이는 구나 생각하면서 짜릿했던 경험이다.
 
-더 성장해보자. 
+더 성장해보자.
 
 > ++ 2024-11-29
 >
 > 이후에 클라이언트에서 쿠키를 읽는 방식을 쓰면 해당 쿠키에 httpOnly를 적용할 수가 없는 것을 알게 되고 이는 보안 문제가 발생한다는 것을 알게 되면서 기존 클라이언트 단의 쿠키를 전부 서버 쿠키로 교체하게 되었다.
-> 
+>
 > 기존에 서버 액션과 클라이언트 단의 코드 분리를 통해서 쿠키를 읽는 로직은 사실상 크게 필요 없어진 것이다.
 >
 > 토큰을 저장하는 전략은 다양하고 그것을 공격하는 방법은 다양하기 때문에 프론트엔드 개발자로써 일하면서 항상 고민해야 하는 부분인 것 같다.
 
+> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요!
 >
-> 꼼꼼 프로젝트 진행 중에 겪은 경험들입니다. 오늘도 많이 성장한 것 같아요! 
-> 
 > 읽어주셔서 감사합니다! 지켜봐주세요!
 >
 > 감사합니다.
->
