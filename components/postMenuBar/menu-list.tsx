@@ -73,7 +73,7 @@ export default function MenuList({
       <div
         ref={menuListRef}
         className={cn(
-          "fixed right-0 top-24 hidden min-w-[300px]",
+          "fixed right-0 top-24 hidden w-[300px]",
           isShow && "block",
         )}
       >
