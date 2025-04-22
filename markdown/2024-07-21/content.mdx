@@ -1,29 +1,20 @@
----
-title: (급페이 프로젝트) 카드 렌더링을 최적화하여 UX를 향상시키기 위한 머나먼 여정
-excerpt: server component 설계를 이용한 suspense 적극 활용, 이를 위해서 next cookie를 사용하면서 겪은 문제들을 적은 글입니다.
-toc: true
-toc_sticky: true
-categories:
-  - gheuppay
-last_modified_at: 2024-07-21T24:00:00
-header:
-  teaser: /assets/images/Logo/next-cookie.png
----
-# <mark style="background: #FF5582A6;">설계</mark>
+import VimeoPlayer from "@/components/mdx/vimeo.tsx";
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722113132.png)
+# <mark style={{background:"#FF5582A6"}}>설계</mark>
+
+![](/images/2024-07-21/Pasted%20image%2020240722113132.png)
 
 위의 시안을 분석해보고 Next.js 식으로 최대한 서버 컴포넌트를 이용하려면 다음과 같이 분기를 나눠서 생각해보면 다음과 같습니다.
 
 1. 위쪽의 메인이 되는 카드 : 초기 페이지 렌더링 시 서버에서 받아오고 suspense로 기다리는 시간 보완. (server component)
-	1. 신청하기 버튼의 경우 로그인 상태에 따라서 여러가지 분기가 나뉘어지게 설계. (이벤트 핸들러가 들어가기 때문에 client component)
+   1. 신청하기 버튼의 경우 로그인 상태에 따라서 여러가지 분기가 나뉘어지게 설계. (이벤트 핸들러가 들어가기 때문에 client component)
 2. 최근에 본 공고 파트 : 앞에서 데이터가 들어오면 뒤의 데이터는 없어져야 하니 `queue` 자료구조로 설계 (server component)
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722120938.png)
+![](/images/2024-07-21/Pasted%20image%2020240722120938.png)
 
 (red : server component, blue: client component)
 
-## <mark style="background: #FFB86CA6;">서버 컴포넌트 설계</mark>
+## <mark style={{background:"#FFB86CA6"}}>서버 컴포넌트 설계</mark>
 
 서버 컴포넌트를 설계하기 위해선 페이지 단위에서 일단 서버 컴포넌트여야 합니다. 최상단의 컴포넌트가 클라이언트 컴포넌트일 경우 서버 컴포넌트를 사용할 수 없게 되기 때문입니다.
 
@@ -31,11 +22,11 @@ header:
 
 서버 컴포넌트를 사용할 경우 Next.js 에서는 각각의 컴포넌트를 따로 loading할 수 있는 streaming 방식을 사용합니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722121441.png)
+![](/images/2024-07-21/Pasted%20image%2020240722121441.png)
 
 컴포넌트 별로 분할해서 loading state를 처리하는 방법은 리액트의 `Suspense`를 사용하는 것입니다. next에서 확장시킨 `Suspense`로 서버 컴포넌트를 감싸면 서버 컴포넌트가 렌더링 되기 전까지 `fallback` 안에 있는 컴포넌트가 해당 서버 컴포넌트를 대신합니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722121816.png)
+![](/images/2024-07-21/Pasted%20image%2020240722121816.png)
 
 > TTFB : 첫 바이트까지의 시간
 > FCP : 최초 컨텐츠가 페인팅되기까지의 시간
@@ -49,27 +40,27 @@ header:
 
 Next는 이를 streaming으로 해결했습니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722121647.png)
+![](/images/2024-07-21/Pasted%20image%2020240722121647.png)
 
 각각의 컴포넌트는 각각의 파트를 가집니다. 데이터를 받고 HTML을 렌더링하고 하이드레이션하는 과정들을 각각 가짐으로써 TTFB, FCP, TTI를 모두 당기게 되어 페이지 성능 최적화를 이끌게 됩니다.
 
 > 급페이 프로젝트에서는 이를 최대한 활용하며 개발을 나아갔습니다.
 
-## <mark style="background: #FFB86CA6;">Next Cookie를 이용한 설계</mark>
+## <mark style={{background:"#FFB86CA6"}}>Next Cookie를 이용한 설계</mark>
 
 React에서는 다음과 같이 통신이 진행됩니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722125032.png)
+![](/images/2024-07-21/Pasted%20image%2020240722125032.png)
 
 프론트엔드 서버가 존재하는 Next.js에서는 간단하게 다음과 같이 통신이 진행됩니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722124750.png)
+![](/images/2024-07-21/Pasted%20image%2020240722124750.png)
 
 브라우저 > 프론트엔드 서버(node.js 환경) > 백엔드 서버 식이죠. 위처럼 움직이기 때문에 SSR이나 SSG, ISG 등등이 가능하게 된 것입니다.
 
 서버 컴포넌트는 프론트엔드 "서버" 컴포넌트를 말하는데요. 데이터를 분할해서 브라우저로 보낼 수 있는 streaming이 가능한 이유도 이것 때문입니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722125217.png)
+![](/images/2024-07-21/Pasted%20image%2020240722125217.png)
 
 Suspense를 이용하면 위 사진처럼 fallback을 먼저 보내고 프론트엔드 서버에서 서버 컴포넌트 렌더링을 끝내면 브라우저에 컴포넌트를 보내고 fallback을 치우는 식이죠.
 
@@ -85,11 +76,11 @@ Suspense를 이용하면 위 사진처럼 fallback을 먼저 보내고 프론트
 
 쿠키는 통신에 담기기 때문에 다음의 사진대로 움직이게 되죠
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722125032.png)
+![](/images/2024-07-21/Pasted%20image%2020240722125032.png)
 
 Next 에서의 쿠키 조작은 프론트엔드 서버에서 가능합니다. https://nextjs.org/docs/app/api-reference/functions/cookies
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240722130714.png)
+![](/images/2024-07-21/Pasted%20image%2020240722130714.png)
 
 브라우저와 백엔드 서버 사이에서 쿠키를 CRUD할 수 있고 이는 프론트엔드 서버에서 실행되기에 서버 컴포넌트 안에서도 사용가능한 것이었습니다.
 
@@ -98,15 +89,15 @@ https://nextjs.org/docs/app/api-reference/functions/cookies
 
 Suspense 사용을 위한 서버 컴포넌트 설계를 위해 쿠키를 활용했다 라는 것을 알아두고 자세한 이야기는 최근 본 공고 설계 부분에서 다루도록 하겠습니다.
 
-### <mark style="background: #FFF3A3A6;">Next Cookie까지 오게된 과정 (고민들)</mark>
+### <mark style={{background:"#FFF3A3A6"}}>Next Cookie까지 오게된 과정 (고민들)</mark>
 
-사실 처음에는 로그인 상태나 최근 본 공고는 전역 상태 관리로 처리하려고 했습니다. 
+사실 처음에는 로그인 상태나 최근 본 공고는 전역 상태 관리로 처리하려고 했습니다.
 
 전역 상태라는 것은 해당 route에서 고정됩니다. route change가 일어나면 저장이 되지 않습니다.
 
 zustand에서 persist라는 미들웨어가 존재해서 route change에서도 로컬 스토리지를 활용해 데이터를 저장해 놓았기 때문인데요.
 
-이를 사용하기 위한 많은 시행 착오가 있었습니다. 
+이를 사용하기 위한 많은 시행 착오가 있었습니다.
 
 정말 수많은 레퍼런스도 찾아보았고 클라이언트와 서버 둘다 실행되는 zustand를 Next에서 사용하기 위해서 hydrate를 진행하지 않다가 rehydrate를 클라이언트 단에서 하는 등의 방식도 찾게 되었습니다.
 
@@ -128,7 +119,7 @@ const Hydration = () => {
 export default Hydration;
 ```
 
-소위 온몸 비틀기를 사용한 것인데요. 
+소위 온몸 비틀기를 사용한 것인데요.
 
 전역 "상태" 에 집중해보았습니다. zustand 개발자분은 깃허브 이슈에서 서버에는 "상태"가 존재하지 않다는 사실을 알면 이해가 편할꺼라고 이야기를 자주했습니다. 거기에 팀원이 사실 로컬 스토리지가 있는데 전역 상태와의 차이가 없는 것 같다고 말씀 해주셨습니다. 더구나 주스탄드 역시 rehydrate를 클라이언트 단에서 사용하고 로컬 스토리지를 활용하기 때문에 클라이언트 컴포넌트에서밖에 사용할 수 없었죠.
 
@@ -140,11 +131,11 @@ export default Hydration;
 
 > 이 문제들을 해결하는 과정에서 기술은 어디까지나 도구 라는 생각을 강하게 갖게 되었습니다. 전역 상태 관리 라는 것의 의미를 많이 고민하고 설계를 진행했더라면 zustand라는 도구를 사용하지 않았을 것입니다.
 
-# <mark style="background: #FF5582A6;">페이지 구현</mark>
+# <mark style={{background:"#FF5582A6"}}>페이지 구현</mark>
 
 이제 구현에 대해서 본격적으로 코드와 함께 찾아보겠습니다. 코드를 작성한 이유와 그와 관련된 트러블 이슈를 이야기해보겠습니다.
 
-## <mark style="background: #FFB86CA6;">전체 페이지 구조 설계</mark>
+## <mark style={{background:"#FFB86CA6"}}>전체 페이지 구조 설계</mark>
 
 ```tsx
 export default async function page({ params }: PageProps) {
@@ -154,7 +145,7 @@ export default async function page({ params }: PageProps) {
         <NoticeDetailCard shopId={params.shop_id} noticeId={params.notice_id} />
       </Suspense>
       <div className="my-12">
-        <h2 className="py-8 font-bold text-l md:text-2xl">최근에 본 공고</h2>
+        <h2 className="text-l py-8 font-bold md:text-2xl">최근에 본 공고</h2>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           <Suspense
             fallback={[1, 2, 3, 4, 5, 6].map((value) => (
@@ -177,7 +168,7 @@ export default async function page({ params }: PageProps) {
 
 메인 카드와 최근 본 공고의 스켈레톤을 제작하고 이를 Suspense의 fallback으로 만듬으로써 서버 컴포넌트들이 렌더링 되기 전에 스켈레톤을 볼 수 있도록 하였습니다. ui 컴포넌트에 가까우니 빠르게 넘어가겠습니다.
 
-## <mark style="background: #FFB86CA6;">메인 카드 설계</mark>
+## <mark style={{background:"#FFB86CA6"}}>메인 카드 설계</mark>
 
 ```tsx
 export default async function NoticeDetailCard({
@@ -239,14 +230,14 @@ export default function RegisterButton({
 
 위처럼 쿠키가 활용된 데이터를 props으로 내려줌으로써 클라이언트 컴포넌트인 신청하기 버튼이 모달 기능, Link 등등 다양한 기능 확장을 가질 수 있게 되었습니다.
 
-## <mark style="background: #FFB86CA6;">최근 본 공고 설계</mark>
+## <mark style={{background:"#FFB86CA6"}}>최근 본 공고 설계</mark>
 
 이번 글 쓰기의 목적이자 제일 공을 많이 들였던 파트입니다.
 
 우선 공고를 저장하는 로직은 `큐` 자료구조여야 합니다. 저장하는 함수에서 이를 갖고 있다면 사용하는 사람은 인수를 보내기만 하면 되겠죠. cookie와 관련되어 있기에 구체적인 구현은 숨기고 드러나는 부분은 함수 하나로 클린하게 만들기 위해 노력했습니다.
 
 ```tsx
-"use server"
+"use server";
 //...
 // notice를 가져옵니다.
 export const getNotices = async (): Promise<NoticeIds[]> => {
@@ -268,7 +259,7 @@ export async function postNotice(
   const currentNotice: NoticeIds[] = await getNotices();
   const newNoticeId = { id: notice.id, shopId: notice.shop.item.id };
 
-// 중복 확인
+  // 중복 확인
   const isDuplicated = currentNotice.some((n) => n.id === notice.id);
   if (isDuplicated) {
     await setNotices([
@@ -365,15 +356,15 @@ early return으로 현재 보는 공고는 차단하여 사용자는 렌더링�
 
 이로써 서버 컴포넌트이기에 굉장히 빠르게 렌더링 되면서 suspense로 인한 스켈레톤 표현까지 할 수 있게 되었습니다.
 
-{% include video id="988246692" provider="vimeo" %}
+<VimeoPlayer id="988246692" />
 
-### <mark style="background: #FFF3A3A6;">트러블 슈팅</mark>
+### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅</mark>
 
-#### <mark style="background: #BBFABBA6;">핸들러에 비동기 함수를 넣어선 안된다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>핸들러에 비동기 함수를 넣어선 안된다.</mark>
 
 공고 카드를 광클하면 멈추는 오류를 발견했습니다.
 
-```tsx  
+```tsx
 //...
 export default function NoticeCard({
   hourlyPay,
@@ -402,27 +393,27 @@ export default function NoticeCard({
 
 content로 분기처리를 해서 이벤트를 전달하는데 여기서 문제가 발생한 줄 알았으나
 
-현재 post의 경우 cookie로 관리되고 있는데 이 cookie를 set하는 함수가 버튼의 이벤트 핸들러에 있어서 setter함수를 비동기적으로 계속 누르면 
+현재 post의 경우 cookie로 관리되고 있는데 이 cookie를 set하는 함수가 버튼의 이벤트 핸들러에 있어서 setter함수를 비동기적으로 계속 누르면
 
 서버에 과부하가 걸려서 페이지가 멈추게 되었던 것입니다.
 
 이벤트 핸들러 광클 > cookie를 저장하는 비동기 함수 계속 실행 > 특정 시점에 content가 없어지는 현상 > redirectAction() 함수로 인해 middleware에서 처리(content가 없으면 사장님 페이지로 이동되지만 사장님이 아니기에 list page로 강제 이동)
 
-##### <mark style="background: #ABF7F7A6;">해결 방법</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>해결 방법</mark>
 
 간단하게 페이지에 접근하면서 저장하는 방식으로 변경했습니다. 짧게 보이긴 하지만 그 알아내는 과정이 조금 고통스러웠어요. 코드를 잘 작성하는 것에 대해 더 고민을 해야되겠다고 생각했습니다.
 
-#### <mark style="background: #BBFABBA6;">쿠키에 저장하는 건 한계가 있다.</mark>
+#### <mark style={{background:"#BBFABBA6"}}>쿠키에 저장하는 건 한계가 있다.</mark>
 
 현재는 공고 카드의 id를 저장하고 있지만 기존에는 공고 데이터 자체를 쿠키에 넣는 식으로 사용했었습니다.
 
 하지만 도중 객체가 3개 이상 저장되지 않는 문제가 있었고 쿠키 만능 주의로 개발하던 저는 쿠키의 데이터가 4MB까지 였다는 사실을 기억해내게 됩니다.
 
-![](https://codefug.github.io/assets/images/2024-07-21/Pasted%20image%2020240701225259.png)
+![](/images/2024-07-21/Pasted%20image%2020240701225259.png)
 
 cookie size가 3327 정도가 객체 3개가 담겨있을 때였고 확인을 하니 단위는 Byte 즉 4096Byte 까지가 용량인 쿠키가 더 받아들일 수 없었던 것입니다.
 
-##### <mark style="background: #ABF7F7A6;">해결 방법</mark>
+##### <mark style={{background:"#ABF7F7A6"}}>해결 방법</mark>
 
 고민을 하다가 id를 저장해놓고 꺼내오는 쪽에서 해당 id를 활용하여 최신 데이터를 받아오는 로직으로 변경해서 문제를 해결하였습니다.
 
@@ -437,6 +428,7 @@ cookie size가 3327 정도가 객체 3개가 담겨있을 때였고 확인을 �
 이제 id만 쿠키에 저장하기 때문에 통신에 들여지는 데이터 양을 줄일 수 있었고 필요한 데이터들을 알맞게 저장할 수 있었습니다.
 
 전체 코드에서 볼 수 있었던 이 부분은 이 문제를 해결하기 위해 작성된 코드입니다.
+
 # reference
 
 https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming
@@ -445,8 +437,6 @@ https://nextjs.org/docs/app/api-reference/functions/cookies
 
 https://ko.javascript.info/cookie
 
->
 > 급페이 프로젝트 중 고민했던 방식, 부딪히게 된 문제, 그것의 해결과정을 담은 글입니다!
 >
 > 잘못된 내용이 있다면 말씀 부탁드립니다. 감사합니다.
->
