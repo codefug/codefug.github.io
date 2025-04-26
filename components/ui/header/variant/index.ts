@@ -13,18 +13,6 @@ const headerVariant = cva(
         false: "",
       },
     },
-    compoundVariants: [
-      {
-        isShowVerticalScrollbar: false,
-        isShow: false,
-        className: "opacity-0",
-      },
-      {
-        isShowVerticalScrollbar: false,
-        isShow: true,
-        className: "opacity-100",
-      },
-    ],
     defaultVariants: {
       isShow: true,
       isShowVerticalScrollbar: true,

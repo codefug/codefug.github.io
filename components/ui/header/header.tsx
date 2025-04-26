@@ -9,7 +9,7 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import SidebarButton from "../../sidebar/sidebar-button";
 import { useSidebar } from "../sidebar";
 import Switch from "../switch";
@@ -169,24 +169,31 @@ const HorizontalScrollbar = memo(function VerticalScrollbar() {
 
 const useShowFloatingHeader = () => {
   const [showFloatingHeader, setShowFloatingHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const isScrollingDown = currentScrollY > lastScrollY.current;
+          const isScrollingUp = currentScrollY < lastScrollY.current;
 
-      // 스크롤 방향이 위쪽일 때 (이전 스크롤 위치보다 현재가 작을 때)
-      if (currentScrollY < lastScrollY || currentScrollY < 70)
-        setShowFloatingHeader(true);
-      else setShowFloatingHeader(false);
+          if (isScrollingUp || currentScrollY < 70) setShowFloatingHeader(true);
+          else if (isScrollingDown) setShowFloatingHeader(false);
 
-      setLastScrollY(currentScrollY);
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+
+        ticking.current = true;
+      }
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return { showFloatingHeader };
 };
