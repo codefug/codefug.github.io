@@ -1,73 +1,39 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
-const useIntersectionObserver = (
-  setActiveId: (id: string | null) => void,
-  activeId: string | null,
-  lists: {
-    text: string;
-    id: string;
-    level: number;
-  }[],
-) => {
-  const headingElementsRef = useRef<{
-    [key: string]: IntersectionObserverEntry;
-  }>({});
-
-  const headingElements: HTMLElement[] = [];
+const useIntersectionObserver = () => {
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const callback = (headings: IntersectionObserverEntry[]) => {
-      headingElementsRef.current = headings.reduce((map, headingElement) => {
-        const newMap = { ...map };
-        newMap[headingElement.target.id] = headingElement;
-        return newMap;
-      }, headingElementsRef.current);
+    const headings = document.querySelectorAll("h1, h2, h3");
 
-      const visibleHeadings: IntersectionObserverEntry[] = [];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleHeadings = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) =>
+            a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1,
+          );
 
-      Object.keys(headingElementsRef.current).forEach((key) => {
-        const headingElement = headingElementsRef.current[key];
-        if (headingElement.isIntersecting) visibleHeadings.push(headingElement);
-      });
+        if (visibleHeadings.length > 0) {
+          const nearestHeading = visibleHeadings[0];
+          if (nearestHeading.target.id !== activeId)
+            setActiveId(nearestHeading.target.id);
+        }
+      },
+      {
+        rootMargin: "0px 0px -70% 0px", // 현재 viewport의 상단 30% 부근에 걸리면 인식
+        threshold: 0,
+      },
+    );
 
-      const getIndexFromId = (id: string) =>
-        headingElements.findIndex((heading) => heading.id === id);
+    headings.forEach((heading) => observer.observe(heading));
 
-      if (visibleHeadings.length === 0) {
-        const activeElement = headingElements.find((el) => el.id === activeId);
-        const activeIndex = headingElements.findIndex(
-          (el) => el.id === activeId,
-        );
-
-        const activeIdYcoord = activeElement?.getBoundingClientRect().y;
-        if (activeIdYcoord && activeIdYcoord > 150)
-          if (activeIndex !== 0)
-            setActiveId(headingElements[activeIndex - 1].id);
-          else setActiveId(null);
-      } else if (visibleHeadings.length === 1)
-        setActiveId(visibleHeadings[0].target.id);
-      else if (visibleHeadings.length > 1) {
-        const sortedVisibleHeadings = visibleHeadings.sort(
-          (a, b) => getIndexFromId(a.target.id) - getIndexFromId(b.target.id),
-        );
-        setActiveId(sortedVisibleHeadings[0].target.id);
-      }
+    return () => {
+      headings.forEach((heading) => observer.unobserve(heading));
     };
+  }, [activeId]);
 
-    const observer = new IntersectionObserver(callback, {
-      rootMargin: "0px 0px -40% 0px",
-    });
-
-    lists.forEach((obj) => {
-      const element = document.getElementById(obj.id);
-      if (element) {
-        headingElements.push(element);
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, [setActiveId, activeId]);
+  return { activeId };
 };
 
 export default useIntersectionObserver;
