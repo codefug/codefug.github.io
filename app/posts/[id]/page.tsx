@@ -31,7 +31,7 @@ export default async function Page({
       <GtmPageView slug={id} />
       <PostHeader {...(data as ParsedFrontMatter)} />
       <section className="lg:flex lg:items-baseline">
-        <MenuBar id={id} />
+        <MenuBar />
         <section className="max-w-full">
           <Content />
         </section>

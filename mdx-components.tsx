@@ -1,7 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import { createElement, ReactNode } from "react";
-import processCallout from "./util/callout";
 import Callout from "./components/mdx/callout";
+import processCallout from "./util/callout";
 
 function getHeadingIndexWithCloser() {
   let headingIndex = -1;
@@ -20,12 +20,8 @@ function CustomHeading({
   level: number;
   headingIndex: () => number;
 }) {
-  const firstChild = props.children;
   return createElement(`h${level}`, {
-    id:
-      typeof firstChild === "string"
-        ? firstChild
-        : `${headingIndex()}${firstChild.props.children}`,
+    id: headingIndex(),
     ...props,
   });
 }
