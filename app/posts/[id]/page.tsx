@@ -1,10 +1,11 @@
-import { readdir, readFile } from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
-import PostHeader from "@/components/ui/post-header";
+import { GtmPageView } from "@/components/gtm/gtmPageView";
 import MenuBar from "@/components/postMenuBar/menu-bar";
+import PostHeader from "@/components/ui/post-header";
 import { ParsedFrontMatter } from "@/constants/mdx";
 import { mdxMap } from "@/lib/mdxMap";
+import { readdir, readFile } from "fs/promises";
+import matter from "gray-matter";
+import path from "path";
 
 export default async function Page({
   params,
@@ -27,6 +28,7 @@ export default async function Page({
   const Content = mdxModule.default;
   return (
     <section>
+      <GtmPageView slug={id} />
       <PostHeader {...(data as ParsedFrontMatter)} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar id={id} />

@@ -1,11 +1,12 @@
+import Layout from "@/components/layout";
 import AppSidebar from "@/components/ui/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import getFrontMatterList from "@/lib/posts";
 import ThemeProvider from "@/provider/theme-provider";
+import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Gothic_A1 } from "next/font/google";
 import "./globals.css";
-import Layout from "@/components/layout";
-import getFrontMatterList from "@/lib/posts";
 
 const gothicA1 = Gothic_A1({
   variable: "--gothic-a1",
@@ -39,6 +40,7 @@ export default function RootLayout({
   const totalFrontMatterList = getFrontMatterList();
   return (
     <html lang="en" suppressHydrationWarning>
+      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className={`${gothicA1.className} antialiased`}>
         <ThemeProvider
           attribute="class"
