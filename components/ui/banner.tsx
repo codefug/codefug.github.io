@@ -1,9 +1,9 @@
 "use client";
 
 import { POST_PATH } from "@/constants/path";
-import { useCallback, useState } from "react";
-import { LucideLoader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LucideLoader2 } from "lucide-react";
+import { useCallback, useState } from "react";
 
 export default function Banner({ firstPostId }: { firstPostId: string }) {
   return (
@@ -36,7 +36,7 @@ function BannerMoveToPageButton({ firstPostId }: { firstPostId: string }) {
       href={POST_PATH + firstPostId}
       onClick={activateLoading}
       className={cn(
-        "md:text-md flex h-9 w-[107px] cursor-pointer items-center justify-center whitespace-nowrap rounded-lg bg-black px-4 py-2 text-sm font-semibold text-primary-foreground text-white opacity-95 shadow hover:bg-primary/90",
+        "md:text-md flex h-9 w-[107px] cursor-pointer items-center justify-center whitespace-nowrap rounded-lg bg-black px-4 py-2 text-sm font-semibold text-primary-foreground text-white opacity-95 shadow transition-all hover:scale-105 hover:bg-gray-800",
         isLoading ? "hover:cursor-wait" : "",
       )}
     >
