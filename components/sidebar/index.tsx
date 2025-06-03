@@ -21,12 +21,12 @@ import { AnchorHTMLAttributes, useMemo, useRef } from "react";
 import { FrontMatter } from "@/constants/mdx";
 import { ChevronDown } from "lucide-react";
 import { POST_PATH } from "@/constants/path";
-import { ScrollArea } from "./scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./collapsible";
+} from "../ui/collapsible";
 
 export default function AppSidebar({
   totalFrontMatterList,

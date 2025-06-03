@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import AppSidebar from "@/components/ui/app-sidebar";
+import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import getFrontMatterList from "@/lib/posts";
 import ThemeProvider from "@/provider/theme-provider";
@@ -49,7 +49,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider defaultOpen={false}>
-            <AppSidebar totalFrontMatterList={totalFrontMatterList} />
+            <Sidebar totalFrontMatterList={totalFrontMatterList} />
             <Layout>{children}</Layout>
           </SidebarProvider>
         </ThemeProvider>
