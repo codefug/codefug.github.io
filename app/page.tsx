@@ -1,7 +1,6 @@
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import PostCategorySwiper from "@/components/postSwiper/postCategorySwiper";
-import Banner from "@/components/ui/banner";
 import BlockHeader from "@/components/ui/block-header";
 import { FrontMatter } from "@/constants/mdx";
 import getFrontMatterList from "@/lib/posts";
@@ -14,7 +13,6 @@ export default function Home() {
 
   return (
     <div>
-      <Banner firstPostId={totalFrontMatterList[0].id} />
       <section className="mb-2">
         <BlockHeader
           title={
