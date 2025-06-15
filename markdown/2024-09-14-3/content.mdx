@@ -1,4 +1,4 @@
-# <mark style={{background:"#FF5582A6"}}>배경</mark>
+# 배경
 
 next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같은 유익한 기능을 추가했다.
 
@@ -10,7 +10,7 @@ next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같�
 
 서로 다른 방식은 refresh token rotation을 위한 함수를 구현할 때 문제가 된다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
 아래의 코드는 나에게 업무가 넘어오기 전 다른 팀원이 짠 코드다. middleware 활용하여 구현된 방식이었다.
 
@@ -107,7 +107,7 @@ export const config = {
 
 고민해본 결과 axios의 interceptor처럼 fetch 요청 자체에 refreshToken을 처리해야 한다는 결론에 이르렀다.
 
-## <mark style={{background:"#FFB86CA6"}}>서버 액션을 이용한 import</mark>
+## 서버 액션을 이용한 import
 
 next/headers는 클라이언트 단에 있을 수 없고 서버 컴포넌트, 서버 액션에서 호출할 수 있었다. (클라이언트 단에서 호출하면 에러 처리)
 
@@ -117,7 +117,7 @@ next/headers는 클라이언트 단에 있을 수 없고 서버 컴포넌트, �
 
 그러곤 다음의 코드를 작성했다.
 
-### <mark style={{background:"#FFF3A3A6"}}>myFetch</mark>
+### myFetch
 
 ```ts
 import { clientFetch } from "./clientFetch";
@@ -154,7 +154,7 @@ export async function myFetch<T>(
 
 토큰 처리 기능이 붙혀진 fetch, myFetch 이다.
 
-### <mark style={{background:"#FFF3A3A6"}}>clientFetch</mark>
+### clientFetch
 
 ```ts
 import { getCookie, setCookie } from "cookies-next";
@@ -224,7 +224,7 @@ export async function clientFetch(
 
 클라이언트 (`window !== undefined`) 상태일 때 실행될 함수이다. refresh token rotation이 필요한 경우에 받고 fetch를 다시 하도록 하는 로직을 갖고 있다.
 
-### <mark style={{background:"#FFF3A3A6"}}>serverFetch</mark>
+### serverFetch
 
 ```tsx
 "use server";
@@ -297,7 +297,7 @@ export async function serverFetch(
 3. `window===undefined` 로 분기처리했기 때문에 클라이언트에서 서버 함수를 사용하는 경우의 수는 차단된다.
 4. 서버, 클라이언트 모두 사용 가능해짐
 
-## <mark style={{background:"#FFB86CA6"}}>axios의 base url 기능 구현</mark>
+## axios의 base url 기능 구현
 
 코드 리뷰를 하던 중에 URL을 상수로 받아서 myFetch에 내려받는 코드를 발견하였다.
 
@@ -305,7 +305,7 @@ export async function serverFetch(
 
 axios에서는 base url을 저장해놓고 사용하는 쪽에서는 해당 url 뒤에 있는 라우트만 적어서 사용하는 기능이 있다.
 
-### <mark style={{background:"#FFF3A3A6"}}>커링 함수</mark>
+### 커링 함수
 
 함수형 프로그래밍에서는 이걸 어떻게 구현할까 고민을 하다가 이전에 학습했던 커링 함수가 생각났다.
 
@@ -377,7 +377,7 @@ export default async function DateBoxList() {
 }
 ```
 
-# <mark style={{background:"#FF5582A6"}}>후기</mark>
+# 후기
 
 서버 액션을 사용해서 토큰 처리를 해보는 경험을 했다.
 

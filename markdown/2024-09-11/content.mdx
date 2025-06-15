@@ -1,4 +1,4 @@
-# <mark style={{background:"#FF5582A6"}}>배경</mark>
+# 배경
 
 ![](/images/2024-09-11/Pasted%20image%2020240727221740.png)
 
@@ -11,9 +11,9 @@
 1. 우리는 tailwind를 사용하기 때문에 다양한 종류를 간편하게 관리하는 것에 대한 문제가 있다.
 2. 디자인이 아직 완성되기 전이기 때문에 디자인이 변경될 가능성이 아주 높은 상황이다. 코드 변경에 따른 디자인 변화를 쉽게 볼 수 있어야 한다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
-## <mark style={{background:"#FFB86CA6"}}>tailwind로 구현된 버튼의 다양한 종류를 간편하게 관리</mark>
+## tailwind로 구현된 버튼의 다양한 종류를 간편하게 관리
 
 tailwind는 이미 존재하는 자체 클래스를 활용하여 스타일링을 한다.
 
@@ -62,7 +62,7 @@ export default function Button({
 
 그러다 cva를 알게 되었다.
 
-### <mark style={{background:"#FFF3A3A6"}}>cva (Class Variance Authority)</mark>
+### cva (Class Variance Authority)
 
 문서를 읽어보니 tailwind에서 조건부로 css를 입히기 위해서 존재하는 라이브러리라고 한다.
 
@@ -105,7 +105,7 @@ buttonVariants({ className:"flex", btnStyle:large, btnSize:solid })
 // flex라는 className이 추가된 large solid button의 스타일 (string)
 ```
 
-#### <mark style={{background:"#BBFABBA6"}}>intellisense 지원</mark>
+#### intellisense 지원
 
 아래의 코드를 vscode에 넣어주면 intellisense의 지원도 받을 수 있다고 한다.
 
@@ -142,7 +142,7 @@ export const button = (variants: ButtonVariants) =>
   twMerge(buttonVariants(variants));
 ```
 
-#### <mark style={{background:"#BBFABBA6"}}>clsx + twMerge + cva</mark>
+#### clsx + twMerge + cva
 
 여기서 cva를 이용하여 조건부 처리된 객체를 배열을 string으로 만들어주는 라이브러리인 clsx를 이용하여 사용하기 편하게 만든 유틸 함수를 가져왔다.
 (shadcn 만만세)
@@ -219,7 +219,7 @@ export default function Button({
 }
 ```
 
-### <mark style={{background:"#FFF3A3A6"}}>이러한 처리가 도움이 된 경험</mark>
+### 이러한 처리가 도움이 된 경험
 
 ![](/images/2024-09-11/Pasted%20image%2020240805002120.png)
 
@@ -243,13 +243,13 @@ varaiants에 하나
 
 공통 컴포넌트나 디자인적으로 변경될 가능성이 큰 ui 컴포넌트의 경우에는 좋은 마음가짐으로 먼저 검토해보는 게 좋을 것 같다.
 
-## <mark style={{background:"#FFB86CA6"}}>코드 변경으로 인하여 변경된 사항들을 손쉽게 확인하는 방법</mark>
+## 코드 변경으로 인하여 변경된 사항들을 손쉽게 확인하는 방법
 
 여기서 끝이 아니었다. 디자인 시안이 변경된다는 것을 알게 된 시점에서 모든 종류를 쉽게 확인할 수 있는 방법이 있다면 좋겠다고 생각했다.
 
 이전에 검토했었던 storybook을 사용해서 이 문제를 해결하기로 했다.
 
-### <mark style={{background:"#FFF3A3A6"}}>storybook</mark>
+### storybook
 
 storybook이란 타 직종과의 협업에서 두각을 드러내는 툴 중에 하나이다.
 
@@ -257,7 +257,7 @@ storybook이란 타 직종과의 협업에서 두각을 드러내는 툴 중에 
 
 결론적으로는 일의 "효율성"이 늘어나게 된다. 간단하게 연동 과정을 설명하고 넘어가겠다.
 
-#### <mark style={{background:"#BBFABBA6"}}>설치</mark>
+#### 설치
 
 ```terminal
 npx storybook@latest init
@@ -291,7 +291,7 @@ npm run storybook
 
 ![](/images/2024-09-11/Pasted%20image%2020240722214454.png)
 
-#### <mark style={{background:"#BBFABBA6"}}>코드 생성</mark>
+#### 코드 생성
 
 ![](/images/2024-09-11/Pasted%20image%2020240722215100.png)
 
@@ -384,7 +384,7 @@ CustomButton.defaultProps = {
 
 props에 따라서 class가 변경되어 다른 css가 들어가게 된다.
 
-#### <mark style={{background:"#BBFABBA6"}}>스토리 생성</mark>
+#### 스토리 생성
 
 stories 폴더의 컴포넌트이름.stories.ts를 만든다. (스토리 이다.)
 
@@ -433,7 +433,7 @@ export const Large = {
 };
 ```
 
-#### <mark style={{background:"#BBFABBA6"}}>툴바 확인</mark>
+#### 툴바 확인
 
 ![](/images/2024-09-11/Pasted%20image%2020240724213935.png)
 
@@ -530,7 +530,7 @@ export default preview;
 
 버튼의 종류가 수정되어도 명령어만 입력하면 버튼의 상태를 쉽게 확인할 수 있다.
 
-#### <mark style={{background:"#BBFABBA6"}}>트러블 슈팅</mark>
+#### 트러블 슈팅
 
 분명히 정상적으로 연동했다고 생각했는데 개발이 늘 그렇듯 트러블 슈팅은 따라왔다.
 

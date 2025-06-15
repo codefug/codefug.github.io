@@ -1,4 +1,4 @@
-# <mark style={{background:"#FF5582A6"}}>배경</mark>
+# 배경
 
 꼼꼼 프로젝트에서는 tanstack query를 적극 활용하였다.
 
@@ -8,7 +8,7 @@ tanstack query가 서버 상태를 관리하는데는 좋지만 Next.js와 함�
 
 ![](/images/2024-09-14/Pasted%20image%2020240914202641.png)
 
-## <mark style={{background:"#FFB86CA6"}}>기존 CSR를 이용한 페이지네이션 방식의 단점</mark>
+## 기존 CSR를 이용한 페이지네이션 방식의 단점
 
 ![](/images/2024-09-14/Pasted%20image%2020240816005045.png)
 
@@ -20,9 +20,9 @@ tanstack query가 서버 상태를 관리하는데는 좋지만 Next.js와 함�
 
 Promise.all을 이용한 병렬 fetch를 사용해도 비슷한 효과가 나오겠지만 최선이 아니기 때문에 결합할 수 있는 방법이 있다면 결합하고 방법이 없다면 SSR (Streaming) 과 Tanstack query (병렬 fetching) 사이의 규칙을 만들어서 둘다 쓰는 것이 좋아보였다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
-## <mark style={{background:"#FFB86CA6"}}>streaming 방식의 query</mark>
+## streaming 방식의 query
 
 이를 해결하기 위해 찾아보던 중 공식문서에서 답을 찾게 되었다.
 
@@ -114,7 +114,7 @@ export default async function Page({ params: { boardId } }: Props) {
 new Promise((r) => setTimeout(r, ms));
 ```
 
-### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅</mark>
+### 트러블 슈팅
 
 페이지네이션에 Suspense가 적용되지 않는 버그가 있었다.
 
@@ -128,7 +128,7 @@ Suspense 자체에 SeachParams를 key로 넣어서 각 Suspense가 다른 것으
 </Suspense>
 ```
 
-## <mark style={{background:"#FFB86CA6"}}>낙관적 업데이트</mark>
+## 낙관적 업데이트
 
 UX를 향상시키는 방법에는 Streaming 이외에도 존재한다.
 
@@ -146,7 +146,7 @@ fetch 실행전은 onMutation, fetch 완료 이후는 onError, onSettled를 이�
 
 좋아요 버튼을 아무리 연타해도 좋아요, 좋아요 취소가 느려진 경험은 없을 것이다.
 
-### <mark style={{background:"#FFF3A3A6"}}>좋아요 버튼 구현</mark>
+### 좋아요 버튼 구현
 
 이번 프로젝트에서도 실제로 좋아요 버튼을 구현해야 했다.
 
@@ -213,7 +213,7 @@ export function useHandleArticleLikeMutation() {
 
 ![](/images/2024-09-14/좋아요,%20좋아요%20취소%20버튼.gif)
 
-## <mark style={{background:"#FFB86CA6"}}>무한스크롤</mark>
+## 무한스크롤
 
 무한스크롤은 특정 부분이 감지되면 fetch를 보내는 로직을 활용해서 마치 스크롤이 무한으로 있는 것처럼 데이터를 늘려나가는 방식이다.
 
@@ -240,7 +240,7 @@ const {
 
 https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense
 
-## <mark style={{background:"#FFB86CA6"}}>Streaming + 무한스크롤 + 낙관적 업데이트</mark>
+## Streaming + 무한스크롤 + 낙관적 업데이트
 
 고민을 해보니 위의 세가지 (suspense, 무한스크롤, 낙관적 업데이트) 를 모두 적용할 수 있는 부분이 댓글 이라는 생각이 들었다.
 
@@ -508,9 +508,9 @@ export function usePatchCommentsMutation() {
 1. `setQueryData<받는 데이터, 쿼리 키, 주는 데이터>`
 2. `InfiniteData<전체 데이터 구조, pageParam의 구조>`
 
-### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅 </mark>
+### 트러블 슈팅
 
-#### <mark style={{background:"#BBFABBA6"}}>댓글을 연속으로 넣으면 두개씩 생겨버렸다.</mark>
+#### 댓글을 연속으로 넣으면 두개씩 생겨버렸다.
 
 생각해보니 댓글을 올리는 mutation이 pending 상태일 때나 그것과 연결된 쿼리가 아직 fetch하는 중일 때 댓글을 날려버리면 mutation이 엉켜서 문제가 발생한다.
 
@@ -555,7 +555,7 @@ export default function CommentForm({ boardId }: ArticleCommentProps) {
   };
 ```
 
-#### <mark style={{background:"#BBFABBA6"}}>하이드레이션 에러</mark>
+#### 하이드레이션 에러
 
 댓글 수정을 구현할 때 하이드레이션 에러가 발생했다.
 
@@ -574,7 +574,7 @@ new Date()로 구현되어 있기 때문에 다를 수 밖에 없었다.
 </time>
 ```
 
-# <mark style={{background:"#FF5582A6"}}>후기</mark>
+# 후기
 
 Tanstack Query에 푹 빠져서 쿼리 관리를 했던 소중한 경험이었다.
 
