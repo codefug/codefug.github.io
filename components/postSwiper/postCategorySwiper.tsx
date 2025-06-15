@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  AppCarouselNext,
-  AppCarouselPrevious,
-} from "../ui/app-carousel-button";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
@@ -17,7 +13,7 @@ export default function PostCategorySwiper({
   categoryList: { category: string; id: string }[];
 }) {
   return (
-    <Carousel className="mb-4 px-10 opacity-50 transition-all hover:opacity-100">
+    <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
       <CarouselContent>
         {categoryList.map(({ category, id }) => (
           <CarouselItem key={id + category} className="basis-auto">
@@ -32,8 +28,6 @@ export default function PostCategorySwiper({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <AppCarouselPrevious />
-      <AppCarouselNext />
     </Carousel>
   );
 }
