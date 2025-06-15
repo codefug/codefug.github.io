@@ -6,10 +6,6 @@ import getCategorySetListWithPostList from "@/util/post";
 import PostGallery from ".";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
-import {
-  AppCarouselNext,
-  AppCarouselPrevious,
-} from "../ui/app-carousel-button";
 
 export default function PostCategoryGallery({
   totalFrontMatterList,
@@ -32,7 +28,7 @@ export default function PostCategoryGallery({
   return (
     <div>
       <h2 className="mb-2 text-sm font-light text-gray-400">태그 목록</h2>
-      <Carousel className="mb-4 px-10 opacity-50 transition-all hover:opacity-100">
+      <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">
             <button
@@ -65,8 +61,6 @@ export default function PostCategoryGallery({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <AppCarouselPrevious />
-        <AppCarouselNext />
       </Carousel>
       <PostGallery postInfoList={filteredFrontMatterList} />
     </div>
