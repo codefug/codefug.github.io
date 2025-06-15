@@ -1,6 +1,6 @@
 "use client";
 
-import useIntersectionObserver from "@/hooks/use-interception";
+import useHighlightTOC from "@/hooks/use-highlight-toc";
 import useOutsideClick from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const menuBarVariant = cva(
-  "block py-1.5 text-sm transition-all opacity-50 hover:opacity-100 duration-200 ease-in-out border-l-2 hover:border-primary/70",
+  "block py-1.5 text-sm transition-all opacity-50 hover:opacity-100 duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
   {
     variants: {
       isActive: {
@@ -19,12 +19,12 @@ const menuBarVariant = cva(
           "border-transparent text-muted-foreground hover:text-foreground/90",
       },
       level: {
-        1: "",
-        2: "pl-4",
-        3: "pl-8",
-        4: "pl-12",
-        5: "pl-16",
-        6: "pl-20",
+        1: "pl-4",
+        2: "pl-8",
+        3: "pl-12",
+        4: "pl-16",
+        5: "pl-20",
+        6: "pl-24",
       },
     },
     defaultVariants: {
@@ -40,7 +40,7 @@ export default function MenuBar() {
   const pathname = usePathname();
 
   const headings = useFindAllHeadings();
-  const { activeId } = useIntersectionObserver();
+  const { activeId } = useHighlightTOC();
 
   const handleShowMenuList = useCallback(() => {
     setIsShow(true);
@@ -62,7 +62,7 @@ export default function MenuBar() {
       <div
         ref={menuListRef}
         className={cn(
-          "fixed right-0 top-24 hidden w-[300px]",
+          "fixed right-0 top-[68px] hidden w-[300px]",
           isShow && "block",
         )}
       >
@@ -73,7 +73,7 @@ export default function MenuBar() {
           <h4 className="mb-3 mt-0 text-sm font-medium text-foreground">
             목차
           </h4>
-          <nav className="max-h-[60vh] space-y-0.5 overflow-auto pr-2">
+          <nav className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2">
             {headings.map((heading) => (
               <Link
                 href={`${pathname}#${heading.id}`}
