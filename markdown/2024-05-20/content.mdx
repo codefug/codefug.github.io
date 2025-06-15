@@ -1,11 +1,11 @@
-## <mark style={{background:"#FFB86CA6"}}>CICD</mark>
+## CICD
 
 기본적인 기능이 끝나고 배포를 할 차례였다.
 CICD는 일정에 없던 업무였는데 기본적인 기능이 끝나기도 했고
 Github Action을 통해서 자동 배포를 하면 훨씬 편해지지 않을까 하는 생각이 들어서 팀원들과 이야기 후 고민을 시작하였고
 우선 Github Action을 알아야 적용을 할 수 있다는 생각에 Github Action 기본을 학습한 후에 프로젝트에 적용하였다.
 
-### <mark style={{background:"#FFF3A3A6"}}>개념</mark>
+### 개념
 
 여러가지 이론이 있지만 간단하게 설명해보면
 
@@ -78,7 +78,7 @@ jobs:
 
 cache를 적용해서 재실행시 성능을 늘렸다. netlify에서 토큰들을 가져오고 GITHUB_TOKEN을 github에서 가져와서 github 설정의 secret에 넣어놓으면 종료되는 작업이었다.
 
-### <mark style={{background:"#FFF3A3A6"}}>Trouble shooting</mark>
+### Trouble shooting
 
 1. npm 자체 에러
 
@@ -88,7 +88,7 @@ https://github.com/npm/cli/issues/4828
 
 issue에서 제안하는 대로 package.lock.json과 node_modules를 삭제하고 다시 설치 후 진행하여 성공하였다.
 
-## <mark style={{background:"#FFB86CA6"}}>결과</mark>
+## 결과
 
 <img src="/images/2024-05-20/githubActionResult.png" alt="githubActionResult" />
 
