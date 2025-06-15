@@ -2,6 +2,7 @@ import type { MDXComponents } from "mdx/types";
 import { createElement, ReactNode } from "react";
 import Callout from "./components/mdx/callout";
 import processCallout from "./util/callout";
+import { getHeaderHltr } from "./constants/header-hltr";
 
 function getHeadingIndexWithCloser() {
   let headingIndex = -1;
@@ -22,6 +23,7 @@ function CustomHeading({
 }) {
   return createElement(`h${level}`, {
     id: headingIndex(),
+    className: getHeaderHltr(level),
     ...props,
   });
 }
