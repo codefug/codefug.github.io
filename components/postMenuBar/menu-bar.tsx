@@ -10,11 +10,11 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const menuBarVariant = cva(
-  "block py-1.5 text-sm transition-all opacity-50 hover:opacity-100 duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
+  "block py-1.5 text-sm transition-all duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
   {
     variants: {
       isActive: {
-        true: "border-primary font-medium text-primary opacity-100",
+        true: "border-primary font-medium text-primary opacity-100 dark:text-white text-foreground/90",
         false:
           "border-transparent text-muted-foreground hover:text-foreground/90",
       },
