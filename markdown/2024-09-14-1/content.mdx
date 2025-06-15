@@ -1,4 +1,4 @@
-# <mark style={{background:"#FF5582A6"}}>배경</mark>
+# 배경
 
 이번 프로젝트에는 정말 많은 종류의 모달이 존재한다.
 
@@ -6,9 +6,9 @@
 
 심지어 디자인 시안이 아직 다 완성되지 않은 상황이었기에 더 추가될지도 모르는 상황이었다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
-## <mark style={{background:"#FFB86CA6"}}>상황 분석</mark>
+## 상황 분석
 
 모달들이 전부 조금씩 다르게 생겼으나 공통적으로 존재하는 것들을 생각해보았다.
 
@@ -23,9 +23,9 @@
 
 컴포넌트 자체의 구현 방식은 해결되었고 이제 렌더링은 어떻게 시킬지 생각해야 했다.
 
-## <mark style={{background:"#FFB86CA6"}}>렌더링 방법</mark>
+## 렌더링 방법
 
-### <mark style={{background:"#FFF3A3A6"}}>전역 상태 관리</mark>
+### 전역 상태 관리
 
 부끄럽지만 기존에 모달을 구현할 때는 마감 기한에 밀려서 좋은 코드를 생각하지 못했던 것 같다...
 
@@ -73,7 +73,7 @@ export default function Modal({ children, button }: ModalProps) {
 
 이번 프로젝트에서 전역 상태 관리 라이브러리로 zustand을 세팅했으니 우선 이를 활용해서 만들어 보자 하고 고민을 시작했다.
 
-### <mark style={{background:"#FFF3A3A6"}}>toss slash</mark>
+### toss slash
 
 그러던 중 toss의 오픈 소스 라이브러리에 overlay를 다루는 훅이 있는 것을 발견했다.
 
@@ -81,11 +81,11 @@ overlay란 위에 까는 것을 의미하며 여기서는 화면 위에 화면�
 
 즉, 모달 뿐만 아니라 사이드바, 토스트 등 존재하는 화면 위에 있는 컴포넌트도 overlay라고 한다.
 
-#### <mark style={{background:"#BBFABBA6"}}>useOverlay 상세 분석</mark>
+#### useOverlay 상세 분석
 
 https://github.com/toss/slash/blob/main/packages/react/use-overlay/src/useOverlay.ko.md
 
-##### <mark style={{background:"#ABF7F7A6"}}>OverlayProvider</mark>
+##### OverlayProvider
 
 ```tsx
 // OverlayProvider.tsx
@@ -168,7 +168,7 @@ OverlayProvider의 역할
 >
 > 우린 이 중간 단계를 직접 사용한 것이다. 그래서 overlayById 상태의 element를 컴포넌트를 사용하는 것처럼 `<element key={id}/>`로 사용할 수 없고 `children`으로써 사용해야 한다.
 
-##### <mark style={{background:"#ABF7F7A6"}}>useOverlay</mark>
+##### useOverlay
 
 ```tsx
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -248,7 +248,7 @@ useOverlay의 역할
 1. context를 읽고 mount, unmount할 수 있는 함수 제공 (여기서 mount와 unmount는 메모리에 담는 것(전역 상태))
 2. context 내부적으로 사용할 id 생성, 주입
 
-##### <mark style={{background:"#ABF7F7A6"}}>OverlayController</mark>
+##### OverlayController
 
 ```tsx
 /** @tossdocs-ignore */
@@ -315,7 +315,7 @@ OverlayController의 역할
 3. useOverlay의 open으로 모달을 끄는 handler 올리기
 4. Element 내리기
 
-##### <mark style={{background:"#ABF7F7A6"}}>전체 구조도</mark>
+##### 전체 구조도
 
 종합적으로 구조도를 구려보면 다음과 같다.
 
@@ -332,7 +332,7 @@ OverlayController의 역할
 > 어렵게 되어 있지만 쉽게 말하자면 z-index는 부모의 z-index를 이길 수 없다는 것이다. 자신이 z-index: 6이더라도 부모가 4라면 부모 단에 있는 4보다 높은 요소들을 z-index로 이길 수 없다.
 > (`DIV #4는 z-index:6이지만 z-index:5인 DIV #1보다 뒤에 있다.`)
 
-### <mark style={{background:"#FFF3A3A6"}}>프로젝트에 맞게 개선</mark>
+### 프로젝트에 맞게 개선
 
 분석이 끝난 후 관련된 공부를 다 한 나는 강해진 느낌이 들었다. 하핳..
 
@@ -342,11 +342,11 @@ OverlayController의 역할
 2. slash의 라이브러리는 이전에 구현된 라이브러리 같았다. (React를 import 받고 있었음.) 현재 기준으로 어느정도 리팩토링을 하게 되면 가독성을 늘릴 수 있을 것이다. 간단하게는 컴포넌트의 id를 받는 부분에서 전역 변수를 지정해서 id를 넣어주고 있었는데 이는 react에서 id를 만들 때 쓰라고 만든 훅인 `useId`를 사용하여 리팩토링할 수 있는 식이다.
 3. OverlayController 단은 마운트, 언마운트 관련해서 애니메이션 처리 (Framer-Motion의 AnimatePresense 같은)를 위해 exit, close로 따로 분리되어 있는데 이는 가독성을 해친다고 생각했다. 훅에 넣지 말고 모달, 사이드바 같은 컴포넌트를 만드는 부분에서 애니메이션 처리를 할 때 상태를 하나 만들어서 처리해도 된다고 생각했다. 기존 라이브러리에서도 이 부분 때문에 주석이 길게 되어 있는 것을 확인할 수 있었는데 개인적으로는 주석 없이도 잘 읽히는 코드가 더 좋은 것 같다. 우리 프로젝트에서는 마운트, 언마운트 시의 애니메이션에 큰 비중을 두지 않았기 때문에 들어내기로 했다.
 
-#### <mark style={{background:"#BBFABBA6"}}>useCustomOverlay 구조도</mark>
+#### useCustomOverlay 구조도
 
 ![](/images/2024-09-14/Pasted%20image%2020240828112816.png)
 
-##### <mark style={{background:"#ABF7F7A6"}}>OverlayStore</mark>
+##### OverlayStore
 
 ```ts
 import { ReactNode } from "react";
@@ -405,13 +405,13 @@ export const createOverlayStore = (
 
 zustand store 방식으로 함으로써 mount, unmount 관련된 로직을 store에 숨길수 있게 되었다. (로직 분리 굳)
 
-###### <mark style={{background:"#ADCCFFA6"}}>트러블 슈팅</mark>
+###### 트러블 슈팅
 
 짧은 트러블 슈팅으로는 zustand에서는 shallow equal을 사용하여 상태의 변화를 감지하는데 delete만 지워서 리렌더링이 막 일어나게 되었었다.
 
 데이터 변경시 return으로 새로운 Map을 넣어줘야 리렌더링이 정상적으로 일어난다.
 
-##### <mark style={{background:"#ABF7F7A6"}}>OverlayStoreProvider</mark>
+##### OverlayStoreProvider
 
 ```ts
 "use client";
@@ -476,7 +476,7 @@ OverlayStore와 연결된 컴포넌트이다. 쌓임 맥락을 해결하기 위�
 
 Map의 entries로 Map을 전개해서 안에 있는 컴포넌트들을 꺼내주는데 순차적으로 렌더링되기 때문에 뒤에 구현되는 컴포넌트가 쌓임 맥락에서 이기게 되어 덮어써지게 된다.
 
-##### <mark style={{background:"#ABF7F7A6"}}>useCustomOverlay</mark>
+##### useCustomOverlay
 
 ```ts
 "use client";
@@ -587,7 +587,7 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 >
 > 이는 선언적으로 프로그래밍을 할 수 있게 하여 가독성이나 확장성 측면에서 훨씬 좋은 방식이다. 이는 프로덕트가 커질 수록 더 빛을 낼 것이다.
 
-## <mark style={{background:"#FFB86CA6"}}>Compound Pattern + useCustomOverlay 예제 (공통 모달 컴포넌트)</mark>
+## Compound Pattern + useCustomOverlay 예제 (공통 모달 컴포넌트)
 
 ````ts
 interface ModalContextType {
@@ -760,7 +760,7 @@ export default function HandleArticleModal({
 
 ![](/images/2024-09-14/게시글%20추가.gif)
 
-# <mark style={{background:"#FF5582A6"}}>후기</mark>
+# 후기
 
 좋은 문제 상황을 만나서 이번에 toss slash의 훅을 분석하는 시간을 가질 수 있게 되었다.
 

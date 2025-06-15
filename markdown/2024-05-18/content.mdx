@@ -1,6 +1,6 @@
-## <mark style={{background: "#FF5582A6"}}>팀 프로젝트 세팅</mark>
+## 팀 프로젝트 세팅
 
-### <mark style={{background: "#FFB86CA6"}}>역할</mark>
+### 역할
 
 공통 컴포넌트 제작: infinite scroll, Button 같은 간단한 UI
 
@@ -8,11 +8,11 @@
 
 CICD : Netlify와 GithubAction을 통해서 PR event에 반응하여 자동 배포하는 로직 구현
 
-### <mark style={{background: "#FFB86CA6"}}>기간별 업무</mark>
+### 기간별 업무
 
 <img src="/images/2024-05-18/plan.png" alt="plan" />
 
-### <mark style={{background: "#FFB86CA6"}}>폴더 구조</mark>
+### 폴더 구조
 
 기존에 사용하던 FSD 구조는 다른 팀원들도 완벽하게 알아야만 효과적인 구조이기 때문에 팀원들과의 회의 끝에 조금 변형되어 사용되었습니다.
 
@@ -74,17 +74,17 @@ CICD : Netlify와 GithubAction을 통해서 PR event에 반응하여 자동 배�
 
 <br />
 
-## <mark style={{background: "#FFB86CA6"}}>UX 향상을 위한 기능 구현</mark>
+## UX 향상을 위한 기능 구현
 
-### <mark style={{background: "#FFF3A3A6"}}>infinite scroll</mark>
+### infinite scroll
 
-#### <mark style={{background: "#BBFABBA6"}}>개념</mark>
+#### 개념
 
 interception observer API라는 요소가 프레임 안에 보여지는 것을 감지하는 API를 이용해서 스크롤이 내려가서 요소가 보이면 그때 fetch를 요청하여 UX를 향상하는 기술이다.
 
 처음에 데이터 관련 fetch 요청을 전부 보내서 화면을 구성하게 되면 불필요한 시간을 보내게 되서 렌더링 자체가 느려지기 때문에 목록 페이지 같은 많은 데이터를 받아야 하는 페이지에서는 꼭 필요한 기능이다.
 
-#### <mark style={{background: "#BBFABBA6"}}>useInView</mark>
+#### useInView
 
 ```jsx
 const rootRef = useRef(null);
@@ -124,7 +124,7 @@ threshold로 보여지는 비율(프레임 내에서 보여지는 비율)을 지
 
 useInView의 ref가 threshold만큼 root에서 보여지면 inView가 true로 변하고 아니면 false로 변한다.
 
-#### <mark style={{background: "#BBFABBA6"}}>fetch와 연결하여 infinite scroll 구현</mark>
+#### fetch와 연결하여 infinite scroll 구현
 
 ```jsx
 export default function useInfiniteScroll(fetchFunction, options) {
@@ -162,7 +162,7 @@ cursor를 기반으로 10개씩 데이터를 받아오게 되어 있다. ref, ro
 
 useEffect로 inView를 감지하여 내부적으로 state를 통해 데이터가 관리된다.
 
-#### <mark style={{background: "#BBFABBA6"}}>Trouble Shooting</mark>
+#### Trouble Shooting
 
 **1. Event Bubbling으로 인해서 특정 부분 자식요소 클릭시 부모 요소를 클릭하지 않았던 문제**
 
@@ -186,22 +186,22 @@ infinite scroll을 생각해보면 inView가 보일때 true, 다음 데이터를
 
 이를 해결하기 위해서는 if (inView)같은 조건을 useEffect 내에 달아서 한번만 작동되게 바꾸면 된다.
 
-#### <mark style={{background: "#BBFABBA6"}}>결과</mark>
+#### 결과
 
 <img
   src="/images/2024-05-18/fandom-k-infinite-scroll.gif"
   alt="fandom-k infinite scroll"
 />
 
-### <mark style={{background: "#FFF3A3A6"}}>skeleton</mark>
+### skeleton
 
-#### <mark style={{background: "#BBFABBA6"}}>개념</mark>
+#### 개념
 
 유튜브 홈화면에서 흔하게 볼 수 있는 UX를 향상하는 방법인데 데이터가 불러오기 전에 화면의 윤곽을 먼저 그려줘서 사용자의 이탈을 막는 기능이다.
 
 목록 페이지에는 infinite scroll로 받아오는 데이터가 많은데 이때 이를 단순한 로딩 아이콘으로 처리하면 UX가 좋지 않을 것이다.
 
-#### <mark style={{background: "#BBFABBA6"}}>구현</mark>
+#### 구현
 
 styled-components의 css를 쓰면 css 파일 자체를 css그 자체로 상속할 수 있다.
 
@@ -287,11 +287,11 @@ export default function MonthChartList({ gender, isactive }) {
 }
 ```
 
-#### <mark style={{background: "#BBFABBA6"}}>결과</mark>
+#### 결과
 
 <img src="/images/2024-05-18/fandom-k-skeleton.gif" alt="fandom-k skeleton" />
 
-#### <mark style={{background: "#BBFABBA6"}}>Trouble Shooting</mark>
+#### Trouble Shooting
 
 1. (styled component) className이 직접 들어가지 않아서 적용되지 않았던 문제
 

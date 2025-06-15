@@ -1,6 +1,6 @@
-# <mark style={{background:"#FF5582A6"}}>ESLint</mark>
+# ESLint
 
-## <mark style={{background:"#FFB86CA6"}}>정적 코드 분석</mark>
+## 정적 코드 분석
 
 코드의 실행과는 별개로 코드 자체만으로 잠재적 버그를 야기하는 부분을 찾아내어 사전에 수정하는 분석을 `정적 코드 분석` 이라고 한다.
 
@@ -80,11 +80,11 @@ module.exports = {
 
 #### 4. report 혹은 fix한다.
 
-## <mark style={{background:"#FFB86CA6"}}>eslint-plugin</mark>
+## eslint-plugin
 
 규칙을 모아놓은 패키지, ex) `eslint-plugin-import`, `eslint-plugin-react`
 
-## <mark style={{background:"#FFB86CA6"}}>eslint-config</mark>
+## eslint-config
 
 eslint-plugin을 모아놓고 한 세트로 제공하는 패키지
 (여러 프로젝트에 걸쳐 동일하게 사용할 수 있는 ESLint 관련 설정을 제공하는 패키지)
@@ -116,7 +116,7 @@ eslint-plugin을 모아놓고 한 세트로 제공하는 패키지
 
 Next.js로 작성된 코드라면 꼭 필요한 config이다.
 
-## <mark style={{background:"#FFB86CA6"}}>나만의 ESLint 규칙 만들기</mark>
+## 나만의 ESLint 규칙 만들기
 
 ### 1. 기존 규칙 변경 : import React를 제거해서 번들 크기를 줄이기 (React 17부터 JSX Runtime으로 인해 사라진 문법)
 
@@ -260,7 +260,7 @@ create 함수는 객체를 반환해야 하는데 여기서 코드 스멜을 감
 
 이후 `yo`와 `generate-eslint`를 이용해서 eslint-plugin 형태로 배포할 수 있다.
 
-## <mark style={{background:"#FFB86CA6"}}>주의할 점</mark>
+## 주의할 점
 
 ### 1. Prettier와 충돌
 
@@ -296,7 +296,7 @@ useEffect 사용시 내부적으로 상태에 의존하고 있는데 deps에서 
 
 ESLint의 버전이 맞지 않을 경우 내부적으로 버전이 틀려서 찾지 못했다는 오류를 마주할 수 있다.
 
-# <mark style={{background:"#FF5582A6"}}>React Test Library</mark>
+# React Test Library
 
 백엔드의 테스트 : 서버나 디비에서 원하는 데이터를 올바르게 가져올 수 있는지, 데이터 수정 간 교착 상태나 경쟁 상태가 발생하지는 않는지 데이터 손실은 없는지, 특정 상황에서 장애가 발생하지 않는지 등을 확인
 
@@ -307,11 +307,11 @@ ESLint의 버전이 맞지 않을 경우 내부적으로 버전이 틀려서 찾
 
 그중 가장 유명한게 React Testing Library이다.
 
-## <mark style={{background:"#FFB86CA6"}}>React Testing Library</mark>
+## React Testing Library
 
 DOM Testing Library 기반이다.
 
-### <mark style={{background:"#FFF3A3A6"}}>DOM Testing Library</mark>
+### DOM Testing Library
 
 jsdom 기반이다.
 jsdom은 Node.js 같은 HTML없이 js만 존재하는 환경에서도 HTML과 DOM을 사용할 수 있도록 하는 라이브러리
@@ -327,7 +327,7 @@ const dom = new JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
 console.log(dom.window.document.querySelector("p").textContent); // "Hello World"
 ```
 
-### <mark style={{background:"#FFF3A3A6"}}>자바스크립트 테스트의 기초</mark>
+### 자바스크립트 테스트의 기초
 
 1. 테스트할 함수나 모듈을 선정
 2. 함수나 모듈이 반환하길 기대하는 값 선정
@@ -337,13 +337,13 @@ console.log(dom.window.document.querySelector("p").textContent); // "Hello World
 
 Node.js는 assert라는 모듈을 제공한다. 하지만 무엇을 테스트했는지 무슨 테스트를 어떻게 수행했는지 실제 테스트 정보를 확인하려면 다른 라이브러리가 필요하다.
 
-### <mark style={{background:"#FFF3A3A6"}}>Testing Framework</mark>
+### Testing Framework
 
 어설션을 기반으로 테스트 + 도움이 될만한 정보 전달
 
 Jest, Mocha, Karma, Jasmine 등등이 있다.
 
-#### <mark style={{background:"#BBFABBA6"}}>Jest</mark>
+#### Jest
 
 Jest의 실제 동작 과정을 보자.
 

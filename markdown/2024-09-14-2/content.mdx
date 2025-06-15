@@ -1,4 +1,4 @@
-# <mark style={{background:"#FF5582A6"}}>배경</mark>
+# 배경
 
 ![](/images/2024-09-14/progressbar%20예시.gif)
 
@@ -10,19 +10,19 @@ Link 컴포넌트인 탭 요소를 누르면 주소가 바뀌면서 progress bar
 
 이때 progress bar를 추가하면 UX가 크게 향상될 것이라고 생각하고 고민을 시작했다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
 Next는 router event를 외부에 노출시키지 않아서 페이지 바꿀 때 로딩 생기는 걸 구현하는게 매우 어렵다.
 
 이를 해결한 간단한 라이브러리도 찾았으나 실제 동작 과정을 알고 싶어서 실제로 구현된 코드를 위주로 연구를 시작했다.
 
-## <mark style={{background:"#FFB86CA6"}}>코드 분석</mark>
+## 코드 분석
 
 https://buildui.com/posts/global-progress-in-nextjs
 
 위의 포스팅을 분석해보았다.
 
-### <mark style={{background:"#FFF3A3A6"}}>layout.tsx</mark>
+### layout.tsx
 
 ```tsx
 // layout.tsx
@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 ```
 
-### <mark style={{background:"#FFF3A3A6"}}>progress-bar</mark>
+### progress-bar
 
 ```tsx
 // progress-bar
@@ -286,7 +286,7 @@ function useInterval(callback: () => void, delay: number | null) {
 }
 ```
 
-### <mark style={{background:"#FFF3A3A6"}}>분석 결과</mark>
+### 분석 결과
 
 굉장히 복잡한 코드가 나왔지만 결론적으로는 progress bar가 실제 로딩 퍼센트와 관련이 없어도 된다는 아이디어로 시작되는 것 같다.
 
@@ -304,7 +304,7 @@ function useInterval(callback: () => void, delay: number | null) {
 1. 우리 만의 LinkButton이 있기 때문에 Link를 따로 만들지 않고 훅에서 로직을 받아와서 내려주는 방식으로 리팩토링이 쉽게 해줘야 한다. => 훅으로 따로 생성, 내부 로직은 감춤
 2. useReducer를 이용해서 state 관리를 가독성 있게 하자.
 
-## <mark style={{background:"#FFB86CA6"}}>리팩토링 결과</mark>
+## 리팩토링 결과
 
 ```tsx
 import { rand } from "@/utils/get-rand";
@@ -554,7 +554,7 @@ useReducer를 활용한 flux 패턴으로 상태 관리를 처리하는 리팩�
 
 늘 느끼지만 모든 기술이 자신의 문제를 해결하기 위해 찾아볼 때 기억에 잘 새겨지는 것 같다. 이번에도 많이 배웠다.
 
-### <mark style={{background:"#FFF3A3A6"}}>끝이 아니었다...</mark>
+### 끝이 아니었다...
 
 ![](/images/2024-09-14/progress%20bar%20리렌더링%20에러.gif)
 
@@ -588,7 +588,7 @@ https://www.npmjs.com/package/use-zustand
 
 이는startTransition을 활용하는 방식이 아니었다. 시도해보기로 한다.
 
-## <mark style={{background:"#FFB86CA6"}}>next-nprogress-bar</mark>
+## next-nprogress-bar
 
 ```terminal
 pnpm install next-nprogress-bar
@@ -622,7 +622,7 @@ html 자체에 스타일링을 줘서 작동하는 방식인 것 같았다. 여�
 
 이제 Link 자체에 특별한 옵션을 안 넣으면 자동으로 progress bar가 동작한다고 한다.
 
-### <mark style={{background:"#FFF3A3A6"}}>트러블 슈팅</mark>
+### 트러블 슈팅
 
 Next.js에서는 SearchParams에 따른 컴포넌트 렌더링이 많다.
 

@@ -1,6 +1,6 @@
 import YoutubePlayer from "@/components/mdx/youtube.tsx";
 
-# <mark style={{background:"#FF5582A6"}}>설계</mark>
+# 설계
 
 ![](/images/2024-07-22/Pasted%20image%2020240722170554.png)
 
@@ -21,11 +21,11 @@ import YoutubePlayer from "@/components/mdx/youtube.tsx";
 
 MSW는 server를 mocking함으로써 요청을 가로채서 지정된 response를 리턴하게 해주는 mocking server worker입니다. MSW를 일부 도입하여 다른 개발이 끝나지 않은 환경에서 인피니티 스크롤 구현을 확인하고자 하였습니다.
 
-# <mark style={{background:"#FF5582A6"}}>구현</mark>
+# 구현
 
-## <mark style={{background:"#FFB86CA6"}}>MSW</mark>
+## MSW
 
-### <mark style={{background:"#FFF3A3A6"}}>환경 설정</mark>
+### 환경 설정
 
 ```terminal
 npx msw init ./public --save
@@ -112,7 +112,7 @@ export default function RootLayout({
 
 MSWComponent를 Root에 넣어줘서 Root에 접근시 msw가 작동되도록 해줍니다.
 
-### <mark style={{background:"#FFF3A3A6"}}>핸들러 설계</mark>
+### 핸들러 설계
 
 ```ts
 /**
@@ -165,7 +165,7 @@ export const handlers = [
 2. 다음 데이터가 잘 오는지 확인하고 offset이 움직이는지 두번째 데이터인지 확실히 확인 (`offset==='6'`)
 3. 이후부턴 console.log가 없는 채로 데이터가 오기 때문에 인피니티 스크롤 구현이 되었는지 확실하게 확인할 수 있습니다.
 
-### <mark style={{background:"#FFF3A3A6"}}>mock data 설계</mark>
+### mock data 설계
 
 이후 mock data 설계가 매우 중요한데요.
 
@@ -219,7 +219,7 @@ mock data에 Math.random()을 넣은 이유를 이제 조금 이해가 되실 �
 
 Math.random()은 항상 다른 값을 호출하기 때문에 같은 데이터인지 아닌지 쉽게 확인할 수 있는 것입니다. 같은 데이터를 주었다면 경고창이 나오게 되겠죠.
 
-### <mark style={{background:"#FFF3A3A6"}}>MSW 실행</mark>
+### MSW 실행
 
 ![](/images/2024-07-22/Pasted%20image%2020240702221704.png)
 
@@ -229,7 +229,7 @@ Math.random()은 항상 다른 값을 호출하기 때문에 같은 데이터인
 
 <YoutubePlayer id="kJrTBYZtssQ" />
 
-# <mark style={{background:"#FF5582A6"}}>reference</mark>
+# reference
 
 https://oliveyoung.tech/blog/2024-01-23/msw-frontend/
 https://www.handongryong.com/post/msw/
