@@ -32,7 +32,7 @@ export default function PostCategoryGallery({
   return (
     <div>
       <h2 className="mb-2 text-sm font-light text-gray-400">태그 목록</h2>
-      <Carousel className="mb-4 px-10">
+      <Carousel className="mb-4 px-10 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">
             <button
@@ -41,7 +41,7 @@ export default function PostCategoryGallery({
               }}
             >
               <Badge
-                className="h-8 text-sm"
+                className="h-8 text-sm dark:text-white"
                 variant={value === "" ? "default" : "outline"}
               >
                 전체({totalFrontMatterList.length})
@@ -56,7 +56,7 @@ export default function PostCategoryGallery({
                 }}
               >
                 <Badge
-                  className="h-8 text-sm"
+                  className="h-8 text-sm dark:text-white"
                   variant={category === value ? "default" : "outline"}
                 >
                   {category}({total})

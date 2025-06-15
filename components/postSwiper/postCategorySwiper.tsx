@@ -17,7 +17,7 @@ export default function PostCategorySwiper({
   categoryList: { category: string; id: string }[];
 }) {
   return (
-    <Carousel className="mb-4 px-10">
+    <Carousel className="mb-4 px-10 opacity-50 transition-all hover:opacity-100">
       <CarouselContent>
         {categoryList.map(({ category, id }) => (
           <CarouselItem key={id + category} className="basis-auto">
