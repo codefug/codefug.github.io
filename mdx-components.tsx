@@ -66,6 +66,16 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       const { children } = props;
       const { type, title, content } = processCallout(children);
       if (type === null) return createElement("blockquote", props);
+      console.log(
+        "Callout Type:",
+        type,
+        "Title:",
+        title,
+        "Content:",
+        content,
+        "Children:",
+        children,
+      );
       return <Callout type={type} title={title} content={content} />;
     },
     // a: CustomLink,
