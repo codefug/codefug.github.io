@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://codefug.github.io/posts/2025-06-07</loc>
+<lastmod>2025-06-07T00:00:00.000Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
 <loc>https://codefug.github.io/posts/2025-05-31</loc>
 <lastmod>2025-05-31T00:00:00.000Z</lastmod>
 <changefreq>daily</changefreq>
@@ -140,19 +146,19 @@
 </url>
 <url>
 <loc>https://codefug.github.io</loc>
-<lastmod>2025-06-17T04:00:57.538Z</lastmod>
+<lastmod>2025-06-17T13:28:08.908Z</lastmod>
 <changefreq>daily</changefreq>
 <priority>1</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/about</loc>
-<lastmod>2025-06-17T04:00:57.538Z</lastmod>
+<lastmod>2025-06-17T13:28:08.908Z</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/search </loc>
-<lastmod>2025-06-17T04:00:57.538Z</lastmod>
+<lastmod>2025-06-17T13:28:08.908Z</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.8</priority>
 </url>
