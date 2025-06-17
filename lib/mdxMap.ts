@@ -22,6 +22,7 @@ import * as MDX_2024_09_14_3 from "@/markdown/2024-09-14-3/content.mdx";
 import * as MDX_2024_09_14_4 from "@/markdown/2024-09-14-4/content.mdx";
 import * as MDX_2024_11_10 from "@/markdown/2024-11-10/content.mdx";
 import * as MDX_2025_05_24 from "@/markdown/2025-05-24/content.mdx";
+import * as MDX_2025_05_31 from "@/markdown/2025-05-31/content.mdx";
 import { MDXModule } from "mdx/types";
 
 export const mdxMap: Record<string, MDXModule> = {
@@ -47,4 +48,5 @@ export const mdxMap: Record<string, MDXModule> = {
   "2024-09-14-4": MDX_2024_09_14_4,
   "2024-11-10": MDX_2024_11_10,
   "2025-05-24": MDX_2025_05_24,
+  "2025-05-31": MDX_2025_05_31,
 };
