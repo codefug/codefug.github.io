@@ -1,10 +1,8 @@
 import { CalloutType } from "@/constants/callout";
+import { JSX } from "react";
 
-type childProps = "\n" | { props: { children: string } };
-
-export function isCallout(children: childProps[]) {
+export function isCallout(children: JSX.Element[]) {
   if (
-    children[1] !== "\n" &&
     typeof children[1].props.children === "string" &&
     children[1].props.children.startsWith("[!")
   )
@@ -22,9 +20,7 @@ export function extractCallOutType(
   return callOutType as CalloutType;
 }
 
-export default function processCallout(
-  children: { props: { children: string } }[],
-) {
+export default function processCallout(children: JSX.Element[]) {
   // 콜백 확인하고
   if (!isCallout(children))
     return {
@@ -32,7 +28,6 @@ export default function processCallout(
       title: "",
       content: children,
     };
-  console.log(children[1]);
   const type = extractCallOutType(children);
   const text = children[1].props.children;
   const endOfPrefix = text.indexOf("] ");
