@@ -32,7 +32,6 @@ export default function processCallout(children: JSX.Element[]) {
   const text = children[1].props.children;
   const endOfPrefix = text.indexOf("] ");
   const title = endOfPrefix !== -1 ? text.slice(endOfPrefix + 2) : type;
-
   // 콜백이면 콜백 type을 추출하고 콜백 sign을 제거한다.
   return {
     type,
