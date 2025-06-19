@@ -7,7 +7,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className={cn("prose mx-auto overflow-auto dark:prose-invert")}>
+    <div className={cn("prose mx-auto mb-10 overflow-auto dark:prose-invert")}>
       {children}
       <Giscus />
     </div>

@@ -102,3 +102,7 @@ body {
   ):before {
   content: none;
 }
+
+.prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 0;
+}
