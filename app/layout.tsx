@@ -17,7 +17,20 @@ const gothicA1 = Gothic_A1({
 
 export const metadata: Metadata = {
   title: "Codefug Blog",
-  description: "project experiences and development notes",
+  description: "프로젝트 경험과 개발 노트를 공유하는 블로그",
+  keywords: [
+    "개발",
+    "프로그래밍",
+    "React",
+    "Next.js",
+    "JavaScript",
+    "TypeScript",
+    "블로그",
+  ],
+  authors: [{ name: "Codefug" }],
+  creator: "Codefug",
+  publisher: "Codefug",
+  metadataBase: new URL("https://codefug.github.io"),
   openGraph: {
     title: "Codefug Blog",
     description: "project experiences and development notes",
@@ -39,7 +52,7 @@ export default function RootLayout({
 }>) {
   const totalFrontMatterList = getFrontMatterList();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className={`${gothicA1.className} antialiased`}>
         <ThemeProvider

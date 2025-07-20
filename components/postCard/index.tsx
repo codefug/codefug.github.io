@@ -44,7 +44,7 @@ export default function PostCard({
               ))}
             </div>
           </div>
-          <h3 className="mb-2 line-clamp-1 text-lg font-bold">{title}</h3>
+          <h2 className="mb-2 line-clamp-1 text-lg font-bold">{title}</h2>
           <p className="line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
             {excerpt}
           </p>

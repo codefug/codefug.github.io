@@ -34,7 +34,7 @@ export default function Header() {
           >
             <Image
               src="/images/main-logo.png"
-              alt="logo"
+              alt="Codefug Blog 로고"
               height={28}
               width={28}
               sizes="28px"
@@ -68,9 +68,11 @@ const HeaderNavigation = memo(function HeaderNavigation() {
                 target="_blank"
                 key={item.label}
                 className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
                   pathName === item.href && "text-black dark:text-white",
                 )}
+                aria-label="포트폴리오 보기 (새 탭에서 열림)"
+                rel="noopener noreferrer"
               >
                 {item.label}
               </a>
@@ -82,9 +84,10 @@ const HeaderNavigation = memo(function HeaderNavigation() {
                 passHref
                 key={item.label}
                 className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
                   pathName === item.href && "text-black dark:text-white",
                 )}
+                aria-label={`${item.label} 페이지로 이동`}
               >
                 {item.label}
               </Link>
@@ -96,9 +99,10 @@ const HeaderNavigation = memo(function HeaderNavigation() {
                 passHref
                 key={item.label}
                 className={cn(
-                  `text-gray-400 hover:text-black hover:underline hover:drop-shadow-lg dark:hover:text-white`,
+                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
                   pathName === item.href && "text-black dark:text-white",
                 )}
+                aria-label="검색 페이지로 이동"
               >
                 <Search height={20} width={20} className="h-5 w-5" />
               </Link>
@@ -123,6 +127,7 @@ const HeaderSwitch = memo(function HeaderSwitch() {
   return (
     <Switch
       checked={isChecked}
+      aria-label="테마 전환"
       onCheckedChange={() =>
         theme === "light" ? setTheme("dark") : setTheme("light")
       }

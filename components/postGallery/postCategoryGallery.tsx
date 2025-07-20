@@ -27,7 +27,7 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      <h2 className="mb-2 text-sm font-light text-gray-400">태그 목록</h2>
+      <h2 className="mb-2 text-sm font-light text-gray-600">태그 목록</h2>
       <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">
@@ -35,6 +35,8 @@ export default function PostCategoryGallery({
               onClick={() => {
                 setValue("");
               }}
+              aria-label="전체 카테고리 선택"
+              aria-pressed={value === ""}
             >
               <Badge
                 className="h-8 text-sm dark:text-white"
@@ -50,6 +52,8 @@ export default function PostCategoryGallery({
                 onClick={() => {
                   setValue(category);
                 }}
+                aria-label={`${category} 카테고리 선택 (${total}개 게시물)`}
+                aria-pressed={value === category}
               >
                 <Badge
                   className="h-8 text-sm dark:text-white"
