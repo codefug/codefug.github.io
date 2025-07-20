@@ -19,12 +19,12 @@ export default function Footer() {
               >
                 <Image
                   src="/icons/email.svg"
-                  alt="Email"
+                  alt="이메일 연락하기"
                   width={24}
                   height={24}
                   className="transition-transform hover:scale-110"
                 />
-                <span className="sr-only">GitHub</span>
+                <span className="sr-only">Email</span>
               </Link>
             </div>
             <div className="flex space-x-4">
@@ -36,7 +36,7 @@ export default function Footer() {
               >
                 <Image
                   src="/icons/github.svg"
-                  alt="GitHub"
+                  alt="GitHub 프로필 방문하기"
                   width={24}
                   height={24}
                   className="transition-transform hover:scale-110"

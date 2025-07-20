@@ -11,6 +11,7 @@ export function AppCarouselNext() {
       <CarouselNext
         ref={nextButtonRef}
         className="right-0 h-full w-20 rounded-none border-none bg-transparent group-hover/next:bg-accent group-hover/next:text-accent-foreground"
+        aria-label="다음 슬라이드로 이동"
       />
       <ChevronsRight
         className="absolute -right-1 top-1/2 -translate-y-[50%] duration-300 group-hover/next:right-4 group-hover/next:opacity-50 group-hover/next:transition-opacity"
@@ -19,6 +20,7 @@ export function AppCarouselNext() {
         onClick={() => {
           nextButtonRef.current?.click();
         }}
+        aria-hidden="true"
       />
     </div>
   );
@@ -31,6 +33,7 @@ export function AppCarouselPrevious() {
       <CarouselPrevious
         ref={previousButtonRef}
         className="left-0 h-full w-20 rounded-none border-none bg-transparent group-hover/prev:bg-accent group-hover/prev:text-accent-foreground"
+        aria-label="이전 슬라이드로 이동"
       />
       <ChevronsLeft
         className="absolute -left-1 top-1/2 -translate-y-[50%] duration-300 group-hover/prev:left-4 group-hover/prev:opacity-50 group-hover/prev:transition-opacity"
@@ -39,6 +42,7 @@ export function AppCarouselPrevious() {
         onClick={() => {
           previousButtonRef.current?.click();
         }}
+        aria-hidden="true"
       />
     </div>
   );

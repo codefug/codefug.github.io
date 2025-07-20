@@ -15,6 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
   return (
     <main
+      id="main-content"
       className={cn(
         "flex min-h-screen flex-col transition-[width] duration-200 ease-linear",
         isNeedShorten ? "w-[calc(100%-var(--sidebar-width))]" : "w-full",

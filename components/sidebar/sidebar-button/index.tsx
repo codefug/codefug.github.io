@@ -9,6 +9,8 @@ export default function SidebarButton({ children }: { children: ReactNode }) {
     <button
       onClick={toggleSidebar}
       className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent hover:text-black hover:dark:text-white"
+      aria-label="사이드바 열기/닫기"
+      aria-expanded={false}
     >
       {children}
     </button>
