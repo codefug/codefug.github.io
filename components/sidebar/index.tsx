@@ -40,13 +40,12 @@ export default function AppSidebar({
     // 결과 리스트
     const resultList: { [key: string]: FrontMatter[] } = {};
     totalFrontMatterList.forEach((post) => {
-      post.categories.forEach((category) => {
-        if (!categoryCombination.has(category)) {
-          categoryCombination.add(category);
-          resultList[category] = [];
-        }
-        resultList[category].push(post);
-      });
+      const firstCategory = post.categories[0];
+      if (!categoryCombination.has(firstCategory)) {
+        categoryCombination.add(firstCategory);
+        resultList[firstCategory] = [];
+      }
+      resultList[firstCategory].push(post);
     });
 
     return resultList;
