@@ -64,7 +64,7 @@ function RecentCategoryList({
 
   return (
     <div>
-      <p className="text-sm font-light text-gray-400">최근 연구했던 카테고리</p>
+      <p className="text-sm font-light text-gray-600">최근 연구했던 카테고리</p>
       <PostCategorySwiper categoryList={categoryList} />
     </div>
   );

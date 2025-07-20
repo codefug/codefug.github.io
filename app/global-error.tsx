@@ -13,7 +13,9 @@ export default function GlobalError({
         <div>
           <h2>Something went wrong!</h2>
           <div>{error.message}</div>
-          <button onClick={reset}>다시 시도</button>
+          <button onClick={reset} aria-label="페이지 다시 로드하기">
+            다시 시도
+          </button>
         </div>
       </body>
     </html>

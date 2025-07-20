@@ -56,7 +56,13 @@ export default function MenuBar() {
 
   return (
     <>
-      <button className="fixed right-0 top-1/2" onClick={handleShowMenuList}>
+      <button
+        className="fixed right-0 top-1/2"
+        onClick={handleShowMenuList}
+        aria-label="목차 열기"
+        aria-expanded={isShow}
+        aria-controls="table-of-contents"
+      >
         <ChevronLeft className="h-6 w-6 text-muted-foreground lg:size-8" />
       </button>
       <div
@@ -67,13 +73,21 @@ export default function MenuBar() {
         )}
       >
         <div className="rounded-lg border bg-card p-4 shadow-sm">
-          <button onClick={handleHideMenuList}>
-            <X className="absolute right-4 top-4 h-5 w-5 cursor-pointer text-muted-foreground" />
+          <button
+            onClick={handleHideMenuList}
+            aria-label="목차 닫기"
+            className="absolute right-4 top-4"
+          >
+            <X className="h-5 w-5 cursor-pointer text-muted-foreground" />
           </button>
           <h4 className="mb-3 mt-0 text-sm font-medium text-foreground">
             목차
           </h4>
-          <nav className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2">
+          <nav
+            className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2"
+            aria-label="목차 네비게이션"
+            id="table-of-contents"
+          >
             {headings.map((heading) => (
               <Link
                 href={`${pathname}#${heading.id}`}
@@ -82,6 +96,7 @@ export default function MenuBar() {
                   level: heading.level,
                   isActive: activeId === heading.id,
                 })}
+                aria-current={activeId === heading.id ? "page" : undefined}
               >
                 {heading.text}
               </Link>

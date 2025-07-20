@@ -17,7 +17,11 @@ export default function PostCategorySwiper({
       <CarouselContent>
         {categoryList.map(({ category, id }) => (
           <CarouselItem key={id + category} className="basis-auto">
-            <button onClick={() => setValue && setValue(category)}>
+            <button
+              onClick={() => setValue && setValue(category)}
+              aria-label={`${category} 카테고리 선택`}
+              aria-pressed={category === value}
+            >
               <Badge
                 className="h-8 text-sm"
                 variant={category === value ? "default" : "outline"}

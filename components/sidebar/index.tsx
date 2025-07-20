@@ -65,7 +65,7 @@ export default function AppSidebar({
           </SidebarGroupLabel>
           <SidebarGroupContent className="flex min-h-full flex-col items-center px-2">
             <Avatar className="h-40 w-40">
-              <AvatarImage src="/images/me.jpg" />
+              <AvatarImage src="/images/me.jpg" alt="이승현 프로필 사진" />
               <AvatarFallback className="group-hover:text-black group-hover:dark:text-white">
                 이승현
               </AvatarFallback>
