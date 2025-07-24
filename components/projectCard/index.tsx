@@ -44,7 +44,9 @@ function ProjectStack({ stack }: { stack: ProjectCardProps["stack"] }) {
   return (
     <div className="flex flex-wrap gap-2 text-sm">
       {stack.map((item) => (
-        <Badge key={item}>{item}</Badge>
+        <Badge key={item} className="dark:text-white">
+          {item}
+        </Badge>
       ))}
     </div>
   );
