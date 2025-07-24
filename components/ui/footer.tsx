@@ -1,9 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import { useTheme } from "next-themes";
 import Link from "next/link";
+import Email from "../../public/icons/email.svg";
+import Github from "../../public/icons/github.svg";
 
 export default function Footer() {
+  const { theme } = useTheme();
+
   return (
     <footer className="mt-6 border-t bg-background py-6">
       <div className="container mx-auto px-4">
@@ -17,11 +21,10 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Image
-                  src="/icons/email.svg"
-                  alt="이메일 연락하기"
-                  width={24}
-                  height={24}
+                <Email
+                  width={32}
+                  height={32}
+                  fill={theme === "dark" ? "#fff" : "#000"}
                   className="transition-transform hover:scale-110"
                 />
                 <span className="sr-only">Email</span>
@@ -34,11 +37,10 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Image
-                  src="/icons/github.svg"
-                  alt="GitHub 프로필 방문하기"
-                  width={24}
-                  height={24}
+                <Github
+                  width={32}
+                  height={32}
+                  fill={theme === "dark" ? "#fff" : "#000"}
                   className="transition-transform hover:scale-110"
                 />
                 <span className="sr-only">GitHub</span>
