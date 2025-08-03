@@ -28,7 +28,7 @@ export default function StudyGroup() {
           title={
             studyGroup.url ? (
               <Link
-                className="text-blue-500"
+                className="text-primary"
                 href={studyGroup.url}
                 target="_blank"
               >
