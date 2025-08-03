@@ -205,7 +205,7 @@ export const PROJECTS = [
   },
   {
     title: "SamilDevKit Design System",
-    role: "Web Frontend Developer",
+    role: "Web Frontend Developer (FE 3명 중 FE로 참여)",
     image: "/images/logos/pwc-logo.svg",
     description:
       "사내 디자인 통일성과 개발 생산성 강화를 위한 디자인 시스템 구축",
@@ -220,7 +220,7 @@ export const PROJECTS = [
   {
     title: "순록의 편지",
     duration: "2024.12.02 ~ 2025.01.20",
-    role: "Web Frontend Developer ( 디자이너 1명, FE 3명 BE 1명 중 FE로 참여 )",
+    role: "Web Frontend Developer (FE 3명 BE 1명 중 FE로 참여 )",
     image: "/images/logos/reindeer-logo.png",
     description:
       "연말에 본인과 타인에게 음성 및 글 형태로 예약 편지를 작성·전달할 수 있는 서비스",
@@ -245,7 +245,7 @@ export const PROJECTS = [
   {
     title: "꼼꼼",
     duration: "2024-07-26 ~ 2024-09-20",
-    role: "Web Frontend Developer",
+    role: "Web Frontend Developer (FE 4명 중 FE로 참여)",
     image: "/images/logos/kkom-kkom-logo.png",
     description:
       "팀을 구성하고 일정을 관리하여 꼼꼼이가 되는 서비스, 부트 캠프 최종 프로젝트",
@@ -271,7 +271,7 @@ export const PROJECTS = [
     title: "급페이",
     duration: "2024.06.20 ~ 2024.07.07",
     image: "/images/logos/ghepay-logo.png",
-    role: "Frontend Developer",
+    role: "Frontend Developer (FE 5명 중 FE로 참여)",
     description:
       "급하게 일손이 필요한 자리에 더 많은 시급을 제공해서 아르바이트생을 구할 수 있는 서비스",
     stack: [
@@ -294,7 +294,7 @@ export const PROJECTS = [
     title: "Fandom-k",
     duration: "2024.04.30 ~ 2024.05.17",
     image: "/images/logos/fandom-k-logo.jpg",
-    role: "Frontend Developer",
+    role: "Frontend Developer (FE 5명 중 FE로 참여)",
     description:
       "좋아하는 아이돌을 투표하고 후원할 수 있는 서비스, 첫번째 리액트 프로젝트",
     stack: [
@@ -325,9 +325,12 @@ export const EDUCATION = [
     `,
   },
   {
-    title: "코드잇 스프린트 FE 부트캠프 수료",
+    title: "코드잇 스프린트 FE 부트캠프",
     duration: "2024.03 ~ 2024.09",
     image: "/images/logos/codeit.png",
+    description: `코드잇 스프린트 FE 부트캠프에서 6개월간 집중적으로 프론트엔드 개발을 학습하였습니다.
+      다양한 도구와 기술을 활용하여 실제 프로젝트를 통해 협업 경험과 문제 해결 능력을 키웠습니다.
+    `,
   },
 ];
 
