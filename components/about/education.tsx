@@ -25,7 +25,9 @@ function DescriptionWithDuration({
       />
       <section>
         <div className="text-gray-700 dark:text-gray-300">{duration}</div>
-        <div className="text-gray-700 dark:text-gray-300">{title}</div>
+        <div className="font-bold text-gray-700 dark:text-gray-300">
+          {title}
+        </div>
         <div className="whitespace-pre-line text-gray-500 dark:text-gray-400">
           {description}
         </div>
