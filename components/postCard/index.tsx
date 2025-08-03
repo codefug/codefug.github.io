@@ -1,5 +1,5 @@
 import { FrontMatter } from "@/constants/mdx";
-import { POST_PATH } from "@/constants/path";
+import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useMemo } from "react";
@@ -14,7 +14,7 @@ export default function PostCard({
   title,
   id,
 }: FrontMatter) {
-  const linkHref = useMemo(() => POST_PATH + id, [id]);
+  const linkHref = useMemo(() => PATH.POSTS + id, [id]);
 
   return (
     // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )

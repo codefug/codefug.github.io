@@ -1,3 +1,4 @@
+import { PATH } from "@/constants/path";
 import Link, { LinkProps } from "next/link";
 import { PropsWithChildren } from "react";
 
@@ -6,7 +7,8 @@ export default function CustomLink({
   children,
   ...props
 }: PropsWithChildren<LinkProps>) {
-  const isInternalLink = href.toString() && href.toString().startsWith("/");
+  const isInternalLink =
+    href.toString() && href.toString().startsWith(PATH.HOME);
   if (isInternalLink) return <Link href={href}>{children}</Link>;
 
   return (
