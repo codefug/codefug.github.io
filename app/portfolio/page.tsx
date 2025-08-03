@@ -1,17 +1,17 @@
-import AboutHeading from "@/components/about/about-heading";
-import { FadeInSection } from "@/components/about/fadeInSection";
-import { FloatingShapesBackground } from "@/components/about/floating-shapes-background";
-import Skills from "@/components/about/skills";
-import WorkExperience from "@/components/about/work-experience";
+import AboutHeading from "@/components/portfolio/about-heading";
+import { FadeInSection } from "@/components/portfolio/fadeInSection";
+import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
+import Skills from "@/components/portfolio/skills";
+import WorkExperience from "@/components/portfolio/work-experience";
 import dynamic from "next/dynamic";
 
-const Projects = dynamic(() => import("@/components/about/projects"));
+const Projects = dynamic(() => import("@/components/portfolio/projects"));
 
-const Education = dynamic(() => import("@/components/about/education"));
+const Education = dynamic(() => import("@/components/portfolio/education"));
 
-const StudyGroup = dynamic(() => import("@/components/about/study-group"));
+const StudyGroup = dynamic(() => import("@/components/portfolio/study-group"));
 
-const Contact = dynamic(() => import("@/components/about/contact"));
+const Contact = dynamic(() => import("@/components/portfolio/contact"));
 
 export default function Page() {
   return (
