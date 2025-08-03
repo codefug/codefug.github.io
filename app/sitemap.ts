@@ -1,3 +1,4 @@
+import { PATH } from "@/constants/path";
 import getFrontMatterList from "@/lib/posts";
 import { MetadataRoute } from "next";
 
@@ -6,7 +7,7 @@ const BASE_URL = "https://codefug.github.io";
 const postFrontMatter = getFrontMatterList();
 const postSiteMap: MetadataRoute.Sitemap = postFrontMatter.map((post) => {
   return {
-    url: `${BASE_URL}/posts/${post.id}`,
+    url: `${BASE_URL}${PATH.POSTS}/${post.id}`,
     lastModified: new Date(post.date),
     changeFrequency: "daily",
     priority: 0.7,

@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/sidebar";
 
 import { FrontMatter } from "@/constants/mdx";
+import { PATH } from "@/constants/path";
 import { ChevronDown } from "lucide-react";
-import { POST_PATH } from "@/constants/path";
 import {
   Collapsible,
   CollapsibleContent,
@@ -39,8 +39,7 @@ export function CollapsiblePostList({
           <SidebarGroupContent className="mt-1 flex flex-col gap-1">
             {frontMatterList.map((frontMatter) => (
               <SidebarAnchorButton
-                navType="a"
-                href={POST_PATH + frontMatter.id}
+                href={PATH.POSTS + frontMatter.id}
                 key={frontMatter.id}
                 className="w-full text-center"
               >

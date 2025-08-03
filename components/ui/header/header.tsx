@@ -1,7 +1,7 @@
 "use client";
 
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { POST_PATH } from "@/constants/path";
+import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
@@ -19,7 +19,7 @@ export default function Header() {
   const { showFloatingHeader: isShow } = useShowFloatingHeader();
   const pathName = usePathname();
   const isShowVerticalScrollbar = useMemo(
-    () => pathName.includes(POST_PATH),
+    () => pathName.includes(PATH.POSTS),
     [pathName],
   );
   return (
@@ -28,7 +28,7 @@ export default function Header() {
         <section className="flex items-center gap-4">
           <SideBarToggleButton />
           <Link
-            href="/"
+            href={PATH.HOME}
             passHref
             className="flex flex-shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg"
           >
@@ -59,58 +59,26 @@ const HeaderNavigation = memo(function HeaderNavigation() {
 
   return (
     <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
-      {NAVIGATION_ITEMS.map((item) => {
-        switch (item.label) {
-          case "Portfolio":
-            return (
-              <a
-                href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
-                target="_blank"
-                key={item.label}
-                className={cn(
-                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
-                  pathName === item.href && "text-black dark:text-white",
-                )}
-                aria-label="포트폴리오 보기 (새 탭에서 열림)"
-                rel="noopener noreferrer"
-              >
-                {item.label}
-              </a>
-            );
-          case "About":
-            return (
-              <Link
-                href={item.href}
-                passHref
-                key={item.label}
-                className={cn(
-                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
-                  pathName === item.href && "text-black dark:text-white",
-                )}
-                aria-label={`${item.label} 페이지로 이동`}
-              >
-                {item.label}
-              </Link>
-            );
-          case "Search":
-            return (
-              <Link
-                href={item.href}
-                passHref
-                key={item.label}
-                className={cn(
-                  `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
-                  pathName === item.href && "text-black dark:text-white",
-                )}
-                aria-label="검색 페이지로 이동"
-              >
-                <Search height={20} width={20} className="h-5 w-5" />
-              </Link>
-            );
-          default:
-            throw new Error("올바르지 않은 아이템 입니다 - HeaderNavigation");
-        }
-      })}
+      {NAVIGATION_ITEMS.map((item) => (
+        <Link
+          href={item.href}
+          target={item.target}
+          key={item.label}
+          passHref
+          className={cn(
+            `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
+            pathName === item.href && "text-black dark:text-white",
+          )}
+          aria-label={item["aria-label"]}
+          rel={item.rel}
+        >
+          {item.label === "Search" ? (
+            <Search height={20} width={20} className="h-5 w-5" />
+          ) : (
+            item.label
+          )}
+        </Link>
+      ))}
     </nav>
   );
 });
