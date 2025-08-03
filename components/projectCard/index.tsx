@@ -1,12 +1,14 @@
+import Image from "next/image";
 import { Badge } from "../ui/badge";
 
 // components/ProjectCard.tsx
 type ProjectCardProps = {
   title: string;
-  duration: string;
+  duration?: string;
   role: string;
   description: string;
   stack: string[];
+  image: string;
   links?: {
     website?: string;
     github?: string;
@@ -19,19 +21,27 @@ export default function ProjectCard({
   duration,
   role,
   description,
+  image,
   stack,
   links,
   features,
 }: ProjectCardProps) {
   return (
     <div className="space-y-4 rounded-2xl border bg-white p-6 shadow-md">
-      <header className="mb-4 flex items-center justify-between">
-        <div>
+      <figure className="my-0 flex gap-6">
+        <Image
+          src={image}
+          alt={`${title}썸네일`}
+          width={144}
+          height={144}
+          className="h-36 w-36 rounded-lg border-2 object-contain"
+        />
+        <header className="mb-4 flex flex-grow flex-col justify-center">
           <h2 className="mb-0 mt-0 text-xl font-bold">{title}</h2>
+          <div className="text-sm text-gray-500">{duration}</div>
           <div className="text-sm font-medium text-gray-600">{role}</div>
-        </div>
-        <div className="text-sm text-gray-500">{duration}</div>
-      </header>
+        </header>
+      </figure>
       <p className="text-base text-gray-700">{description}</p>
       <ProjectStack stack={stack} />
       <ProjectFeatures features={features} />

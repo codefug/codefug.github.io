@@ -1,12 +1,7 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { SKILLS } from "@/constants/about";
 import Image from "next/image";
 import { ReactNode } from "react";
+import { HeadComponent } from "./HeadComponent";
 
 const Shield = ({ alt, src }: { alt: string; src: string }) => (
   <Image
@@ -22,50 +17,41 @@ const Shield = ({ alt, src }: { alt: string; src: string }) => (
 function SkillItem({
   title,
   itemList,
-  value,
 }: {
   title: string;
   itemList: {
     subtitle: string;
     list: ReactNode[];
   }[];
-  value: string;
 }) {
   return (
-    <AccordionItem value={value}>
-      <AccordionTrigger className="text-lg font-bold text-gray-900 dark:text-white">
+    <div>
+      <header className="text-lg font-bold text-gray-900 dark:text-white">
         {title}
-      </AccordionTrigger>
-      <AccordionContent className="text-gray-700 dark:text-gray-300">
-        <div className="flex flex-col">
+      </header>
+      <div className="text-gray-700 dark:text-gray-300">
+        <ul className="grid grid-cols-1 gap-4 pl-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {itemList.map((item) => (
-            <section key={item.subtitle} className="mb-4 flex flex-col gap-2">
+            <li key={item.subtitle} className="mb-4 flex flex-col gap-2 pl-0">
               <h4 className="mt-0 text-lg font-bold text-primary dark:text-white">
                 {item.subtitle}
               </h4>
               <ul className="flex flex-wrap gap-2">{item.list}</ul>
-            </section>
+            </li>
           ))}
-        </div>
-      </AccordionContent>
-    </AccordionItem>
+        </ul>
+      </div>
+    </div>
   );
 }
 
 export default function Skills() {
   return (
     <div className="prose mx-auto mt-4 dark:prose-invert">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-        Skills
-      </h2>
-      <Accordion
-        type="multiple"
-        defaultValue={["strong", "knowledgeable"]}
-        className="w-full"
-      >
+      <HeadComponent>Skills</HeadComponent>
+      <div className="w-full">
         <SkillItem
           title="Strong"
-          value="strong"
           itemList={SKILLS.strong.map(({ subtitle, list: skillList }) => ({
             subtitle,
             list: skillList.map((skill) => (
@@ -75,7 +61,6 @@ export default function Skills() {
         />
         <SkillItem
           title="Knowledgeable"
-          value="knowledgeable"
           itemList={SKILLS.knowledgeable.map(
             ({ subtitle, list: skillList }) => ({
               subtitle,
@@ -85,7 +70,7 @@ export default function Skills() {
             }),
           )}
         />
-      </Accordion>
+      </div>
     </div>
   );
 }
