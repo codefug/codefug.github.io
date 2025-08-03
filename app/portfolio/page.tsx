@@ -1,10 +1,16 @@
 import AboutHeading from "@/components/about/about-heading";
-import Contact from "@/components/about/contact";
-import Education from "@/components/about/education";
-import Projects from "@/components/about/projects";
+import { FadeInSection } from "@/components/about/fadeInSection";
 import Skills from "@/components/about/skills";
-import StudyGroup from "@/components/about/study-group";
 import WorkExperience from "@/components/about/work-experience";
+import dynamic from "next/dynamic";
+
+const Projects = dynamic(() => import("@/components/about/projects"));
+
+const Education = dynamic(() => import("@/components/about/education"));
+
+const StudyGroup = dynamic(() => import("@/components/about/study-group"));
+
+const Contact = dynamic(() => import("@/components/about/contact"));
 
 export default function Page() {
   return (
@@ -12,10 +18,18 @@ export default function Page() {
       <AboutHeading />
       <WorkExperience />
       <Skills />
-      <Projects />
-      <Education />
-      <StudyGroup />
-      <Contact />
+      <FadeInSection delay={0} className="mb-8">
+        <Projects />
+      </FadeInSection>
+      <FadeInSection delay={0} className="mb-8">
+        <Education />
+      </FadeInSection>
+      <FadeInSection delay={0} className="mb-8">
+        <StudyGroup />
+      </FadeInSection>
+      <FadeInSection delay={0} className="mb-8">
+        <Contact />
+      </FadeInSection>
     </>
   );
 }
