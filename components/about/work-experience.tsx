@@ -1,16 +1,35 @@
-import { ReactNode } from "react";
+import Image from "next/image";
+import { HeadComponent } from "./HeadComponent";
 
 function DescriptionWithDuration({
-  title,
+  company,
   duration,
+  team,
+  job,
 }: {
-  title: ReactNode;
+  company: string;
   duration: string;
+  team: string;
+  job: string;
 }) {
   return (
-    <div className="mb-0 mt-0">
-      <span className="text-gray-700 dark:text-gray-300">{duration}</span>
-      <span className="ml-2 text-gray-700 dark:text-gray-300">{title}</span>
+    <div className="-mt-6 mb-4 ml-4">
+      <figure className="my-0 flex items-center gap-4">
+        <section className="relative mb-2 flex h-32 w-32 items-center overflow-hidden rounded-lg bg-white">
+          <Image
+            src="/images/logos/pwc-logo.svg"
+            alt="PwC Logo"
+            fill
+            className="object-contain"
+          />
+        </section>
+        <section className="text-gray-700 dark:text-gray-300">
+          <div>{company}</div>
+          <div>Team: {team}</div>
+          <div>Job: {job}</div>
+          <div>{duration}</div>
+        </section>
+      </figure>{" "}
     </div>
   );
 }
@@ -18,12 +37,12 @@ function DescriptionWithDuration({
 export default function WorkExperience() {
   return (
     <div className="prose mx-auto mt-4 dark:prose-invert">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-        Work Experience
-      </h2>
+      <HeadComponent>Work Experience</HeadComponent>
       <DescriptionWithDuration
-        title="삼일 PWC AC/Intern - Frontend Developer"
+        company="Samil PwC AC"
         duration="2025.01 ~ (현재)"
+        team="Digital"
+        job="Frontend Developer"
       />
     </div>
   );
