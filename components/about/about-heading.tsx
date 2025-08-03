@@ -18,7 +18,7 @@ export default function AboutHeading() {
         </div>
         <section>
           <h1 className="mb-0 flex text-start text-3xl font-bold text-gray-900 dark:text-white">
-            <div className="mb-0 w-fit whitespace-pre-line break-keep rounded-t-lg bg-white pt-2 dark:bg-black">
+            <div className="mb-0 w-fit whitespace-pre-line break-keep rounded-t-lg pt-2">
               이승현 Lee Seoung Hyun
             </div>
           </h1>
