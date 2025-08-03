@@ -4,9 +4,9 @@ import { HeadComponent } from "./HeadComponent";
 
 export default function Projects() {
   return (
-    <div className="my-6 w-full">
+    <div className="mt-0 w-full">
       <HeadComponent>Projects</HeadComponent>
-      <div className="flex flex-col gap-8">
+      <div className="mt-3 flex flex-col gap-8">
         {PROJECTS.map((project) => (
           <ProjectCard
             key={project.title}

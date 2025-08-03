@@ -13,7 +13,7 @@ function DescriptionWithDuration({
   job: string;
 }) {
   return (
-    <div className="-mt-6 mb-4 ml-4">
+    <div className="mb-4 ml-4">
       <figure className="my-0 flex items-center gap-4">
         <section className="relative mb-2 flex h-32 w-32 items-center overflow-hidden rounded-lg bg-white">
           <Image
