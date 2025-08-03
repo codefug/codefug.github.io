@@ -16,7 +16,7 @@ function ContactItem({
       <span className="text-gray-700 dark:text-gray-300">{title}:</span>
       <Link
         href={url}
-        className="ml-2 text-blue-500 hover:underline"
+        className="ml-2 text-primary hover:underline"
         target="_blank"
         rel="noopener noreferrer"
       >
