@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { useRef } from "react";
-import { FrontMatter } from "@/constants/mdx";
-import { SidebarAnchorButton } from "./SidebarAnchorButton";
 import { PostGroupContent } from "./PostGroupContent";
+import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 export default function AppSidebar({
   totalFrontMatterList,
@@ -61,25 +61,16 @@ export default function AppSidebar({
               {NAVIGATION_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild>
-                    {item.label === "Portfolio" ? (
-                      <SidebarAnchorButton
-                        navType="a"
-                        href="https://www.figma.com/proto/KSWARGDkXi9Wt8ARq2uGCa/leeseounghyun-resume?node-id=401-2&node-type=canvas&t=z2H9bL74afXrrgPS-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
-                        target="_blank"
-                        key={item.label}
-                      >
-                        {item.label}
-                      </SidebarAnchorButton>
-                    ) : (
-                      <SidebarAnchorButton
-                        navType="link"
-                        href={item.href}
-                        passHref
-                        onClick={toggleSidebar}
-                      >
-                        {item.label}
-                      </SidebarAnchorButton>
-                    )}
+                    <SidebarAnchorButton
+                      href={item.href}
+                      key={item.label}
+                      target={item.target}
+                      onClick={
+                        item.target === "_blank" ? undefined : toggleSidebar
+                      }
+                    >
+                      {item.label}
+                    </SidebarAnchorButton>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

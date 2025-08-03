@@ -1,3 +1,4 @@
+import { PATH } from "@/constants/path";
 import Link from "next/link";
 
 function ContactItem({
@@ -42,7 +43,7 @@ export default function Contact() {
       />
       <ContactItem
         title="블로그"
-        url="/"
+        url={PATH.HOME}
         description="codefug가 연구중인 자료 탐구하기"
       />
     </div>
