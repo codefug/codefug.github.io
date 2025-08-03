@@ -327,7 +327,7 @@ export const EDUCATION = [
   {
     title: "코드잇 스프린트 FE 부트캠프",
     duration: "2024.03 ~ 2024.09",
-    image: "/images/logos/codeit.png",
+    image: "/images/logos/codeit-logo.png",
     description: `코드잇 스프린트 FE 부트캠프에서 6개월간 집중적으로 프론트엔드 개발을 학습하였습니다.
       다양한 도구와 기술을 활용하여 실제 프로젝트를 통해 협업 경험과 문제 해결 능력을 키웠습니다.
     `,
