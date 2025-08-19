@@ -2,7 +2,6 @@ import GrowthJourney from "@/components/growth-journey";
 import AboutHeading from "@/components/portfolio/about-heading";
 import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
-import QuestionBlock from "@/components/portfolio/questionBlock";
 import WorkExperience from "@/components/portfolio/work-experience";
 import dynamic from "next/dynamic";
 
@@ -22,7 +21,7 @@ export default function Page() {
       <FloatingShapesBackground />
       <div className="relative z-10">
         <AboutHeading />
-        <QuestionBlock
+        {/* <QuestionBlock
           questions={[
             {
               type: "text",
@@ -52,7 +51,7 @@ export default function Page() {
                 "제 친구들은 제게서 편안함을 느낀다고 말합니다. 저는 갈등이나 분란이 생겨도 감정을 겉으로 드러내기보다는 차분하게 넘어가는 편입니다. 때로는 제가 조금 손해를 보는 상황도 있지만, 순간의 감정으로 소중한 관계를 잃고 싶지 않기 때문에 더 신중하게 행동하려고 노력합니다. 친구들이 마음속 속상함을 제게 털어놓고, 함께 고민하고 극복해가는 과정을 반복하면서 저 스스로도 그런 성향을 자랑스럽게 여기게 되었습니다. 덕분에 친구들과 깊이 있는 관계를 오래 유지할 수 있었고, 저 역시 그 속에서 많은 위로와 힘을 얻고 있습니다.",
             },
           ]}
-        />
+        /> */}
         <GrowthJourney className="mt-4" />
         <WorkExperience />
         <FadeInSection delay={0} className="mb-8">
