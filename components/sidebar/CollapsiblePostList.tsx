@@ -39,7 +39,7 @@ export function CollapsiblePostList({
           <SidebarGroupContent className="mt-1 flex flex-col gap-1">
             {frontMatterList.map((frontMatter) => (
               <SidebarAnchorButton
-                href={PATH.POSTS + frontMatter.id}
+                href={`${PATH.POSTS}/${frontMatter.id}`}
                 key={frontMatter.id}
                 className="w-full text-center"
               >
