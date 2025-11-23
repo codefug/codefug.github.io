@@ -5,15 +5,14 @@ import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import SidebarButton from "../../sidebar/sidebar-button";
 import { useSidebar } from "../sidebar";
-import Switch from "../switch";
 import headerVariant from "./variant";
+import { HeaderSwitch } from "./switch";
 
 export default function Header() {
   const { showFloatingHeader: isShow } = useShowFloatingHeader();
@@ -80,26 +79,6 @@ const HeaderNavigation = memo(function HeaderNavigation() {
         </Link>
       ))}
     </nav>
-  );
-});
-
-const HeaderSwitch = memo(function HeaderSwitch() {
-  const [isChecked, setIsChecked] = useState(false);
-  const { setTheme, theme } = useTheme();
-
-  useEffect(() => {
-    if (theme === "dark") setIsChecked(true);
-    else setIsChecked(false);
-  }, [theme]);
-
-  return (
-    <Switch
-      checked={isChecked}
-      aria-label="테마 전환"
-      onCheckedChange={() =>
-        theme === "light" ? setTheme("dark") : setTheme("light")
-      }
-    />
   );
 });
 
