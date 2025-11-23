@@ -1,13 +1,10 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import Email from "../../public/icons/email.svg";
 import Github from "../../public/icons/github.svg";
 
 export default function Footer() {
-  const { theme } = useTheme();
-
   return (
     <footer className="mt-6 border-t bg-background py-6">
       <div className="container mx-auto px-4">
@@ -24,7 +21,7 @@ export default function Footer() {
                 <Email
                   width={32}
                   height={32}
-                  fill={theme === "dark" ? "#fff" : "#000"}
+                  fill="currentColor"
                   className="transition-transform hover:scale-110"
                 />
                 <span className="sr-only">Email</span>
@@ -40,7 +37,7 @@ export default function Footer() {
                 <Github
                   width={32}
                   height={32}
-                  fill={theme === "dark" ? "#fff" : "#000"}
+                  fill="currentColor"
                   className="transition-transform hover:scale-110"
                 />
                 <span className="sr-only">GitHub</span>
