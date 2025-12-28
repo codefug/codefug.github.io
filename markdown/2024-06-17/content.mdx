@@ -2,7 +2,7 @@
 
 ## 로그인 상태관리
 
-상태 관리와 기존 context api의 가장 큰 차이점은 context api는 상태를 주입하는 것 뿐이기 때문에 불필요한 리렌더링이 발생할 수 있어 성능이 좋지 않다. 상태 관리 라이브러리를 사용하면 리렌더링이 발생하지 않고 컴포넌트에게 전역 상태를 사용할 수 있다는 장점이 있다.
+상태 관리와 기존 context api의 가장 큰 차이점은 context api는 상태를 주입하는 것뿐이기 때문에 불필요한 리렌더링이 발생할 수 있어 성능이 좋지 않습니다. 상태 관리 라이브러리를 사용하면 리렌더링이 발생하지 않고 컴포넌트에게 전역 상태를 사용할 수 있다는 장점이 있습니다.
 
 ### 기존 context를 이용한 로그인 상태 관리 (전역)
 
@@ -43,20 +43,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export const useAuth = () => React.useContext(AuthContext);
 ```
 
-기존 로그인을 Context를 이용해서 구현한 방법이다.
-하지만 이전에 이야기한 것처럼 useContext를 활용한 방식은 props drilling을 없애기 위해서 주입하는 것이라 불필요한 리렌더링이 발생하여 성능이 좋지 않을 수 있다.
-이번에 전역 상태 관리 라이브러리 중 하나인 zustand를 간단하게 적용해보면서 이를 zustand를 적용한 방식으로 바꿔보자.
+기존 로그인을 Context를 이용해서 구현한 방법입니다.
+하지만 이전에 이야기한 것처럼 useContext를 활용한 방식은 props drilling을 없애기 위해 주입하는 것이라 불필요한 리렌더링이 발생하여 성능이 좋지 않을 수 있습니다.
+이번에 전역 상태 관리 라이브러리 중 하나인 zustand를 간단하게 적용해보겠습니다.
 
 ### zustand
 
 ![alt text](/images/2024-06-17/Pasted%20image.png)
 
-사이즈가 작고 빠르고 확장성 있는 상태 관리 라이브러리이다.
-hook에 기반한 API를 가졌으며 flux와 비슷한 컨벤션을 가지고 있다. (redux와 유사한 로직)
+사이즈가 작고 빠르고 확장성 있는 상태 관리 라이브러리입니다.
+hook에 기반한 API를 가졌으며 flux와 비슷한 컨벤션을 가지고 있습니다. (redux와 유사한 로직)
 
 #### 실제 적용
 
-로그인 상태는 라우트가 바뀌어도 갖고 있어야 하는 정보이므로 persist라는 미들웨어를 사용해서 로컬스토리지에 저장한다.
+로그인 상태는 라우트가 바뀌어도 갖고 있어야 하는 정보이므로 persist라는 미들웨어를 사용해서 로컬스토리지에 저장합니다.
 
 ```tsx
 import Cookies from "js-cookie";
@@ -88,7 +88,7 @@ const persistedUserStore = persist<UserState>(useStoreSlice, {
 export const useUserStore = create(persistedUserStore);
 ```
 
-이제 쓰고 싶은 컴포넌트에서 해당 store를 가져오면 된다.
+이제 사용하고 싶은 컴포넌트에서 해당 store를 가져오면 됩니다.
 
 ```tsx
 // 네트워크 요청을 보내기 전에 형식 검사
@@ -108,12 +108,12 @@ export function LoginPage() {
 
 이제 로컬스토리지에 담고 상태로 추적하며 이로 인해 컴포넌트가 바뀌는 함수는 처리가 완료되었다.
 
-다음은 이제 refresh Token에 대해서 고민해보자.
+다음은 refresh Token에 대해 고민해보겠습니다.
 
-> refresh Token이란 access Token을 받기 위한 또 하나의 토큰이다. access Token보다 expire time이 길다.
-> 보통 세션 스토리지 (브라우저 닫히면 없어짐), 로컬 스토리지 (같은 Origin일 경우 expire time까지 있음), 쿠키 (네트워크 통신에서 사용한다. js-Cookies 같은 라이브러리로 편리하게 사용할 수 있다.)
-> 에 저장해둔다.
-> 끝에 나오겠지만 access Token과 refresh Token을 분리해서 관리하기 위해 refresh Token은 쿠키에, access Token은 로컬 스토리지에 저장하였다. (쿠키에 저장하는 것이 더 보안성이 좋다고 한다. (HTTPS로 인해) )
+> refresh Token이란 access Token을 받기 위한 또 하나의 토큰입니다. access Token보다 expire time이 깁니다.
+> 보통 세션 스토리지 (브라우저 닫히면 없어짐), 로컬 스토리지 (같은 Origin일 경우 expire time까지 있음), 쿠키 (네트워크 통신에서 사용합니다. js-Cookies 같은 라이브러리로 편리하게 사용할 수 있습니다.)
+> 에 저장해둡니다.
+> access Token과 refresh Token을 분리해서 관리하기 위해 refresh Token은 쿠키에, access Token은 로컬 스토리지에 저장했습니다. (쿠키에 저장하는 것이 HTTPS로 인해 더 보안성이 좋습니다.)
 
 ## RTR
 
@@ -121,7 +121,7 @@ export function LoginPage() {
 
 ![](/images/2024-06-17/Pasted%20image%2020240614123700.png)
 
-보통 refresh 와 access 는 로컬스토리지, 쿠키에 저장한다. 기본값으로 access는 30분~1시간, refresh token은 2주의 시간을 가진다.
+보통 refresh와 access는 로컬스토리지, 쿠키에 저장합니다. 기본값으로 access는 30분~1시간, refresh token은 2주의 시간을 가집니다.
 
 Access Token이 만료되면 Refresh Token과 함께 교체해주는 것
 
@@ -129,7 +129,7 @@ Access Token이 만료되면 Refresh Token과 함께 교체해주는 것
 
 클라에서 auth 요청 > Auth0에서 검증 후 검증 코드를 보내줌 > 검증 코드를 이용해서 access Token 요청 > Auth0가 access Token, refresh Token 줌 > 이후 access Token 만기시 > refresh Token으로 Auth0에 access Token 요청 > Auth0가 새로운 access Token와 새로운 refresh Token을 줌.
 
-계속 갱신하기 때문에 이미 사용된 토큰으로 access Token을 요청하는 **replay attack**로부터 보호할 수 있다.
+계속 갱신하기 때문에 이미 사용된 토큰으로 access Token을 요청하는 **replay attack**로부터 보호할 수 있습니다.
 
 **Replay Attack**  
 공격자가 원본 메시지와 같은 자격증명을 얻기 위해 이전에 보내진 메시지를 가로채서 다시 보내는 것
@@ -138,7 +138,7 @@ Access Token이 만료되면 Refresh Token과 함께 교체해주는 것
 
 ##### 예제 분석
 
-다음은 참고한 문서에서 나온 예제이다.
+다음은 참고한 문서에서 나온 예제입니다.
 
 ```typescript
 const refreshTokenRotation = () => {
@@ -362,15 +362,15 @@ export function LoginPage() {
 
 ![](/images/2024-06-17/Pasted%20image%2020240721171036.png)
 
-form validation은 항상 남아 있는 숙제이다.
+form validation은 항상 남아 있는 숙제입니다.
 
-처음 form을 접했을 때는 "그냥 state로 input마다 박아넣으면 안되나?" 라는 생각을 했었으나 이는 불필요한 리렌더링을 일으키게 된다.
+처음 form을 접했을 때는 "그냥 state로 input마다 박아넣으면 안되나?" 라는 생각을 했으나 이는 불필요한 리렌더링을 일으킵니다.
 
-이를 방지하기 위해 비제어 컴포넌트로 전부 만들면서 리렌더링을 줄이고 validation을 입히는 과정은 반복적이며 고통스럽다.
+이를 방지하기 위해 비제어 컴포넌트로 전부 만들면서 리렌더링을 줄이고 validation을 입히는 과정은 반복적이며 고통스럽습니다.
 
-모든 과정을 자동화할 순 없을까? > 라이브러리 탄생
+모든 과정을 자동화할 순 없을까? 라이브러리가 탄생했습니다.
 
-공식문서에서도 설명보단 "그냥 일단 써봐" 하는 느낌으로 간단하게 보여주고 있다. 다음은 우리의 친구 "get started"의 코드이다.
+공식문서에서도 설명보다 "그냥 일단 써봐" 하는 느낌으로 간단하게 보여주고 있습니다. 다음은 "get started"의 코드입니다.
 
 ```tsx
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -408,29 +408,29 @@ export default function App() {
 }
 ```
 
-위의 코드만 보고 따라치면 사실 간단한 validation은 완성이다.
+위의 코드만 보고 따라치면 사실 간단한 validation은 완성입니다.
 
-하지만 부족한 점이 존재한다. register에 config로 들어가 있는 validation을 적는 과정도 귀찮아진다.
+하지만 부족한 점이 존재합니다. register에 config로 들어가 있는 validation을 적는 과정도 귀찮아집니다.
 
-또한 다양한 옵션이 들어갔으면 좋겠고 그러한 스키마들을 분리해서 가독성을 높히고 싶다!
+또한 다양한 옵션이 들어갔으면 좋겠고 그러한 스키마들을 분리해서 가독성을 높이고 싶습니다.
 
-이 과정들도 귀찮지 아니한가? > schema 라이브러리 탄생
+이 과정들도 귀찮습니다. schema 라이브러리가 탄생했습니다.
 
 ## react-hook-form zod resolver
 
 ![](/images/2024-06-17/Pasted%20image%2020240721171054.png)
 
 <s>
-  이 글을 쓰게된 이유이다. 멋있는 개발자가 된 느낌이었다. 이름도 어떻게 zod임?
+  이 글을 쓰게 된 이유입니다. 멋있는 개발자가 된 느낌이었습니다. 이름도 어떻게 zod입니까?
 </s>
 
 > TypeScript-first schema validation with static type inference
 
-즉 정적 타입 추론을 위한 것
+즉 정적 타입 추론을 위한 것입니다.
 
-이것도 일단 써봐 느낌이다.
+이것도 일단 써봐 느낌입니다.
 
-그래서 일단 써보았다.
+그래서 일단 써보았습니다.
 
 ```tsx
 import { z } from "zod";
@@ -459,11 +459,11 @@ export const SignUpSchema = z
 export type SignUpType = z.infer<typeof SignUpSchema>;
 ```
 
-회원가입 관련 schema이다. 보다시피 파일을 분리시켜서 schema와 그 schema를 사용하는 react - hook -form을 분리시켰다.
+회원가입 관련 schema입니다. 보다시피 파일을 분리시켜서 schema와 그 schema를 사용하는 react-hook-form을 분리시켰습니다.
 
-코드의 가독성도 늘어나며 schema만 변경하면 되서 유지보수성이 늘어난다.
+코드의 가독성도 늘어나며 schema만 변경하면 되어 유지보수성이 늘어납니다.
 
-우리의 목적은 로그인이니 로그인 관련 schema와 react-hook-form 처리를 구현해보자.
+목적은 로그인이니 로그인 관련 schema와 react-hook-form 처리를 구현해보겠습니다.
 
 ```tsx
 import { z } from "zod";
@@ -476,7 +476,7 @@ export const SignInSchema = z.object({
 export type SignInInput = z.infer<typeof SignInSchema>;
 ```
 
-우선 string이고 기본적인 email validation을 입혔다. 원래는 noneEmpty 라는 메소드로 required 처리를 했다고 하는데 deprecated되었고 min으로 처리할 수 있게 되었다고 한다.
+우선 string이고 기본적인 email validation을 입혔습니다. 원래는 noneEmpty 라는 메소드로 required 처리를 했다고 하는데 deprecated되었고 min으로 처리할 수 있게 되었습니다.
 
 ```tsx
 export function LoginPage() {
@@ -517,9 +517,9 @@ return (
 
 기존의 api 요청은 axios로 header나 기본 설정들을 간단하게 처리했었다.
 
-refresh Token은 정말 기본적인 웹 개념이니깐 axios에서 처리할 수 있는 무언가를 만들지 않았을까? 하는 생각에 문서를 정독하였다.
+refresh Token은 정말 기본적인 웹 개념이니까 axios에서 처리할 수 있는 무언가를 만들지 않았을까 하는 생각에 문서를 정독했습니다.
 
-그리고 찾아낸 interceptor
+그리고 찾아낸 interceptor입니다.
 
 ## axios interceptor
 
@@ -553,9 +553,9 @@ axios.interceptors.response.use(
 );
 ```
 
-공식문서에 존재하는 코드이다. 정말 간단하게 되어있지만 config를 전달해서 작업을 수행하고, Promise.reject(error)로 작업에 error를 던지는 등 해석해야 될만한 거리들이 많다.
+공식문서에 존재하는 코드입니다. 정말 간단하게 되어있지만 config를 전달해서 작업을 수행하고, Promise.reject(error)로 작업에 error를 던지는 등 해석해야 될 만한 거리들이 많습니다.
 
-늘 그랬듯 일단 부딪혀 보기로 했다.
+늘 그랬듯 일단 부딪혀 보기로 했습니다.
 
 ```tsx
 import { useUserStore } from "@/app/store";
@@ -650,23 +650,23 @@ instance.interceptors.response.use(
 );
 ```
 
-우선 모든 instance가 인증이 필요한 건 아니다. accessToken 없이도 접근할 수 있는 데이터가 있으니 분리해준다. (instanceWithoutInterceptors)
+우선 모든 instance가 인증이 필요한 건 아닙니다. accessToken 없이도 접근할 수 있는 데이터가 있으니 분리합니다. (instanceWithoutInterceptors)
 
-두 가지로 분기를 나눠야 한다.
+두 가지로 분기를 나눠야 합니다.
 
 ### 요청 전
 
-zustand로 accessToken을 저장하고 있으니 꺼내와주고 Authorization에 토큰을 담는다. 끝
+zustand로 accessToken을 저장하고 있으니 꺼내와서 Authorization에 토큰을 담습니다.
 
 ### 요청 후
 
-성공한 경우는 똑같지만 실패했을 때 refresh Token으로 accessToken을 받아와 줘야 한다.
+성공한 경우는 똑같지만 실패했을 때 refresh Token으로 accessToken을 받아와야 합니다.
 
-보통 401 (Unauthorization Error)로 표현되고 지금 api에도 그렇기 때문에 맞게 처리해준다.
+보통 401 (Unauthorization Error)로 표현되고 지금 api에도 그렇기 때문에 맞게 처리합니다.
 
-이후 instance 자체를 return으로 넣어서 다시 시도시켜주면 된다.
+이후 instance 자체를 return으로 넣어서 다시 시도시켜주면 됩니다.
 
-이렇게 되면 `_retry`로 인해서 단 한번만 refresh Token으로 access Token을 갱신해서 요청을 다시 시행하고 아닐 경우 Promise.reject로 가서 마무리된다.
+이렇게 되면 `_retry`로 인해 단 한 번만 refresh Token으로 access Token을 갱신해서 요청을 다시 시행하고 아닐 경우 Promise.reject로 가서 마무리됩니다.
 
 ## 결과
 
@@ -674,30 +674,30 @@ zustand로 accessToken을 저장하고 있으니 꺼내와주고 Authorization�
 
 ![](/images/2024-06-17/Pasted%20image%2020240721173745.png)
 
-refreshToken은 쿠키에 잘 있는 것을 확인할 수 있다.
+refreshToken은 쿠키에 잘 있는 것을 확인할 수 있습니다.
 
 ![](/images/2024-06-17/Pasted%20image%2020240721173806.png)
 
-accessToken이 만료되면 network 탭에 다음과 같이 표시된다.
+accessToken이 만료되면 network 탭에 다음과 같이 표시됩니다.
 
 ![](/images/2024-06-17/Pasted%20image%2020240721174651.png)
 
-1. 인증이 필요한 요청을 실패한다.
-2. refresh-token 요청을 보낸다. access Token을 갱신한다.
-3. 다시 인증이 필요한 요청을 보낸다.
-4. 인증이 필요한 요청을 기반으로 인증을 보낸다.
+1. 인증이 필요한 요청을 실패합니다.
+2. refresh-token 요청을 보냅니다. access Token을 갱신합니다.
+3. 다시 인증이 필요한 요청을 보냅니다.
+4. 인증이 필요한 요청을 기반으로 인증을 보냅니다.
 
 ## 후기
 
-로그인이라는 작지만 거대한 기능을 알아보았다.
+로그인이라는 작지만 거대한 기능을 알아보았습니다.
 
 자동 로그인이나 이를 감지하고 리렌더링되는 헤더 같은 컴포넌트 처리가 남아있긴 했지만
 
-인증에 관련된 부분의 핵심적인 부분은 이정도인 것 같다. (OAuth나 OIDC 같은게 남긴 했지만)
+인증에 관련된 부분의 핵심적인 부분은 이 정도인 것 같습니다. (OAuth나 OIDC 같은 게 남긴 했지만)
 
-바닐라로 구현할 경우 굉장히 어려울 법한 부분들을 다양한 라이브러리가 채워주는 풍성한 프론트엔드 환경을 확인할 수 있었다.
+바닐라로 구현할 경우 굉장히 어려울 법한 부분들을 다양한 라이브러리가 채워주는 풍성한 프론트엔드 환경을 확인할 수 있었습니다.
 
-라이브러리를 학습하는 데 있어서 주저없어야 하는 부분이 이런 것 같다. 그냥 도구이기에 라는 마음가짐으로 임해보자.
+라이브러리를 학습하는 데 있어서 주저 없어야 하는 부분이 이런 것 같습니다. 그냥 도구이기에 라는 마음가짐으로 임해보겠습니다.
 
 ## Reference
 
