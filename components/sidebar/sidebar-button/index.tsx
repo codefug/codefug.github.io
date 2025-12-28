@@ -1,7 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { ReactNode } from "react";
 
 export default function SidebarButton({ children }: { children: ReactNode }) {
   const { toggleSidebar } = useSidebar();

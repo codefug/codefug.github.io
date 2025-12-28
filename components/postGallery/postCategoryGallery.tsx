@@ -1,11 +1,11 @@
 "use client";
 
-import { FrontMatter } from "@/constants/mdx";
 import { useMemo, useState } from "react";
+import type { FrontMatter } from "@/constants/mdx";
 import getCategorySetListWithPostList from "@/util/post";
-import PostGallery from ".";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import PostGallery from ".";
 
 export default function PostCategoryGallery({
   totalFrontMatterList,
@@ -27,7 +27,7 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      <h2 className="mb-2 text-sm font-light text-gray-600">태그 목록</h2>
+      <h2 className="mb-2 font-light text-gray-600 text-sm">태그 목록</h2>
       <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">

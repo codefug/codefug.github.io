@@ -1,6 +1,6 @@
-import { STUDY_GROUPS } from "@/constants/about";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { STUDY_GROUPS } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
 
 function DescriptionWithDuration({
@@ -11,7 +11,7 @@ function DescriptionWithDuration({
   duration: string;
 }) {
   return (
-    <div className="mb-0 mt-0">
+    <div className="mt-0 mb-0">
       <span className="text-gray-700 dark:text-gray-300">{duration}</span>
       <span className="ml-2 text-gray-700 dark:text-gray-300">{title}</span>
     </div>
@@ -20,7 +20,7 @@ function DescriptionWithDuration({
 
 export default function StudyGroup() {
   return (
-    <div className="prose mx-auto mt-4 dark:prose-invert">
+    <div className="prose dark:prose-invert mx-auto mt-4">
       <HeadComponent>Study Groups</HeadComponent>
       {STUDY_GROUPS.map((studyGroup) => (
         <DescriptionWithDuration

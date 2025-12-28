@@ -1,13 +1,13 @@
 "use client";
 
-import { FrontMatter } from "@/constants/mdx";
 import {
-  FormEventHandler,
+  type FormEventHandler,
   useCallback,
   useMemo,
   useRef,
   useState,
 } from "react";
+import type { FrontMatter } from "@/constants/mdx";
 import BlockHeader from "../ui/block-header";
 import { Input } from "../ui/input";
 import PostGallery from ".";
@@ -35,7 +35,7 @@ export default function PostSearchGallery({
   }, []);
   return (
     <div>
-      <form onSubmit={handleSubmit} className="mb-7 mt-4">
+      <form onSubmit={handleSubmit} className="mt-4 mb-7">
         <Input
           placeholder="검색어를 입력하세요"
           ref={searchInputRef}

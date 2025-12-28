@@ -1,6 +1,6 @@
-import { ParsedFrontMatter } from "@/constants/mdx";
-import Image from "next/image";
 import { CalendarDays, Tag } from "lucide-react";
+import Image from "next/image";
+import type { ParsedFrontMatter } from "@/constants/mdx";
 import { Badge } from "./badge";
 
 export default function PostHeader({
@@ -25,13 +25,13 @@ export default function PostHeader({
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70" />
 
         {/* 카테고리 태그 - 이미지 위에 배치 */}
-        <div className="absolute left-4 top-4 flex flex-wrap gap-2 sm:left-6 sm:top-6">
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2 sm:top-6 sm:left-6">
           {Array.isArray(categories) ? (
             categories.map((category) => (
               <Badge
                 key={category}
                 variant="secondary"
-                className="bg-white/90 text-xs font-medium text-gray-800 hover:bg-white sm:text-sm"
+                className="bg-white/90 font-medium text-gray-800 text-xs hover:bg-white sm:text-sm"
               >
                 <Tag className="mr-1 h-3 w-3" /> {category}
               </Badge>
@@ -39,7 +39,7 @@ export default function PostHeader({
           ) : (
             <Badge
               variant="secondary"
-              className="bg-white/90 text-xs font-medium text-gray-800 hover:bg-white sm:text-sm"
+              className="bg-white/90 font-medium text-gray-800 text-xs hover:bg-white sm:text-sm"
             >
               <Tag className="mr-1 h-3 w-3" /> {categories}
             </Badge>
@@ -49,24 +49,24 @@ export default function PostHeader({
 
       {/* 포스트 메타데이터 */}
       <div className="mb-6 space-y-4">
-        <h1 className="mb-0 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl md:text-5xl">
+        <h1 className="mb-0 font-bold text-3xl text-gray-900 tracking-tight sm:text-4xl md:text-5xl dark:text-gray-50">
           {title}
         </h1>
 
-        <div className="flex items-center justify-end gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-end gap-4 text-gray-600 text-sm dark:text-gray-400">
           <div className="flex items-center">
             <CalendarDays className="mr-2 h-4 w-4" />
             <time dateTime={date}>{date}</time>
           </div>
         </div>
 
-        <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300 md:text-xl">
+        <p className="text-gray-600 text-lg leading-relaxed md:text-xl dark:text-gray-300">
           {excerpt}
         </p>
       </div>
 
       {/* 구분선 */}
-      <div className="border-b border-gray-200 dark:border-gray-800" />
+      <div className="border-gray-200 border-b dark:border-gray-800" />
     </header>
   );
 }

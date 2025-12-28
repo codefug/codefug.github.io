@@ -17,7 +17,7 @@ import {
   Star,
   TriangleAlert,
 } from "lucide-react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export type CalloutType =
   | "note"

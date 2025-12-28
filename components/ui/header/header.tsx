@@ -1,18 +1,18 @@
 "use client";
 
-import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { PATH } from "@/constants/path";
-import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import { PATH } from "@/constants/path";
+import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
 import { useSidebar } from "../sidebar";
-import headerVariant from "./variant";
 import { HeaderSwitch } from "./switch";
+import headerVariant from "./variant";
 
 export default function Header() {
   const { showFloatingHeader: isShow } = useShowFloatingHeader();
@@ -38,12 +38,12 @@ export default function Header() {
               width={28}
               sizes="28px"
             />
-            <div className="hidden whitespace-nowrap text-lg font-bold text-black dark:text-white md:block">
+            <div className="hidden whitespace-nowrap font-bold text-black text-lg md:block dark:text-white">
               Codefug Blog
             </div>
           </Link>
         </section>
-        <section className="flex items-center gap-4 text-sm font-semibold md:text-base">
+        <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
           <HeaderNavigation />
           <HeaderSwitch />
         </section>
@@ -57,7 +57,7 @@ const HeaderNavigation = memo(function HeaderNavigation() {
   const pathName = usePathname();
 
   return (
-    <nav className="flex items-center gap-4 text-sm font-semibold md:text-base">
+    <nav className="flex items-center gap-4 font-semibold text-sm md:text-base">
       {NAVIGATION_ITEMS.map((item) => (
         <Link
           href={item.href}

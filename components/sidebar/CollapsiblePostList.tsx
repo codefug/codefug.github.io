@@ -1,14 +1,13 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-
-import { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import { ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,7 +26,7 @@ export function CollapsiblePostList({
     <Collapsible className="group/collapsible">
       <SidebarGroup>
         <SidebarGroupLabel
-          className="flex justify-center text-sm font-bold text-gray-400 hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black hover:dark:text-white group-hover:dark:text-white"
+          className="flex justify-center font-bold text-gray-400 text-sm hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black group-hover:dark:text-white hover:dark:text-white"
           asChild
         >
           <CollapsibleTrigger>

@@ -1,12 +1,11 @@
+import { useMemo } from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-
-import { useMemo } from "react";
-import { FrontMatter } from "@/constants/mdx";
-import { TAG_GROUP_TO_ARRAY_MAP, TAG_LIST } from "@/constants/categories";
+import { TAG_GROUP_TO_ARRAY_MAP, type TAG_LIST } from "@/constants/categories";
+import type { FrontMatter } from "@/constants/mdx";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
 export function PostGroupContent({

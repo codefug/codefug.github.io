@@ -1,9 +1,9 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { type ReactNode, useMemo } from "react";
 import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
-import { ReactNode, useMemo } from "react";
 import Footer from "../ui/footer";
 import Header from "../ui/header/header";
 import { ScrollUpButton } from "../ui/scroll-up-button";
