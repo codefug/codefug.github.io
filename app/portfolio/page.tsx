@@ -9,6 +9,10 @@ import dynamic from "next/dynamic";
 
 const Projects = dynamic(() => import("@/components/portfolio/projects"));
 
+const SideProjects = dynamic(() =>
+  import("@/components/portfolio/projects").then((mod) => mod.SideProjects),
+);
+
 const Education = dynamic(() => import("@/components/portfolio/education"));
 
 const Skills = dynamic(() => import("@/components/portfolio/skills"));
@@ -62,6 +66,9 @@ export default function Page() {
         </FadeInSection>
         <FadeInSection delay={0} className="mb-8">
           <Projects />
+        </FadeInSection>
+        <FadeInSection delay={0} className="mb-0">
+          <SideProjects />
         </FadeInSection>
         <FadeInSection delay={0} className="mb-0">
           <Education />
