@@ -3,6 +3,8 @@ import AboutHeading from "@/components/portfolio/about-heading";
 import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
 import WorkExperience from "@/components/portfolio/work-experience";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { createProfilePageStructuredData } from "@/components/seo/utils";
 import dynamic from "next/dynamic";
 
 const Projects = dynamic(() => import("@/components/portfolio/projects"));
@@ -18,6 +20,7 @@ const Contact = dynamic(() => import("@/components/portfolio/contact"));
 export default function Page() {
   return (
     <>
+      <StructuredData jsonLd={createProfilePageStructuredData()} />
       <FloatingShapesBackground />
       <div className="relative z-10">
         <AboutHeading />
