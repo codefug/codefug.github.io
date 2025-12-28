@@ -1,14 +1,14 @@
 # 배경
 
-next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같은 유익한 기능을 추가했다.
+next.js에서는 서버 단의 fetch를 override해서 중복 통신 처리 같은 유익한 기능을 추가했습니다.
 
-평소에는 서버 컴포넌트와 클라이언트 컴포넌트에서 그냥 fetch를 쓰면 해당 기능이 첨가된 통신을 사용할 수 있다.
+평소에는 서버 컴포넌트와 클라이언트 컴포넌트에서 그냥 fetch를 쓰면 해당 기능이 첨가된 통신을 사용할 수 있습니다.
 
-여기서 문제는 access token과 refresh token이 들어갈 때이다.
+여기서 문제는 access token과 refresh token이 들어갈 때입니다.
 
-서버 컴포넌트에서는 next/headers의 쿠키를 사용하여 쿠키에 접근하고 클라이언트 컴포넌트에서는 브라우저 쿠키로 쿠키에 접근한다.
+서버 컴포넌트에서는 next/headers의 쿠키를 사용하여 쿠키에 접근하고 클라이언트 컴포넌트에서는 브라우저 쿠키로 쿠키에 접근합니다.
 
-서로 다른 방식은 refresh token rotation을 위한 함수를 구현할 때 문제가 된다.
+서로 다른 방식은 refresh token rotation을 위한 함수를 구현할 때 문제가 됩니다.
 
 # 구현
 
@@ -100,7 +100,7 @@ export const config = {
 
 라우트가 변경될 때 `waitUntil`이라는 메소드로 원하는 통신 이전에 토큰을 처리해주는 로직이었다.
 
-하지만 다음의 상황에서 예외가 발생했다.
+하지만 다음의 상황에서 예외가 발생했습니다.
 
 1. 서버 액션을 사용하지 않으면 프론트엔드 서버를 거치지 않고 요청을 하기 때문에 미들웨어를 거치지 않게 됨
 2. refreshToken은 있으나 다시 로그인 하라고 분기 처리 (에러)
@@ -113,9 +113,9 @@ next/headers는 클라이언트 단에 있을 수 없고 서버 컴포넌트, �
 
 그건 조건부로 실제로 실행되는 것이 아니여도 import로 연결되어 있다면 전부 해당되었다.
 
-이때 든 생각은 "서버 액션과 일단 클라이언트 fetch를 연결하고 분기 처리하면 되지 않나?" 였다.
+이때 든 생각은 "서버 액션과 일단 클라이언트 fetch를 연결하고 분기 처리하면 되지 않나?" 였습니다.
 
-그러곤 다음의 코드를 작성했다.
+그러곤 다음의 코드를 작성했습니다.
 
 ### myFetch
 
@@ -152,7 +152,7 @@ export async function myFetch<T>(
 }
 ```
 
-토큰 처리 기능이 붙혀진 fetch, myFetch 이다.
+토큰 처리 기능이 붙혀진 fetch, myFetch 입니다.
 
 ### clientFetch
 
@@ -171,14 +171,14 @@ export async function clientFetch(
 
   let newInit = init;
 
-  // withCredentials는 토큰 인증 처리를 하겠다는 flag이다.
+  // withCredentials는 토큰 인증 처리를 하겠다는 flag입니다.
   if (newInit?.withCredentials === true) {
     const headers = new Headers(init?.headers);
     headers.set("Authorization", `Bearer ${accessToken}`);
     newInit = { ...init, headers };
   }
 
-  // 토큰 처리를 한다.
+  // 토큰 처리를 합니다.
   const res = await fetch(input, newInit);
 
   // 만약 토큰이 만료되었다면
@@ -222,7 +222,7 @@ export async function clientFetch(
 }
 ```
 
-클라이언트 (`window !== undefined`) 상태일 때 실행될 함수이다. refresh token rotation이 필요한 경우에 받고 fetch를 다시 하도록 하는 로직을 갖고 있다.
+클라이언트 (`window !== undefined`) 상태일 때 실행될 함수입니다. refresh token rotation이 필요한 경우에 받고 fetch를 다시 하도록 하는 로직을 갖고 있습니다.
 
 ### serverFetch
 
@@ -288,31 +288,31 @@ export async function serverFetch(
 }
 ```
 
-서버 상태(`window===undefined`)일 때 실행될 함수이다. refresh token rotation을 next/headers의 cookie를 이용해서 실행한다.
+서버 상태(`window===undefined`)일 때 실행될 함수입니다. refresh token rotation을 next/headers의 cookie를 이용해서 실행합니다.
 
-다음의 로직이 실행되어 에러가 일어나지 않는 것이다.
+다음의 로직이 실행되어 에러가 일어나지 않는 것입니다.
 
-1. 서버 액션을 클라이언트단에서 import하기 때문에 런타임 에러가 무시된다.
+1. 서버 액션을 클라이언트단에서 import하기 때문에 런타임 에러가 무시됩니다.
 2. next/header를 에러처리 안하고 넘어간다.
-3. `window===undefined` 로 분기처리했기 때문에 클라이언트에서 서버 함수를 사용하는 경우의 수는 차단된다.
+3. `window===undefined` 로 분기처리했기 때문에 클라이언트에서 서버 함수를 사용하는 경우의 수는 차단됩니다.
 4. 서버, 클라이언트 모두 사용 가능해짐
 
 ## axios의 base url 기능 구현
 
-코드 리뷰를 하던 중에 URL을 상수로 받아서 myFetch에 내려받는 코드를 발견하였다.
+코드 리뷰를 하던 중에 URL을 상수로 받아서 myFetch에 내려받는 코드를 발견하였습니다.
 
 ![](/images/2024-09-14/Pasted%20image%2020240914193655.png)
 
-axios에서는 base url을 저장해놓고 사용하는 쪽에서는 해당 url 뒤에 있는 라우트만 적어서 사용하는 기능이 있다.
+axios에서는 base url을 저장해놓고 사용하는 쪽에서는 해당 url 뒤에 있는 라우트만 적어서 사용하는 기능이 있습니다.
 
 ### 커링 함수
 
 함수형 프로그래밍에서는 이걸 어떻게 구현할까 고민을 하다가 이전에 학습했던 커링 함수가 생각났다.
 
 > 커링 함수: 여러 개의 인자를 받는 함수를 하나의 인자만 받는 함수로 나눠서 순차적으로 호출될 수 있게 체인 형태로 구성한 것
-> 한번에 하나의 인자만 전달하는 것을 원칙으로 한다. 각 단계에서 받은 인자들을 모두 마지막 단계에서 참조하기 때문에 메모리에 차곡차곡 쌓였다가 마지막 단계에서 호출해서 실행 컨텍스트가 끝나면 한번에 GC의 수거 대상이 된다.
+> 한번에 하나의 인자만 전달하는 것을 원칙으로 합니다. 각 단계에서 받은 인자들을 모두 마지막 단계에서 참조하기 때문에 메모리에 차곡차곡 쌓였다가 마지막 단계에서 호출해서 실행 컨텍스트가 끝나면 한번에 GC의 수거 대상이 됩니다.
 
-이를 이용해서 구현을 시작했다.
+이를 이용해서 구현을 시작했습니다.
 
 ```ts
 // instance를 위한 커링 함수
@@ -349,7 +349,7 @@ export async function getUserHistory() {
 
 세부 로직은 속으로 숨겨져 있는 상태에서 instance와 withCredentials만 사용해서 token이 처리되었다!!!
 
-제일 좋은 점은 api만 변경되었기 때문에 다른 코드를 변경할 필요 없이 myFetch를 instance로 변경만 하면 된다는 것이다.
+제일 좋은 점은 api만 변경되었기 때문에 다른 코드를 변경할 필요 없이 myFetch를 instance로 변경만 하면 된다는 것입니다.
 
 ```ts
 // getUserHistory를 사용하는 쪽
@@ -359,7 +359,7 @@ import { getUserHistory } from "@/lib/apis/user";
 import DateBoxCard from "./date-box-card";
 
 export default async function DateBoxList() {
-  const data = await getUserHistory(); // 변화가 없이 사용할 수 있다.
+  const data = await getUserHistory(); // 변화가 없이 사용할 수 있습니다.
   if (data.tasksDone.length === 0) return null;
   const history: Map<string, GetTeamIdUserHistoryResponse["tasksDone"]> =
     data.tasksDone.reduce((acc, cur) => {
@@ -379,21 +379,21 @@ export default async function DateBoxList() {
 
 # 후기
 
-서버 액션을 사용해서 토큰 처리를 해보는 경험을 했다.
+서버 액션을 사용해서 토큰 처리를 해보는 경험을 했습니다.
 
-서버 액션으로 만들었을 때의 쾌감도 굉장했지만 base url을 구현할 때가 진짜 많이 성장했구나 생각했던 때였다.
+서버 액션으로 만들었을 때의 쾌감도 굉장했지만 base url을 구현할 때가 진짜 많이 성장했구나 생각했던 때였습니다.
 
 몇개월 전에 코어 자바스크립트에서 봤던 내용인데 이제야 제대로 활용되어 이해된 느낌이 들었다.
 
-지식은 차곡차곡 쌓이는 구나 생각하면서 짜릿했던 경험이다.
+지식은 차곡차곡 쌓이는 구나 생각하면서 짜릿했던 경험입니다.
 
-더 성장해보자.
+더 성장해보겠습니다.
 
 > ++ 2024-11-29
 >
 > 이후에 클라이언트에서 쿠키를 읽는 방식을 쓰면 해당 쿠키에 httpOnly를 적용할 수가 없는 것을 알게 되고 이는 보안 문제가 발생한다는 것을 알게 되면서 기존 클라이언트 단의 쿠키를 전부 서버 쿠키로 교체하게 되었다.
 >
-> 기존에 서버 액션과 클라이언트 단의 코드 분리를 통해서 쿠키를 읽는 로직은 사실상 크게 필요 없어진 것이다.
+> 기존에 서버 액션과 클라이언트 단의 코드 분리를 통해서 쿠키를 읽는 로직은 사실상 크게 필요 없어진 것입니다.
 >
 > 토큰을 저장하는 전략은 다양하고 그것을 공격하는 방법은 다양하기 때문에 프론트엔드 개발자로써 일하면서 항상 고민해야 하는 부분인 것 같다.
 

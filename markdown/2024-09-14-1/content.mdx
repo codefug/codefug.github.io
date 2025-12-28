@@ -1,6 +1,6 @@
 # 배경
 
-이번 프로젝트에는 정말 많은 종류의 모달이 존재한다.
+이번 프로젝트에는 정말 많은 종류의 모달이 존재합니다.
 
 ![](/images/2024-09-14/Pasted%20image%2020240731004520.png)
 
@@ -19,9 +19,9 @@
 
 1,2,3 의 경우 "모달" 이라는 컴포넌트를 만들어서 조립할 수 있게 만들어주고
 
-4 의 경우 자주 쓰이는 경우 Compound Pattern으로 묶어서 컴포넌트 간의 결합성을 높히게 되긴 하지만 조립하는 쪽에서 쉽게 할 수 있도록 구현하는게 좋다고 생각하였다.
+4 의 경우 자주 쓰이는 경우 Compound Pattern으로 묶어서 컴포넌트 간의 결합성을 높히게 되긴 하지만 조립하는 쪽에서 쉽게 할 수 있도록 구현하는게 좋다고 생각하였습니다.
 
-컴포넌트 자체의 구현 방식은 해결되었고 이제 렌더링은 어떻게 시킬지 생각해야 했다.
+컴포넌트 자체의 구현 방식은 해결되었고 이제 렌더링은 어떻게 시킬지 생각해야 했습니다.
 
 ## 렌더링 방법
 
@@ -29,10 +29,10 @@
 
 부끄럽지만 기존에 모달을 구현할 때는 마감 기한에 밀려서 좋은 코드를 생각하지 못했던 것 같다...
 
-아래는 원래 사용하던 방식이다. context api를 활용하여 모달이 열리고 닫히고를 구현해놓은 모달이다.
+아래는 원래 사용하던 방식입니다. context api를 활용하여 모달이 열리고 닫히고를 구현해놓은 모달입니다.
 
 ```tsx
-// 일종의 팩토리 패턴이다.
+// 일종의 팩토리 패턴입니다.
 export default function Modal({ children, button }: ModalProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useClickOutside<HTMLDivElement>(() => setIsModalOpen(false));
@@ -63,23 +63,23 @@ export default function Modal({ children, button }: ModalProps) {
 
 ![](/images/2024-09-14/context%20api를%20활용한%20모달.png)
 
-모달을 열었을 때 모달을 여는 버튼도 리렌더링된다.
+모달을 열었을 때 모달을 여는 버튼도 리렌더링됩니다.
 
 ![](/images/2024-09-14/context%20api를%20활용한%20모달%20profiler.png)
 
 이는 어쩔수가 없는게 context가 결국 상위 컴포넌트에 있는 상태를 바꾸기 때문
 
-개발자가 편해지긴 하지만 상태를 바꿔서 그 사이의 컴포넌트들이 리렌더링 되는 것을 막을 순 없음 ( 그래서 context api는 전역 상태 관리라기보단 전역 상태 주입이라고도 한다. )
+개발자가 편해지긴 하지만 상태를 바꿔서 그 사이의 컴포넌트들이 리렌더링 되는 것을 막을 순 없음 ( 그래서 context api는 전역 상태 관리라기보단 전역 상태 주입이라고도 합니다. )
 
-이번 프로젝트에서 전역 상태 관리 라이브러리로 zustand을 세팅했으니 우선 이를 활용해서 만들어 보자 하고 고민을 시작했다.
+이번 프로젝트에서 전역 상태 관리 라이브러리로 zustand을 세팅했으니 우선 이를 활용해서 만들어 보자 하고 고민을 시작했습니다.
 
 ### toss slash
 
-그러던 중 toss의 오픈 소스 라이브러리에 overlay를 다루는 훅이 있는 것을 발견했다.
+그러던 중 toss의 오픈 소스 라이브러리에 overlay를 다루는 훅이 있는 것을 발견했습니다.
 
-overlay란 위에 까는 것을 의미하며 여기서는 화면 위에 화면을 올리는 것을 말한다.
+overlay란 위에 까는 것을 의미하며 여기서는 화면 위에 화면을 올리는 것을 말합니다.
 
-즉, 모달 뿐만 아니라 사이드바, 토스트 등 존재하는 화면 위에 있는 컴포넌트도 overlay라고 한다.
+즉, 모달 뿐만 아니라 사이드바, 토스트 등 존재하는 화면 위에 있는 컴포넌트도 overlay라고 합니다.
 
 #### useOverlay 상세 분석
 
@@ -160,13 +160,13 @@ OverlayProvider의 역할
 
 > 2024-11-29 추가
 >
-> 위 코드를 보면 `overlayById` 라는 상태에 `id:string`과 `element:ReactNode`를 `Map`의 요소로 넣어둔 후 `Provider` 내부에서 쓰는 것을 볼 수 있다.
+> 위 코드를 보면 `overlayById` 라는 상태에 `id:string`과 `element:ReactNode`를 `Map`의 요소로 넣어둔 후 `Provider` 내부에서 쓰는 것을 볼 수 있습니다.
 >
-> 이때 `Provider` 내부에서 `Fragment`의 `children`으로 `element:ReactNode`를 사용하는 것을 볼 수 있는데 이는 `element:ReactNode`가 `createElement(tag, props, ...children)` 이라는 함수이기 때문이다. ( 정확히는 `JSX.Element`이고 `ReactNode`는 `string, number` 등을 포함하는 좀 더 큰 개념이다. )
+> 이때 `Provider` 내부에서 `Fragment`의 `children`으로 `element:ReactNode`를 사용하는 것을 볼 수 있는데 이는 `element:ReactNode`가 `createElement(tag, props, ...children)` 이라는 함수이기 때문입니다. ( 정확히는 `JSX.Element`이고 `ReactNode`는 `string, number` 등을 포함하는 좀 더 큰 개념입니다. )
 >
 > 실제 `<ComponentName/>` 같은 `JSX.Element`은 `React` 내부적으로 `createElement` 함수의 실행으로 바뀌어서 JS 객체를 반환하고 더 나아가 이를 Fiber, Fiber Tree로 만든다.
 >
-> 우린 이 중간 단계를 직접 사용한 것이다. 그래서 overlayById 상태의 element를 컴포넌트를 사용하는 것처럼 `<element key={id}/>`로 사용할 수 없고 `children`으로써 사용해야 한다.
+> 우린 이 중간 단계를 직접 사용한 것입니다. 그래서 overlayById 상태의 element를 컴포넌트를 사용하는 것처럼 `<element key={id}/>`로 사용할 수 없고 `children`으로써 사용해야 합니다.
 
 ##### useOverlay
 
@@ -311,7 +311,7 @@ export const OverlayController = forwardRef(function OverlayController(
 OverlayController의 역할
 
 1. 실제 DOM에 Element를 렌더링
-2. 리페인트 전에 함수를 호출해서 애니메이션 처리 (requestAnimationFrame은 마이크로 큐처럼 본인의 큐를 갖고 실행되기 때문에 리페인트 전에 함수를 실행시킬 수 있다.)
+2. 리페인트 전에 함수를 호출해서 애니메이션 처리 (requestAnimationFrame은 마이크로 큐처럼 본인의 큐를 갖고 실행되기 때문에 리페인트 전에 함수를 실행시킬 수 있습니다.)
 3. useOverlay의 open으로 모달을 끄는 handler 올리기
 4. Element 내리기
 
@@ -323,14 +323,14 @@ OverlayController의 역할
 
 이를 통해 해결되는 점은
 
-1. z-index가 쌓임맥락으로 묻혀지지 않도록 영향이 가지않는 main 아래에 모달이 정의된다.
-2. 컴포넌트에서 모달 컴포넌트를 직접 주입할 수 있다.
-3. 같은 페이지에서 여러 모달이 나올 수 있고 동시에도 있을 수 있다.
+1. z-index가 쌓임맥락으로 묻혀지지 않도록 영향이 가지않는 main 아래에 모달이 정의됩니다.
+2. 컴포넌트에서 모달 컴포넌트를 직접 주입할 수 있습니다.
+3. 같은 페이지에서 여러 모달이 나올 수 있고 동시에도 있을 수 있습니다.
 
 > **쌓임 맥락**(stacking context)은 가상의 Z축을 사용한 HTML 요소의 3차원 개념화입니다. Z축은 사용자 기준이며, 사용자는 뷰포트 혹은 웹페이지를 바라보고 있을 것으로 가정합니다. 각각의 HTML 요소는 자신의 속성에 따른 우선순위를 사용해 3차원 공간을 차지합니다.
 > ![](/images/2024-09-14/Pasted%20image%2020240914114250.png)
-> 어렵게 되어 있지만 쉽게 말하자면 z-index는 부모의 z-index를 이길 수 없다는 것이다. 자신이 z-index: 6이더라도 부모가 4라면 부모 단에 있는 4보다 높은 요소들을 z-index로 이길 수 없다.
-> (`DIV #4는 z-index:6이지만 z-index:5인 DIV #1보다 뒤에 있다.`)
+> 어렵게 되어 있지만 쉽게 말하자면 z-index는 부모의 z-index를 이길 수 없다는 것입니다. 자신이 z-index: 6이더라도 부모가 4라면 부모 단에 있는 4보다 높은 요소들을 z-index로 이길 수 없다.
+> (`DIV #4는 z-index:6이지만 z-index:5인 DIV #1보다 뒤에 있습니다.`)
 
 ### 프로젝트에 맞게 개선
 
@@ -338,9 +338,9 @@ OverlayController의 역할
 
 프로젝트를 위해서 useOverlay에서 개선할 점을 생각해보니 다음과 같았다.
 
-1. 전역 상태 주입에서 전역 상태 관리로 교체하는 것이 리렌더링 문제에서 벗어날 수 있다. 이번 프로젝트에서 전역 상태는 zustand를 사용하고 있기에 zustand로 깎아내는 작업이 필요하다.
-2. slash의 라이브러리는 이전에 구현된 라이브러리 같았다. (React를 import 받고 있었음.) 현재 기준으로 어느정도 리팩토링을 하게 되면 가독성을 늘릴 수 있을 것이다. 간단하게는 컴포넌트의 id를 받는 부분에서 전역 변수를 지정해서 id를 넣어주고 있었는데 이는 react에서 id를 만들 때 쓰라고 만든 훅인 `useId`를 사용하여 리팩토링할 수 있는 식이다.
-3. OverlayController 단은 마운트, 언마운트 관련해서 애니메이션 처리 (Framer-Motion의 AnimatePresense 같은)를 위해 exit, close로 따로 분리되어 있는데 이는 가독성을 해친다고 생각했다. 훅에 넣지 말고 모달, 사이드바 같은 컴포넌트를 만드는 부분에서 애니메이션 처리를 할 때 상태를 하나 만들어서 처리해도 된다고 생각했다. 기존 라이브러리에서도 이 부분 때문에 주석이 길게 되어 있는 것을 확인할 수 있었는데 개인적으로는 주석 없이도 잘 읽히는 코드가 더 좋은 것 같다. 우리 프로젝트에서는 마운트, 언마운트 시의 애니메이션에 큰 비중을 두지 않았기 때문에 들어내기로 했다.
+1. 전역 상태 주입에서 전역 상태 관리로 교체하는 것이 리렌더링 문제에서 벗어날 수 있습니다. 이번 프로젝트에서 전역 상태는 zustand를 사용하고 있기에 zustand로 깎아내는 작업이 필요하다.
+2. slash의 라이브러리는 이전에 구현된 라이브러리 같았다. (React를 import 받고 있었음.) 현재 기준으로 어느정도 리팩토링을 하게 되면 가독성을 늘릴 수 있을 것입니다. 간단하게는 컴포넌트의 id를 받는 부분에서 전역 변수를 지정해서 id를 넣어주고 있었는데 이는 react에서 id를 만들 때 쓰라고 만든 훅인 `useId`를 사용하여 리팩토링할 수 있는 식입니다.
+3. OverlayController 단은 마운트, 언마운트 관련해서 애니메이션 처리 (Framer-Motion의 AnimatePresense 같은)를 위해 exit, close로 따로 분리되어 있는데 이는 가독성을 해친다고 생각했습니다. 훅에 넣지 말고 모달, 사이드바 같은 컴포넌트를 만드는 부분에서 애니메이션 처리를 할 때 상태를 하나 만들어서 처리해도 된다고 생각했습니다. 기존 라이브러리에서도 이 부분 때문에 주석이 길게 되어 있는 것을 확인할 수 있었는데 개인적으로는 주석 없이도 잘 읽히는 코드가 더 좋은 것 같다. 우리 프로젝트에서는 마운트, 언마운트 시의 애니메이션에 큰 비중을 두지 않았기 때문에 들어내기로 했습니다.
 
 #### useCustomOverlay 구조도
 
@@ -472,9 +472,9 @@ export const useOverlayStore = <T,>(
 };
 ```
 
-OverlayStore와 연결된 컴포넌트이다. 쌓임 맥락을 해결하기 위해서 main 아래에 놓아야한다.
+OverlayStore와 연결된 컴포넌트입니다. 쌓임 맥락을 해결하기 위해서 main 아래에 놓아야합니다.
 
-Map의 entries로 Map을 전개해서 안에 있는 컴포넌트들을 꺼내주는데 순차적으로 렌더링되기 때문에 뒤에 구현되는 컴포넌트가 쌓임 맥락에서 이기게 되어 덮어써지게 된다.
+Map의 entries로 Map을 전개해서 안에 있는 컴포넌트들을 꺼내주는데 순차적으로 렌더링되기 때문에 뒤에 구현되는 컴포넌트가 쌓임 맥락에서 이기게 되어 덮어써지게 됩니다.
 
 ##### useCustomOverlay
 
@@ -530,7 +530,7 @@ export function useCustomOverlay(overlayElement: CreateOverlayElement) {
 }
 ```
 
-구현하면서 제일 맘에 들었던 useCustomOverlay이다.
+구현하면서 제일 맘에 들었던 useCustomOverlay입니다.
 
 useId를 이용해서 id가 고유값을 갖도록 처리했으며 호출할 때 컴포넌트를 들고 호출하게 해서 사용하는 단에서는
 
@@ -542,11 +542,11 @@ const modalSendEmailOverlay = useCustomOverlay(({ close }) => (
 onClick={modalSendEmailOverlay.open}    
 ```
 
-open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
+open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였습니다.
 
-이제 동료 개발자는 세가지 과정만 거치면 오버레이를 관리할 수 있게 된 것이다.
+이제 동료 개발자는 세가지 과정만 거치면 오버레이를 관리할 수 있게 된 것입니다.
 
-1. 화면을 띄울 컴포넌트 조립 (오버레이를 닫는 close라는 프롭을 가져야 한다.)
+1. 화면을 띄울 컴포넌트 조립 (오버레이를 닫는 close라는 프롭을 가져야 합니다.)
 2. useCustomOverlay에 담음
 3. 인스턴스.open
 
@@ -554,9 +554,9 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 
 > ++ 2024-11-29
 >
-> 돌이켜보면 이 방식은 `useOverlay`의 기능을 너무 많이 줄인 방식이다.
+> 돌이켜보면 이 방식은 `useOverlay`의 기능을 너무 많이 줄인 방식입니다.
 >
-> toss의 useOverlay에서는 `Promise`를 활용해서 모달을 여는 함수가 아닌 특정 동작을 하는 핸들링 함수로 모달을 동시에 핸들링할 수 있다.
+> toss의 useOverlay에서는 `Promise`를 활용해서 모달을 여는 함수가 아닌 특정 동작을 하는 핸들링 함수로 모달을 동시에 핸들링할 수 있습니다.
 >
 > ```jsx
 > // purchase 모달을 여는 함수가 아닌 purchase라는 동작을 관리하는 함수
@@ -585,7 +585,7 @@ open이라는 메소드만 사용하면 렌더링시킬 수 있도록 하였다.
 > }, [overlay]);
 > ```
 >
-> 이는 선언적으로 프로그래밍을 할 수 있게 하여 가독성이나 확장성 측면에서 훨씬 좋은 방식이다. 이는 프로덕트가 커질 수록 더 빛을 낼 것이다.
+> 이는 선언적으로 프로그래밍을 할 수 있게 하여 가독성이나 확장성 측면에서 훨씬 좋은 방식입니다. 이는 프로덕트가 커질 수록 더 빛을 낼 것입니다.
 
 ## Compound Pattern + useCustomOverlay 예제 (공통 모달 컴포넌트)
 
@@ -703,9 +703,9 @@ function HeaderWithClose({ className }: HeaderWithCloseProps) {
 HeaderWithClose.displayName = "Modal.HeaderWithClose";
 ````
 
-useCustomOverlay 분석에서 이야기 했듯이 마운트, 언마운트 관련 애니메이션 처리는 컴포넌트 내부에 구현되어져 있는 것을 확인할 수 있다.
+useCustomOverlay 분석에서 이야기 했듯이 마운트, 언마운트 관련 애니메이션 처리는 컴포넌트 내부에 구현되어져 있는 것을 확인할 수 있습니다.
 
-이번 프로젝트에서는 비슷한 내부 요소를 가진 모달이 다양하게 있기 때문에 compound pattern으로 구성 요소들도 구현하였다.
+이번 프로젝트에서는 비슷한 내부 요소를 가진 모달이 다양하게 있기 때문에 compound pattern으로 구성 요소들도 구현하였습니다.
 
 > compound pattern이란 프론트엔드 환경에서 사용되는 디자인 패턴 중에 하나로,
 > context api를 이용해서 내부 상태가 구현된 하나의 컴포넌트만 가져와서 프로퍼티 안에 있는 컴포넌트를 활용, 마치 조립하듯이 다양한 컴포넌트를 구현할 수 있는 패턴입니다.
@@ -756,7 +756,7 @@ export default function HandleArticleModal({
 }
 ```
 
-이를 활용한 모달 조립 예시이다. 조립하는 쪽에서는 모달을 구현하는 내부 로직, 스타일을 알 필요 없이 Modal안에 컴포넌트와 필요한 로직을 넣기만 하면 구현되는 것을 확인할 수 있다.
+이를 활용한 모달 조립 예시입니다. 조립하는 쪽에서는 모달을 구현하는 내부 로직, 스타일을 알 필요 없이 Modal안에 컴포넌트와 필요한 로직을 넣기만 하면 구현되는 것을 확인할 수 있습니다.
 
 ![](/images/2024-09-14/게시글%20추가.gif)
 
