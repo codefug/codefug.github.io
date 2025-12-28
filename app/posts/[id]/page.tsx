@@ -1,5 +1,7 @@
 import { GtmPageView } from "@/components/gtm/gtmPageView";
 import MenuBar from "@/components/postMenuBar/menu-bar";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { createBlogPostStructuredData } from "@/components/seo/utils";
 import PostHeader from "@/components/ui/post-header";
 import { ParsedFrontMatter } from "@/constants/mdx";
 import { mdxMap } from "@/lib/mdxMap";
@@ -26,10 +28,21 @@ export default async function Page({
   const mdxModule = mdxMap[id];
   if (!mdxModule) return <div>해당 포스트를 찾을 수 없습니다.</div>;
   const Content = mdxModule.default;
+
+  const frontMatterData = data as ParsedFrontMatter;
+  const structuredData = createBlogPostStructuredData({
+    id,
+    title: frontMatterData.title,
+    excerpt: frontMatterData.excerpt,
+    date: frontMatterData.date,
+    thumbnailImageUrl: frontMatterData.header?.teaser,
+  });
+
   return (
     <section>
       <GtmPageView slug={id} />
-      <PostHeader {...(data as ParsedFrontMatter)} />
+      <StructuredData jsonLd={structuredData} />
+      <PostHeader {...frontMatterData} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar />
         <section className="max-w-full">
