@@ -1,6 +1,6 @@
+import type { MetadataRoute } from "next";
 import { PATH } from "@/constants/path";
 import getFrontMatterList from "@/lib/posts";
-import { MetadataRoute } from "next";
 
 const BASE_URL = "https://codefug.github.io";
 

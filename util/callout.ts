@@ -1,5 +1,5 @@
-import { CalloutType } from "@/constants/callout";
-import { JSX } from "react";
+import type { JSX } from "react";
+import type { CalloutType } from "@/constants/callout";
 
 export function isCallout(children: JSX.Element[]) {
   if (

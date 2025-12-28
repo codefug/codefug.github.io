@@ -1,4 +1,4 @@
-import { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter } from "@/constants/mdx";
 
 export default function getCategorySetListWithPostList({
   postList,
@@ -12,7 +12,7 @@ export default function getCategorySetListWithPostList({
   // list를 돌리고
   // list안에 categoryList를 돌림
   // 조합에 있는지 확인하고 없으면 추가
-  postList.forEach((postInfo) =>
+  postList.forEach((postInfo) => {
     postInfo.categories.forEach((category) => {
       if (!categoryCombination.has(category)) {
         categoryCombination.add(category);
@@ -23,7 +23,7 @@ export default function getCategorySetListWithPostList({
         const index = result.findIndex((v) => v.category === category);
         result[index].total += 1;
       }
-    }),
-  );
+    });
+  });
   return result;
 }

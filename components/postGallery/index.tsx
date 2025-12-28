@@ -1,10 +1,10 @@
 "use client";
 
-import { POST_ITEM_PER_PAGE } from "@/constants/post";
+import { Loader2Icon } from "lucide-react";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { Loader2Icon } from "lucide-react";
-import { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter } from "@/constants/mdx";
+import { POST_ITEM_PER_PAGE } from "@/constants/post";
 import PostCard from "../postCard";
 
 const PostGallery = memo(function PostGallery({
@@ -46,7 +46,7 @@ function usePostListRender({ postInfoList }: { postInfoList: FrontMatter[] }) {
 
   useEffect(() => {
     setPage(1);
-  }, [postInfoList]);
+  }, []);
 
   useEffect(() => {
     if (inView) setPage((p) => p + 1);

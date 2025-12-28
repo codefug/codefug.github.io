@@ -1,11 +1,11 @@
+import { GoogleTagManager } from "@next/third-parties/google";
+import type { Metadata } from "next";
+import { Gothic_A1 } from "next/font/google";
 import Layout from "@/components/layout";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import getFrontMatterList from "@/lib/posts";
 import ThemeProvider from "@/provider/theme-provider";
-import { GoogleTagManager } from "@next/third-parties/google";
-import type { Metadata } from "next";
-import { Gothic_A1 } from "next/font/google";
 import "./globals.css";
 
 const gothicA1 = Gothic_A1({

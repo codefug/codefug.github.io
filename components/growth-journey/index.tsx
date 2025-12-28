@@ -1,5 +1,5 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { GROWTH_JOURNEY } from "@/constants/about";
-import { ComponentPropsWithoutRef } from "react";
 import { HeadComponent } from "../portfolio/HeadComponent";
 
 interface Props {

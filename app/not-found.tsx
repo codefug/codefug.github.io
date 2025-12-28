@@ -1,5 +1,5 @@
-import { PATH } from "@/constants/path";
 import Link from "next/link";
+import { PATH } from "@/constants/path";
 
 export default function NotFound() {
   return (

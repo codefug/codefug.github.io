@@ -1,8 +1,8 @@
-import { FrontMatter } from "@/constants/mdx";
-import { PATH } from "@/constants/path";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useMemo } from "react";
+import type { FrontMatter } from "@/constants/mdx";
+import { PATH } from "@/constants/path";
+import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 
@@ -44,13 +44,13 @@ export default function PostCard({
               ))}
             </div>
           </div>
-          <h2 className="mb-2 line-clamp-1 text-lg font-bold">{title}</h2>
-          <p className="line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
+          <h2 className="mb-2 line-clamp-1 font-bold text-lg">{title}</h2>
+          <p className="line-clamp-3 min-h-[60px] text-gray-600 text-sm dark:text-gray-400">
             {excerpt}
           </p>
         </div>
         <div className="flex justify-end px-5 pb-5">
-          <time className="text-sm text-gray-500">{date}</time>
+          <time className="text-gray-500 text-sm">{date}</time>
         </div>
       </Card>
     </a>

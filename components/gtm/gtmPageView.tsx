@@ -1,7 +1,7 @@
 "use client";
 
-import { gtmPageView } from "@/lib/gtm";
 import { useEffect } from "react";
+import { gtmPageView } from "@/lib/gtm";
 
 export function GtmPageView({ slug }: { slug: string }) {
   useEffect(() => {

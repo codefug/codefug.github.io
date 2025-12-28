@@ -1,15 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { FrontMatter } from "@/constants/mdx";
-import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
-
+import { useMemo } from "react";
+import type { FrontMatter } from "@/constants/mdx";
 import PostCard from "../postCard";
 import {
   AppCarouselNext,
   AppCarouselPrevious,
 } from "../ui/app-carousel-button";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
 export default function PostSwiper({
   postInfoList,

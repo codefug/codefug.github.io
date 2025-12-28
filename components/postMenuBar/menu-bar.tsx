@@ -1,13 +1,13 @@
 "use client";
 
-import useHighlightTOC from "@/hooks/use-highlight-toc";
-import useOutsideClick from "@/hooks/use-outside-click";
-import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { ChevronLeft, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import useHighlightTOC from "@/hooks/use-highlight-toc";
+import useOutsideClick from "@/hooks/use-outside-click";
+import { cn } from "@/lib/utils";
 
 const menuBarVariant = cva(
   "block py-1.5 text-sm transition-all duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
@@ -57,7 +57,7 @@ export default function MenuBar() {
   return (
     <>
       <button
-        className="fixed right-0 top-1/2"
+        className="fixed top-1/2 right-0"
         onClick={handleShowMenuList}
         aria-label="목차 열기"
         aria-expanded={isShow}
@@ -68,7 +68,7 @@ export default function MenuBar() {
       <div
         ref={menuListRef}
         className={cn(
-          "fixed right-0 top-[68px] hidden w-[300px]",
+          "fixed top-[68px] right-0 hidden w-[300px]",
           isShow && "block",
         )}
       >
@@ -76,11 +76,11 @@ export default function MenuBar() {
           <button
             onClick={handleHideMenuList}
             aria-label="목차 닫기"
-            className="absolute right-4 top-4"
+            className="absolute top-4 right-4"
           >
             <X className="h-5 w-5 cursor-pointer text-muted-foreground" />
           </button>
-          <h4 className="mb-3 mt-0 text-sm font-medium text-foreground">
+          <h4 className="mt-0 mb-3 font-medium text-foreground text-sm">
             목차
           </h4>
           <nav
