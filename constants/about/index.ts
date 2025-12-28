@@ -154,6 +154,28 @@ export const SKILLS = {
 
 export const PROJECTS = [
   {
+    title: "Allra",
+    role: "Web Frontend Developer",
+    image: "/images/logos/allra-logo.webp",
+    description: "Allra 선정산 서비스",
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Zustand",
+      "Tanstack Query",
+      "Axios",
+      "Playwright",
+      "Storybook",
+      "React Testing Library",
+      "Jest",
+      "GitHub Actions",
+      "Mixpanel",
+      "Datadog",
+    ],
+    features: ["작성중..."],
+  },
+  {
     title: "Digital Finance",
     role: "Web Frontend Developer",
     image: "/images/logos/pwc-logo.svg",
