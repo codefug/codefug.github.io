@@ -1,37 +1,30 @@
 ## CICD
 
-기본적인 기능이 끝나고 배포를 할 차례였다.
-CICD는 일정에 없던 업무였는데 기본적인 기능이 끝나기도 했고
-Github Action을 통해서 자동 배포를 하면 훨씬 편해지지 않을까 하는 생각이 들어서 팀원들과 이야기 후 고민을 시작하였고
-우선 Github Action을 알아야 적용을 할 수 있다는 생각에 Github Action 기본을 학습한 후에 프로젝트에 적용하였다.
+기본 기능 개발이 끝나고 배포를 준비했습니다.
+CICD는 일정에 없던 업무였지만, Github Action을 통한 자동 배포가 효율적일 것으로 판단했습니다.
+팀원들과 논의 후 Github Action 기본을 학습하고 프로젝트에 적용했습니다.
 
 ### 개념
 
-여러가지 이론이 있지만 간단하게 설명해보면
+Github Action은 두 가지 구성으로 이루어져 있습니다.
 
-Github Action은 두가지 구성으로 이루어져 있다.
+**Trigger**는 작업을 촉발시키는 조건이고, **Jobs**는 촉발되었을 때 실행되는 작업입니다.
 
-Trigger와 Jobs이다.
+Trigger는 GitHub와 연관된 Event를 사용합니다.
+push, pr, issue, workflow-dispatch 등 다양한 Event를 다룰 수 있으며, 특정 조건으로 제한할 수 있습니다(예: pr을 열었을 때만 동작).
 
-**Trigger**는 말그대로 무언가를 촉발시키는 것이고
+Jobs는 job > step으로 이어지는 하위 구조를 가지며, 최종 동작 단위를 Action이라고 부릅니다. Action은 GitHub에서 제공하거나 GitHub Marketplace에서 공유되는 것을 사용할 수 있습니다.
 
-**Jobs**은 촉발되었을 때 작동되는 무언가이다.
+프로젝트에 필요한 조건을 정의했습니다.
 
-Trigger에는 Event가 존재하는데 깃허브와 연관된 Event 들이다.
-push, pr, issue, workflow-dispatch 등등 많은 Event 들을 다룰 수 있으며 제한을 걸어둘 수도 있다. (pr을 열었을 때만 동작하는 것처럼)
+1. PR을 Main으로 merge할 때 실행
+2. Netlify와 연결하여 앱 배포
 
-Jobs에는 job > step으로 이어지는 하위 구조들이 존재하며 최종적으로 하는 작은 단위의 동작들을 Action이라고 부른다. 이 action은 github 자체에서 만든 것들도 있고 라이브러리처럼 github marketplace라는 곳에 올려놓고 나누는 action들도 존재한다.
+1번 조건을 위해 Main branch에서 PR이 닫히고 merge되었을 때만 동작하도록 제약을 설정했습니다.
 
-이 프로젝트를 위해선 어떻게 해야할지 먼저 정의를 해야했다.
+2번 조건을 위해 Netlify 배포 action과 ubuntu에 node를 설치하고 dependency를 설치하는 action이 필요했습니다.
 
-1. PR을 올려서 Main으로 merge를 할 때
-2. Netlify와 연결되어 앱을 배포해야한다.
-
-1번 조건을 위해선 Main branch라는 제약과 PR이 닫혀야 한다는 제약, 거기에 merge시에만 동작한다는 제약이 동시에 들어가 있어야 한다.
-
-2번 조건을 위해선 Netlify로 배포하는 action과 ubuntu에 node를 set-up하고 dependency를 설치하고 실행하는 action이 필요했다.
-
-위 두줄로 줄인 후 다음과 같이 코드를 구현하였다.
+다음과 같이 코드를 구현했습니다.
 
 ```yaml
 name: build and deploy to Netlify
@@ -76,17 +69,17 @@ jobs:
         timeout-minutes: 1
 ```
 
-cache를 적용해서 재실행시 성능을 늘렸다. netlify에서 토큰들을 가져오고 GITHUB_TOKEN을 github에서 가져와서 github 설정의 secret에 넣어놓으면 종료되는 작업이었다.
+cache를 적용하여 재실행 시 성능을 개선했습니다. Netlify에서 토큰을 가져오고 GITHUB_TOKEN을 GitHub Secret에 등록하여 설정을 완료했습니다.
 
 ### Trouble shooting
 
 1. npm 자체 에러
 
-배포중 npm 자체의 에러가 존재했다.
+배포 중 npm 에러가 발생했습니다.
 
 https://github.com/npm/cli/issues/4828
 
-issue에서 제안하는 대로 package.lock.json과 node_modules를 삭제하고 다시 설치 후 진행하여 성공하였다.
+issue에서 제안한 대로 package.lock.json과 node_modules를 삭제하고 재설치하여 해결했습니다.
 
 ## 결과
 
