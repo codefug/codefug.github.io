@@ -239,6 +239,9 @@ export const PROJECTS = [
       "의존성 업데이트 및 보안 취약점 대응을 통해 프로젝트 안정성 강화",
     ],
   },
+];
+
+export const SIDE_PROJECTS = [
   {
     title: "순록의 편지",
     duration: "2024.12.02 ~ 2025.01.20",
@@ -334,7 +337,15 @@ export const PROJECTS = [
       "Github Action을 이용한 Netlify 자동 배포",
     ],
   },
-];
+] as const satisfies {
+  title: string;
+  duration: string;
+  role: string;
+  image: string;
+  description: string;
+  stack: string[];
+  features: string[];
+}[];
 
 export const EDUCATION = [
   {
