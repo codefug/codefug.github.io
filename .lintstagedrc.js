@@ -1,14 +1,5 @@
-const path = require("path");
-
-const buildEslintCommand = (filenames) =>
-  `next lint --fix --file ${filenames
-    .map((f) => path.relative(process.cwd(), f))
-    .join(" --file ")}`;
-
 module.exports = {
-  // Type check TypeScript files
-  "*/.(ts|tsx)": () => "yarn tsc --noEmit",
-  "*.{js,jsx,ts,tsx,json,prettierrc,css,scss}":
-    "prettier --write --config .prettierrc",
-  "*.{js,jsx,ts,tsx}": [buildEslintCommand],
+  // Biome: format and lint all supported files
+  "**/*.{js,jsx,ts,tsx,json,jsonc}":
+    "biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true",
 };
