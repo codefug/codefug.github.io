@@ -30,8 +30,8 @@ export default function QuestionBlock({
 function QnA({ question, answer }: { question: string; answer: string }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-lg font-bold">{question}</div>
-      <div className="text-sm text-gray-500">{answer}</div>
+      <div className="font-bold text-lg">{question}</div>
+      <div className="text-gray-500 text-sm">{answer}</div>
     </div>
   );
 }

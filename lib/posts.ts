@@ -1,7 +1,7 @@
-import { FrontMatter } from "@/constants/mdx";
-import { readdirSync, readFileSync } from "fs";
-import { join } from "path";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import grayMatter from "gray-matter";
+import type { FrontMatter } from "@/constants/mdx";
 
 const postsDirectory = join(process.cwd(), "markdown");
 const folderNames = readdirSync(postsDirectory);

@@ -1,4 +1,4 @@
-import { readdirSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const MARKDOWN_DIR = join(process.cwd(), "markdown");

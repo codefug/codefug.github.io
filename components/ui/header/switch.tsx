@@ -1,7 +1,7 @@
 import { useTheme } from "next-themes";
 import { memo, useEffect, useState } from "react";
-import Switch from "../switch";
 import { Skeleton } from "../skeleton";
+import Switch from "../switch";
 
 export const HeaderSwitch = memo(function HeaderSwitch() {
   const { setTheme, theme } = useTheme();

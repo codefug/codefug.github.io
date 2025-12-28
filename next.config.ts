@@ -1,5 +1,5 @@
 import createMDX from "@next/mdx";
-import { NextConfig } from "next";
+import type { NextConfig } from "next";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 

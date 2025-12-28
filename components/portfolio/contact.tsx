@@ -1,5 +1,5 @@
-import { CONTACTS } from "@/constants/about";
 import Link from "next/link";
+import { CONTACTS } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
 
 function ContactItem({
@@ -12,7 +12,7 @@ function ContactItem({
   description: string;
 }) {
   return (
-    <div className="mb-0 mt-0">
+    <div className="mt-0 mb-0">
       <span className="text-gray-700 dark:text-gray-300">{title}:</span>
       <Link
         href={url}
@@ -28,7 +28,7 @@ function ContactItem({
 
 export default function Contact() {
   return (
-    <div className="prose mx-auto mt-4 dark:prose-invert">
+    <div className="prose dark:prose-invert mx-auto mt-4">
       <HeadComponent>Contact</HeadComponent>
       {CONTACTS.map((contact) => (
         <ContactItem

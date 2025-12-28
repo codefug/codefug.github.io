@@ -1,5 +1,5 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
 
 export default function BlockHeader({
   children,
@@ -14,13 +14,13 @@ export default function BlockHeader({
     <div>
       <h1
         className={cn(
-          "mb-7 flex justify-center text-lg font-bold text-gray-900 dark:text-gray-100 md:text-xl",
+          "mb-7 flex justify-center font-bold text-gray-900 text-lg md:text-xl dark:text-gray-100",
           className,
         )}
       >
         {title}
       </h1>
-      <div className="mb-4 mt-2 w-full">{children}</div>
+      <div className="mt-2 mb-4 w-full">{children}</div>
     </div>
   );
 }

@@ -1,13 +1,13 @@
+import { readdir, readFile } from "node:fs/promises";
+import path from "node:path";
+import matter from "gray-matter";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
 import MenuBar from "@/components/postMenuBar/menu-bar";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { createBlogPostStructuredData } from "@/components/seo/utils";
 import PostHeader from "@/components/ui/post-header";
-import { ParsedFrontMatter } from "@/constants/mdx";
+import type { ParsedFrontMatter } from "@/constants/mdx";
 import { mdxMap } from "@/lib/mdxMap";
-import { readdir, readFile } from "fs/promises";
-import matter from "gray-matter";
-import path from "path";
 
 export default async function Page({
   params,

@@ -1,5 +1,8 @@
 "use client";
 
+import { useRef } from "react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -12,11 +15,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { useRef } from "react";
 import { PostGroupContent } from "./PostGroupContent";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
@@ -36,7 +36,7 @@ export default function AppSidebar({
       >
         <div className="absolute h-[150px] w-full bg-primary" />
         <SidebarGroup>
-          <SidebarGroupLabel className="mb-2 mt-4 flex justify-center px-4 text-sm font-bold text-gray-400 group-hover:text-white">
+          <SidebarGroupLabel className="mt-4 mb-2 flex justify-center px-4 font-bold text-gray-400 text-sm group-hover:text-white">
             Codefug
           </SidebarGroupLabel>
           <SidebarGroupContent className="flex min-h-full flex-col items-center px-2">
@@ -46,10 +46,10 @@ export default function AppSidebar({
                 이승현
               </AvatarFallback>
             </Avatar>
-            <h1 className="mt-4 text-center text-lg font-bold text-gray-400 group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
+            <h1 className="mt-4 text-center font-bold text-gray-400 text-lg group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
               이승현
             </h1>
-            <p className="text-sm text-gray-400 group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
+            <p className="text-gray-400 text-sm group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
               Web Frontend Developer
             </p>
           </SidebarGroupContent>

@@ -1,6 +1,6 @@
-import { EDUCATION } from "@/constants/about";
 import Image from "next/image";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { EDUCATION } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
 
 function DescriptionWithDuration({
@@ -15,7 +15,7 @@ function DescriptionWithDuration({
   description?: ReactNode;
 }) {
   return (
-    <div className="mb-0 mt-0 flex">
+    <div className="mt-0 mb-0 flex">
       <Image
         src={image}
         alt={`${title} Logo`}
@@ -38,7 +38,7 @@ function DescriptionWithDuration({
 
 export default function Education() {
   return (
-    <div className="prose mx-auto mt-4 dark:prose-invert">
+    <div className="prose dark:prose-invert mx-auto mt-4">
       <HeadComponent>Education</HeadComponent>
       {EDUCATION.map((edu) => (
         <DescriptionWithDuration

@@ -1,8 +1,8 @@
 import type { MDXComponents } from "mdx/types";
-import { createElement, ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
 import Callout from "./components/mdx/callout";
-import processCallout from "./util/callout";
 import { getHeaderHltr } from "./constants/header-hltr";
+import processCallout from "./util/callout";
 
 function getHeadingIndexWithCloser() {
   let headingIndex = -1;

@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,7 @@ const Switch = React.forwardRef<
   >
     <SwitchPrimitives.Thumb
       className={cn(
-        "pointer-events-none block h-6 w-6 rounded-full bg-background bg-theme-icon bg-center shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[2.25rem] data-[state=unchecked]:translate-x-0 data-[state=checked]:bg-moon data-[state=unchecked]:bg-sun",
+        "pointer-events-none block h-6 w-6 rounded-full bg-background bg-center bg-theme-icon shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[2.25rem] data-[state=unchecked]:translate-x-0 data-[state=checked]:bg-moon data-[state=unchecked]:bg-sun",
       )}
     />
   </SwitchPrimitives.Root>

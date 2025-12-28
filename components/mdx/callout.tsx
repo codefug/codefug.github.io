@@ -1,11 +1,11 @@
+import type { JSX } from "react";
 import {
   CALL_OUT_TYPE_COLOR,
   CALL_OUT_TYPE_ICON,
-  CalloutType,
+  type CalloutType,
 } from "@/constants/callout";
 import { QUOTE_STYLE, QUOTE_TITLE_STYLE } from "@/constants/variants";
 import { cn } from "@/lib/utils";
-import { JSX } from "react";
 
 export default function Callout({
   type,
@@ -28,19 +28,19 @@ export default function Callout({
     <blockquote
       className={cn(
         QUOTE_STYLE({ type: type ? CALL_OUT_TYPE_COLOR[type] : "gray" }),
-        "rounded-xl border-y border-r border-y-gray-400 border-r-gray-400 border-opacity-30 p-4 not-italic",
+        "rounded-xl border-y border-y-gray-400 border-r border-r-gray-400 border-opacity-30 p-4 not-italic",
       )}
     >
       <div
         className={cn(
           QUOTE_TITLE_STYLE({ type: type && CALL_OUT_TYPE_COLOR[type] }),
-          "flex items-center gap-1 text-lg font-bold md:text-2xl",
+          "flex items-center gap-1 font-bold text-lg md:text-2xl",
         )}
       >
         {type !== null && CALL_OUT_TYPE_ICON[type]}
         <div>{title}</div>
       </div>
-      <section className="text-sm font-semibold text-black md:text-base">
+      <section className="font-semibold text-black text-sm md:text-base">
         {content.map((child) => child)}
       </section>
     </blockquote>
