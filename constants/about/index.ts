@@ -43,6 +43,10 @@ export const SKILLS = {
       subtitle: "Testing",
       list: [
         {
+          alt: "Playwright",
+          src: "https://img.shields.io/badge/playwright-%232EAD33.svg?style=for-the-badge&logo=playwright&logoColor=white",
+        },
+        {
           alt: "MSW",
           src: "https://img.shields.io/badge/mock%20service%20worker-%23E33332.svg?style=for-the-badge&logo=msw&logoColor=white",
         },
@@ -137,8 +141,16 @@ export const SKILLS = {
       ],
     },
     {
-      subtitle: "GTM / GA",
+      subtitle: "Analytics / Monitoring",
       list: [
+        {
+          alt: "Mixpanel",
+          src: "https://img.shields.io/badge/mixpanel-%237856FF.svg?style=for-the-badge&logo=mixpanel&logoColor=white",
+        },
+        {
+          alt: "Datadog",
+          src: "https://img.shields.io/badge/datadog-%23632CA6.svg?style=for-the-badge&logo=datadog&logoColor=white",
+        },
         {
           alt: "Google Tag Manager",
           src: "https://img.shields.io/badge/google%20tag%20manager-4285F4?style=for-the-badge&logo=google-tag-manager&logoColor=white",
@@ -146,6 +158,15 @@ export const SKILLS = {
         {
           alt: "Google Analytics",
           src: "https://img.shields.io/badge/google%20analytics-E37400?style=for-the-badge&logo=google-analytics&logoColor=white",
+        },
+      ],
+    },
+    {
+      subtitle: "Cloud",
+      list: [
+        {
+          alt: "AWS",
+          src: "https://img.shields.io/badge/aws-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white",
         },
       ],
     },
@@ -369,8 +390,16 @@ export const EDUCATION = [
 
 export const STUDY_GROUPS = [
   {
+    title: "프론트엔드 최적화",
+    duration: "2025.12 ~ (진행중)",
+  },
+  {
+    title: "AWS",
+    duration: "2025.10 ~ 2025.12",
+  },
+  {
     title: "타입스크립트 우아하게 쓰기",
-    duration: "2024.07 ~ (진행중)",
+    duration: "2025.07 ~ 2025.10",
   },
   {
     title: "리액트 디자인 패턴과 테스팅",
@@ -378,7 +407,7 @@ export const STUDY_GROUPS = [
   },
   {
     title: "코딩테스트",
-    duration: "2024.09 ~ (진행중)",
+    duration: "2024.09 ~ 2025.07",
   },
   {
     title: "CS 스터디",
@@ -399,19 +428,24 @@ export const STUDY_GROUPS = [
 
 export const CONTACTS = [
   {
+    title: "LinkedIn",
+    url: "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
+    description: "codefug의 LinkedIn 구경하기",
+  },
+  {
     title: "인스타",
     url: "https://www.instagram.com/happy_fug/",
-    description: "codefug의 일상 구경하기",
+    description: "codefug의 Instagram 구경하기",
   },
   {
     title: "GitHub",
     url: "https://github.com/codefug",
-    description: "codefug의 세련된 깃허브 구경하기",
+    description: "codefug의 GitHub 구경하기",
   },
   {
     title: "블로그",
     url: "/",
-    description: "codefug가 연구중인 자료 탐구하기",
+    description: "codefug의 블로그 구경하기",
   },
 ];
 
@@ -419,5 +453,6 @@ export const GROWTH_JOURNEY = `
   - 고등학교 시절, 하고 싶은 일을 찾기 위해 학습에 처음으로 진지하게 임하게 되었고, 그 과정에서 꾸준함과 자기 주도성의 중요함을 체득했습니다.
   \n- 대학교에서는 여러 사람들 앞에서 발표하는 활동을 통해 소통의 즐거움을 배웠고, 지식 공유에 흥미를 느끼게 되었습니다. 이는 개발자로서 동료와 사용자 모두와 소통하는 데 큰 자산이 되었습니다.
   \n- VR 테마파크에서 일하면서, 기획과 프로그램 변경이 사용자 경험에 어떤 영향을 미치는지를 현장에서 체감했습니다. 이때 '사용자에 맞닿은 개발'의 중요성을 느꼈고, 프론트엔드 개발에 관심을 갖게 되었습니다.
-  \n- 이후 부트캠프에서 본격적으로 프론트엔드 기술을 익히며, 일상 속 문제를 코드로 해결하고 싶은 열망이 생겼습니다. 기술과 사람을 연결하는 개발자가 되고 싶어 더욱 몰입하게 되었고, 지금은 그 여정을 이어가고 있습니다.
+  \n- 이후 부트캠프에서는 프론트엔드 최신 기술들을 익히고 적용하면서 문제 해결 능력을 키웠습니다. 비동기적으로 문제를 항상 생각하고 해결해나가면서 개발자의 재미를 더욱 느꼈습니다.
+  \n- 현재는 실무를 시작하며, 기술적인 역량 뿐만 아니라 커뮤니케이션에 대해서 많이 배우고 있습니다. 늘 더 나은 개발자가 되기 위해 노력하겠습니다.
 `;
