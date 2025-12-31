@@ -88,14 +88,6 @@ export const SKILLS = {
           alt: "Docker Compose",
           src: "https://img.shields.io/badge/docker%20compose-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white",
         },
-        {
-          alt: "Vercel",
-          src: "https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white",
-        },
-        {
-          alt: "Netlify",
-          src: "https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=white",
-        },
       ],
     },
   ],
