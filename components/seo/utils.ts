@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
 import { type Locale, locales } from "@/i18n/config";
+import enMessages from "@/messages/en.json";
+import koMessages from "@/messages/ko.json";
 
 const BASE_URL = "https://codefug.github.io";
+
+const messages = {
+  ko: koMessages,
+  en: enMessages,
+};
 
 /**
  * 언어 코드를 hreflang 형식으로 변환
@@ -70,7 +77,7 @@ export function createBlogPostStructuredData(
         image: [imageUrl],
         author: {
           "@type": "Person",
-          name: "이승현",
+          name: messages[locale].seo.author,
           url: BASE_URL,
         },
         publisher: {
@@ -96,7 +103,7 @@ export function createBlogPostStructuredData(
             position: 1,
             item: {
               "@id": BASE_URL,
-              name: "홈",
+              name: messages[locale].seo.home,
             },
           },
           {
@@ -104,7 +111,7 @@ export function createBlogPostStructuredData(
             position: 2,
             item: {
               "@id": `${BASE_URL}/posts`,
-              name: "블로그",
+              name: messages[locale].seo.blog,
             },
           },
           {
@@ -126,15 +133,12 @@ export function createWebSiteStructuredData(locale: Locale = "ko") {
     "@context": "https://schema.org" as const,
     "@type": "WebSite" as const,
     name: "Codefug Blog",
-    description:
-      locale === "ko"
-        ? "프로젝트 경험과 개발 노트를 공유하는 블로그"
-        : "A blog sharing project experiences and development notes",
+    description: messages[locale].meta.description,
     url: BASE_URL,
     inLanguage: getHreflangCode(locale),
     publisher: {
       "@type": "Person" as const,
-      name: "이승현",
+      name: messages[locale].seo.author,
       url: BASE_URL,
     },
     potentialAction: {
@@ -148,13 +152,13 @@ export function createWebSiteStructuredData(locale: Locale = "ko") {
   };
 }
 
-export function createProfilePageStructuredData() {
+export function createProfilePageStructuredData(locale: Locale = "ko") {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
     mainEntity: {
       "@type": "Person" as const,
-      name: "이승현",
+      name: messages[locale].seo.author,
       alternateName: "codefug",
       description: "Web Frontend Developer",
       url: BASE_URL,
@@ -162,12 +166,12 @@ export function createProfilePageStructuredData() {
       jobTitle: "Frontend Developer",
       worksFor: {
         "@type": "Organization" as const,
-        name: "올라",
+        name: locale === "ko" ? "올라" : "Olla",
       },
       alumniOf: [
         {
           "@type": "EducationalOrganization" as const,
-          name: "중앙대학교",
+          name: locale === "ko" ? "중앙대학교" : "Chung-Ang University",
         },
       ],
       knowsAbout: [

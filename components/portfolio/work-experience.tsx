@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { HeadComponent } from "./HeadComponent";
 
 function DescriptionWithDuration({
@@ -39,14 +42,15 @@ function DescriptionWithDuration({
 }
 
 export default function WorkExperience() {
+  const t = useTranslations("portfolio.workExperience");
   return (
-    <div className="prose mx-auto mt-4 dark:prose-invert">
+    <div className="prose dark:prose-invert mx-auto mt-4">
       <HeadComponent>Work Experience</HeadComponent>
       <DescriptionWithDuration
         company="Allra Fintech"
         imageUrl="/images/logos/allra-logo.webp"
         imageAlt="Allra Fintech Logo"
-        duration="2025.10 ~ (현재)"
+        duration={`2025.10 ~ (${t("current")})`}
         team="Allra Squad - Frontend Team"
         job="Web Frontend Developer"
       />

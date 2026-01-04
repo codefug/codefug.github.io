@@ -12,6 +12,7 @@ import {
   createProfilePageStructuredData,
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
+import { defaultLocale } from "@/i18n/config";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("portfolio.meta");
@@ -40,7 +41,7 @@ const Contact = dynamic(() => import("@/components/portfolio/contact"));
 export default function Page() {
   return (
     <>
-      <StructuredData jsonLd={createProfilePageStructuredData()} />
+      <StructuredData jsonLd={createProfilePageStructuredData(defaultLocale)} />
       <FloatingShapesBackground />
       <div className="relative z-10">
         <AboutHeading />

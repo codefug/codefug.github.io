@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import getCategorySetListWithPostList from "@/util/post";
@@ -12,6 +13,7 @@ export default function PostCategoryGallery({
 }: {
   totalFrontMatterList: FrontMatter[];
 }) {
+  const t = useTranslations("common");
   const [value, setValue] = useState("");
   const filteredFrontMatterList = useMemo(() => {
     if (value === "") return totalFrontMatterList;
@@ -27,7 +29,9 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      <h2 className="mb-2 font-light text-gray-600 text-sm">태그 목록</h2>
+      <h2 className="mb-2 font-light text-gray-600 text-sm">
+        {t("category.list")}
+      </h2>
       <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">
@@ -35,14 +39,14 @@ export default function PostCategoryGallery({
               onClick={() => {
                 setValue("");
               }}
-              aria-label="전체 카테고리 선택"
+              aria-label={t("aria.allCategorySelect")}
               aria-pressed={value === ""}
             >
               <Badge
                 className="h-8 text-sm dark:text-white"
                 variant={value === "" ? "default" : "outline"}
               >
-                전체({totalFrontMatterList.length})
+                {t("category.all")}({totalFrontMatterList.length})
               </Badge>
             </button>
           </CarouselItem>
@@ -52,7 +56,10 @@ export default function PostCategoryGallery({
                 onClick={() => {
                   setValue(category);
                 }}
-                aria-label={`${category} 카테고리 선택 (${total}개 게시물)`}
+                aria-label={t("aria.categorySelect", {
+                  category,
+                  count: total,
+                })}
                 aria-pressed={value === category}
               >
                 <Badge

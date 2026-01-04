@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
@@ -12,14 +13,15 @@ export default function PostCategorySwiper({
   setValue?: (value: string) => void;
   categoryList: { category: string; id: string }[];
 }) {
+  const t = useTranslations("common.aria");
   return (
     <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
       <CarouselContent>
         {categoryList.map(({ category, id }) => (
           <CarouselItem key={id + category} className="basis-auto">
             <button
-              onClick={() => setValue && setValue(category)}
-              aria-label={`${category} 카테고리 선택`}
+              onClick={() => setValue?.(category)}
+              aria-label={t("categorySelect", { category, count: 0 })}
               aria-pressed={category === value}
             >
               <Badge

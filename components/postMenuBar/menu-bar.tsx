@@ -4,6 +4,7 @@ import { cva } from "class-variance-authority";
 import { ChevronLeft, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useHighlightTOC from "@/hooks/use-highlight-toc";
 import useOutsideClick from "@/hooks/use-outside-click";
@@ -38,6 +39,7 @@ export default function MenuBar() {
   const menuListRef = useRef<HTMLDivElement>(null);
   const [isShow, setIsShow] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations("common");
 
   const headings = useFindAllHeadings();
   const { activeId } = useHighlightTOC();
@@ -59,7 +61,7 @@ export default function MenuBar() {
       <button
         className="fixed top-1/2 right-0"
         onClick={handleShowMenuList}
-        aria-label="목차 열기"
+        aria-label={t("aria.tableOfContents.open")}
         aria-expanded={isShow}
         aria-controls="table-of-contents"
       >
@@ -75,17 +77,17 @@ export default function MenuBar() {
         <div className="rounded-lg border bg-card p-4 shadow-sm">
           <button
             onClick={handleHideMenuList}
-            aria-label="목차 닫기"
+            aria-label={t("aria.tableOfContents.close")}
             className="absolute top-4 right-4"
           >
             <X className="h-5 w-5 cursor-pointer text-muted-foreground" />
           </button>
           <h4 className="mt-0 mb-3 font-medium text-foreground text-sm">
-            목차
+            {t("tableOfContents")}
           </h4>
           <nav
             className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2"
-            aria-label="목차 네비게이션"
+            aria-label={t("aria.tableOfContents.navigation")}
             id="table-of-contents"
           >
             {headings.map((heading) => (
