@@ -78,7 +78,7 @@ const IntroAnimation = ({ className }: { className?: string }) => {
       wrapper="div"
       speed={90}
       cursor={false}
-      className={cn("mt-2 w-full break-keep text-md", className)}
+      className={cn("mt-2 h-40 w-full break-keep text-md", className)}
     />
   );
 };

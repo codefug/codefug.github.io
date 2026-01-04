@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useRef } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -32,10 +31,9 @@ export default function AppSidebar({
   const totalFrontMatterList =
     frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const { toggleSidebar } = useSidebar();
-  const ref = useRef<HTMLDivElement>(null);
 
   return (
-    <Sidebar ref={ref}>
+    <Sidebar>
       <SidebarContent
         className="group relative gap-0"
         style={{ scrollbarWidth: "none" }}
