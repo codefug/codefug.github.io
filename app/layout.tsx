@@ -13,6 +13,8 @@ import koMessages from "@/messages/ko.json";
 import ThemeProvider from "@/provider/theme-provider";
 import "./globals.css";
 
+const metaMessages = koMessages.meta;
+
 const gothicA1 = Gothic_A1({
   variable: "--gothic-a1",
   weight: "500",
@@ -21,25 +23,17 @@ const gothicA1 = Gothic_A1({
 });
 
 export const metadata: Metadata = {
-  title: "Codefug Blog",
-  description: "프로젝트 경험과 개발 노트를 공유하는 블로그",
-  keywords: [
-    "개발",
-    "프로그래밍",
-    "React",
-    "Next.js",
-    "JavaScript",
-    "TypeScript",
-    "블로그",
-  ],
+  title: metaMessages.title,
+  description: metaMessages.description,
+  keywords: metaMessages.keywords.split(", "),
   authors: [{ name: "Codefug" }],
   creator: "Codefug",
   publisher: "Codefug",
   metadataBase: new URL("https://codefug.github.io"),
   alternates: createAlternateLinks("/"),
   openGraph: {
-    title: "Codefug Blog",
-    description: "project experiences and development notes",
+    title: metaMessages.openGraph.title,
+    description: metaMessages.openGraph.description,
     url: "https://codefug.github.io",
     type: "website",
     images: [

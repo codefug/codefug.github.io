@@ -22,13 +22,17 @@
       "title": "Study Groups"
     },
     "projects": {
-      "title": "Projects"
+      "title": "Projects",
+      "deploymentLink": "Deployment Link"
     },
     "sideProjects": {
       "title": "Side Projects"
     },
     "growthJourney": {
       "title": "Growth Journey"
+    },
+    "workExperience": {
+      "current": "Current"
     }
   },
   "home": {
@@ -53,7 +57,12 @@
   "navigation": {
     "resume": "Resume",
     "portfolio": "Portfolio",
-    "search": "Search"
+    "search": "Search",
+    "aria": {
+      "resume": "View resume (opens in new tab)",
+      "portfolio": "Go to portfolio page",
+      "search": "Go to search page"
+    }
   },
   "meta": {
     "title": "Codefug Blog",
@@ -63,5 +72,49 @@
       "title": "Codefug Blog",
       "description": "project experiences and development notes"
     }
+  },
+  "common": {
+    "loading": "Loading...",
+    "notFound": {
+      "title": "Not Found",
+      "message": "Wrong page!",
+      "backToHome": "Back to Home"
+    },
+    "error": {
+      "title": "Something went wrong!",
+      "retry": "Try again",
+      "retryAriaLabel": "Reload page"
+    },
+    "language": {
+      "ko": "Korean",
+      "en": "English",
+      "select": "Select language",
+      "close": "Close language selector"
+    },
+    "aria": {
+      "themeToggle": "Toggle theme",
+      "sidebarToggle": "Toggle sidebar",
+      "tableOfContents": {
+        "open": "Open table of contents",
+        "close": "Close table of contents",
+        "navigation": "Table of contents navigation"
+      },
+      "postRead": "Read {title} post",
+      "categorySelect": "Select {category} category ({count} posts)",
+      "allCategorySelect": "Select all categories",
+      "nextSlide": "Move to next slide",
+      "previousSlide": "Move to previous slide",
+      "logo": "Codefug Blog logo"
+    },
+    "tableOfContents": "Table of Contents",
+    "category": {
+      "all": "All",
+      "list": "Tag List"
+    }
+  },
+  "seo": {
+    "author": "Seoung Hyun Lee",
+    "home": "Home",
+    "blog": "Blog"
   }
 }

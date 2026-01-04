@@ -9,6 +9,7 @@ import {
   createWebSiteStructuredData,
 } from "@/components/seo/utils";
 import BlockHeader from "@/components/ui/block-header";
+import { defaultLocale } from "@/i18n/config";
 import getFrontMatterList from "@/lib/posts";
 import { HomeClientContent } from "../components/home/home-client-content";
 
@@ -24,7 +25,7 @@ export default async function Home() {
 
   return (
     <div>
-      <StructuredData jsonLd={createWebSiteStructuredData()} />
+      <StructuredData jsonLd={createWebSiteStructuredData(defaultLocale)} />
       <section className="mb-2">
         <BlockHeader
           title={
