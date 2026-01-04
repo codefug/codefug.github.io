@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useHighlightTOC from "@/hooks/use-highlight-toc";
 import useOutsideClick from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils";
+import { usePostContentStore } from "@/store/use-post-content-store";
 
 const menuBarVariant = cva(
   "block py-1.5 text-sm transition-all duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
@@ -114,8 +115,14 @@ function useFindAllHeadings() {
   const [headings, setHeadings] = useState<
     { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }[]
   >([]);
+  const isMounted = usePostContentStore((state) => state.isMounted);
 
   useEffect(() => {
+    // PostContent가 마운트되지 않았으면 headings를 가져오지 않음
+    if (!isMounted) {
+      return;
+    }
+
     const headings =
       document
         .querySelector(".prose")
@@ -129,6 +136,7 @@ function useFindAllHeadings() {
         return { text, level, id };
       });
     setHeadings(headingArray);
-  }, []);
+  }, [isMounted]);
+
   return headings;
 }
