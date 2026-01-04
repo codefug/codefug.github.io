@@ -8,6 +8,7 @@ import { StructuredData } from "@/components/seo/StructuredData";
 import { createBlogPostStructuredData } from "@/components/seo/utils";
 import PostHeader from "@/components/ui/post-header";
 import type { ParsedFrontMatter } from "@/constants/mdx";
+import { defaultLocale } from "@/i18n/config";
 import { mdxMap } from "@/lib/mdxMap";
 
 export default async function Page({
@@ -17,10 +18,14 @@ export default async function Page({
 }) {
   const { id } = await params;
 
+  // SSG 모드에서는 항상 한국어(기본 locale) 사용
+  const locale = defaultLocale;
+
   const mdxFilePath = path.join(
     process.cwd(),
     "markdown",
     id,
+    locale,
     "frontmatter.mdx",
   );
   const fileContent = await readFile(mdxFilePath, "utf8");
