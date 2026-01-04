@@ -2,21 +2,24 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
 import { EDUCATION } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
 
 function DescriptionWithDuration({
-  title,
+  titleKey,
   duration,
   image,
-  description,
+  descriptionKey,
 }: {
   image: string;
-  title: ReactNode;
+  titleKey: string;
   duration: string;
-  description?: ReactNode;
+  descriptionKey: string;
 }) {
+  const t = useTranslations("portfolio.data.education");
+  const title = t(`${titleKey}.title`);
+  const description = t(`${descriptionKey}.description`);
+
   return (
     <div className="mt-0 mb-0 flex">
       <Image
@@ -47,10 +50,10 @@ export default function Education() {
       <HeadComponent>{t("title")}</HeadComponent>
       {EDUCATION.map((edu) => (
         <DescriptionWithDuration
-          key={edu.title}
-          title={edu.title}
+          key={edu.titleKey}
+          titleKey={edu.titleKey}
           duration={edu.duration}
-          description={edu.description}
+          descriptionKey={edu.descriptionKey}
           image={edu.image}
         />
       ))}

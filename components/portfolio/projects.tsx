@@ -18,9 +18,8 @@ export default function Projects() {
             title={project.title}
             image={project.image}
             role={project.role}
-            description={project.description}
+            projectKey={project.key}
             stack={project.stack}
-            features={project.features}
           />
         ))}
       </div>
@@ -42,9 +41,8 @@ export function SideProjects() {
             image={project.image}
             duration={project.duration}
             role={project.role}
-            description={project.description}
+            projectKey={project.key}
             stack={project.stack}
-            features={project.features}
           />
         ))}
       </div>
