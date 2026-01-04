@@ -5,6 +5,7 @@ import GrowthJourney from "@/components/growth-journey";
 import AboutHeading from "@/components/portfolio/about-heading";
 import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
+import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import WorkExperience from "@/components/portfolio/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
@@ -41,6 +42,7 @@ const Contact = dynamic(() => import("@/components/portfolio/contact"));
 export default function Page() {
   return (
     <>
+      <SidebarOff />
       <StructuredData jsonLd={createProfilePageStructuredData(defaultLocale)} />
       <FloatingShapesBackground />
       <div className="relative z-10">
