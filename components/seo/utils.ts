@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
+import type { ParsedFrontMatter } from "@/constants/mdx";
 import { type Locale, locales } from "@/i18n/config";
 import enMessages from "@/messages/en.json";
 import koMessages from "@/messages/ko.json";
@@ -55,7 +56,7 @@ export interface BlogPostData {
   date: string;
   thumbnailImageUrl?: string;
   category?: string;
-  keywords?: string[];
+  tags?: string[];
   modifiedDate?: string;
   wordCount?: number;
 }
@@ -110,8 +111,8 @@ export function createBlogPostStructuredData(
           "@id": blogUrl,
         },
         ...(data.category && { articleSection: data.category }),
-        ...(data.keywords &&
-          data.keywords.length > 0 && { keywords: data.keywords }),
+        ...(data.tags &&
+          data.tags.length > 0 && { keywords: data.tags.join(", ") }),
         ...(data.wordCount && { wordCount: data.wordCount }),
       },
       {
@@ -120,7 +121,7 @@ export function createBlogPostStructuredData(
         itemListElement: [
           {
             "@type": "ListItem",
-            position: 1,
+            position: 1 as const,
             item: {
               "@id": BASE_URL,
               name: messages[locale].seo.home,
@@ -128,7 +129,7 @@ export function createBlogPostStructuredData(
           },
           {
             "@type": "ListItem",
-            position: 2,
+            position: 2 as const,
             item: {
               "@id": `${BASE_URL}/posts`,
               name: messages[locale].seo.blog,
@@ -136,11 +137,8 @@ export function createBlogPostStructuredData(
           },
           {
             "@type": "ListItem",
-            position: 3,
-            item: {
-              "@id": blogUrl,
-              name: data.title,
-            },
+            position: 3 as const,
+            name: data.title,
           },
         ],
       },
@@ -151,23 +149,22 @@ export function createBlogPostStructuredData(
 export function createWebSiteStructuredData(locale: Locale = "ko") {
   return {
     "@context": "https://schema.org" as const,
-    "@type": "WebSite" as const,
+    "@type": "Blog" as const,
+    "@id": `${BASE_URL}#website`,
     name: "Codefug Blog",
+    alternateName: "코드퍼그 블로그",
     description: messages[locale].meta.description,
     url: BASE_URL,
     inLanguage: getHreflangCode(locale),
+    author: {
+      "@type": "Person" as const,
+      "@id": `${BASE_URL}#author`,
+      name: messages[locale].seo.author,
+    },
     publisher: {
       "@type": "Person" as const,
+      "@id": `${BASE_URL}#author`,
       name: messages[locale].seo.author,
-      url: BASE_URL,
-    },
-    potentialAction: {
-      "@type": "SearchAction" as const,
-      target: {
-        "@type": "EntryPoint" as const,
-        urlTemplate: `${BASE_URL}/search?query={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
     },
   };
 }
@@ -176,13 +173,23 @@ export function createProfilePageStructuredData(locale: Locale = "ko") {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
+    "@id": `${BASE_URL}/portfolio#profilepage`,
+    url: `${BASE_URL}/portfolio`,
+    name: messages[locale].seo.author,
+    inLanguage: getHreflangCode(locale),
     mainEntity: {
       "@type": "Person" as const,
+      "@id": `${BASE_URL}#author`,
       name: messages[locale].seo.author,
       alternateName: "codefug",
       description: messages[locale].portfolio.intro,
       url: BASE_URL,
-      image: `${BASE_URL}/images/main-logo.png`,
+      image: {
+        "@type": "ImageObject" as const,
+        url: `${BASE_URL}/images/main-logo.png`,
+        width: "512",
+        height: "512",
+      },
       jobTitle: "Web Frontend Developer",
       worksFor: {
         "@type": "Organization" as const,
@@ -221,5 +228,75 @@ export function createProfilePageStructuredData(locale: Locale = "ko") {
         "https://www.instagram.com/happy_fug/",
       ],
     },
+  };
+}
+
+export function createBlogItemListStructuredData(
+  posts: ParsedFrontMatter[],
+  locale: Locale = "ko",
+): Graph {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Blog",
+        "@id": `${BASE_URL}#website`,
+        name: "Codefug Blog",
+        alternateName: "코드퍼그 블로그",
+        description: messages[locale].meta.description,
+        url: BASE_URL,
+        inLanguage: getHreflangCode(locale),
+        author: {
+          "@type": "Person",
+          "@id": `${BASE_URL}#author`,
+          name: messages[locale].seo.author,
+        },
+        publisher: {
+          "@type": "Person",
+          "@id": `${BASE_URL}#author`,
+          name: messages[locale].seo.author,
+        },
+        blogPost: posts.slice(0, 10).map((post) => ({
+          "@type": "BlogPosting",
+          "@id": `${BASE_URL}/posts/${post.id}`,
+        })),
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${BASE_URL}#blogposts`,
+        itemListElement: posts.slice(0, 10).map((post, index) => {
+          const imageUrl = post.header?.teaser
+            ? `${BASE_URL}${post.header.teaser}`
+            : `${BASE_URL}/images/main-logo.png`;
+
+          return {
+            "@type": "ListItem" as const,
+            position: index + 1,
+            item: {
+              "@type": "BlogPosting" as const,
+              "@id": `${BASE_URL}/posts/${post.id}`,
+              url: `${BASE_URL}/posts/${post.id}`,
+              headline: post.title,
+              name: post.title,
+              description: post.excerpt,
+              image: {
+                "@type": "ImageObject" as const,
+                url: imageUrl,
+                width: "1200",
+                height: "630",
+              },
+              author: {
+                "@type": "Person" as const,
+                "@id": `${BASE_URL}#author`,
+                name: messages[locale].seo.author,
+                url: BASE_URL,
+              },
+              datePublished: new Date(post.date).toISOString(),
+              inLanguage: getHreflangCode(locale),
+            },
+          };
+        }),
+      },
+    ],
   };
 }
