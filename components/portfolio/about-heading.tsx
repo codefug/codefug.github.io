@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { TypeAnimation } from "react-type-animation";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +41,7 @@ const ProfileImage = ({
 };
 
 const NameHeading = ({ className }: { className?: string }) => {
+  const t = useTranslations("portfolio");
   return (
     <h1
       className={cn(
@@ -48,16 +50,17 @@ const NameHeading = ({ className }: { className?: string }) => {
       )}
     >
       <div className="mb-0 w-fit whitespace-pre-line break-keep rounded-t-lg pt-2">
-        이승현 Lee Seoung Hyun
+        {t("name")}
       </div>
     </h1>
   );
 };
 
 const RoleAnimation = ({ className }: { className?: string }) => {
+  const t = useTranslations("portfolio");
   return (
     <TypeAnimation
-      sequence={["Efficiency-driven developer"]}
+      sequence={[t("role")]}
       wrapper="div"
       speed={80}
       cursor={false}
@@ -67,13 +70,10 @@ const RoleAnimation = ({ className }: { className?: string }) => {
 };
 
 const IntroAnimation = ({ className }: { className?: string }) => {
+  const t = useTranslations("portfolio");
   return (
     <TypeAnimation
-      sequence={[
-        1000,
-        "저는 효율을 위해 고민하는 개발자입니다. 반복되는 작업은 자동화하고, 복잡한 구조는 단순화합니다. 문제를 해결하지 못한 채 하루를 마무리할 수 없어, 퇴근 후에도 머릿속에서 비동기적으로 해결책을 계산합니다.",
-        1000,
-      ]}
+      sequence={[1000, t("intro"), 1000]}
       wrapper="div"
       speed={90}
       cursor={false}
