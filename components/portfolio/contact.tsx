@@ -8,12 +8,13 @@ import { HeadComponent } from "./HeadComponent";
 function ContactItem({
   title,
   url,
-  description,
+  descriptionKey,
 }: {
   title: string;
   url: string;
-  description: string;
+  descriptionKey: string;
 }) {
+  const t = useTranslations("portfolio.data.contacts");
   return (
     <div className="mt-0 mb-0">
       <span className="text-gray-700 dark:text-gray-300">{title}:</span>
@@ -23,7 +24,7 @@ function ContactItem({
         target="_blank"
         rel="noopener noreferrer"
       >
-        {description}
+        {t(descriptionKey)}
       </Link>
     </div>
   );
@@ -40,7 +41,7 @@ export default function Contact() {
           key={contact.title}
           title={contact.title}
           url={contact.url}
-          description={contact.description}
+          descriptionKey={contact.descriptionKey}
         />
       ))}
     </div>
