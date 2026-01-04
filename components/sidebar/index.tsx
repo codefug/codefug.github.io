@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRef } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,15 +18,19 @@ import {
 } from "@/components/ui/sidebar";
 import type { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import type { Locale } from "@/i18n/config";
 import { PostGroupContent } from "./PostGroupContent";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 export default function AppSidebar({
-  totalFrontMatterList,
+  frontMatterListByLocale,
 }: {
-  totalFrontMatterList: FrontMatter[];
+  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
 }) {
   const t = useTranslations();
+  const locale = useLocale() as Locale;
+  const totalFrontMatterList =
+    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const { toggleSidebar } = useSidebar();
   const ref = useRef<HTMLDivElement>(null);
 

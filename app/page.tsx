@@ -1,6 +1,5 @@
 import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -10,8 +9,9 @@ import {
 } from "@/components/seo/utils";
 import BlockHeader from "@/components/ui/block-header";
 import { defaultLocale } from "@/i18n/config";
-import getFrontMatterList from "@/lib/posts";
+import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import { HomeClientContent } from "../components/home/home-client-content";
+import { HomeSectionTitle } from "../components/home/home-section-title";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -20,8 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const t = await getTranslations("home");
-  const totalFrontMatterList = getFrontMatterList();
+  const frontMatterListByLocale = getFrontMatterListForAllLocales();
 
   return (
     <div>
@@ -29,30 +28,36 @@ export default async function Home() {
       <section className="mb-2">
         <BlockHeader
           title={
-            <span className="flex gap-1">
-              {t("recentPosts")}
-              <Flame className="text-red-500" />
-            </span>
+            <HomeSectionTitle
+              translationKey="recentPosts"
+              icon={<Flame className="text-red-500" />}
+            />
           }
         >
           <HomeClientContent
             cardNumber={10}
-            totalFrontMatterList={totalFrontMatterList}
+            frontMatterListByLocale={frontMatterListByLocale}
           />
         </BlockHeader>
       </section>
       <div className="mb-14 rounded-lg py-3">
-        <PostSwiper cardNumber={10} postInfoList={totalFrontMatterList} />
+        <PostSwiper
+          cardNumber={10}
+          frontMatterListByLocale={frontMatterListByLocale}
+        />
       </div>
       <div>
         <BlockHeader
           title={
-            <span className="flex gap-1">
-              {t("allPosts")} <Notebook className="text-green-400" />
-            </span>
+            <HomeSectionTitle
+              translationKey="allPosts"
+              icon={<Notebook className="text-green-400" />}
+            />
           }
         >
-          <PostCategoryGallery totalFrontMatterList={totalFrontMatterList} />
+          <PostCategoryGallery
+            frontMatterListByLocale={frontMatterListByLocale}
+          />
         </BlockHeader>
       </div>
     </div>

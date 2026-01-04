@@ -1,19 +1,23 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
+import type { Locale } from "@/i18n/config";
 import getCategorySetListWithPostList from "@/util/post";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import PostGallery from ".";
 
 export default function PostCategoryGallery({
-  totalFrontMatterList,
+  frontMatterListByLocale,
 }: {
-  totalFrontMatterList: FrontMatter[];
+  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
 }) {
   const t = useTranslations("common");
+  const locale = useLocale() as Locale;
+  const totalFrontMatterList =
+    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const [value, setValue] = useState("");
   const filteredFrontMatterList = useMemo(() => {
     if (value === "") return totalFrontMatterList;
