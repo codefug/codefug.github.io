@@ -8,7 +8,7 @@ import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { defaultLocale } from "@/i18n/config";
-import getFrontMatterList from "@/lib/posts";
+import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
 import ThemeProvider from "@/provider/theme-provider";
 import "./globals.css";
@@ -50,7 +50,7 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const totalFrontMatterList = getFrontMatterList();
+  const frontMatterListByLocale = getFrontMatterListForAllLocales();
 
   return (
     <html lang={defaultLocale} suppressHydrationWarning>
@@ -64,7 +64,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <SidebarProvider defaultOpen={false}>
-              <Sidebar totalFrontMatterList={totalFrontMatterList} />
+              <Sidebar frontMatterListByLocale={frontMatterListByLocale} />
               <Layout>{children}</Layout>
             </SidebarProvider>
           </ThemeProvider>
