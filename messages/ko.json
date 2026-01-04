@@ -20,6 +20,12 @@
     },
     "studyGroup": {
       "title": "Study Groups"
+    },
+    "projects": {
+      "title": "Projects"
+    },
+    "sideProjects": {
+      "title": "Side Projects"
     }
   }
 }
