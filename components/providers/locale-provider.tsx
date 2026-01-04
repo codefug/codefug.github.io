@@ -33,6 +33,7 @@ function getLocaleFromCookie(): Locale {
 export function LocaleProvider({ children, initialMessages }: Props) {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
   const [messages, setMessages] = useState(initialMessages);
+  const [timeZone, setTimeZone] = useState(getTimeZone(defaultLocale));
 
   useEffect(() => {
     // Get locale from cookie on client
@@ -40,25 +41,19 @@ export function LocaleProvider({ children, initialMessages }: Props) {
 
     if (cookieLocale !== defaultLocale) {
       setLocale(cookieLocale);
+      setTimeZone(getTimeZone(cookieLocale));
       // Load messages for the selected locale
       import(`@/messages/${cookieLocale}.json`).then((mod) => {
         setMessages(mod.default);
       });
     }
-
-    // Update HTML lang attribute based on locale
-    const langMap: Record<Locale, string> = {
-      ko: "ko",
-      en: "en",
-    };
-    document.documentElement.lang = langMap[cookieLocale] || defaultLocale;
   }, []);
 
   return (
     <NextIntlClientProvider
       locale={locale}
       messages={messages}
-      timeZone={getTimeZone(locale)}
+      timeZone={timeZone}
     >
       {children}
     </NextIntlClientProvider>
