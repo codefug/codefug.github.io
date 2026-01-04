@@ -20,6 +20,12 @@
     },
     "studyGroup": {
       "title": "スタディグループ"
+    },
+    "projects": {
+      "title": "プロジェクト"
+    },
+    "sideProjects": {
+      "title": "サイドプロジェクト"
     }
   }
 }
