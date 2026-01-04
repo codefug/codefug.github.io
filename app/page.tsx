@@ -1,4 +1,7 @@
+"use client";
+
 import { Flame, Notebook } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
@@ -11,6 +14,7 @@ import getFrontMatterList from "@/lib/posts";
 import getCategorySetListWithPostList from "@/util/post";
 
 export default function Home() {
+  const t = useTranslations("home");
   const totalFrontMatterList = getFrontMatterList();
 
   return (
@@ -20,7 +24,7 @@ export default function Home() {
         <BlockHeader
           title={
             <span className="flex gap-1">
-              최신 게시물
+              {t("recentPosts")}
               <Flame className="text-red-500" />
             </span>
           }
@@ -38,7 +42,7 @@ export default function Home() {
         <BlockHeader
           title={
             <span className="flex gap-1">
-              모든 게시물 <Notebook className="text-green-400" />
+              {t("allPosts")} <Notebook className="text-green-400" />
             </span>
           }
         >
@@ -56,6 +60,7 @@ function RecentCategoryList({
   totalFrontMatterList: FrontMatter[];
   cardNumber: number;
 }) {
+  const t = useTranslations("home");
   const filteredPostInfoList = useMemo(
     () => totalFrontMatterList.slice(0, cardNumber),
     [totalFrontMatterList, cardNumber],
@@ -67,7 +72,9 @@ function RecentCategoryList({
 
   return (
     <div>
-      <p className="font-light text-gray-600 text-sm">최근 연구했던 카테고리</p>
+      <p className="font-light text-gray-600 text-sm">
+        {t("recentCategories")}
+      </p>
       <PostCategorySwiper categoryList={categoryList} />
     </div>
   );

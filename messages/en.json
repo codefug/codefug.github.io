@@ -30,5 +30,10 @@
     "growthJourney": {
       "title": "Growth Journey"
     }
+  },
+  "home": {
+    "recentPosts": "Recent Posts",
+    "allPosts": "All Posts",
+    "recentCategories": "Recently Studied Categories"
   }
 }
