@@ -17,11 +17,13 @@ function generateMdxMap() {
   let code = `// 자동 생성된 파일입니다. 직접 수정하지 마세요.\n\n`;
 
   code += `import type { MDXModule } from "mdx/types";\n`;
-  code += `import type { Locale } from "@/i18n/config";\n\n`;
+  code += `import type { Locale } from "@/i18n/config";\n`;
+
+  const localeArrAlphabetical = LOCALES.toSorted();
 
   // 각 locale과 폴더 조합에 대해 import 생성
-  LOCALES.forEach((locale) => {
-    folders.forEach((folder) => {
+  folders.forEach((folder) => {
+    localeArrAlphabetical.forEach((locale) => {
       const importName = `MDX_${locale}_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
       code += `import * as ${importName} from "@/markdown/${folder}/${locale}/content.mdx";\n`;
     });
