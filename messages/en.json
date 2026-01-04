@@ -1,0 +1,11 @@
+{
+  "portfolio": {
+    "name": "Lee Seoung Hyun",
+    "role": "Efficiency-driven developer",
+    "intro": "I am a developer who constantly thinks about efficiency. I automate repetitive tasks and simplify complex structures. Unable to end the day without solving problems, my mind continues to asynchronously compute solutions even after work.",
+    "meta": {
+      "title": "Seoung Hyun Lee Portfolio",
+      "description": "Portfolio of Seoung Hyun Lee, a frontend developer who pursues efficiency."
+    }
+  }
+}
