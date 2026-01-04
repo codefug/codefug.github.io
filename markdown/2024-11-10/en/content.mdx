@@ -1,0 +1,1956 @@
+![](https://velog.velcdn.com/images/codefug/post/1863b8a0-6521-495b-85f2-22b0f35b6380/image.png)
+
+# Understanding Asynchronous Communication
+
+JS operates on a Single Thread, meaning it can only process one task at a time in a synchronous manner.
+
+> Synchronous: Processing tasks in a serial manner, where the next task is processed only after a request starts and a response is received
+
+> Asynchronous: Processing tasks in parallel, where the next task is processed regardless of whether a response has been received after a request starts
+
+Even when a network request for search occurs as a user enters a search term, other tasks can be processed. (Asynchronous operation)
+
+> In React, methods for asynchronous operation were introduced starting from version 16.
+
+## Single-Threaded JavaScript
+
+In the past, the only unit for executing programs was the **Process**.
+
+> **Process**
+>
+> A unit of work that runs a program and executes the program's state in memory
+
+Currently, multiple tasks are needed for a single program, and the smaller execution unit called **thread** was created.
+
+thread: Multiple threads can be created within a single process, and threads can share memory with each other. Multiple tasks can be performed simultaneously.
+
+JavaScript is fundamentally single-threaded.
+
+## Why JavaScript is Not Multi-Threaded
+
+1. Multi-threading is internally complex and can cause concurrency issues such as multiple modifications to the same resource, requiring handling of these issues.
+2. Unlike isolated **Processes**, if one **Thread** encounters a problem, other **Threads** can also be affected.
+3. If JS supported **multi-threading**, allowing multiple threads to manipulate the DOM simultaneously, memory sharing would cause simultaneous access to the same resources, leading to timing issues and significant problems with DOM rendering.
+
+## Event Loop
+
+The concept inseparable from asynchronous operations is the `Event Loop`.
+
+Just like `Node.js`, browser-side JavaScript execution flow is based on the `Event Loop`.
+
+Understanding the `Event Loop` well is essential for proper architecture design.
+
+### How the JavaScript Engine Works
+
+The JavaScript engine has the following algorithm:
+
+1. When there are tasks to process
+   1. Process tasks in the order they arrived (first in, first out).
+2. When there are no tasks to process
+   1. Sleep until a new task is added, then return to step 1.
+
+The JavaScript engine spends most of its time idle, only running when scripts, handlers, or events are activated.
+
+Tasks that activate the JavaScript engine include:
+
+1. When an external script `<script src="...">` is loaded, executing that script
+2. When a user moves the mouse, executing the `mousemove` event and event handler
+3. When the time set in `setTimeout` elapses, executing the callback function
+4. And so on
+
+Tasks form a single set. The JavaScript engine processes these tasks sequentially and waits until new tasks are added. While waiting for tasks, CPU resource consumption approaches zero and the engine sleeps.
+
+When a task is added while the engine is busy, that task is added to the **Macrotask queue**.
+
+> Note that the structure of `task queue` is a `set`, not a `queue`. This is because we need to select the oldest executable task from the selected queue.
+> Instead of unconditionally dequeuing the first queue that arrived, we execute the oldest task among the executable ones in order.
+>
+> https://html.spec.whatwg.org/multipage/webappapis.html#definitions-3
+
+![](/images/2024-11-10/Pasted%20image%2020241108212123.png)
+
+(This diagram shows the state when processing `script`, with a `mousemove` handler also executing in the middle, and a callback arriving after the time set in `setTimeout` has elapsed)
+
+The JavaScript engine processes these in order.
+
+Two important things to know at this point:
+
+1. Rendering does not occur while the engine is processing a task. After processing is complete, DOM changes are reflected on the screen.
+2. If a task takes a long time, new tasks that occur while processing that task cannot be handled. (The "unresponsive page" alert allows you to choose whether to minimize the current task along with the entire page.)
+
+### Example 1: Splitting CPU-Intensive Tasks
+
+Let's assume there is one very CPU-intensive task.
+
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+  // Perform a heavy CPU-intensive task
+  for (let j = 0; j < 1e9; j++) {
+    i++;
+  }
+
+  alert("Time taken: " + (Date.now() - start) + "ms");
+}
+
+count();
+```
+
+This code counts 1e9 (nine zeros) and then shows an alert. You can see that while `count()` is executing, the browser completely stops processing user events or DOM-related tasks.
+(When you run this and right-click on the page, nothing appears until the alert shows, and then the right-click menu appears after the alert.)
+
+Let's improve this by splitting the code.
+
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+  // Split the heavy task and perform it (*)
+  do {
+    i++;
+    // Exits the do while loop at multiples of 1e6: 2*1e6, 3*1e6, etc.
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    // Reaches here after repeating the do while loop 1e3 times
+    alert("Time taken: " + (Date.now() - start) + "ms");
+  } else {
+    // If it's a multiple of 1e6 but not 1e9
+    setTimeout(count); // Schedule a new call (**)
+  }
+}
+
+count();
+```
+
+The alert appears after repeating the do while loop 1e3 times. Before that, since `count` is passed via `setTimeout`, synchronous code can run, allowing event handlers and DOM-related operations to be handled.
+
+The above code actually has a slight time difference. We can fix this by moving `setTimeout` forward as follows.
+
+```js
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+  // Move scheduling code to the beginning of the function
+  if (i < 1e9 - 1e6) {
+    setTimeout(count); // Schedule a new call
+  }
+
+  do {
+    i++;
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    alert("Time taken: " + (Date.now() - start) + "ms");
+  }
+}
+
+count();
+```
+
+Partial rescheduling (`setTimeout`) occurs before partial counting (`do...while`).
+
+When there are many `setTimeout` calls, since the browser's minimum wait time is 4 milliseconds, scheduling before counting allows the wait time to be consumed while counting, making execution faster.
+(If the setTimeout logic is at the end, setTimeout(count) executes and count should run as the next macrotask, but it doesn't run immediately and waits 4ms before executing.)
+
+### Example 2: Progress Bar
+
+The advantage of splitting tasks into multiple parts is also evident when creating a `progress bar` to show progress status.
+
+```js
+<div id="progress"></div>
+
+<script>
+
+  function count() {
+    for (let i = 0; i < 1e6; i++) {
+      i++;
+      progress.innerHTML = i;
+    }
+  }
+
+  count();
+</script>
+```
+
+The browser renders DOM changes only after the current task in progress is complete, regardless of how long it takes.
+
+Therefore, the above code cannot fulfill the function of a `progress bar`. This is because DOM rendering only occurs after i has completely passed (after the current task in progress is complete).
+
+```js
+<div id="progress"></div>
+
+<script>
+  let i = 0;
+
+  function count() {
+
+    // Split the heavy task and perform it
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+
+    if (i < 1e7) {
+      setTimeout(count);
+    }
+
+  }
+
+  count();
+</script>
+```
+
+By splitting the code as above, we can output the process of i changing. Since `count` is passed via `setTimeout`, synchronous operations can be performed between count and the count function, and ultimately the DOM change operation that `progress.innerHTML` has changed occurs.
+
+### Example 3: Work After Event Processing is Complete
+
+When creating an event handler, if you want to execute a specific action after all event bubbling is complete, you can use `setTimeout` with `ms` set to 0.
+
+```js
+menu.onclick = function () {
+  // ...
+
+  // Create a custom event containing information about the clicked menu item
+  let customEvent = new CustomEvent("menu-open", {
+    bubbles: true,
+  });
+
+  // Dispatch the custom event asynchronously
+  setTimeout(() => menu.dispatchEvent(customEvent));
+};
+```
+
+Looking at the above, a custom event called "menu-open" is created and then passed via setTimeout.
+
+Now the `menu-open` event is dispatched after the menu's click event is completely handled.
+
+## Macrotask and Microtask
+
+### Microtask
+
+`Microtask` is mainly created using `Promise`.
+
+Handlers (consumer functions) of `.then/catch/finally` used with `Promise` become `Microtask`. They can also be created using `await` which handles `Promise`.
+
+> Additionally, you can use the standard API `queueMicrotask(func)` to put function `func` into the `Microtask Queue` for processing.
+
+> Each time the JavaScript engine processes one **Macrotask**, it executes all tasks in the **Microtask Queue** before performing other `Macrotask` or rendering operations.
+
+```js
+setTimeout(() => alert("timeout"));
+
+Promise.resolve().then(() => alert("promise"));
+
+alert("code");
+
+// (Currently in a Macrotask that reads code in the script tag, executing code line by line)
+// 1. setTimeout(()=>alert("timeout")) - Executes in call stack, registers callback function in Macrotask queue after ms elapses
+// 2. Promise.resolve().then(()=>alert("promise")) - Registers callback function in Microtask Queue
+// 3. alert("code") - Called immediately. (Currently executing Macrotask that reads script tag.)
+// 4. Macrotask that reads code in script tag ends
+// 5. Execute then() callback function in Microtask queue (moves to call stack and executes, event loop doesn't return until this process is completely emptied)
+// 6. Microtask queue is emptied
+// 7. ()=>alert("timeout") - Execute next Macrotask (move one Macrotask from call stack)
+// (After that Macrotask ends, execute Microtask again to empty Microtask queue, then render > repeat next Macrotask execution)
+```
+
+### Processing Logic
+
+![](/images/2024-11-10/Pasted%20image%2020241109193930.png)
+
+You can see that after one `Macrotask (script, mousemove, setTimeout, etc.)` is processed, all `Microtask` are processed, and then rendering proceeds.
+
+**All Microtasks are processed before other event handlers, rendering operations, or other Macrotasks are executed.**
+
+Since reading code in script tags is also a `Macrotask`, Microtasks are executed after the process of putting script code into the call stack line by line and executing it is complete.
+
+The reason this processing order is very important is that all `Microtask` can be processed in the same environment without being affected by tasks that change the application environment, such as mouse coordinate changes or data changes from network communication.
+
+The order is: "After current executing macrotask ends > Execute all existing microtasks > Render > Execute next macrotask".
+
+To verify the above process, let's check using **requestAnimationFrame**, which calls a callback function before repaint.
+
+![](/images/2024-11-10/Pasted%20image%2020241109221737.png)
+
+> **requestAnimationFrame**
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241109214448.png)
+>
+> A window method used to process animations before browser repaint,
+>
+> Managed in a separate queue to ensure frame-by-frame rendering. (Frames per second are set based on monitor refresh rate.)
+>
+> Since it ensures frame-by-frame rendering, animation movements become smoother.
+
+If you want to send a specific function to the `Microtask Queue` arbitrarily, you can use the `queueMicrotask` function.
+(The difference from `setTimeout` is that when using `setTimeout` with `ms` set to 0, it goes to the `Macrotask queue`, so the specific function will execute when the existing `Microtask Queue` is all done and the next `Macrotask` executes.)
+
+```js
+<div id="progress"></div>
+
+<script>
+  let i = 0;
+
+  function count() {
+    // Split the heavy task and perform it
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+
+    if (i < 1e6) {
+      queueMicrotask(count);
+    }
+  }
+
+  count();
+</script>
+```
+
+Since the count function in the Microtask Queue recursively calls itself and adds new count functions to the Microtask Queue before rendering occurs, only the final value appears on the actual screen. (Browser rendering occurs only after the microtask queue is emptied.)
+
+Let's understand this more clearly through the following example.
+
+```js
+// Assume sync, macro, micro elements contain numbers and are controlled by a button.
+button.addEventListener("click", () => {
+  for (let i = 0; i <= 100000; i++) {
+    sync.innerHTML = i;
+
+    setTimeout(() => {
+      macro.innerHTML = i;
+    }, 0);
+
+    queueMicrotask(() => {
+      micro.innerHTML = i;
+    });
+  }
+});
+```
+
+When the above handler is executed, the following results occur:
+
+1. `sync` does not render until it reaches 100,000.
+2. `micro` does not render until it reaches 100,000.
+3. `macro` waits a moment and then renders sequentially from 1 to 100,000.
+
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
+
+While the sequentially executing code (`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) is running, other operations cannot be performed in the browser. (We cannot discard everything in the call stack and proceed with operations.)
+
+> WEB APIs like `setTimeout`'s timing function (a function that measures time and throws callbacks) run in external threads where the `Macrotask queue` is allocated. Assigning and processing tasks is the role of the browser or Node.js.
+
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
+
+However, if another `Macrotask` (mouse event, etc.) enters the `Macrotask queue` in the middle and becomes executable first, the `queue` will process that `Macrotask`.
+
+Now that we know "why" to use it, let's learn more about "how" to use asynchronous operations and their flow in more detail.
+
+# History and Concepts of Asynchronous Operations
+
+## Callbacks
+
+You can schedule asynchronous operations using functions provided by the host environment. (Functions like `setTimeout`)
+
+Functions that load scripts or modules can also be considered asynchronous. Let's look at an example.
+
+```js
+function loadScript(src) {
+  // Create a <script> tag and add it to the page.
+  // When the tag is added to the page, it loads and executes the script in src.
+  let script = document.createElement("script");
+  script.src = src;
+  document.head.append(script);
+}
+
+// Load and execute the script at the specified path.
+loadScript("/my/script.js");
+// ...
+```
+
+At this point, the script executes asynchronously.
+
+Therefore, code below loadScript does not wait for loadScript to finish.
+
+```js
+loadScript("/my/script.js"); // script.js contains "function newFunction() {…}"
+
+// Trying to use newFunction from script.js
+// An error occurs saying the function doesn't exist!
+newFunction();
+```
+
+Let's add a callback here.
+
+> **Callback Function**
+>
+> A function that is mainly passed as an argument to another function within a function. It is called inside the outer function to complete a routine or operation.
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement('script');
+  script.src = src;
+
+  // When script triggers a load event (when loaded), execute callback with script.
+  script.onload = () => callback(script);
+
+  document.head.append(script);
+}
+
+loadScript('/my/script.js', function() {
+  // Callback function executes after script loading is complete.
+  newFunction(); // Now the function call works properly.
+  ...
+});
+```
+
+The above approach is called callback-based asynchronous programming.
+
+By passing a callback function to loadScript, newFunction can occur alongside asynchronous execution.
+
+### Error Handling
+
+We need to be able to handle errors that occur when script loading fails.
+
+Let's improve it as follows.
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement("script");
+  script.src = src;
+
+  // On success, put null and script as arguments
+  script.onload = () => callback(null, script);
+  // On failure, put error object as argument
+  script.onerror = () =>
+    callback(new Error(`Error occurred while loading ${src}`));
+
+  document.head.append(script);
+}
+
+loadScript("/my/script.js", function (error, script) {
+  if (error) {
+    // Error handling
+  } else {
+    // Script loading completed successfully
+  }
+});
+```
+
+The above pattern is a common pattern called **error-first callback** used to handle errors.
+
+1. The first argument of callback is reserved for errors.
+2. The second or subsequent arguments are arguments to pass to the callback function when no error occurs.
+
+### Callback within Callback
+
+If you want to load two scripts sequentially, you need to put a callback inside a callback.
+
+```js
+loadScript("/my/script.js", function (script) {
+  loadScript("/my/script2.js", function (script) {
+    loadScript("/my/script3.js", function (script) {
+      // Executes after all three scripts are loaded
+    });
+  });
+});
+```
+
+#### Callback Hell
+
+![](/images/2024-11-10/Pasted%20image%2020241107193715.png)
+
+The above approach creates a situation called the pyramid of doom, or callback hell.
+(A situation where code gradually shifts to the right, harming readability and making code reuse difficult)
+
+To solve this, we can logically write it as follows:
+
+```js
+loadScript("1.js", step1);
+
+function step1(error, script) {
+  if (error) {
+    handleError(error);
+  } else {
+    // ...
+    loadScript("2.js", step2);
+  }
+}
+
+function step2(error, script) {
+  if (error) {
+    handleError(error);
+  } else {
+    // ...
+    loadScript("3.js", step3);
+  }
+}
+
+function step3(error, script) {
+  if (error) {
+    handleError(error);
+  } else {
+    // Perform other operations after all scripts are loaded.
+  }
+}
+```
+
+This only improves the appearance; the internal logic still has the problem of needing to jump up and down to understand it, and code reuse remains difficult.
+
+### Should We Never Use Callbacks?
+
+No.
+
+They are still useful when you need to ensure a specific action is complete before executing the next code.
+
+```js
+showCircle(150, 150, 100, (div) => {
+  div.classList.add("message-ball");
+  div.append("Hello!");
+});
+```
+
+Let's say showCircle(cx, cy, radius, callback) is a function that creates a slowly growing circle.
+
+Inside the function, you can use that callback to execute a function that draws "Hello!" on the element after the circle is completely created.
+
+> Using callbacks moves that task to the Macrotask queue rather than the Microtask Queue. (The behavior of `setTimeout`)
+> The difference between Microtask Queue and Macrotask queue can be understood in the lower part of this article.
+
+## Promise
+
+When "producing code" that produces a promised result is ready, regardless of how long it takes, it allows all "consuming code" to use the result.
+
+> **Producing Code**
+>
+> Time-consuming tasks like loading scripts from remote locations
+
+> **Consuming Code**
+>
+> Waits for the result of producing code and then consumes it. There can be multiple consuming entities (functions).
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // executor (producing code, 'producer')
+});
+
+// promise.then/catch/finally etc.
+```
+
+### executor Function
+
+The callback passed to `new Promise` is called executor and is automatically executed when `new Promise` is created, containing producing code that ultimately produces the result.
+
+In executor, you can write code without worrying about resolve and reject, but you must call either resolve or reject depending on the situation.
+
+1. resolve(value) - Called when the task completes successfully, with value representing the result
+2. reject(error) - Called when an error occurs, with `error` representing the error object
+
+![](/images/2024-11-10/Pasted%20image%2020241107200211.png)
+
+The promise object returned by the new Promise constructor has internal properties called PromiseState and PromiseResult.
+
+When neither resolve nor reject occurs:
+
+![](/images/2024-11-10/Pasted%20image%2020241107195926.png)
+
+When resolve occurs:
+
+![](/images/2024-11-10/Pasted%20image%2020241107195831.png)
+
+When reject occurs:
+
+![](/images/2024-11-10/Pasted%20image%2020241107200104.png)
+
+#### executor Example
+
+1. executor is automatically and immediately called by `new Promise`.
+2. executor receives `resolve` and `reject` functions as arguments. These functions are predefined by the JavaScript engine, so developers don't need to create them separately. However, one of `resolve` or `reject` must be called.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // When Promise is created, executor function is automatically executed.
+
+  // After 1 second, a signal that the task completed successfully is sent, and result becomes 'done'.
+  setTimeout(() => resolve("done"), 1000);
+});
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241107200545.png)
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // After 1 second, sends a signal that execution ended with an error.
+  setTimeout(() => reject(new Error("Error occurred!")), 1000);
+});
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241107200740.png)
+
+A `Promise` where `resolve` or `reject` is complete is called a `settled Promise`.
+
+### Notes
+
+#### 1. Once a Promise is settled, it cannot be changed.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  resolve("done");
+
+  reject(new Error("…")); // Ignored
+  setTimeout(() => resolve("…")); // Ignored
+});
+```
+
+#### 2. Must reject with an Error object.
+
+#### 3. Promise doesn't necessarily have to deal with asynchronous things.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // Task doesn't take time to complete
+  resolve(123); // Immediately passes result (123) to resolve
+});
+```
+
+Doing it this way results in an immediately fulfilled state.
+
+#### 4. PromiseState and PromiseResult are internal properties, so they cannot be accessed directly.
+
+### Consumer Functions
+
+Consumer functions are registered using the `.then`, `.catch`, `.finally` methods.
+
+#### .then
+
+Consumer function that executes after Promise fulfilled or rejected is complete
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => resolve("done!"), 1000);
+});
+
+// resolve function executes the first function (argument) of .then.
+promise.then(
+  (result) => alert(result), // Outputs "done!" after 1 second
+  (error) => alert(error), // Not executed
+);
+```
+
+If you only want to handle success, you can omit the second argument.
+
+#### .catch
+
+You can handle only errors in the form `.then(null, errorHandler)`, but you can express it more concisely using `.catch`.
+
+```js
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error("Error occurred!")), 1000);
+});
+
+// .catch(f) works the same as promise.then(null, f)
+promise.catch(alert); // Outputs "Error: Error occurred!" after 1 second
+```
+
+#### .finally
+
+A method that always executes when Promise is settled
+
+```js
+new Promise((resolve, reject) => {
+  /* Perform some time-consuming task, then call resolve, reject */
+})
+  // Executes regardless of success or failure when Promise is settled
+  .finally(() => stop loading indicator)
+  .then(result => alert(result), error => alert(error));
+```
+
+finally takes no arguments and automatically passes the result or error to the next handler.
+
+```js
+new Promise((resolve, reject) => {
+  setTimeout(() => resolve("result"), 2000);
+})
+  .finally(() => alert("Promise is ready."))
+  .then((result) => alert(result)); // <-- .then can handle result
+
+// After 2 seconds
+// "Promise is ready."
+// "result"
+
+new Promise((resolve, reject) => {
+  throw new Error("Error occurred!");
+})
+  .finally(() => alert("Promise is ready."))
+  .catch((err) => alert(err)); // <-- .catch can handle error object
+
+// "Promise is ready."
+// "Error occurred"
+```
+
+#### Real Usage Example
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement("script");
+  script.src = src;
+
+  script.onload = () => callback(null, script);
+  script.onerror = () =>
+    callback(new Error(`Error occurred while loading ${src}`));
+
+  document.head.append(script);
+}
+```
+
+The above code is callback-based. It was implemented by directly embedding callbacks inside onload and onerror.
+
+```js
+function loadScript(src) {
+  return new Promise(function (resolve, reject) {
+    let script = document.createElement("script");
+    script.src = src;
+
+    script.onload = () => resolve(script);
+    script.onerror = () =>
+      reject(new Error(`Error occurred while loading ${src}`));
+
+    document.head.append(script);
+  });
+}
+```
+
+Using Promise allows you to extract callback logic outside. You can only receive arguments passed in, and can use it as follows:
+
+```js
+let promise = loadScript(
+  "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js",
+);
+
+promise.then(
+  (script) => alert(`Loaded ${script.src}!`),
+  (error) => alert(`Error: ${error.message}`),
+);
+
+promise.then((script) => alert("Another handler..."));
+```
+
+Now, by using then, catch, finally methods, you just throw in consumer functions, and the stored promise automatically puts arguments into the consumer functions and executes them.
+
+### Promise Chaining
+
+![](/images/2024-11-10/Pasted%20image%2020241107204412.png)
+
+A method of processing asynchronous tasks sequentially by chaining Promises
+
+```js
+new Promise(function (resolve, reject) {
+  setTimeout(() => resolve(1), 1000); // (*)
+})
+  .then(function (result) {
+    // (**)
+
+    alert(result); // 1
+
+    return result * 2;
+  })
+  .then(function (result) {
+    // (***)
+
+    alert(result); // 2
+
+    return result * 2;
+  })
+  .then(function (result) {
+    alert(result); // 4
+
+    return result * 2;
+  });
+```
+
+The above code works because `.then` returns a Promise. The return value of `.then` becomes the `result` of that Promise.
+
+#### Returning Another Promise from Within a Consumer Function
+
+By default, `.then` wraps the value it returns in a `Promise` and returns it, but you can also create and return a `Promise` from `.then`.
+
+```js
+new Promise(function (resolve, reject) {
+  setTimeout(() => resolve(1), 1000);
+})
+  .then(function (result) {
+    alert(result); // 1
+
+    return new Promise((resolve, reject) => {
+      // (*)
+      setTimeout(() => resolve(result * 2), 1000);
+    });
+  })
+  .then(function (result) {
+    // (**)
+
+    alert(result); // 2
+
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(result * 2), 1000);
+    });
+  })
+  .then(function (result) {
+    alert(result); // 4
+  });
+```
+
+#### Real Example
+
+```js
+loadScript("/article/promise-chaining/one.js")
+  .then(function (script) {
+    return loadScript("/article/promise-chaining/two.js");
+  })
+  .then(function (script) {
+    return loadScript("/article/promise-chaining/three.js");
+  })
+  .then(function (script) {
+    // Call functions defined in the loaded scripts
+    // to verify that the scripts are loaded properly.
+    one();
+    two();
+    three();
+  });
+```
+
+Now we can improve loadScript.
+
+Since Promise's executor executes immediately and the consumer function connected to the next method executes, you can directly connect methods to the loadScript function that returns a Promise above.
+
+```js
+loadScript("/article/promise-chaining/one.js").then((script1) => {
+  loadScript("/article/promise-chaining/two.js").then((script2) => {
+    loadScript("/article/promise-chaining/three.js").then((script3) => {
+      // Here you can use functions defined in script1, script2, script3.
+      one();
+      two();
+      three();
+    });
+  });
+});
+```
+
+However, this creates another callback hell.
+
+At this point, since the innermost loadScript can access all outer scopes, it might be better to use it like the above code depending on the need.
+
+#### Notes
+
+##### thenable
+
+Handlers (executor, consumer functions, etc.) can also return `thenable` objects that are not Promises.
+
+Thenable objects emerged from the fact that third-party libraries can implement their own objects compatible with Promise.
+
+```js
+class Thenable {
+  constructor(num) {
+    this.num = num;
+  }
+  then(resolve, reject) {
+    alert(resolve); // Since alert is added in the code below, function() { [native code] } appears immediately.
+    // Fulfilled with this.num*2 after 1 second
+    setTimeout(() => resolve(this.num * 2), 1000); // (**)
+  }
+}
+
+new Promise((resolve) => resolve(1))
+  .then((result) => {
+    return new Thenable(result); // (*)
+  })
+  .then(alert); // Shows 2 after 1,000 milliseconds
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241110210716.png)
+
+### Using fetch with Chaining
+
+`Promise` is frequently used for network requests on the frontend.
+
+```js
+let promise = fetch(url);
+```
+
+Executing the above code sends a network request to `url` and returns a `Promise`.
+
+fetch passes the resource obtained by connecting to `url` to the handler when `resolve` occurs.
+
+```js
+fetch("/article/promise-chaining/user.json")
+  // When the remote server responds, code below .then executes.
+  .then((response) => {
+    // response.text() creates a new fulfilled Promise with the response text
+    // and returns it when the entire response text is downloaded.
+    return response.text();
+  })
+  .then((text) => {
+    // Content of the file received from remote
+    alert(text); // {"name": "Violet-Bora-Lee", "isAdmin": true}
+  });
+```
+
+1. When the remote server sends a response with headers, `Promise` becomes `fulfilled` with the `response` object.
+2. Promise becomes `fulfilled` before the entire `response` is completely downloaded.
+3. To read the entire `response` after it's fully downloaded, you must call `response.text()`. (`response.text()` returns a `fulfilled` `Promise` with the text as the `result` value when the entire text sent from the server is downloaded.)
+
+You can read and parse data as `JSON` using `response.json()`.
+
+```js
+// Same functionality as above code, but response.json() converts content loaded from remote server to JSON.
+fetch("/article/promise-chaining/user.json")
+  .then((response) => response.json())
+  .then((user) => alert(user.name)); // Violet-Bora-Lee, successfully retrieved only the name
+```
+
+Let's check an example of sending `fetch` sequentially.
+
+```js
+// Send request to user.json.
+fetch("/article/promise-chaining/user.json")
+  // Load the received content as json.
+  .then((response) => response.json())
+  // Send request to GitHub.
+  .then((user) => fetch(`https://api.github.com/users/${user.name}`))
+  // Load the received content as json.
+  .then((response) => response.json())
+  // Show avatar image (githubUser.avatar_url) for 3 seconds.
+  .then((githubUser) => {
+    let img = document.createElement("img");
+    img.src = githubUser.avatar_url;
+    img.className = "promise-avatar-example";
+    document.body.append(img);
+
+    setTimeout(() => img.remove(), 3000); // (*)
+  });
+```
+
+If you want to do something more in the last then, you can return a `Promise`.
+
+```js
+fetch("/article/promise-chaining/user.json")
+  .then((response) => response.json())
+  .then((user) => fetch(`https://api.github.com/users/${user.name}`))
+  .then((response) => response.json())
+  .then(
+    (githubUser) =>
+      new Promise(function (resolve, reject) {
+        // (*)
+        let img = document.createElement("img");
+        img.src = githubUser.avatar_url;
+        img.className = "promise-avatar-example";
+        document.body.append(img);
+
+        setTimeout(() => {
+          img.remove();
+          resolve(githubUser); // (**)
+        }, 3000);
+      }),
+  )
+  // Operates after 3 seconds
+  .then((githubUser) =>
+    alert(`Successfully displayed image of ${githubUser.name}`),
+  );
+```
+
+The above code can be organized as follows to improve readability.
+
+```js
+function loadJson(url) {
+  return fetch(url).then((response) => response.json());
+}
+
+function loadGithubUser(name) {
+  return fetch(`https://api.github.com/users/${name}`).then((response) =>
+    response.json(),
+  );
+}
+
+function showAvatar(githubUser) {
+  return new Promise(function (resolve, reject) {
+    let img = document.createElement("img");
+    img.src = githubUser.avatar_url;
+    img.className = "promise-avatar-example";
+    document.body.append(img);
+
+    setTimeout(() => {
+      img.remove();
+      resolve(githubUser);
+    }, 3000);
+  });
+}
+
+// Perform the same task again using functions
+loadJson("/article/promise-chaining/user.json")
+  .then((user) => loadGithubUser(user.name))
+  .then(showAvatar)
+  .then((githubUser) => alert(`Finished showing ${githubUser.name}`));
+// ...
+```
+
+In conclusion, Promise Chaining has the following structure.
+
+![](/images/2024-11-10/Pasted%20image%2020241107212119.png)
+
+### Promise and Error Handling
+
+```js
+// When url doesn't exist
+fetch("https://no-such-server.blabla") // rejected
+  .then((response) => response.json())
+  .catch((err) => alert(err));
+// TypeError: failed to fetch (output may vary)
+```
+
+When `Promise` is rejected, control flow moves to the nearest `rejection` handler.
+
+```js
+// When JSON format is incorrect
+fetch("/article/promise-chaining/user.json")
+  .then((response) => response.json())
+  .then((user) => fetch(`https://api.github.com/users/${user.name}`))
+  .then((response) => response.json())
+  .then(
+    (githubUser) =>
+      new Promise((resolve, reject) => {
+        let img = document.createElement("img");
+        img.src = githubUser.avatar_url;
+        img.className = "promise-avatar-example";
+        document.body.append(img);
+
+        setTimeout(() => {
+          img.remove();
+          resolve(githubUser);
+        }, 3000);
+      }),
+  )
+  .catch((error) => alert(error.message));
+```
+
+Attaching catch at the end of the chain means that if any Promise above is rejected, that catch will catch the error.
+
+#### Implicit try...catch
+
+There is an implicit `try...catch` around `Promise executor` and `Promise` handler code. When an exception occurs, the implicit `try...catch` catches the exception and treats it like `reject`.
+
+```js
+// The two codes below have the same functionality.
+new Promise((resolve, reject) => {
+  throw new Error("Error occurred!");
+}).catch(alert); // Error: Error occurred!
+
+new Promise((resolve, reject) => {
+  reject(new Error("Error occurred!"));
+}).catch(alert); // Error: Error occurred!
+```
+
+Using `throw` to throw an error means this itself is a rejected `Promise`.
+
+```js
+new Promise((resolve, reject) => {
+  resolve("OK");
+})
+  .then((result) => {
+    throw new Error("Error occurred!"); // Promise is rejected
+  })
+  .catch((error) => {
+    alert(error);
+    return 3;
+  }); // Error: Error occurred!
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241110214430.png)
+
+This implicit `try... catch` also catches abnormal errors that occur above the handler.
+
+```js
+new Promise((resolve, reject) => {
+  resolve("OK");
+})
+  .then((result) => {
+    blabla(); // Non-existent function
+  })
+  .catch(alert); // ReferenceError: blabla is not defined
+```
+
+However, only synchronous errors are handled by the implicit `try...catch`. If asynchronous code exists inside executor and an error occurs inside, that error cannot be detected.
+
+```js
+new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    throw new Error("Error occurred!");
+  }, 1000);
+}).catch(alert);
+```
+
+#### Re-throwing
+
+If `.catch` terminates normally, it will return a `fulfilled` `Promise`. So the following logic is possible.
+
+```js
+// Execution order: catch -> then
+new Promise((resolve, reject) => {
+  throw new Error("Error occurred!");
+})
+  .catch(function (error) {
+    alert("Error was handled well. Execution continues normally.");
+    // fulfilled Promise returned after catch meets .then.
+  })
+  .then(() => alert("Next handler will execute."));
+```
+
+You can use the above to subdivide error handling.
+
+```js
+// Execution order: catch -> catch
+new Promise((resolve, reject) => {
+  throw new Error("Error occurred!");
+})
+  .catch(function (error) {
+    // (*)
+
+    // Consumer function that only handles URIError
+    if (error instanceof URIError) {
+      // Error handling
+    } else {
+      alert("Unhandlable error");
+
+      throw error; // If not URIError, pass to next error handler
+    }
+  })
+  .then(function () {
+    /* This will not execute. */
+  })
+  .catch((error) => {
+    // (**)
+
+    alert(`Unknown error occurred: ${error}`);
+    // No return value => execution continues
+  });
+```
+
+#### Unhandled Rejection
+
+```js
+new Promise(function () {
+  noSuchFunction(); // Error occurs because calling non-existent function
+}).then(() => {
+  // Handler that processes successful Promise. Can be one or multiple
+}); // No .catch at the end!
+```
+
+If there's no handler to process the exception, the error gets trapped.
+
+When a general error occurs in `try...catch` and cannot be handled, the script dies and a message is output to the console window.
+The same thing happens when a `rejected Promise` is not handled.
+
+The JS engine tracks `Promise reject` and creates a global error when it confirms the error is trapped.
+
+In browsers, such errors are handled with the `unhandledrejection` event. (It's a standard event defined in the HTML specification.)
+
+```js
+window.addEventListener("unhandledrejection", function (event) {
+  // unhandledrejection event has two special properties.
+  alert(event.promise); // [object Promise] - Promise that generated the error
+  alert(event.reason); // Error: Error occurred! - Unhandled error object
+});
+
+new Promise(function () {
+  throw new Error("Error occurred!");
+}); // No .catch handler to handle the error
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241107214313.png)
+
+### Promise API
+
+#### Promise.all
+
+Executes multiple Promises simultaneously and waits until all Promises are ready.
+
+```js
+// let promise = Promise.all([...promises...]);
+// Takes an array of Promises and returns a new Promise.
+
+Promise.all([
+  new Promise((resolve) => setTimeout(() => resolve(1), 3000)), // 1
+  new Promise((resolve) => setTimeout(() => resolve(2), 2000)), // 2
+  new Promise((resolve) => setTimeout(() => resolve(3), 1000)), // 3
+]).then(alert); // Returns 1, 2, 3 when entire Promise is settled. Each Promise becomes an element of the array.
+```
+
+When each Promise request is complete, result values are passed to the consumer function as another array in the order of the array.
+
+![](/images/2024-11-10/Pasted%20image%2020241108150808.png)
+
+`fetch` is a function that sends a request to the url in the argument and returns `response` as a `Promise`. Let's look at an example using this:
+
+```js
+let urls = [
+  "https://api.github.com/users/iliakan",
+  "https://api.github.com/users/Violet-Bora-Lee",
+  "https://api.github.com/users/jeresig",
+];
+
+// Use fetch to map urls to Promises.
+let requests = urls.map((url) => fetch(url));
+
+// Promise.all waits until all tasks are fulfilled.
+Promise.all(requests).then((responses) =>
+  responses.forEach((response) => alert(`${response.url}: ${response.status}`)),
+);
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108151347.png)
+
+This is logic that uses `Promise.all` to receive request responses as an array, then uses `Promise.all` again on that array to parse with `json()`, and displays the parsed data in the console window in the next consumer function.
+
+In conclusion, you can also add consumer function logic in the middle as follows.
+
+```js
+let names = ["iliakan", "Violet-Bora-Lee", "jeresig"];
+
+let requests = names.map((name) =>
+  fetch(`https://api.github.com/users/${name}`),
+);
+
+Promise.all(requests)
+  .then((responses) => {
+    // All responses have been successfully fulfilled.
+    for (let response of responses) {
+      alert(`${response.url}: ${response.status}`); // All urls have response code 200.
+    }
+
+    return responses;
+  })
+  // Map the array containing response messages with response.json() to read the content.
+  .then((responses) => Promise.all(responses.map((r) => r.json())))
+  // JSON-formatted response messages are parsed and stored in array 'users'.
+  .then((users) => users.forEach((user) => alert(user.name)));
+```
+
+##### Error Handling in Promise.all
+
+If even one in the internal array is rejected, the entire thing is considered an error.
+
+```js
+Promise.all([
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+  new Promise((resolve, reject) =>
+    setTimeout(() => reject(new Error("Error occurred!")), 2000),
+  ),
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
+]).catch(alert); // Error: Error occurred!
+```
+
+> **Even if Promise reject occurs, calls continue.**
+>
+> Without separate handling (AbortController), even if Promise rejected occurs, other Promise processing is not canceled. However, results are ignored.
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241108152428.png)
+>
+> The above example is an example of putting a rejected Promise in an array and running Promise.all.
+> The first argument Promise was rejected, causing a global error. (Because there's no catch method behind it)
+> At this point, you can see in network requests that fetch itself occurred.
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241108152443.png)
+
+> **Array in Promise.all's argument**
+>
+> That array doesn't necessarily have to be Promise objects. You can put numbers as in the example below, and in that case, those numbers are passed to the consumer function as-is.
+
+```js
+Promise.all([
+  new Promise((resolve, reject) => {
+    setTimeout(() => resolve(1), 1000);
+  }),
+  2,
+  3,
+]).then(alert); // 1, 2, 3
+```
+
+#### Promise.allSettled
+
+Promise.all cannot receive all results if even one has an error.
+
+```js
+Promise.all([
+  fetch("/template.html"),
+  fetch("/style.css"),
+  fetch("/data.json"),
+]).then(render); // render method needs all fetch results to work properly.
+```
+
+This is useful when a render function that needs html, css, and json is the consumer function, as in the above example.
+
+`.allSettled` was created to allow receiving other requests even if one has an error.
+
+1. When response is successful – `{status:"fulfilled", value:result}`
+2. When an error occurs – `{status:"rejected", reason:error}`
+
+```js
+Promise.allSettled(urls.map((url) => fetch(url))).then((results) => {
+  // (*)
+  results.forEach((result, num) => {
+    if (result.status == "fulfilled") {
+      alert(`${urls[num]}: ${result.value.status}`);
+      // If response is successful, result goes into the value property.
+    }
+    if (result.status == "rejected") {
+      alert(`${urls[num]}: ${result.reason}`);
+      // If an error occurs, error object goes into the reason property.
+    }
+  });
+});
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108154631.png)
+
+#### Promise.race
+
+Similar to Promise.all, it processes the entire Promise array but returns the result of the Promise that is settled first.
+
+```js
+//let promise = Promise.race(iterable);
+
+Promise.race([
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+  new Promise((resolve, reject) =>
+    setTimeout(() => reject(new Error("Error occurred!")), 2000),
+  ),
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
+]).then(alert); // 1
+```
+
+#### Promise.resolve and Promise.reject
+
+resolve and reject methods are not used much due to the emergence of async/await. However, we'll look at them once since they're needed to understand polyfills that will come later.
+(`async function` always wraps return value in Promise and returns a rejected Promise if you throw Error inside.)
+
+##### Promise.resolve
+
+Promise.resolve(value) creates a fulfilled Promise with result value of value.
+
+```js
+// let promise = new Promise(resolve => resolve(value));
+
+let cache = new Map();
+
+function loadCached(url) {
+  if (cache.has(url)) {
+    return Promise.resolve(cache.get(url));
+  }
+
+  return fetch(url)
+    .then((response) => response.text())
+    .then((text) => {
+      cache.set(url, text);
+      return text;
+    });
+}
+```
+
+`loadCached` stores that data in `cache` when doing `fetch` and retrieves it from `cache` and delivers it when the same request is sent next time.
+At this point, using `Promise.resolve` to ensure that `loadCached` always returns a `Promise` allows the using side to add consumer functions through methods like `.then/catch` to the `loadCached` function.
+
+###### Polyfill for Promise allSettled using Promise.resolve
+
+allSettled hasn't been out long, so polyfills are needed in older browsers.
+
+```js
+if (!Promise.allSettled) {
+  Promise.allSettled = function (promises) {
+    return Promise.all(
+      promises.map((p) =>
+        Promise.resolve(p).then(
+          (value) => ({
+            status: "fulfilled",
+            value,
+          }),
+          (reason) => ({
+            // This is the second argument of then. The second argument of then is an error handler. (Same as catch.)
+            status: "rejected",
+            reason,
+          }),
+        ),
+      ),
+    );
+  };
+}
+```
+
+##### Promise.reject
+
+`Promise.reject(error)` returns a `rejected Promise` with result value of `error`.
+
+```js
+let promise = Promise.reject(error);
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108160624.png)
+
+### Fetch: Abort
+
+> Although placed in the Promise section for article flow, strictly speaking, this is not a Promise API.
+
+As mentioned in Promise.all, when an error occurs, Promise results are ignored but calls cannot be prevented.
+Using the built-in object `AbortController`, you can prevent Promise calls themselves.
+
+#### AbortController Object
+
+```js
+let controller = new AbortController();
+```
+
+AbortController has one property and one method.
+
+![](/images/2024-11-10/Pasted%20image%2020241108161157.png)
+
+1. `signal` is a property that can be found directly on the instance without going through the prototype chain and can set `event listener`.
+2. `abort` retrieves the method from `AbortController` using the prototype chain, and when `abort` is executed, the following process occurs:
+   1. instance.signal triggers an "abort" event.
+   2. instance.signal.aborted becomes true.
+
+Therefore, you attach a listener for cancellable work to signal
+and cancel it with the abort() function.
+
+```js
+let controller = new AbortController();
+let signal = controller.signal;
+
+// Give the signal object to where cancellable work is performed, and set a listener that will execute when controller.abort() is executed.
+signal.addEventListener("abort", () => alert("abort!"));
+
+// Put the code below somewhere so it can be executed when desired.
+controller.abort(); // abort!
+
+// When abort event is triggered, aborted becomes true.
+alert(signal.aborted); // true
+```
+
+You could implement another event to create the same functionality and use it with fetch, but since fetch internally recognizes `AbortController`, it's better to use `AbortController`.
+
+#### Using with fetch
+
+The `fetch` option has a property called `signal`.
+
+```js
+let controller = new AbortController();
+fetch(url, {
+  signal: controller.signal,
+});
+```
+
+Now you can control the `fetch` request with the `controller.abort()` function as before.
+
+> However, if fetch finishes faster than when abort occurs, it doesn't remove results that have already appeared.
+
+#### AbortController is Scalable
+
+```js
+let urls = [...]; // a list of urls to fetch in parallel
+
+let controller = new AbortController();
+
+// an array of fetch promises
+let fetchJobs = urls.map(url => fetch(url, {
+  signal: controller.signal
+}));
+
+let results = await Promise.all(fetchJobs);
+
+// if controller.abort() is called from elsewhere,
+// it aborts all fetches
+```
+
+By registering one `controller` with `signal` as above, all registered `fetch` operations follow the signal of one `controller`.
+
+It can also be used with `Promise` and can combine `fetch` and that `Promise` through `Promise.all`.
+
+```js
+let urls = [...];
+let controller = new AbortController();
+
+let ourJob = new Promise((resolve, reject) => { // our task
+  ...
+  controller.signal.addEventListener('abort', reject);
+});
+
+let fetchJobs = urls.map(url => fetch(url, { // fetches
+  signal: controller.signal
+}));
+
+// Wait for fetches and our task in parallel
+let results = await Promise.all([...fetchJobs, ourJob]);
+
+// if controller.abort() is called from elsewhere,
+// it aborts all fetches and ourJob
+```
+
+### Promisification
+
+Converting a function that receives callbacks into a function that returns a Promise is called `Promisification`.
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement("script");
+  script.src = src;
+
+  script.onload = () => callback(null, script);
+  script.onerror = () =>
+    callback(new Error(`Error occurred while loading ${src}`));
+
+  document.head.append(script);
+}
+
+// Usage:
+// loadScript('path/script.js', (err, script) => {...})
+```
+
+The above function uses callback functions. Let's `Promisify` it.
+
+It should receive an argument called src and not receive a callback, and the using side should be able to control it.
+
+```js
+function loadScriptPromise = (src)=>{
+  return new Promise((resolve, reject)=>{
+    // Here (err, script)=>{...} is the callback function used in the existing usage from the code above.
+    // The callback function is just hidden inside.
+    loadScript(src,(err, script)=>{
+	  if (err) reject(err);
+	  else resolve(script);
+    })
+  })
+}
+
+// Usage:
+// loadScriptPromise('path/script.js').then(...)
+```
+
+This kind of `Promisification` can only be used for one function. To make it scalable, let's create a helper function.
+
+The helper function should receive a function `f` and return a wrapper function.
+
+```js
+function promisify(f) {
+  return function (...args) { // Returns wrapper function
+    return new Promise((resolve, reject) => {
+      function callback(err, result) {
+      // Custom callback to use with f
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+
+      args.push(callback); // Add the custom callback created above to the end of function f's arguments.
+
+      // Get the function that was put in when promisify was first declared
+      // and execute it with the this from when it's called, and the args from when it's called.
+      f.call(this, ...args); // Call the original function.
+    });
+  };
+};
+
+// Usage:
+let loadScriptPromise = promisify(loadScript);
+loadScriptPromise(...).then(...);
+```
+
+To handle multiple arguments in the above code, the following refactoring is needed.
+
+```js
+// promisify(f, true) that gives you an array containing the callback's success results
+function promisify(f, manyArgs = false) { // Check if multiple args
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      function callback(err, ...results) { // Custom callback to use with f
+        if (err) {
+          reject(err);
+        } else {
+          // Judge based on whether there are multiple args to decide whether to put one or multiple in the result of the Promise to be returned
+          resolve(manyArgs ? results : results[0]);
+        }
+      }
+
+      args.push(callback);
+
+      f.call(this, ...args);
+    });
+  };
+};
+
+// Usage:
+// Here, f that goes into promisify is a function that needs multiple arguments and has a callback as the last argument.
+// f(arg1, arg2, ..., (err, ...results)=>{});
+f = promisify(f, true);
+f(...).then(arrayOfResults => ..., err => ...);
+```
+
+> However, `Promisification` cannot completely replace callbacks. This is because callbacks can be called multiple times, but Promise can only have one result. (Even if you call the callback of a Promisified function multiple times, the second time onwards is ignored.)
+
+In fact, there are `promisify` libraries or `Node.js` built-in functions that handle this in advance.
+
+### Microtask Processing
+
+`Promise` handlers (`.then/catch/finally`) always execute asynchronously.
+
+Even if `Promise` is immediately fulfilled, code below `.then/catch/finally` executes before these handlers execute.
+
+```js
+let promise = Promise.resolve();
+
+promise.then(() => alert("Promise success!"));
+
+alert("Code end");
+
+// Result
+// alert("Code end");
+// alert("Promise success!");
+```
+
+#### Microtask Queue
+
+Proper management is needed to handle asynchronous tasks.
+For this, ECMA specifies an internal queue (`Internal Queue`) called `PromiseJobs`. (Since the `V8` engine calls this `Microtask Queue`, `Microtask Queue` is used more often.)
+
+`Microtask Queue` operates as follows:
+
+1. Execute tasks that arrived first, first. (`FIFO`)
+2. Tasks in the queue only start executing when there's nothing left to execute.
+
+In summary, when any `Promise` is ready, the `.then/catch/finally` handlers of this `Promise` enter the queue but still don't execute.
+
+Afterwards, when the current code becomes free, the JavaScript engine takes tasks from the queue and executes them.
+
+![](/images/2024-11-10/Pasted%20image%2020241108195640.png)
+
+`Promise` handlers always pass through the internal queue (`Promise jobs`, which is `Microtask Queue`).
+
+In the case of chains created using multiple `.then/catch/finally`, each handler executes asynchronously. Each handler that entered the queue executes when the current code is complete and the execution of the previous handler in the queue is complete.
+
+```js
+Promise.resolve()
+  .then(() => alert("Promise Fulfilled"))
+  .then(() => alert("finish"));
+```
+
+Doing it this way allows asynchronous operations to proceed sequentially.
+
+#### Unhandled Rejection
+
+The `unhandledrejection` event means that when executing `Promise`, an error was passed without `.catch`, causing a global error.
+
+```js
+let promise = Promise.reject(new Error("Promise failed!"));
+
+// Promise failed!
+window.addEventListener("unhandledrejection", (event) => alert(event.reason));
+```
+
+> **unhandled rejection**
+>
+> When the JavaScript engine looks for unhandled rejection, it checks the `Microtask Queue`.
+> It occurs if Promise error is not handled even at the end of the Microtask Queue.
+
+##### If catch is handled later
+
+```js
+let promise = Promise.reject(new Error("Promise failed!"));
+setTimeout(() => promise.catch((err) => console.log("Caught!")), 1000);
+
+// Error: Promise failed!
+window.addEventListener("unhandledrejection", (event) =>
+  console.log(event.reason),
+);
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108205243.png)
+
+You can see the order is: `unhandledrejection`'s handler function > notification that there's a rejected Promise > catch consumer function.
+
+This is because of the following process:
+
+1. When the current `Macrotask` ends (after `window.addEventListener` is all done), check the `Microtask Queue`.
+2. `unhandledrejection` is triggered when a task in the `Microtask Queue` remains in a `rejected` state. That is, it finds a `rejected Promise` state remaining and triggers `unhandledrejection`.
+3. Execute registered handler `(console.log(event.reason))`
+4. `1,000ms` ends in `Web API` and `setTimeout`'s callback function `( ()=>promise.catch(()=>console.log('Caught!')) )` moves to `Macrotask Queue`.
+5. Execute `()=>promise.catch(()=>console.log('Caught!'))` and return `promise.catch(()=>console.log('Caught!')`.
+6. Since variable `promise` containing `rejected Promise` was hit with `.catch` handler, move `()=>console.log('Caught!')` to `Microtask Queue`.
+7. After the move ends, one `Macrotask` has ended, so execute until `Microtask Queue` is emptied. Here, `()=>console.log('Caught!')` executes.
+
+## async, await
+
+The `async`, `await` syntax was created to use `Promise` more conveniently.
+
+### async function
+
+```js
+async function f(){
+	return 1;
+}
+```
+
+Putting `async` before `function` makes that function always return a Promise.
+Even if it returns a value that's not a Promise, it wraps the value in a fulfilled Promise and returns it.
+
+![](/images/2024-11-10/Pasted%20image%2020241110152440.png)
+
+That is, the following codes have the same functionality.
+
+```js
+async function f1(){
+	return 1;
+}
+
+async function f2(){
+	return Promise.resolve(1);
+}
+```
+
+### await
+
+```js
+// await only works inside async function.
+let value = await promise;
+```
+
+When it encounters the `await` keyword, it waits until Promise is settled. Code in the same block below the `await` keyword moves to `Microtask Queue`. (Functionally the same as passing to `.then`.)
+
+```js
+async function f() {
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve("done!"), 1000);
+  });
+
+  let result = await promise; // Wait until Promise is fulfilled (*)
+
+  alert(result); // "done!"
+}
+
+f();
+```
+
+While waiting for Promise to be settled, the engine can handle other tasks (executing other scripts, handling events), so CPU resources are not wasted.
+
+> That is, `await` is syntax that allows you to get the `result` value of Promise more elegantly than `promise.then`.
+
+The `showAvatar` code that was an example in the **Using fetch with Chaining** part can be organized with `async / await` syntax as follows.
+
+```js
+async function showAvatar(url) {
+  // Read JSON
+  const loadJsonResponse = await fetch(url);
+  const { name } = await loadJsonResponse.json();
+
+  // Read github user information
+  const githubUserResponse = await fetch(
+    `https://api.github.com/users/${name}`,
+  );
+  const githubUser = await githubUserResponse.json();
+
+  // Show avatar
+  let img = document.createElement("img");
+  img.src = githubUser.avatar_url;
+  img.className = "promise-avatar-example";
+  document.body.append(img);
+
+  // Wait 3 seconds
+  await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+  // When await executes, think of it as catching the operation of that Promise being settled as executor, and code below it goes to Microtask Queue. (Same behavior as .then.)
+
+  img.remove();
+
+  return githubUser;
+}
+
+showAvatar();
+```
+
+> await does not work in top-level code.
+> For this, you can use `IIFE ( Immediately Invoked function expression )`.
+
+```js
+(async ()=>{
+	let response = await fetch(`/article/promise-chaining/user.json`);
+	let user = await response.json();
+	...
+})();
+```
+
+> Like `promise.then`, `await` can also receive `thenable` objects.
+
+```js
+class Thenable {
+  constructor(num) {
+    this.num = num;
+  }
+  then(resolve, reject) {
+    alert(resolve);
+    // Fulfilled after 1000 milliseconds (result is this.num*2)
+    setTimeout(() => resolve(this.num * 2), 1000); // (*)
+  }
+}
+
+async function f() {
+  // After 1 second, variable result becomes 2
+  let result = await new Thenable(1);
+  // Same as new Promise((resolve)=>setTimeout(()=> resolve(this.num*2),1000)).then((result)=>alert(result))
+  alert(result);
+}
+
+f();
+```
+
+> You can also use `async` on `class method`. Methods with `async` attached return Promise like `async` functions and can use await.
+
+```js
+class Waiter {
+  async wait() {
+    return await Promise.resolve(1);
+  }
+}
+
+new Waiter().wait().then(alert); // 1
+```
+
+### Error Handling
+
+`await promise` returns the value stored in the `result` of the Promise object.
+On the other hand, if `Promise` is rejected, it throws an error as if a `throw` statement was written.
+
+```js
+// The two codes below have the same functionality.
+async function f() {
+  await Promise.reject(new Error("Error occurred!"));
+}
+
+async function f() {
+  throw new Error("Error occurred!");
+}
+```
+
+Errors thrown by `await` can be caught using `try...catch`, just like errors thrown by `throw`.
+
+```js
+async function f() {
+  try {
+    let response = await fetch("http://invalid-address");
+  } catch (err) {
+    alert(err); // TypeError: failed to fetch
+  }
+}
+
+f();
+```
+
+When an error occurs, control flow moves to the `catch` block.
+
+Originally, if an `async function` has no return value, it returns with `undefined` in a `fulfilled Promise`, but
+
+![](/images/2024-11-10/Pasted%20image%2020241110193617.png)
+
+If a `Promise` that was `await`ed in an `async function` is `reject`ed, it returns with an error in a `rejected` `Promise`. (Also, an error occurs.)
+
+![](/images/2024-11-10/Pasted%20image%2020241110193853.png)
+
+In the above code, you can handle that `Error` by using `.catch` in continuation.
+
+![](/images/2024-11-10/Pasted%20image%2020241110193713.png)
+
+> Errors not handled by `.catch` here are treated as global errors, which can be handled with the `unhandledrejection` event's handler.
+
+> Since `await` replaces `.then` and `try..catch` replaces `.catch`, you can use the same functionality but much more conveniently on the using side. However, since `await` cannot be used in top-level code (top-level code without async), cases occur where you must use `.then/ .catch`.
+
+> `async/ await` can also be used with `Promise.all`, and error handling can also use `try...catch` the same way.
+
+```js
+// Wait for an array containing Promise processing results.
+let results = await Promise.all([
+  fetch(url1),
+  fetch(url2),
+  ...
+]);
+```
+
+> There are three tasks to get a feel for it. It would be good to try solving them.
+> https://ko.javascript.info/async-await#tasks
+
+# Asynchronous Problem Solving
+
+The following is a problem created to perfectly understand asynchronous logic.
+Let's think about what the result value is and why, considering each `queue` and `Web API`.
+
+```js
+export const testFn = async () => {
+  console.log(1); // Execute immediately
+  setTimeout(() => {
+    // setTimeout executes immediately, timing function passed to Web API
+    console.log(2);
+  }, 500);
+  console.log(3); // Execute immediately
+  new Promise(async (resolve) => {
+    // executor function executes immediately when Promise is created.
+    console.log(4, "before");
+    await setTimeout(() => {
+      // Executes immediately up to here, all internal code below await goes to Microtask Queue
+      console.log(4); // The callback console.log(4) is passed to Macrotask queue after setTimeout executes and 5000ms passes in Web API.
+    }, 5000);
+    console.log(4, "next");
+    resolve(4);
+  });
+  console.log(5); // Execute immediately
+  const t = await new Promise((resolve) => {
+    // executor inside Promise executes immediately, code below all moves to Microtask queue
+    // Same as new Promise((resolve)=>{console.log(6); resolve('a')}).then((t)=>{console.log(t); console.log(7)})
+    console.log(6);
+    resolve("a");
+  });
+  console.log(t);
+  console.log(7);
+};
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241110155653.png)
+
+## Solution
+
+|                      | 1st task (Execute Macrotask called testFn)                                                                                                      | 2nd task (Execute all Microtasks related to testFn)                                                                                                  | 500ms passed since code execution                                             | 3rd task (Execute Macrotask that outputs 2)                           | Confirm Microtask Queue is empty and move on                 | 5000ms passed since code execution | 4th task (Execute Macrotask that outputs 4) |
+| :------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------- | ----------------------------------------- |
+| Macrotask queue state |                                                                                                                                               |                                                                                                                                               | ()=>console.log(2)                                                   |                                                                      |                                                                      | ()=>console.log(4)        |                                           |
+| Microtask queue state | console.log(4, "next"), resolve(4), console.log(t), console.log(7)                                                                            |                                                                                                                                               |                                                                      |                                                                      |                                                                      |                           |                                           |
+| Web API              | Operation that passes ()=>console.log(2) to task queue when 500ms passes,<br/>Operation that passes ()=>console.log(4) to task queue when 5,000ms passes | Operation that passes ()=>console.log(2) to task queue when 500ms passes,<br/>Operation that passes ()=>console.log(4) to task queue when 5,000ms passes | Operation that passes ()=>console.log(4) to task queue when 5,000ms passes | Operation that passes ()=>console.log(4) to task queue when 5,000ms passes | Operation that passes ()=>console.log(4) to task queue when 5,000ms passes |                           |                                           |
+| Output                 | 1, 3, 4 'before', 5, 6                                                                                                                            | 4 "next", a, 7                                                                                                                                |                                                                      | 2                                                                    |                                                                      |                           | 4                                         |
+
+> Since rendering proceeds in the order `Macrotask` > `Microtask` > `requestAnimationFrame` > `browser rendering`, if an event occurs in the middle of executing the above code and a `Macrotask` is created, browser rendering related to that `Macrotask` can occur and return to the above code.
+
+# Conclusion
+
+> If previously I only knew that asynchronous code runs using Microtask Queue and event loop, now I can more accurately understand **why asynchronous methods are needed** by understanding it together with browser rendering flow.  
+> Since this article started with the thought of solidifying the basics, I tried to learn thoroughly, and it became a good opportunity to gather fragmented knowledge.  
+> Since focusing on **why this technology is needed**, I think I can see it from more diverse perspectives.  
+> Let's move forward now.
+
+# References
+
+- https://wikibook.co.kr/react-deep-dive/
+- https://ko.javascript.info/async
+- https://product.kyobobook.co.kr/detail/S000001766397
+- https://inpa.tistory.com/entry/%F0%9F%8C%90-requestAnimationFrame-%EA%B0%80%EC%9D%B4%EB%93%9C
+- https://www.youtube.com/watch?v=8aGhZQkoFbQ
+

@@ -1,0 +1,349 @@
+import VimeoPlayer from "@/components/mdx/vimeo.tsx";
+
+# React Development Tools
+
+react-dev-tools
+
+Development tools for React apps created by the React team.
+
+![](/images/2024-06-10/Pasted%20image%2020240610161243.png)
+
+## Usage
+
+![](/images/2024-06-10/Pasted%20image%2020240610161637.png)
+
+When you download React Developer Tools, two tabs are added.
+
+Component and Profiler.
+
+### Component
+
+The Component tab allows you to check the component tree of React apps.
+
+You can check various information such as props, hooks, etc.
+
+![](/images/2024-06-10/Pasted%20image%2020240610161514.png)
+
+Like developer tools, you can check component information when hovering.
+
+![](/images/2024-06-10/Pasted%20image%2020240610161856.png)
+
+#### Component Tree
+
+![](/images/2024-06-10/Pasted%20image%2020240610162302.png)
+
+React apps are structured as trees.
+
+You can check the tree in React Developer Tools.
+
+Anonymous nodes represent anonymous components.
+
+Components created with function declarations or function expressions display the function name.
+
+Otherwise, the following logic is followed.
+
+1. default export is treated as `_default`. (Based on 16.8, inferred as arbitrary value from 16.9)
+2. Anonymous components wrapped in memo are treated as anonymous.
+3. Higher-order components cannot infer names. (Based on 16.8, inferred as arbitrary value from 16.9)
+
+From 16.9, some improvements were made, but since values like `_c5` are arbitrary, it's better to use named functions.
+
+You can also apply displayName.
+
+This is especially useful for higher-order components. You can set displayName dynamically.
+
+```jsx
+function withHigherOrderComponent(WrappedComponent) {
+  class WithHigherOrderComponent extends React.Component {}
+
+  WithHigherOrderComponent.dissplayName = `WithHigherOrderComponent(${getDisplayName(WrappedComponent)})`;
+
+  return WithHigherOrderComponent;
+}
+
+function getDisplayName(WrappedddComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+}
+```
+
+You can return the wrapped component's displayName, name, or 'Component' and set it in the higher-order component.
+
+You can distinguish between wrapped components and higher-order components, which is convenient in development mode.
+
+Compression tools like terser can randomize component names.
+
+Component.displayName can be deleted by build tools, so it's best to use it only in development mode.
+
+#### Component Name and Props
+
+![](/images/2024-06-10/Pasted%20image%2020240610164323.png)
+
+When you select a component, it shows detailed information about that component.
+
+##### Component Name and Key
+
+![](/images/2024-06-10/Pasted%20image%2020240610164615.png)
+
+This is a part implemented with mapping for components.
+
+The key value is displayed.
+
+In React, key values are not passed as props and are only used for comparison in the Fiber tree.
+
+However, they are displayed in developer tools.
+
+You can check the Anonymous component name and the key value of each part.
+
+Anonymous is red because it wasn't rendered in strict mode.
+
+##### Component Tools
+
+![](/images/2024-06-10/Pasted%20image%2020240610164952.png)
+
+There are three icons on the right side of the props section.
+
+###### Inspect the matching DOM element
+
+![](/images/2024-06-10/Pasted%20image%2020240610165421.png)
+
+Checks how the component was rendered in the DOM element.
+
+![](/images/2024-06-10/Pasted%20image%2020240610165908.png)
+
+###### Log this component data to the console
+
+![](/images/2024-06-10/Pasted%20image%2020240610165510.png)
+
+Outputs the component's information to the console window.
+
+![](/images/2024-06-10/Pasted%20image%2020240610170039.png)
+
+You can see the component's props, hooks, and nodes.
+
+###### View source for this element
+
+![](/images/2024-06-10/Pasted%20image%2020240610165548.png)
+
+You can check the component's source code.
+
+![](/images/2024-06-10/Pasted%20image%2020240610170606.png)
+
+Source code built in production mode is maximally compressed.
+
+Pressing the `{}` button displays it in a readable format.
+
+![](/images/2024-06-10/Pasted%20image%2020240610170629.png)
+
+##### Component Props
+
+![](/images/2024-06-10/Pasted%20image%2020240610200919.png)
+
+###### Copy value to clipboard
+
+Copies the value of props to the clipboard.
+
+###### Store as global variable
+
+Stores the information in `window.$r`.
+
+![](/images/2024-06-10/Pasted%20image%2020240610201128.png)
+
+The copied content is stored in an arbitrary variable name ($reactTemp0) and can be used in the console.
+
+###### Go to definition
+
+![](/images/2024-06-10/Pasted%20image%2020240610201250.png)
+
+If the value is a function, there's a Go to definition that moves to the source code.
+
+![](/images/2024-06-10/Pasted%20image%2020240610201359.png)
+
+Moves to the function's source code.
+
+##### Component Hooks
+
+You can check information about hooks in use.
+
+![](/images/2024-06-10/Pasted%20image%2020240610201925.png)
+
+There are State, Reducer, Context, Memo, Callback, Ref, id, LayoutEffect, Effect, etc.
+
+Functions passed to hooks should be written as named functions.
+
+Anonymous functions are displayed as `f() {}`, and named functions are displayed as `f name() {}`.
+
+Using named functions allows for more accurate checking.
+
+![](/images/2024-06-10/Pasted%20image%2020240610202656.png)
+
+Expressing named functions in code looks like this.
+
+```jsx
+useEffect(() => {}); // xxx
+useEffection(function functionName() {}); // ooo
+```
+
+##### Component Rendered By
+
+In production, it only displays as `react-dom`.
+
+In development, you can see detailed information.
+
+![](/images/2024-06-10/Pasted%20image%2020240610204025.png)
+
+You can see that it was rendered in the order: react-dom > hydrateRoot > App > BoardsPage.
+
+### Profiler
+
+A tool to check the process of React rendering.
+
+You can check which components were rendered, how many times it happened, and which operations took a long time.
+
+![](/images/2024-06-10/Pasted%20image%2020240610204442.png)
+
+You can check rendering time and the reason each part was updated.
+
+#### Settings
+
+##### General
+
+![](/images/2024-06-10/Pasted%20image%2020240610204708.png)
+
+Enabling "Highlight updates when components render" in the settings window will show highlight indicators when rendering.
+
+<VimeoPlayer id="955968361" />
+
+##### Debugging
+
+![](/images/2024-06-10/Pasted%20image%2020240610205103.png)
+
+In React strict mode, rendering is done twice in development to check for pure components.
+
+Enabling the "Hide logs during second render in Strict Mode" option hides the second rendering log.
+
+##### Profiler
+
+![](/images/2024-06-10/Pasted%20image%2020240610205318.png)
+
+"Record why each component rendered while profiling" records the rendering reason for each component on every render.
+
+#### Profiling
+
+![](/images/2024-06-10/Pasted%20image%2020240610205813.png)
+
+I'll explain the icons in order from left to right.
+
+##### Usage
+
+###### `Start Profiling`
+
+Profiling starts.
+
+Pressing it again ends profiling.
+
+###### `Reload and Start profiling`
+
+The web page refreshes and profiling starts simultaneously.
+
+###### `Stop Profiling`
+
+Deletes all current content.
+
+###### `Load profile`
+
+Loads profiling results.
+
+###### `Save profile`
+
+Downloads profiling results as a JSON file.
+
+<VimeoPlayer id="955968403" />
+
+This is the profiling screen using Reload and Start profiling.
+
+###### `Flamegraph`
+
+![](/images/2024-06-10/Pasted%20image%2020240610210623.png)
+
+Shows what work happened per render commit.
+
+You can check the React component tree structure.
+
+The wider it is, the longer the rendering time.
+
+The widest one is the root component.
+
+Green indicates fast rendering, yellow indicates slow rendering, and gray indicates components that were not rendered.
+
+![](/images/2024-06-10/Pasted%20image%2020240610214552.png)
+![](/images/2024-06-10/Pasted%20image%2020240610211527.png)
+
+###### `Ranked`
+
+Sorts by rendering time, longest first.
+
+![](/images/2024-06-10/Pasted%20image%2020240610212134.png)
+
+![](/images/2024-06-10/Pasted%20image%2020240610212117.png)
+
+###### `Timeline`
+
+Checks what happened in components over time. (React 18+)
+
+![](/images/2024-06-10/Pasted%20image%2020240610212643.png)
+
+You can check what was rendered when in time units and how much idle time there was.
+
+##### Actual Application
+
+Let's debug through profiling with practice.
+
+<VimeoPlayer id="955968438" />
+
+When uploading one image to show a preview, the addboard component is rendered.
+
+![](/images/2024-06-10/Pasted%20image%2020240610214837.png)
+
+I'll check the rendering cause in the Component tab.
+
+![](/images/2024-06-10/Pasted%20image%2020240610215256.png)
+
+It shows it's because of a change in 14 State.
+
+I check 14 State in the Component tab.
+
+![](/images/2024-06-10/Pasted%20image%2020240610215205.png)
+
+Looking at the code, I can see that 14 State is preview.
+
+```tsx
+export default function Addboard() {
+  const {
+    register,
+    formState: { errors, isDirty, isValid },
+    handleSubmit,
+  } = useForm<IFormInput>();
+  const onSubmit: SubmitHandler<IFormInput> = (d) => {
+    postArticle({ ...d, image: preview });
+  };
+  const { isDesktop } = useScreenDetector();
+  const [preview, setPreview] = useState("");
+// ...
+```
+
+The parent state preview changed, causing the parent component to re-render, and then the child component also re-rendered.
+
+To solve this, the child component should change preview and then pass it to the parent component.
+
+However, passing data from child to parent goes against unidirectional data flow.
+
+I ended debugging at the point of understanding the logic.
+
+## Source
+
+<a href="https://wikibook.co.kr/react-deep-dive">
+  React Deep Dive. 김용찬, chapter 6
+</a>
+
+> If there are any incorrect contents, please let me know in the comments. Thank you.
+

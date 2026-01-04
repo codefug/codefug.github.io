@@ -1,0 +1,164 @@
+<img src="/images/2024-05-23/Pastedimage20240523085413.png" className="full" />
+
+The above chart is the ranking of the most used web technologies provided by Stack Overflow in 2023.
+
+React was adopted as the e-government framework standard and remains the most popular framework in 2024.
+
+## Reasons Developers Prefer React
+
+### 1. Explicit State Changes
+
+React only supports one-way binding.
+
+Data flows in one direction only. (Angular supports two-way binding.)
+
+As scale increases, one-way binding, which makes it easier to track state changes, is advantageous.
+
+```jsx
+	function App {
+		const [name, setName] = useState('')
+	// The reason name changes is only when setName is called, so if name changes, you only need to look at the setName logic.
+		function onChange(e){
+			setName(e.target.value)
+		}
+
+		return <input value={name} onChange={onChange}/>
+	}
+```
+
+### 2. JSX (JavaScript XML)
+
+This is React-specific syntax that combines HTML with JavaScript syntax.
+
+```jsx
+{
+  condition ? <div>Renders only when condition is true.</div> : null;
+}
+```
+
+### 3. Low Learning Curve
+
+The syntax is concise, making it good for beginners. (Performance optimization is difficult.)
+
+### 4. Strong Community and Meta Support
+
+React started as a UI library and was designed to allow free expansion of the rest.
+
+The community grew and various libraries were created.
+
+Since Meta is the main sponsor, continuous development is guaranteed.
+
+## History of React
+
+### 2010 React Release
+
+At the time in 2010, the web development method was to generate HTML on the server and provide it to the client.
+
+The server dynamically generated content, and the browser downloaded and rendered it.
+
+JavaScript only played a supplementary role like form handling.
+
+#### Browser Role Expansion
+
+Browsers began to support various features such as jQuery, local storage, WebSocket, Canvas, SVG, Geolocation, etc.
+
+As DOM interaction and client data loading features like Ajax were added, JavaScript became complex.
+
+Frameworks like AngularJS and Backbone.js emerged.
+
+These are systematized with MVVM (Model-View-ViewModel) and MVC (Model-View-Controller) patterns.
+
+#### Facebook's Challenge
+
+Facebook achieved great success and needed to reduce browser burden.
+
+The challenge was to reduce JavaScript bundle size to reduce download, parsing, and execution burden.
+
+<img src="/images/2024-05-23/Pastedimage20240523104931.png" className="full" />
+
+The above is a Facebook page from 2011.
+
+Many features are included on one page.
+
+Receiving the entire page from the server every time data changes would be a huge burden on the browser.
+
+With many elements that change data in real-time, refreshing the entire page would have had the worst UX.
+
+##### Spartan Project
+
+It was promoted to create a Facebook for Safari (web) in response to Apple's app regulations.
+
+HTML5-based hybrid apps could not replace native apps with the technology at the time.
+
+The original purpose failed, but it is being revived in forms like Flutter and React Native.
+
+##### Emergence of BoltJS
+
+It was created by Facebook but was not used in practice.
+
+It developed into a new version oriented toward functional programming, becoming the origin of React.
+
+It developed into a one-way method where the view changes when the model changes.
+
+It proposed a method of discarding the previous DOM and newly rendering when the view changes.
+
+The React project started with this proposal.
+
+#### React Release
+
+<img src="/images/2024-05-23/Pastedimage20240523110538.png" className="full" />
+
+Creating the `UFI` above was React's first project.
+
+Various features such as share, like, and comments were needed.
+
+JSX and the Flux pattern emerged here.
+
+After acquiring Instagram, the Instagram web version was also made with React.
+
+It was released as open source at JSConf US.
+
+#### Skeptical Views
+
+There were negative opinions about JSX syntax where HTML and JavaScript are mixed.
+
+The logic was that it violated the separation of concerns principle.
+
+However, this was a misunderstanding since React separates concerns based on components.
+
+#### Companies' Choices
+
+The performance benefits of component-based reuse and partial rendering became known.
+
+A community was created and libraries for state management, routers, server-side rendering, etc. were made.
+
+Yahoo! Mail, Netflix, etc. chose React.
+
+Netflix confirmed the advantages through testing before renovating the site with React.
+
+1. JavaScript code size reduction: Instead of controllers, UI could be implemented declaratively based on state.
+2. Gentle learning curve: Similar to JavaScript and HTML syntax.
+3. Fast feature addition: Feature addition and builds were faster than existing Java-based apps.
+
+#### Various Libraries
+
+Since React does not aim to be a web development framework, it is used with various libraries.
+
+State Management: Redux, Zustand, Recoil, Jotai
+
+SSR: Next.js, Remix, Hydrogen
+
+Animation: Framer Motion, react-spring, React Move
+
+Charts: Recharts, visx, nivo
+
+Forms: React Hook Form, Formik, React Final Form
+
+#### Direction of React
+
+Utilizing React on the server is the current development direction.
+
+Server components have emerged, and simple APIs can now be created in Next.js.
+
+> If there is incorrect content, please let me know in the comments. Thank you.
+

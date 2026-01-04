@@ -1,11 +1,13 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 
 export default function Giscus() {
   const ref = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
+  const locale = useLocale();
 
   const theme = resolvedTheme === "dark" ? "dark" : "light";
 
@@ -28,10 +30,13 @@ export default function Giscus() {
     scriptElem.setAttribute("data-emit-metadata", "0");
     scriptElem.setAttribute("data-input-position", "top");
     scriptElem.setAttribute("data-theme", theme);
-    scriptElem.setAttribute("data-lang", "ko");
+    scriptElem.setAttribute("data-lang", locale);
 
     ref.current.appendChild(scriptElem);
-  }, [theme]);
+    return () => {
+      ref.current?.removeChild(scriptElem);
+    };
+  }, [theme, locale]);
 
   useEffect(() => {
     const iframe = document.querySelector<HTMLIFrameElement>(

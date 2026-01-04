@@ -1,0 +1,224 @@
+A queue is a data structure where the first data entered comes out first.
+
+# Concept
+
+## FIFO
+
+First In First Out
+
+![](/images/2025-06-07/Pasted%20image%2020250617210033.png)
+
+Like stacks, the operation of inserting into a queue is called push, and the operation of taking out is called pop.
+
+## Operation Process
+
+Declare an empty queue.
+![](/images/2025-06-07/Pasted%20image%2020250617210119.png)
+
+Let's insert 2 and 5. According to the FIFO rule, 2 is behind 5.
+![](/images/2025-06-07/Pasted%20image%2020250617210209.png)
+
+Let's pop here. You can see that 2 comes out first, not 5. If you pop once more, 5 comes out.
+![](/images/2025-06-07/Pasted%20image%2020250617210308.png)
+
+> [!NOTE] Queues Used in Various Fields
+>
+> The queue's operation method of processing what comes in first is used very frequently in programming. Examples include:
+>
+> - Task Queue: When multiple clients request work from a server, the server processes tasks in the order they were requested.
+> - Event Processing: Queues can be used when processing user events in applications or systems, such as keyboard input or mouse movement.
+
+## Queue ADT (Abstract Data Type)
+
+| Category | Definition                     | Description                                                                     |
+| -------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| Operation| boolean isFull()               | Check if the number of data items in the queue is maxsize.                      |
+|          | boolean isEmpty()              | Check if the number of data items in the queue is 0.                            |
+|          | void push                      | Add data to the queue.                                                          |
+|          | ItemType pop                   | Remove the first data entered from the queue.                                   |
+| State    | int front                      | Record the front of the queue.                                                  |
+|          | int rear                       | Record the rear of the queue.                                                   |
+|          | ItemType data`[maxsize]`       | Array that manages queue data. Manages up to maxsize data items.                |
+
+Drawing the ADT based on the state and operations defined in the table looks like this.
+![](/images/2025-06-07/Pasted%20image%2020240909094927.png)
+
+> [!INFO]
+>
+> Note that front and rear are -1. front means the front of the queue, and rear means the rear of the queue. It's a structure where data is removed using front and added through rear. If there is no data, you need to express that there is no data at both the front and rear of the queue. -1 is used for this.
+
+When adding data to the queue, it can be expressed as follows.
+![](/images/2025-06-07/Pasted%20image%2020250617212028.png)
+
+1. First check if the queue is full.
+   1. If full, exit
+   2. If not full, increase rear by 1 and add data at the rear position.
+
+When removing data from the queue, it can be expressed as follows
+![](/images/2025-06-07/Pasted%20image%2020250617212214.png)
+
+1. Check if the queue is empty.
+   1. If empty, exit
+   2. If not empty, increase front by 1 so that isEmpty returns true when executed next time.
+
+![](/images/2025-06-07/Pasted%20image%2020250617212315.png)
+Using front, the actual data is not deleted, but it's managed as if the data was deleted.
+
+## Limitations of Linear Queue
+
+The linear queue method structurally manages data from after front to rear. Since data at front and before front cannot be used, it's inefficient.
+
+Making the current linear structure circular allows continuous reuse of space, solving this problem. A queue with a circular structure is called a circular queue. Reusing space allows efficient use of memory space.
+
+# Implementing Queue in JS
+
+There are three ways to implement a queue.
+
+1. Mimicking a queue with array push and shift
+2. Implementing a queue using arrays
+3. Implementing a queue using linked lists
+
+Let's learn in detail.
+
+## Mimicking Queue with Array push and shift
+
+The FIFO structure of a queue can be mimicked, but the array method `shift` has `O(n)` time complexity, so it's slower than Queue's pop time complexity of `O(1)`.
+
+> [!INFO] shift Time Complexity
+>
+> Arrays in JavaScript are dynamic arrays. In terms of memory space, subsequent elements are created in the space behind the first element. According to this principle, when the `push` method is executed, it only adds an element to the back of the memory space, so it has `O(1)` time complexity.
+>
+> However, when you remove the first element of the memory space with `shift`, the operation of moving elements from the second element to the last element one space forward occurs. This causes `O(n)` time complexity.
+> (Reference: https://codefug.github.io/posts/2025-05-24 )
+
+```js
+// Create array
+const queue = [];
+
+queue.push(1);
+queue.push(2);
+queue.push(3);
+
+const firstItem = queue.shift();
+console.log(firstItem); // 1
+
+queue.push(4);
+queue.push(5);
+
+firstItem = queue.shift();
+console.log(firstItem); // 2
+```
+
+## Implementing Queue Using Arrays
+
+You can implement a queue by putting an array as a class property and controlling it with front and rear.
+
+```js
+class Queue {
+  items = [];
+  front = 0;
+  rear = 0;
+
+  push(item) {
+    this.items.push(item);
+    this.rear++;
+  }
+
+  pop() {
+    return this.items[this.front++];
+  }
+
+  isEmpty() {
+    return this.front === this.rear;
+  }
+}
+```
+
+At first glance, it looks like a well-implemented queue, but there are problems where rear and front keep increasing and array memory keeps increasing. For a perfect implementation, you need to use a linked list.
+
+## Using Linked Lists
+
+JavaScript doesn't provide linked lists by default. So you need to implement them yourself. (You need to know this to become a great developer who reduces time complexity.)
+
+```js
+// Define one node. A linked list is a list that connects nodes, treating each node as one value.
+class Node {
+  constructor(data) {
+    this.data = data; // Current value of the instance
+    this.next = null; // Next value
+  }
+}
+
+// Queue that uses Node.
+class Queue {
+  // Initialize head, tail, size.
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Add a node.
+  push(item) {
+    // Create newNode and handle two cases.
+    const newNode = new Node(item);
+
+    // 1. If it's the first node: Connect head and tail here.
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+      // 2. If it's not the first node: Connect tail and new node.
+    } else {
+      // Set current tail's next value to newNode
+      this.tail.next = newNode;
+      // Change current tail to newNode.
+      this.tail = newNode;
+    }
+
+    this.size++;
+  }
+
+  // Remove and return the node to remove.
+  pop() {
+    // If there's no data, return null and exit.
+    if (!this.head) {
+      return null;
+    }
+
+    // If there's data, store the node to return in removeNode first
+    const removeNode = this.head;
+    // Move head to the next value.
+    this.head = this.head.next;
+
+    // If the next value was null, the data is empty, so initialize tail as well.
+    if (!this.head) {
+      this.tail = null;
+    }
+
+    // Decrease array size
+    this.size--;
+
+    // Return the removeNode stored earlier.
+    return removeNode.data;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+}
+```
+
+Now you've become a great developer who has solved both the remaining memory space problem and the time complexity problem.
+
+# References
+
+https://product.kyobobook.co.kr/detail/S000213641007
+
+> [!SUMMARY]
+>
+> Algorithm concepts seem to disappear particularly quickly if you don't study them consistently.
+> I'll study consistently so I can fill them back in when they disappear.
+> If there are any incorrect knowledge, please leave a comment!
+>
+> Thank you for reading.
+

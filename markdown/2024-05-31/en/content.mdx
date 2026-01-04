@@ -1,0 +1,206 @@
+## React is a Library
+
+The React official documentation has the following statement.
+
+> The library for web and native user interfaces
+
+React is a library for web and UI, not a framework.
+
+### Difference Between Library and Framework
+
+Library: Performs specific, well-defined series of tasks. When you call a method, you gain control.
+
+Framework: The application fills in the skeleton to define the work content. The framework calls us.
+
+React has complex internal logic such as optimizing re-rendering using React Fiber Architecture.
+
+But ultimately, it's a library to help with UI.
+
+It has high freedom, allowing various packages to be used to add features like routing.
+
+However, as web technology becomes complex, a standardized framework was needed.
+
+Next.js, a framework utilizing React, emerged to meet this demand.
+
+## Next.js
+
+The Next.js official documentation has the following statement.
+
+> The React Frame Work for the Web
+
+It has various features such as metadata insertion using next/head, routing using app router and pages router, lazy loading of Image components, etc.
+
+The biggest characteristic of Next.js is its rendering method.
+
+### SSR
+
+**Server-Side-Rendering**
+
+Generates HTML pages on the server for every request.
+
+<img
+  src="/images/2024-05-31/Pasted%20image%2020240530181448.png"
+  className="full"
+  alt="ssr image"
+/>
+
+It is implemented with the `getServerSideProps` function in Next.js.
+
+The function runs on the server for every request.
+
+The process of applying the remaining JavaScript on the client is called hydration.
+
+It's useful when pre-rendering frequently updated data.
+
+#### Advantages
+
+1. **Initial Screen Loading** - Faster initial screen loading than CSR, which sends empty HTML first and fills content with JavaScript.
+2. **SEO** - Content is included in the first rendering HTML, which is advantageous for SEO.
+3. **Reduced Device Burden** - Since pre-rendered HTML is received, there's no burden even on low-spec devices.
+
+#### Limitations
+
+1. **Server Overload** - Since HTML content is generated on the server, server overload may occur.
+2. **Full Page Reload** - When interactions requiring server processing occur, the entire page reloads.
+
+#### Example
+
+### SSG
+
+**Static Site Generation**
+
+The server generates HTML at build time and reuses it for all requests.
+
+If data is not fetched, Next.js automatically uses the SSG method.
+
+The Next.js official documentation presents two usage scenarios.
+
+#### When content depends on external data (getStaticProps)
+
+```jsx
+export default function Blog({ posts }) {
+  // Render posts...
+}
+
+// This function gets called at build time
+export async function getStaticProps() {
+  // Call an external API endpoint to get posts
+  const res = await fetch("https://.../posts");
+  const posts = await res.json();
+
+  // By returning { props: { posts } }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      posts,
+    },
+  };
+}
+```
+
+Fetch data inside getStaticProps and pass it as posts prop at build time.
+
+#### When paths depend on external data (getStaticPaths, getStaticProps)
+
+This is the case using Next.js Dynamic Routes.
+
+```jsx
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const res = await fetch("https://.../posts");
+  const posts = await res.json();
+
+  // Get the paths we want to pre-render based on posts
+  const paths = posts.map((post) => ({
+    params: { id: post.id },
+  }));
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false };
+}
+```
+
+When Dynamic Routes are configured in the form of `pages/posts/[id].js`, fetch all data that will go into id.
+
+It's stored in params in key-value format.
+
+```jsx
+export default function Post({ post }) {
+  // Render post...
+}
+
+export async function getStaticPaths() {
+  // ...
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`);
+  const post = await res.json();
+
+  // Pass post data to the page via props
+  return { props: { post } };
+}
+```
+
+Data becomes an argument of `getStaticProps` and is used for static page optimization.
+
+getStaticProps runs on the server, so CORS issues don't occur.
+
+#### Example
+
+```tsx
+export const getStaticProps = (async (context) => {
+  const likeRes = await fetch(`${BASE_URL}/articles?pageSize=3&&orderBy=like`);
+  const likeData: ArticleData = await likeRes.json();
+  const likeList = likeData.list ?? [];
+  return { props: { likeList } };
+}) satisfies GetStaticProps<{
+  likeList: Article[] | [];
+}>;
+```
+
+This is part of the code used in the project.
+
+It was a task to display 3 Best posts on the screen.
+
+Since there was no need to dynamically change data, we optimized rendering using SSG.
+
+### ISR
+
+**Incremental Static Regeneration**
+
+This is a method of generating or updating static pages even after the site is built.
+
+You can use static generation per page without needing to rebuild the entire site.
+
+You can use it by adding revalidate props to `getStaticProps`.
+
+## Reference
+
+<a href="https://react.dev/">React Official Documentation</a>
+
+<a href="https://www.geeksforgeeks.org/software-framework-vs-library/">
+  geeksforgeeks
+</a>
+
+<a href="https://nextjs.org/">Next Official Documentation</a>
+
+Modern React Deep dive - 김용찬
+
+Next.js 웹사이트 만들기 - 코드잇
+
+<a href="https://www.devlane.com/blog/what-is-server-side-rendering-in-next-js-pros-and-cons">
+  Devlane Blog
+</a>
+
+<a href="https://dev.to/haszankauna/understanding-server-side-rendering-ssr-vs-client-side-rendering-csr-8gi#:~:text=Cons%20of%20SSR%3A,trigger%20a%20full%20page%20reload.">
+  haszankauna Post
+</a>
+
+> If there is incorrect content, please let me know in the comments. Thank you.
+

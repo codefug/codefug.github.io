@@ -1,6 +1,45 @@
+import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
+import { type Locale, locales } from "@/i18n/config";
 
 const BASE_URL = "https://codefug.github.io";
+
+/**
+ * 언어 코드를 hreflang 형식으로 변환
+ */
+function getHreflangCode(locale: Locale): string {
+  const localeMap: Record<Locale, string> = {
+    ko: "ko-KR",
+    en: "en-US",
+  };
+  return localeMap[locale];
+}
+
+/**
+ * 페이지의 alternate links를 생성하는 함수
+ * SSG 모드에서는 같은 URL에 대해 언어별 alternate를 생성
+ */
+export function createAlternateLinks(
+  path: string,
+  includeXDefault = true,
+): Metadata["alternates"] {
+  const url = `${BASE_URL}${path}`;
+  const languages: Record<string, string> = {};
+
+  locales.forEach((locale) => {
+    languages[getHreflangCode(locale)] = url;
+  });
+
+  return {
+    canonical: url,
+    languages: includeXDefault
+      ? {
+          ...languages,
+          "x-default": url, // 기본 언어(한국어)를 x-default로 지정
+        }
+      : languages,
+  };
+}
 
 export interface BlogPostData {
   id: string;
@@ -10,7 +49,10 @@ export interface BlogPostData {
   thumbnailImageUrl?: string;
 }
 
-export function createBlogPostStructuredData(data: BlogPostData): Graph {
+export function createBlogPostStructuredData(
+  data: BlogPostData,
+  locale: Locale = "ko",
+): Graph {
   const blogUrl = `${BASE_URL}/posts/${data.id}`;
   const imageUrl = data.thumbnailImageUrl
     ? `${BASE_URL}${data.thumbnailImageUrl}`
@@ -42,7 +84,7 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
         },
         datePublished: new Date(data.date).toISOString(),
         dateModified: new Date(data.date).toISOString(),
-        inLanguage: "ko-KR",
+        inLanguage: getHreflangCode(locale),
         mainEntityOfPage: blogUrl,
       },
       {
@@ -79,14 +121,17 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
   };
 }
 
-export function createWebSiteStructuredData() {
+export function createWebSiteStructuredData(locale: Locale = "ko") {
   return {
     "@context": "https://schema.org" as const,
     "@type": "WebSite" as const,
     name: "Codefug Blog",
-    description: "프로젝트 경험과 개발 노트를 공유하는 블로그",
+    description:
+      locale === "ko"
+        ? "프로젝트 경험과 개발 노트를 공유하는 블로그"
+        : "A blog sharing project experiences and development notes",
     url: BASE_URL,
-    inLanguage: "ko-KR",
+    inLanguage: getHreflangCode(locale),
     publisher: {
       "@type": "Person" as const,
       name: "이승현",

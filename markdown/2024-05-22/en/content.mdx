@@ -1,0 +1,241 @@
+## Why Use TypeScript
+
+TypeScript is used more than JavaScript in frontend environments.
+
+Beyond simply using it, we need to understand the problems TypeScript solves.
+
+## Characteristics of JavaScript
+
+JavaScript is highly flexible but problematic in terms of maintainability.
+
+### 1. Common Variable Declaration Methods in JavaScript
+
+| Variable Declaration Method | Scope Range | Reassignment Possible | Hoisting | Duplicate Declaration Possible |
+| --------------------------- | ----------- | --------------------- | -------- | ----------------------------- |
+| var                         | Function    | Yes                   | o        | Yes                           |
+| let                         | Block       | Yes                   | x (ReferenceError) | No (Syntax Error) |
+| const                       | Block       | No                    | x (ReferenceError) | No (Syntax Error) |
+
+var is often seen in old code or code converted with Babel.
+
+In JavaScript, variable types can freely change from int to float, string, etc. during code execution.
+
+Static type languages (C, Java, Kotlin, C#, etc.) specify types first and throw errors when assigning different types.
+
+In small projects, JavaScript's freedom can be convenient.
+
+However, as code scales and expansion or modification becomes necessary, the strictness of static types is needed.
+
+### 2. Overly Free Syntax
+
+JavaScript introduced arrow functions to improve the this problem.
+
+Arrow functions are not function declarations, so they prevent hoisting.
+
+Despite such improvements, JavaScript's excessive freedom is a disadvantage in terms of stability.
+
+### 3. Ambiguous Distinction Between undefined and null
+
+The JavaScript engine automatically sets variables without assigned data to `undefined`.
+
+`null` is an empty value explicitly specified by the developer, and `undefined` is an empty value automatically set by the engine.
+
+However, even if a developer explicitly sets `undefined`, no error occurs.
+
+It may be convenient at the time of writing, but debugging becomes difficult during maintenance.
+
+If we could check the code before execution, it wouldn't be a problem.
+
+The core issue is that JavaScript allows excessive freedom while lacking inspection mechanisms.
+
+TypeScript emerged to solve this problem.
+
+## The Emergence of TypeScript
+
+TypeScript adds and checks static types while using JavaScript syntax as is.
+
+## How TypeScript Works
+
+> TS > Convert with tsc (compiler) > JS > Execute JS (node environment)
+
+tsc has two roles.
+
+The first is converting TypeScript to JavaScript.
+
+The second is checking types.
+
+Even if type checking fails, it still converts to JavaScript.
+
+> [!note] Reference
+>
+> There are runtimes like Deno and Bun that can directly execute TypeScript, but they haven't been popularized yet.
+
+## Actual Advantages of TypeScript
+
+### Type Specification for Data Received from API
+
+Backends using static type languages have clear types for response data.
+
+```json
+{
+  "totalCount": 0,
+  "list": [
+    {
+      "updatedAt": "2024-06-05T04:30:04.759Z",
+      "createdAt": "2024-06-05T04:30:04.759Z",
+      "likeCount": 0,
+      "writer": {
+        "nickname": "닉네임",
+        "id": 1
+      },
+      "image": "string",
+      "content": "게시글 내용입니다.",
+      "title": "게시글 제목입니다.",
+      "id": 1
+    }
+  ]
+}
+```
+
+In JavaScript, even if you declare an object with const, internal property changes are possible.
+
+Type changes are also free.
+
+```js
+const Article = {
+  totalCount: 0,
+  list: [
+    {
+      updatedAt: "2024-06-05T04:30:04.759Z",
+      createdAt: "2024-06-05T04:30:04.759Z",
+      likeCount: 0,
+      writer: {
+        nickname: "닉네임",
+        id: 1,
+      },
+      image: "string",
+      content: "게시글 내용입니다.",
+      title: "게시글 제목입니다.",
+      id: 1,
+    },
+  ],
+};
+//...
+Article.id = "수정이지롱";
+//...
+console.log(Article.id); // Type changed from number to string '수정이지롱'
+```
+
+If the code is short, you can avoid such mistakes, but as the code grows, human errors occur.
+
+TypeScript prevents this problem by specifying types.
+
+Define the type of data received from fetch in advance.
+
+```ts
+type Article = {
+  id: number;
+  title: string;
+  content: string;
+  image: string | null;
+  likeCount: number;
+  createdAt: string;
+  updatedAt: string;
+  writer: {
+    id: number;
+    nickname: string;
+  };
+};
+
+const article: Article = {
+  updatedAt: "2024-06-05T04:30:04.759Z",
+  createdAt: "2024-06-05T04:30:04.759Z",
+  likeCount: 0,
+  writer: {
+    nickname: "닉네임",
+    id: 1,
+  },
+  image: "string",
+  content: "게시글 내용입니다.",
+  title: "게시글 제목입니다.",
+  id: 1,
+};
+
+article.id = "수정이지롱";
+// Type 'string' is not assignable to type 'number'.
+```
+
+TypeScript shows an error that id is of type number but a string was assigned.
+
+### Syntax Error Explanation
+
+```tsx
+const [images, setImages] = useState<string[]>([]);
+// ...
+const handleFileSelect = () => {
+  if (fileRef?.current?.files == null) {
+    return;
+  }
+  const newFile = Array.from(fileRef.current.files).map((file) =>
+    URL.createObjectURL(file),
+  );
+  setImages((prevImages) => [...prevImages, newFile]);
+};
+```
+
+The above code references input type="file" with useRef to receive files.
+
+URL.createObjectURL(file) converts FakePath to an actual URL.
+
+Shows a preview with the converted URL.
+
+setImages puts prevImages and new files with the spread operator.
+
+**The problem is that newFile also needs to be spread.**
+
+In a JavaScript environment, it would have passed without error.
+
+TypeScript shows clear errors.
+
+> Argument of type '(prevImages: string[]) => (string | string[])[]' is not assignable to parameter of type `'SetStateAction<string[]>'`.
+> 
+> Type '(prevImages: string[]) => (string | string[])[]' is not assignable to type '(prevState: string[])=> string[]'.
+> 
+> Type '(string | string[])[]' is not assignable to type 'string[]'.
+> 
+> Type 'string | string[]' is not assignable to type 'string'.
+> 
+> Type 'string[]' is not assignable to type 'string'.
+
+The error message is long but the content is simple.
+
+A (string | string[])[] type was put in, but it doesn't match `setStateAction<string[]>`.
+
+You can see that the (string[])[] part is wrong.
+
+```tsx
+const handleFileSelect = () => {
+  if (fileRef?.current?.files == null) {
+    return;
+  }
+  const newFile = Array.from(fileRef.current.files).map((v) =>
+    URL.createObjectURL(v),
+  );
+  setImages((prevImages) => [...prevImages, ...newFile]);
+};
+```
+
+You can solve it by modifying it as above.
+
+I learned that grammatical freedom is not always good when using TypeScript.
+
+Type specification, interface inheritance, Key type settings, etc. take time in the beginning.
+
+However, once types are specified, human errors can be prevented in advance.
+
+The JavaScript ecosystem has largely overcome the disadvantages of script languages through TypeScript.
+
+> If there is incorrect information or content to add, please let me know in the comments.
+>
+> Thank you.
+

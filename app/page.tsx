@@ -1,20 +1,25 @@
-"use client";
-
 import { Flame, Notebook } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
-import PostCategorySwiper from "@/components/postSwiper/postCategorySwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { createWebSiteStructuredData } from "@/components/seo/utils";
+import {
+  createAlternateLinks,
+  createWebSiteStructuredData,
+} from "@/components/seo/utils";
 import BlockHeader from "@/components/ui/block-header";
-import type { FrontMatter } from "@/constants/mdx";
 import getFrontMatterList from "@/lib/posts";
-import getCategorySetListWithPostList from "@/util/post";
+import { HomeClientContent } from "../components/home/home-client-content";
 
-export default function Home() {
-  const t = useTranslations("home");
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    alternates: createAlternateLinks("/"),
+  };
+}
+
+export default async function Home() {
+  const t = await getTranslations("home");
   const totalFrontMatterList = getFrontMatterList();
 
   return (
@@ -29,7 +34,7 @@ export default function Home() {
             </span>
           }
         >
-          <RecentCategoryList
+          <HomeClientContent
             cardNumber={10}
             totalFrontMatterList={totalFrontMatterList}
           />
@@ -49,33 +54,6 @@ export default function Home() {
           <PostCategoryGallery totalFrontMatterList={totalFrontMatterList} />
         </BlockHeader>
       </div>
-    </div>
-  );
-}
-
-function RecentCategoryList({
-  totalFrontMatterList,
-  cardNumber,
-}: {
-  totalFrontMatterList: FrontMatter[];
-  cardNumber: number;
-}) {
-  const t = useTranslations("home");
-  const filteredPostInfoList = useMemo(
-    () => totalFrontMatterList.slice(0, cardNumber),
-    [totalFrontMatterList, cardNumber],
-  );
-  const categoryList = useMemo(
-    () => getCategorySetListWithPostList({ postList: filteredPostInfoList }),
-    [filteredPostInfoList],
-  );
-
-  return (
-    <div>
-      <p className="font-light text-gray-600 text-sm">
-        {t("recentCategories")}
-      </p>
-      <PostCategorySwiper categoryList={categoryList} />
     </div>
   );
 }

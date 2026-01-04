@@ -1,0 +1,177 @@
+# Concept
+
+Set: A data structure with elements that have no **order** and no **duplicates**
+
+## Types of Sets
+
+They are called various names depending on their characteristics.
+
+| Name      | Description                      |
+| --------- | :------------------------------- |
+| Finite Set| A set with a finite number of elements |
+| Infinite Set | A set with an infinite number of elements |
+| Empty Set | A set with no elements           |
+
+Mathematically, there are more sets, but let's focus on **mutually exclusive sets**.
+
+### Mutually Exclusive Sets
+
+Sets with no intersection
+![](/images/2025-07-20/Pasted%20image%2020250720145721.png)
+
+The picture above shows `A={1,2,3}`, `B={4,5,6,7}`. `A` and `B` have no overlapping elements, so they can be seen as having no intersection.
+
+![](/images/2025-07-20/Pasted%20image%2020250720145823.png)
+If there are common elements, they don't correspond to mutually exclusive sets.
+
+## Application Fields
+
+In coding tests, mutually exclusive sets are often used in graph algorithms. This is because you can check for cycles by checking if they're mutually exclusive. (This only applies to undirected graphs.)
+
+There are also other uses:
+
+1. Image Segmentation: Distinguishing between people and backgrounds
+2. Road Network Construction: Designing roads so they don't intersect
+3. Minimum Spanning Tree Algorithm: Checking for cycle formation when adding edges
+4. Game Development: Distinguishing so players and enemies don't overlap when they collide
+5. Clustering Tasks: Organizing tasks so they don't overlap
+
+## Implementation
+
+Sets are usually expressed as trees, and the representative operations are **Union** and **Find**. Let's first see how sets are expressed.
+
+### Expressing Sets as Trees Using Arrays
+
+To express sets using arrays, each set needs a representative element.
+
+> **Representative Element**
+>
+> An element among the set's elements that represents the set
+> Conceptually, a set's representative element and a tree's root node are the same.
+
+To express all sets in one array, you must follow the following rule.
+
+- **Array index** means **self**, **array value** means **parent node**.
+
+For example, if `set[3] = 9`, it means node 3's parent is 9. For root nodes, since there's no parent, the index itself is used as the value.
+
+![](/images/2025-07-20/Pasted%20image%2020250720151103.png)
+
+This naturally makes the minimum size of the array 1 larger than the largest value among the elements.
+
+#### Example
+
+If you manage root nodes well, you can express multiple sets in one array. (The number of sets is the number of root nodes)
+
+![](/images/2025-07-20/Pasted%20image%2020250720151432.png)
+
+| 0    | 1   | 2   | 3   | 4   | 5   | 6    | 7    | 8   | 9   |
+| ---- | --- | --- | --- | --- | --- | ---- | ---- | --- | --- |
+| null | 1   | 1   | 2   | 4   | 1   | null | null | 4   | 3   |
+
+#### Implementation Process
+
+##### 1. Initial State
+
+The initial state is where each element is set as its own root node. Let's set the value of indices not in the set to -1 arbitrarily.
+![](/images/2025-07-20/Pasted%20image%2020250720152506.png)
+As shown in the set part below, all elements are expressed as root nodes. (Index and value are the same)
+
+##### 2. Set Connection
+
+![](/images/2025-07-20/Pasted%20image%2020250720152949.png)
+Applying based on the given sets, it's structured as above. To check if node 9 belongs to set A with root node 1 or set B with root node 4, you can search in the direction `set[9]=3 set[3]=2 set[2]=1 set[1]=1`.
+
+We've checked how sets themselves are mainly implemented. Now let's check what operations are performed on these sets.
+
+### Union-Find Algorithm
+
+**union-find algorithm**
+
+The main operations used in set algorithms are union (merge) and find (search).
+
+#### find
+
+A method to search for what the root node of a specific node is
+
+Search recursively upward from a specific node to find the root node.
+
+1. Check the current node's parent node
+2. If the parent node is a root node while checking, end the search operation
+
+Let's give an example.
+![](/images/2025-07-20/Pasted%20image%2020250720153703.png)
+Let's find the root node of node 7 with find(7).
+
+![](/images/2025-07-20/Pasted%20image%2020250720153835.png)
+While going up by converting values to indices and going to parent nodes, repeat until a node where value and index are the same (root node) appears. find(7) goes through the following process to find the root node.
+
+```js
+set[7] = 6;
+set[6] = 2;
+set[2] = 1;
+set[1] = 1; // Value and index are the same (found)
+```
+
+However, this has worst-case time complexity of **O**(N).
+![](/images/2025-07-20/Pasted%20image%2020250720154108.png)
+You can use path compression for more optimization.
+
+##### Path Compression
+
+To make find operations efficient, you can use a method that reduces tree height while maintaining set form.
+![](/images/2025-07-20/Pasted%20image%2020250720154301.png)
+
+Since the goal of the find operation is to find the **root node**, it's a method of optimization by only putting the root node.
+
+#### Union
+
+An operation that merges two sets into one, making the **root nodes** of the two sets the same.
+
+1. Find root nodes of the two sets through find operations.
+2. Compare the values of the two found root nodes.
+3. Merge the two sets. (Make the root nodes of the two sets the same.)
+
+When there are two sets
+![](/images/2025-07-20/Pasted%20image%2020250720154725.png)
+
+After finding the root nodes of the two sets through find operations
+![](/images/2025-07-20/Pasted%20image%2020250720154749.png)
+
+You can make the sets into one by designating set A's root node 1 as the root node and making set B's root node 2 its child.
+![](/images/2025-07-20/Pasted%20image%2020250720154828.png)
+
+However, Union operations have the disadvantage that operation cost increases as tree depth increases.
+
+You can introduce the concept of **rank** to solve this.
+
+##### Rank
+
+The path length from the current node to the deepest node when based on the current node
+![](/images/2025-07-20/Pasted%20image%2020250720155206.png)
+
+When performing Union operations based on rank, the following process is followed.
+
+1. Get the root nodes of the two nodes. (find)
+2. **Compare** the **rank** of the root nodes with the following logic.
+   1. **If rank values are different**, change the root node with the larger rank value to the parent node of the smaller root node. (Tree depth doesn't get deeper.)
+   2. **If rank values are the same**, select any root node to change and add 1 to the final root node's rank.
+
+Explaining with a picture, when there are two sets
+![](/images/2025-07-20/Pasted%20image%2020250720155543.png)
+
+Compare set A's root node 1's `rank 2` with set B's root node 5's `rank 1`. Since set A has a larger rank, according to logic 1 explained above, connect set A's root node as parent and set B's root node as child, and don't change the rank.
+![](/images/2025-07-20/Pasted%20image%2020250720155804.png)
+
+# References
+
+https://product.kyobobook.co.kr/detail/S000213641007
+
+> [!SUMMARY]
+>
+> Algorithm concepts seem to disappear particularly quickly if you don't study them consistently.
+> I'll study consistently so I can fill them back in when they disappear.
+> If there are any incorrect knowledge, please leave a comment!
+>
+> Thank you for reading.
+

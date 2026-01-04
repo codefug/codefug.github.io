@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 const LOCALE_LABELS: Record<string, string> = {
   ko: "한국어",
   en: "English",
-  ja: "日本語",
 };
 
 export const LanguageSelector = memo(function LanguageSelector() {

@@ -1,0 +1,443 @@
+import VimeoPlayer from "@/components/mdx/vimeo.tsx";
+
+# Design
+
+![](/images/2024-07-21/Pasted%20image%2020240722113132.png)
+
+Analyzing the above design and thinking about how to divide it to use server components as much as possible in a Next.js way, it can be divided as follows.
+
+1. Main card at the top: Fetched from server during initial page rendering and supplemented with suspense for waiting time. (server component)
+   1. For the apply button, designed to branch in various ways depending on login status. (client component because event handlers are included)
+2. Recently viewed notices part: Designed as a `queue` data structure because when data comes in from the front, the data behind should disappear (server component)
+
+![](/images/2024-07-21/Pasted%20image%2020240722120938.png)
+
+(red : server component, blue: client component)
+
+## Server Component Design
+
+To design server components, they must be server components at the page level first. This is because if the top-level component is a client component, server components cannot be used.
+
+> RCC (React Client Component) cannot import server components. This is because the server environment does not exist in the browser.
+
+When using server components, Next.js uses a streaming method that can load each component separately.
+
+![](/images/2024-07-21/Pasted%20image%2020240722121441.png)
+
+The way to handle loading state by dividing by component is to use React's `Suspense`. If you wrap a server component with `Suspense` extended by Next, the component inside `fallback` replaces that server component until the server component is rendered.
+
+![](/images/2024-07-21/Pasted%20image%2020240722121816.png)
+
+> TTFB : Time to First Byte
+> FCP : Time to First Contentful Paint
+> TTI : Time to Interactive
+
+The picture above is the method before streaming. Because all components had to be rendered for the page to load, TTFB, FCP, and TTI could only be shown sequentially.
+
+Forcing users to wait until all loading screens are finished before entering the page is bound to be bad for UX.
+
+For example, entering Naver to read webtoons, but having to wait for all content like sports, entertainment, and news to be available just to press one webtoon page entry button is something that can be optimized even if the page performance is good and loads quickly.
+
+Next solved this with streaming.
+
+![](/images/2024-07-21/Pasted%20image%2020240722121647.png)
+
+Each component has its own part. By each having processes of receiving data, rendering HTML, and hydrating, TTFB, FCP, and TTI are all pulled forward, leading to page performance optimization.
+
+> In the Gheuppay project, we proceeded with development by utilizing this as much as possible.
+
+## Design Using Next Cookie
+
+In React, communication proceeds as follows.
+
+![](/images/2024-07-21/Pasted%20image%2020240722125032.png)
+
+In Next.js where a frontend server exists, communication proceeds simply as follows.
+
+![](/images/2024-07-21/Pasted%20image%2020240722124750.png)
+
+Browser > Frontend server (node.js environment) > Backend server. Because it moves like this, SSR, SSG, ISG, etc. became possible.
+
+Server components refer to frontend "server" components. This is also why streaming that can send data divided to the browser is possible.
+
+![](/images/2024-07-21/Pasted%20image%2020240722125217.png)
+
+When using Suspense, as shown in the picture above, fallback is sent first, and when server component rendering is finished on the frontend server, the component is sent to the browser and fallback is removed.
+
+In this work, I wanted to utilize this for recently viewed notices. The problem is that to finish server component rendering and receive Suspense, things inside server components must be server-related.
+
+> Server components: Cannot use client-related things. Cannot access Web API, document, web storage, etc., and cannot use state, hooks, etc. Instead, data that only exists on the server such as db, internal services, file systems, etc. can be accessed with async, await.
+
+I could have implemented recently viewed notices using web storage like localStorage or sessionStorage, but because it's web storage, it couldn't be used inside server components, and then Suspense couldn't be utilized.
+
+What I found for this was Next Cookie.
+
+In existing React, cookies could be accessed using document.cookie. (Only when not httpOnly) (https://ko.javascript.info/cookie)
+
+Because cookies are included in communication, they move as shown in the following picture
+
+![](/images/2024-07-21/Pasted%20image%2020240722125032.png)
+
+Cookie manipulation in Next is possible on the frontend server. https://nextjs.org/docs/app/api-reference/functions/cookies
+
+![](/images/2024-07-21/Pasted%20image%2020240722130714.png)
+
+You can CRUD cookies between the browser and backend server, and since this runs on the frontend server, it was usable inside server components.
+
+Based on this, functions were created and branches were divided.
+https://nextjs.org/docs/app/api-reference/functions/cookies
+
+Keep in mind that cookies were utilized for server component design to use Suspense, and detailed stories will be covered in the recently viewed notices design section.
+
+### Process to Next Cookie (Considerations)
+
+Actually, initially I tried to handle login status or recently viewed notices with global state management.
+
+Global state is fixed in that route. It is not saved when route change occurs.
+
+This is because zustand has a middleware called persist that stores data using localStorage even during route changes.
+
+There were many trials and errors to use this.
+
+I really looked up numerous references and found ways like not doing hydrate and then doing rehydrate on the client side to use zustand that runs on both client and server in Next.
+
+```tsx
+"use client";
+
+import useUserStore from "@/stores/create-store";
+import { useEffect } from "react";
+
+// Execute rehydrate on mount.
+const Hydration = () => {
+  useEffect(() => {
+    useUserStore.persist.rehydrate();
+  }, []);
+
+  return null;
+};
+
+export default Hydration;
+```
+
+This was using so-called full-body contortions.
+
+I focused on global "state". The zustand developer often said in GitHub issues that understanding would be easier if you know that "state" does not exist on the server. In addition, a team member said that there's actually localStorage, but it doesn't seem different from global state. Moreover, zustand also uses rehydrate on the client side and utilizes localStorage, so it could only be used in client components.
+
+I couldn't answer easily either and focused on "state".
+
+I focused on whether the state being stored now needs to change rendering in one route? Or whether it just needs to be fetched once as global data and can be changed.
+
+I learned that data that should be managed in the browser is "simple data like notice information, login status" rather than "state", and zustand was deleted from the Gheuppay project, and in this process, I met Next cookie which can also be utilized on the server.
+
+> In the process of solving these problems, I strongly came to think that technology is ultimately just a tool. If I had thought more about the meaning of global state management and proceeded with design, I wouldn't have used a tool like zustand.
+
+# Page Implementation
+
+Now let's look at implementation in earnest with code. I'll talk about the reasons for writing the code and related trouble issues.
+
+## Overall Page Structure Design
+
+```tsx
+export default async function page({ params }: PageProps) {
+  return (
+    <div className="base-container">
+      <Suspense fallback={<NoticeDetailCardSkeleton />}>
+        <NoticeDetailCard shopId={params.shop_id} noticeId={params.notice_id} />
+      </Suspense>
+      <div className="my-12">
+        <h2 className="text-l py-8 font-bold md:text-2xl">최근에 본 공고</h2>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <Suspense
+            fallback={[1, 2, 3, 4, 5, 6].map((value) => (
+              <NoticeCardSkeleton key={value} />
+            ))}
+          >
+            <RecentNotices
+              shopId={params.shop_id}
+              noticeId={params.notice_id}
+            />
+          </Suspense>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+This is the overall page structure.
+
+I created skeletons for the main card and recently viewed notices and made them fallbacks of Suspense so that skeletons can be seen before server components are rendered. Since it's close to a UI component, I'll move on quickly.
+
+## Main Card Design
+
+```tsx
+export default async function NoticeDetailCard({
+  shopId,
+  noticeId,
+}: NoticeDetailCardProps) {
+  const noticeDetail = await getShopNoticeDetail(shopId, noticeId);
+  const type = await getCookie("type");
+  const address = await getCookie("address");
+  const userId = await getCookie("userId");
+
+  const hourlyWage = calculateWagePercentage(noticeDetail.item.hourlyPay);
+  const date = dateFormat(noticeDetail.item.startsAt);
+  const isLater: boolean = compareWorkingDateDiffFromNow(
+    noticeDetail.item.startsAt,
+    noticeDetail.item.workhour,
+  );
+  const userApplication =
+    typeof userId === "string" && type === "employee"
+      ? await getUsersUserIdApplications(userId)
+      : null;
+//...
+```
+
+This is NoticeDetailCard that extracts and uses shopId and noticeId from params. I could receive user information using cookies and proceeded with rendering through this.
+
+Through this information, branch processing of the apply button was possible from when creating the server component.
+
+```tsx
+"use client"
+//...
+export default function RegisterButton({
+  address,
+  userApplication,
+  shopId,
+  noticeId,
+}: RegisterButtonProps) {
+  if (userApplication === null) {
+    return (
+      <LinkButton className="" href={"/login"}>
+        신청하기
+      </LinkButton>
+    );
+  }
+
+  const isRegister = userApplication.items.some((obj) => {
+    return (
+      obj.item.notice.item.id === noticeId && obj.item.status === "pending"
+    );
+  });
+
+  const isRejected = userApplication.items.some((obj) => {
+    return (
+      obj.item.notice.item.id === noticeId && obj.item.status === "rejected"
+    );
+  });
+  //...
+```
+
+By passing down data that utilized cookies as props like above, the apply button, which is a client component, was able to have various function expansions like modal functionality, Link, etc.
+
+## Recently Viewed Notices Design
+
+This is the purpose of writing this article and the part I put the most effort into.
+
+First, the logic for storing notices should be a `queue` data structure. If the function that stores has this, users just need to send arguments. Since it's related to cookies, I tried to make it clean with one function, hiding specific implementation and revealing only what's needed.
+
+```tsx
+"use server";
+//...
+// Get notices.
+export const getNotices = async (): Promise<NoticeIds[]> => {
+  const currentNotice: NoticeIds[] = JSON.parse(
+    (await getCookie("notices")) || "[]",
+  );
+  return currentNotice;
+};
+
+// Internal function that parses notices
+const setNotices = async (noticesIdList: NoticeIds[]): Promise<void> => {
+  await setCookie("notices", JSON.stringify(noticesIdList));
+};
+
+// Logic to store notices using queue data structure
+export async function postNotice(
+  notice: GetNotices["items"][0]["item"],
+): Promise<void> {
+  const currentNotice: NoticeIds[] = await getNotices();
+  const newNoticeId = { id: notice.id, shopId: notice.shop.item.id };
+
+  // Check for duplicates
+  const isDuplicated = currentNotice.some((n) => n.id === notice.id);
+  if (isDuplicated) {
+    await setNotices([
+      newNoticeId,
+      ...currentNotice.filter((n) => n.id !== notice.id),
+    ]);
+  } else if (currentNotice.length >= 7) {
+    await setNotices([newNoticeId, ...currentNotice.slice(0, 6)]);
+  } else {
+    await setNotices([newNoticeId, ...currentNotice]);
+  }
+}
+```
+
+By structuring the data storage logic like above, I simplified it so that when getting notices, it's `getNotices()` and when storing, it's `postNotice(data)` format.
+
+Since it automatically handles duplicate processing and data management, subsequent work became faster.
+
+```tsx
+export default async function RecentNotices({
+  shopId,
+  noticeId,
+}: ReCentNoticesProps) {
+  const notices = await getNotices();
+  return (
+    <>
+      <PostNoticesEffect shopId={shopId} noticeId={noticeId} />
+      {notices &&
+        notices.length > 1 &&
+        notices.map(async (notice) => {
+          if (notice.id === noticeId) return null; // early return
+          const cardContents = await fetchNotices(notice);
+          return (
+            <LinkButton
+              noticeId={cardContents.id}
+              shopId={cardContents.shop.item.id}
+              key={cardContents.id}
+            >
+              <NoticeCard
+                address1={cardContents.shop.item.address1}
+                closed={cardContents.closed}
+                hourlyPay={cardContents.hourlyPay}
+                noticeId={cardContents.id}
+                imageUrl={cardContents.shop.item.imageUrl}
+                name={cardContents.shop.item.name}
+                startsAt={cardContents.startsAt}
+                workhour={cardContents.workhour}
+              />
+            </LinkButton>
+          );
+        })}
+    </>
+  );
+}
+```
+
+You can see there's a part called PostNoticeEffect. This is to store data using UseEffect.
+
+The reason for using it this way is because rendering proceeds in the following process.
+
+1. Enter the page.
+2. Recently viewed notices are rendered.
+3. Since entry occurred, add the currently viewed notice to cookies as well.
+4. Recently viewed notices re-render (change) due to cookie change.
+
+This showed data changing once more after server component rendering, and I considered this a problem.
+
+```tsx
+export function PostNoticesEffect({
+  shopId,
+  noticeId,
+}: {
+  shopId: string;
+  noticeId: string;
+}) {
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getShopNoticeDetail(shopId, noticeId);
+      await postNotice(data.item);
+    };
+    fetchData();
+  }, []);
+  return <></>;
+}
+```
+
+By inserting the code above, postNotice was executed during client rendering to put data in cookies, and during re-rendering that occurs when cookies change,
+
+```tsx
+if (notice.id === noticeId) return null; // early return
+```
+
+I blocked the currently viewed notice with early return so users don't feel the rendered change.
+
+This way, because it's a server component, it renders very quickly and can even express skeletons due to suspense.
+
+<VimeoPlayer id="988246692" />
+
+### Troubleshooting
+
+#### Async functions should not be put in handlers.
+
+I found an error where the page freezes when rapidly clicking notice cards.
+
+```tsx
+//...
+export default function NoticeCard({
+  hourlyPay,
+  startsAt,
+  workhour,
+  noticeId,
+  shopId,
+  imageUrl,
+  name,
+  address1,
+  content,
+  closed,
+}: NoticeCardProps) {
+  const hourlyWage = calculateWagePercentage(hourlyPay);
+  const date = dateFormat(startsAt);
+  const isLater: boolean = compareWorkingDateDiffFromNow(startsAt, workhour);
+  const handleClick = async () => {
+    if (content) {
+      await postNoticeAction(content);
+    } else {
+      await redirectAction(`/admin/notice-detail/${shopId}/${noticeId}`);
+    }
+  };
+//...
+```
+
+I thought the problem occurred here where events are passed with branch processing by content,
+
+but in the current post case, it's managed with cookies, and because the function that sets this cookie was in the button's event handler, continuously pressing the setter function asynchronously
+
+caused server overload and the page froze.
+
+Rapid clicking event handler > async function that stores cookies continuously executed > phenomenon where content disappears at a specific point > handled by middleware due to redirectAction() function (if content doesn't exist, moves to owner page, but since not owner, forcibly moves to list page)
+
+##### Solution
+
+I simply changed it to a method of storing when accessing the page. It looks short, but the process of finding it out was a bit painful. I thought I need to think more about writing code well.
+
+#### There are limits to storing in cookies.
+
+Currently, I'm storing the id of notice cards, but originally I used to put notice data itself in cookies.
+
+However, there was a problem where objects couldn't be stored beyond 3, and I, who was developing with cookie omnipotence, remembered that cookie data is up to 4MB.
+
+![](/images/2024-07-21/Pasted%20image%2020240701225259.png)
+
+Cookie size was around 3327 when 3 objects were stored, and when I checked, the unit was Byte, meaning cookies that can accept up to 4096Byte couldn't accept more.
+
+##### Solution
+
+After thinking about it, I changed it to a logic that stores id and fetches the latest data using that id on the side that retrieves it, solving the problem.
+
+```tsx
+//...
+ notices.length > 1 &&
+        notices.slice(1).map(async (notice, index: number) => {
+          const newCardContents = await fetchNotices(notice);
+//...
+```
+
+Now, because only id is stored in cookies, I could reduce the amount of data included in communication and store necessary data appropriately.
+
+This part that could be seen in the entire code was code written to solve this problem.
+
+# reference
+
+https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming
+
+https://nextjs.org/docs/app/api-reference/functions/cookies
+
+https://ko.javascript.info/cookie
+
+> This is an article containing the methods I considered, problems I encountered, and their solution processes during the Gheuppay project!
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

@@ -1,0 +1,734 @@
+# Login
+
+## Login State Management
+
+The biggest difference between state management and the existing Context API is that the Context API only injects state, which can cause unnecessary re-renders and poor performance. Using a state management library has the advantage of allowing components to use global state without causing re-renders.
+
+### Login State Management Using Existing Context (Global)
+
+```tsx
+import React, { createContext, useState } from "react";
+
+type User = {
+  accessToken: string;
+};
+
+export const AuthContext = createContext<{
+  user: User | null;
+  login: (accessToken: string) => void;
+  logout: () => void;
+}>({
+  user: null,
+  login: (accessToken: string) => {},
+  logout: () => {},
+});
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+
+  const login = (accessToken: string) => {
+    localStorage.setItem("accessToken", accessToken);
+    document.cookie = `accessToken=${localStorage.getItem("accessToken")}`;
+    setUser({ accessToken });
+  };
+  const logout = () => setUser(null);
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => React.useContext(AuthContext);
+```
+
+This is a method of implementing login using Context.
+However, as mentioned before, using `useContext` is for injection to eliminate props drilling, which can cause unnecessary re-renders and poor performance.
+This time, let's apply Zustand, one of the global state management libraries, simply.
+
+### zustand
+
+![alt text](/images/2024-06-17/Pasted%20image.png)
+
+A small, fast, and scalable state management library.
+It has a hook-based API and follows conventions similar to Flux (similar logic to Redux).
+
+#### Actual Application
+
+Since login state is information that must be maintained even when routes change, we use the `persist` middleware to store it in localStorage.
+
+```tsx
+import Cookies from "js-cookie";
+import { create, StateCreator } from "zustand";
+import { persist } from "zustand/middleware";
+
+type User = {
+  accessToken: string;
+};
+
+type UserState = {
+  user: User | null;
+  login: (accessToken: string, refreshToken: string) => void;
+  logout: () => void;
+};
+
+export const useStoreSlice: StateCreator<UserState> = (set) => ({
+  user: null,
+  login: (accessToken: string) => {
+    return set(() => ({ user: { accessToken } }));
+  },
+  logout: () => set(() => ({ user: null })),
+});
+
+const persistedUserStore = persist<UserState>(useStoreSlice, {
+  name: "user",
+});
+
+export const useUserStore = create(persistedUserStore);
+```
+
+Now you can import this store in any component where you want to use it.
+
+```tsx
+// Validate format before sending network request
+export function LoginPage() {
+  const login = useUserStore((state) => state.login);
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(SignInSchema) });
+```
+
+In the code above, you can import the entire store with `useUserStore()`, but this can cause re-renders of all components connected to the store, so it's better to avoid this.
+
+Try to import them one by one as shown above.
+
+Now the function that stores in localStorage, tracks it as state, and changes components accordingly is complete.
+
+Next, let's think about refresh tokens.
+
+> A refresh token is another token used to obtain an access token. It has a longer expiration time than an access token.
+> Usually stored in session storage (disappears when the browser closes), localStorage (exists until expiration time if same Origin), or cookies (used in network communication. Can be used conveniently with libraries like js-cookies).
+> To manage access tokens and refresh tokens separately, we stored the refresh token in cookies and the access token in localStorage. (Storing in cookies is more secure due to HTTPS.)
+
+## RTR
+
+> RTR was not used in the end, but if you want to see the process I analyzed myself, please take a look, otherwise you can skip to React-hook-form!
+
+![](/images/2024-06-17/Pasted%20image%2020240614123700.png)
+
+Usually refresh and access are stored in localStorage and cookies. By default, access has 30 minutes to 1 hour, and refresh token has 2 weeks.
+
+Replacing the Access Token with a Refresh Token when it expires
+
+![](/images/2024-06-17/Pasted%20image%2020240614123857.png)
+
+Client auth request > Auth0 verifies and sends verification code > Request access token using verification code > Auth0 gives access token, refresh token > When access token expires > Request access token from Auth0 using refresh token > Auth0 gives new access token and new refresh token.
+
+Since it keeps refreshing, it can protect against **replay attacks** where access tokens are requested using already used tokens.
+
+**Replay Attack**
+An attack where an attacker intercepts a previously sent message and resends it to obtain the same credentials as the original message
+
+#### RTR Implementation
+
+##### Example Analysis
+
+The following is an example from the referenced document.
+
+```typescript
+const refreshTokenRotation = () => {
+  let accessToken: string = null;
+  // Create accessToken
+
+  let expirationTime: number = null;
+  // Create expirationTime
+
+  return {
+    getAccessToken: async () => {
+      const refreshToken = getRefreshToken();
+      // Get refreshToken using getRefreshToken
+
+      if (!accessToken || expirationTime < new Date().getTime()) {
+        // If accessToken doesn't exist or expirationTime is less than now (expired)
+
+        await axios
+          .post("/api/refresh", {
+            refreshToken,
+          })
+          // Refresh request, with token
+          .then((res) => {
+            // Store information with received response
+            accessToken = res.data.accessToken;
+            expirationTime = res.data.expirationTime;
+            setRefreshToken(res.data.refreshToken);
+          })
+          .catch(() => {
+            // If it fails, express that login has expired
+            accessToken = null;
+            expirationTime = null;
+            alert("로그인이 만료 되었습니다.");
+          });
+      }
+      return accessToken;
+    },
+    setAccessToken: (at: string, et: number) => {
+      // Set access token
+      accessToken = at;
+      expirationTime = et;
+    },
+    deleteTokens() {
+      // Initialize and delete refresh token
+      accessToken = null;
+      expirationTime = null;
+      deleteRefreshToken();
+    },
+  };
+};
+```
+
+After analysis was complete, I connected it to the actual code and applied it.
+
+##### Applied Code
+
+```tsx
+// shared/util/RTR.ts
+import { authInstance } from "../api/axios";
+import { deleteRefreshToken, getRefreshToken, setRefreshToken } from "./token";
+import { InternalAxiosRequestConfig } from "axios";
+
+// Refresh Token Rotation
+export const refreshTokenRotation = () => {
+  let accessToken: string | null = null;
+  // Create accessToken
+
+  let expirationTime: number | null = null;
+  // Create expirationTime
+
+  const setAccessToken = (at: string, et: number) => {
+    // Set access token
+    accessToken = at;
+    expirationTime = et;
+  };
+
+  const deleteTokens = () => {
+    // Initialize and delete refresh token
+    accessToken = null;
+    expirationTime = null;
+    deleteRefreshToken();
+  };
+
+  const moveHome = () => {
+    window.location.href = "/";
+  };
+
+  const isExpired = () => {
+    const now = new Date().getTime();
+    return (expirationTime as number) < now;
+  };
+
+  const getNewTokens = async () => {
+    const refreshToken = getRefreshToken();
+    // Get refreshToken using getRefreshToken
+    await authInstance
+      .post("/auth/refresh-token", {
+        refreshToken,
+      })
+      // Refresh request, with token
+      .then((res) => {
+        // Store information with received response
+        const {
+          data: { accessToken, expirationTime, refreshToken },
+        } = res;
+        setAccessToken(accessToken, expirationTime);
+        setRefreshToken(refreshToken);
+      })
+      .catch(() => {
+        // If it fails, express that login has expired
+        deleteTokens();
+        alert("로그인이 만료 되었습니다.");
+        moveHome();
+      });
+  };
+
+  return {
+    setAuthHeader: async function (
+      config: InternalAxiosRequestConfig,
+    ): Promise<InternalAxiosRequestConfig> {
+      if (!accessToken || isExpired()) {
+        await getNewTokens();
+      }
+      if (config !== undefined && config.headers !== undefined) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      } else {
+        console.error("axios config에 문제 발생");
+      }
+      return config;
+    },
+  };
+};
+```
+
+```tsx
+import axios from "axios";
+import { BASE_URL } from "../constants/constants";
+import { refreshTokenRotation } from "../util/RTR";
+
+const instance = axios.create({ baseURL: BASE_URL });
+const authInstance = axios.create({ baseURL: BASE_URL });
+const { setAuthHeader } = refreshTokenRotation();
+authInstance.interceptors.request.use(setAuthHeader);
+// RTR applied to interceptor
+
+export { authInstance, instance };
+```
+
+Now the axios instance used for network requests requiring authorization is complete. It automatically checks the accessToken and re-adjusts using the refreshToken if it doesn't exist.
+
+```tsx
+import { useStore } from "@/app/store";
+import { postSignIn } from "@/shared/api/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FieldValues, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
+
+// Create schema
+const schema = z.object({
+  // Specify form element validation
+  email: z.string().email({ message: "잘못된 이메일 형식입니다" }), // Specify string to put in error.[name].message
+  password: z.string().min(8, { message: "비밀번호를 8자 이상 입력해주세요" }),
+});
+
+// Validate format before sending network request
+export function LoginPage() {
+  const { login } = useStore();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(schema) });
+  // Specify resolver to use zod in react-hook-form
+
+  // Cannot use async itself.
+  const onSubmit = (d: FieldValues) => {
+    // Receive FieldValues from handleSubmit and process login.
+    // Login processing ends with network request > storing accessToken in zustand store
+    // The login itself is designed so that it contains logic to store the value in localStorage and cookie and change state, so you only need to send the value to login.
+    (async () => {
+      const data = await postSignIn({
+        email: d.email,
+        password: d.password,
+      });
+      if (!data) return;
+      login(data.accessToken);
+      // Move to root route when login is complete
+      navigate("/");
+    })();
+  };
+
+  return (
+    <>
+      {/* Send event handler as submit event */}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Specify email using register */}
+        <input {...register("email")} />
+        {/* Find element with email in zod and extract message (error) inside it */}
+        {errors.email?.message && <p style={{color:"red"}}>errors.email?.message as string}</p>}
+        <input {...register("password")} />
+        {errors.password?.message && (
+          <p style={{color:"red"}}>{errors.password?.message as string}</p>
+        )}
+        {/* Submit form event */}
+        <input type="submit" />
+      </form>
+      <Link to="/signup">회원가입</Link>
+    </>
+  );
+}
+```
+
+> However, the above process requires communication with the backend. Logic is needed to send both refresh token and access token when a refresh token is received, and furthermore, when accessing simultaneously from two browsers (web, mobile), if one device receives a refresh token, the other device's refresh token becomes stale and logs out.
+>
+> <s>After countless struggles</s> I learned how login is generally handled
+> and decided to apply all the technologies I learned in the process.
+
+## react-hook-form
+
+![](/images/2024-06-17/Pasted%20image%2020240721171036.png)
+
+Form validation is always a remaining task.
+
+When I first encountered forms, I thought "Can't I just put state in each input?", but this causes unnecessary re-renders.
+
+The process of preventing this by making everything an uncontrolled component to reduce re-renders and applying validation is repetitive and painful.
+
+Can't we automate all processes? A library was born.
+
+The official documentation also shows it simply with a "just try it" feeling rather than explanation. The following is the code from "get started".
+
+```tsx
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type Inputs = {
+  example: string;
+  exampleRequired: string;
+};
+
+export default function App() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  console.log(watch("example")); // watch input value by passing the name of it
+
+  return (
+    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* register your input into the hook by invoking the "register" function */}
+      <input defaultValue="test" {...register("example")} />
+
+      {/* include validation with required or other standard HTML validation rules */}
+      <input {...register("exampleRequired", { required: true })} />
+      {/* errors will return when field validation fails  */}
+      {errors.exampleRequired && <span>This field is required</span>}
+
+      <input type="submit" />
+    </form>
+  );
+}
+```
+
+Just by looking at the code above and following it, simple validation is actually complete.
+
+However, there are shortcomings. The process of writing validation in the config that goes into register is also tedious.
+
+Also, I want various options to be included, and I want to separate these schemas to improve readability.
+
+These processes are also tedious. A schema library was born.
+
+## react-hook-form zod resolver
+
+![](/images/2024-06-17/Pasted%20image%2020240721171054.png)
+
+<s>
+  This is why I wrote this article. I felt like a cool developer. What kind of name is zod?
+</s>
+
+> TypeScript-first schema validation with static type inference
+
+That is, it's for static type inference.
+
+This also has a "just try it" feeling.
+
+So I tried it.
+
+```tsx
+import { z } from "zod";
+
+export const SignUpSchema = z
+  .object({
+    nickname: z.string().min(2, { message: "이름을 2자 이상 입력해주세요" }),
+    email: z.string().email({ message: "잘못된 이메일 형식입니다" }),
+    password: z
+      .string()
+      .min(8, { message: "비밀번호를 8자 이상 입력해주세요" }),
+    passwordConfirmation: z
+      .string()
+      .min(8, { message: "비밀번호를 8자 이상 입력해주세요" }),
+  })
+  .superRefine(({ passwordConfirmation, password }, ctx) => {
+    if (passwordConfirmation !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "비밀번호가 일치해야 합니다.",
+        path: ["passwordConfirmation"],
+      });
+    }
+  });
+
+export type SignUpType = z.infer<typeof SignUpSchema>;
+```
+
+This is a schema related to sign-up. As you can see, I separated the file to separate the schema and the react-hook-form that uses that schema.
+
+Code readability also increases, and maintainability increases because you only need to change the schema.
+
+Since the purpose is login, let's implement login-related schema and react-hook-form processing.
+
+```tsx
+import { z } from "zod";
+
+export const SignInSchema = z.object({
+  email: z.string().email({ message: "잘못된 이메일 형식입니다" }),
+  password: z.string().min(8, { message: "비밀번호를 8자 이상 입력해주세요" }),
+});
+
+export type SignInInput = z.infer<typeof SignInSchema>;
+```
+
+First, it's a string and I applied basic email validation. Originally, there was a method called noneEmpty for required handling, but it was deprecated and can now be handled with min.
+
+```tsx
+export function LoginPage() {
+  const login = useUserStore((state) => state.login);
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(SignInSchema) });
+//...
+return (
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <input {...register("email")} />
+          {errors.email?.message && (
+            <p style={{ color: "red" }}>{errors.email?.message as string}</p>
+          )}
+        </div>
+        <div>
+          <input {...register("password")} type="password" />
+          {errors.password?.message && (
+            <p style={{ color: "red" }}>{errors.password?.message as string}</p>
+          )}
+        </div>
+        <input type="submit" />
+      </form>
+      <Link to="/signup">회원가입</Link>
+    </>
+```
+
+Apply the schema by putting it in a function called zodResolver as shown in the code above.
+
+Is it done now?
+
+No. Since RTR failed, I have to embark on another refresh token journey!
+
+Existing API requests used axios to simply handle headers or basic settings.
+
+Since refresh tokens are really a basic web concept, I thought axios might have created something to handle it, so I read the documentation thoroughly.
+
+And I found interceptors.
+
+## axios interceptor
+
+![](/images/2024-06-17/Pasted%20image%2020240721171000.png)
+
+```tsx
+// Add a request interceptor
+axios.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  },
+);
+
+// Add a response interceptor
+axios.interceptors.response.use(
+  function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+  },
+  function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  },
+);
+```
+
+This is code from the official documentation. It's really simple, but there are many things to interpret, such as performing operations by passing config and throwing errors to operations with Promise.reject(error).
+
+As always, I decided to try it first.
+
+```tsx
+import { useUserStore } from "@/app/store";
+import { BASE_URL } from "../constants/constants";
+
+import axios, {
+  AxiosError,
+  CreateAxiosDefaults,
+  InternalAxiosRequestConfig,
+} from "axios";
+import { postAuthRefreshToken } from "./api";
+
+// Set retry confirmation property
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+// Basic settings
+const baseConfig: CreateAxiosDefaults = {
+  baseURL: `${BASE_URL}`,
+};
+
+// Instance without interceptors that exposes cookies and doesn't need authentication
+export const instanceWithoutInterceptors = axios.create(baseConfig);
+
+// Instance that needs authentication
+export const instance = axios.create(baseConfig);
+
+instance.interceptors.request.use(
+  // Execute before request
+  function (config) {
+    // Get token
+    const accessToken = useUserStore.getState().user?.accessToken;
+
+    // Add token to header
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    // Return config
+    return config;
+  },
+  // Execute when request error occurs
+  function (error) {
+    return Promise.reject(error);
+  },
+);
+
+instance.interceptors.response.use(
+  // Execute when response succeeds
+  function (response) {
+    return response;
+  },
+  // Execute when response error occurs
+  async function (error: AxiosError) {
+    // Get error information
+    const originalRequest: CustomAxiosRequestConfig | undefined = error.config;
+
+    // Retry when token expires
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        // Reissue token
+        const response = await postAuthRefreshToken();
+        // Update token
+        useUserStore.setState({
+          user: { accessToken: response.accessToken },
+        });
+
+        // Add token to header
+        originalRequest.headers.Authorization = `Bearer ${response.accessToken}`;
+
+        // Retry
+        return instance(originalRequest);
+      } catch (error) {
+        // When token has expired
+        if (error instanceof AxiosError && error.response?.status === 403) {
+          // Logout
+          useUserStore.getState().logout();
+          return;
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+```
+
+First, not all instances need authentication. There is data that can be accessed without an accessToken, so we separate them. (instanceWithoutInterceptors)
+
+We need to branch into two types.
+
+### Before Request
+
+Since we're storing accessToken with zustand, we retrieve it and put the token in Authorization.
+
+### After Request
+
+The successful case is the same, but when it fails, we need to get an accessToken using a refresh token.
+
+It's usually expressed as 401 (Unauthorization Error), and since our API is the same, we handle it accordingly.
+
+After that, you can put the instance itself in the return to retry.
+
+This way, due to `_retry`, it only refreshes the access token using the refresh token once, retries the request, and if not, it goes to Promise.reject and finishes.
+
+## Result
+
+You can confirm that the accessToken goes into localStorage at the same time as login
+
+![](/images/2024-06-17/Pasted%20image%2020240721173745.png)
+
+You can confirm that refreshToken is properly in cookies.
+
+![](/images/2024-06-17/Pasted%20image%2020240721173806.png)
+
+When the accessToken expires, it appears in the network tab as follows.
+
+![](/images/2024-06-17/Pasted%20image%2020240721174651.png)
+
+1. Request requiring authentication fails.
+2. Send refresh-token request. Update access token.
+3. Send request requiring authentication again.
+4. Send authentication based on request requiring authentication.
+
+## Afterword
+
+I learned about login, a small but huge feature.
+
+There are still remaining tasks like auto-login or processing components like headers that detect this and re-render,
+
+but I think this is the core part of authentication-related aspects. (OAuth or OIDC remain)
+
+I was able to confirm the rich frontend environment where various libraries fill parts that would be very difficult to implement in vanilla.
+
+I think this is the part where you shouldn't hesitate when learning libraries. Let's approach it with the mindset that it's just a tool.
+
+## Reference
+
+<a href="https://docs.pmnd.rs/zustand/getting-started/introduction">
+  zustand official documentation
+</a>
+
+<a href="https://react-hook-form.com/">react-hook-form official documentation</a>
+
+<a href="https://zod.dev/">zod official documentation</a>
+
+<a href="https://github.com/react-hook-form/resolvers?tab=readme-ov-file#zod">
+  react-hook-form/zod resolver
+</a>
+
+<a href="https://axios-http.com/docs/interceptors">axios interceptors</a>
+
+<a href="https://github.com/colinhacks/zod/discussions">zod discussion</a>
+
+<a href="https://velog.io/@chchaeun/%EC%9D%B8%EC%A6%9D%EA%B3%BC">
+  개발새발.log
+</a>
+
+<a href="https://medium.com/@kirankumal714/implementing-refresh-token-in-react-using-axios-zustand-and-react-query-a5dbac2944b6">
+  Kiran Kumal Medium
+</a>
+
+<a href="https://auth0.com/docs/secure/tokens/refresh-tokens/refresh-token-rotation#maintain-user-sessions-in-spas">
+  auth0 by Okta
+</a>
+
+> This is material for personal learning!
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

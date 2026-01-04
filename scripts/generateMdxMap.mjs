@@ -15,12 +15,11 @@ function generateMdxMap() {
   // 각 폴더에 대한 dynamic import 코드 생성
   let code = `// 자동 생성된 파일입니다. 직접 수정하지 마세요.\n\n`;
 
+  code += `import type { MDXModule } from "mdx/types";\n`;
   folders.forEach((folder) => {
     const importName = `MDX_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
-    code += `import * as ${importName} from "@/markdown/${folder}/content.mdx";\n`;
+    code += `import * as ${importName} from "@/markdown/${folder}/ko/content.mdx";\n`;
   });
-
-  code += `import { MDXModule } from "mdx/types";\n`;
 
   code += `\nexport const mdxMap: Record<string, MDXModule> = {\n`;
 
