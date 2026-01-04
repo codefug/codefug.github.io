@@ -64,7 +64,7 @@ const RoleAnimation = ({ className }: { className?: string }) => {
       wrapper="div"
       speed={80}
       cursor={false}
-      className={cn("mb-4 font-bold text-lg text-primary", className)}
+      className={cn("mb-4 h-11 font-bold text-lg text-primary", className)}
     />
   );
 };
