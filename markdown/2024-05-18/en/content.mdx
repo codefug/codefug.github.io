@@ -1,0 +1,354 @@
+## Team Project Setup
+
+### Role
+
+Common component development: simple UI components like infinite scroll and Button
+
+List page widget development: Skeleton related to voting lists
+
+CI/CD: Implemented logic to automatically deploy by responding to PR events through Netlify and GitHub Actions
+
+### Tasks by Period
+
+<img src="/images/2024-05-18/plan.png" alt="plan" />
+
+### Folder Structure
+
+The FSD structure we previously used requires all team members to understand it perfectly to be effective, so after discussions with the team, we modified it slightly for use.
+
+```terminal
+📦src
+    ├── 📂main.jsx
+    ├── 📂main.scss
+    ├── 📂app/
+    │   ├── 📜index.js
+    │   ├── 📜index.scss
+    │   └── 📂pages/
+    │       ├── 📂MyPage/
+    │       │   ├── 📜index.jsx
+    │       │   └── 📂widgets/
+    │       │       ├── 📂<이름>/
+    │       │       │   ├── 📜index.jsx
+    │       │       │   └── 📜index.scss
+    │       │       └── ...
+    │       ├── 📂ListPage/
+    │       │   ├── 📜index.jsx
+    │       │   └── 📂widgets/
+    │       │       ├── 📂<이름>/
+    │       │       │   ├── 📜index.jsx
+    │       │       │   └── 📜index.scss
+    │       │       └── ...
+    │       └── 📂LandingPage/
+    │           ├── 📜index.jsx
+    │           └── 📂widgets/
+    │               ├── 📂<이름>/
+    │               │   ├── 📜index.jsx
+    │               │   └── 📜index.scss
+    │               └── ...
+    └── 📂common/
+        ├── 📂api/
+        │   └── 📜index.js
+        ├── 📂assets/
+        │   ├── 📂icons/
+        │   │   ├── 📜<이름.jsx>
+        │   │   └── ...
+        │   └── 📂images/
+        │       ├── 📜<이름.png>
+        │       ├── 📜<이름.jpg>
+        │       └── ...
+        ├── 📂hooks/
+        │   ├── 📜<이름.js>
+        │   └── ...
+        ├── 📂models/
+        │   ├── 📜<이름.js>
+        │   └── ...
+        ├── 📂utilities/
+        │   ├── 📜<이름.js>
+        │   └── ...
+        └── 📂widgets/
+            ├── 📂<이름>/
+            │   ├── 📜index.jsx
+            │   └── 📜index.scss
+            └── ...
+```
+
+<br />
+
+## Feature Implementation for UX Enhancement
+
+### infinite scroll
+
+#### Concept
+
+This is a technique that improves UX by using the Intersection Observer API, which detects when an element appears within a frame, to request a fetch when scrolling down and the element becomes visible.
+
+If we send all data-related fetch requests at the beginning to construct the screen, it takes unnecessary time and slows down rendering itself, so this is an essential feature for pages like list pages that need to receive a lot of data.
+
+#### useInView
+
+```jsx
+const rootRef = useRef(null);
+const { ref, inView, entry } = useInView({
+  threshold: 1,
+  root: rootRef.current,
+});
+
+useEffect(() => {
+  if (inView) setMoreItems((prevMoreItems) => prevMoreItems + 5);
+}, [inView]);
+
+return (
+  <ChartList $numbers={numberOfItem} ref={rootRef}>
+    {status.isLoading ? (
+      <div>로딩화면</div>
+    ) : (
+      <>
+        {sortedItems?.map((item, index) => (
+          <IdolChartCard key={item.id} item={item} index={index} />
+        ))}
+        {noMoreItem && (
+          <RefreshSection ref={ref}>
+            <div>{inView}</div>
+            <RefreshImg src={refresh} />
+          </RefreshSection>
+        )}
+      </>
+    )}
+  </ChartList>
+);
+```
+
+The useInView library first marks an element selected with rootRef as the root (the element that serves as the frame's reference) by putting it in the root option, then
+
+specifies the visible ratio (the ratio visible within the frame) with threshold.
+
+When the ref of useInView is visible from the root by the threshold amount, inView becomes true, otherwise it becomes false.
+
+#### Implementing infinite scroll by connecting with fetch
+
+```jsx
+export default function useInfiniteScroll(fetchFunction, options) {
+  const rootRef = useRef(null);
+  const [items, setItems] = useState([]);
+  const [cursor, setCursor] = useState(0);
+  const [status, wrappedFunction] = useGetData(fetchFunction);
+  const { ref, inView } = useInView({
+    threshold: 0,
+    root: rootRef.current,
+  });
+  async function executeRefresh() {
+    const { idols, nextCursor } = await wrappedFunction({
+      ...options,
+      cursor,
+    });
+    if (!idols) return;
+    setCursor(nextCursor);
+    setItems([...items, ...idols]);
+  }
+
+  useEffect(() => {
+    if (inView && cursor !== null && cursor !== 0) {
+      executeRefresh();
+    } else if (items.length === 0) {
+      executeRefresh();
+    }
+  }, [inView]);
+
+  return { items, ref, status, rootRef };
+}
+```
+
+Data is fetched in batches of 10 based on the cursor. Since ref and rootRef are passed as props, when using infinite scroll, you only need to specify ref and rootRef, making it usable without knowing the useInView logic.
+
+Data is managed internally through state by detecting inView with useEffect.
+
+#### Trouble Shooting
+
+**1. Problem where clicking a child element in a specific part didn't click the parent element due to Event Bubbling**
+
+<img src="/images/2024-05-18/image-1.png" alt="event bubbling" />
+
+To capture the target where the event first occurred, we solved it by using the currentTarget Event Property.
+
+**2. Web browser zoom issue when using Intersection Observer**
+
+When the browser is zoomed, the threshold is set differently from the screen, so the Intersection Observer only works when set to 100%.
+
+<s>I screamed when I found out the cause.</s>
+
+**3. Problem where inView was processed twice**
+
+If you put inView itself in the deps of useEffect and use it, inView will be processed twice.
+
+It works both when inView goes from true > false and when it goes from false > true.
+
+Thinking about infinite scroll, inView is true when visible and false when loading the next data, so it's natural for it to work twice.
+
+To solve this, you can add a condition like if (inView) inside useEffect so it only works once.
+
+#### Result
+
+<img
+  src="/images/2024-05-18/fandom-k-infinite-scroll.gif"
+  alt="fandom-k infinite scroll"
+/>
+
+### skeleton
+
+#### Concept
+
+This is a UX enhancement method commonly seen on YouTube's home screen, where the outline of the screen is drawn first before data is loaded to prevent user drop-off.
+
+List pages receive a lot of data through infinite scroll, and handling this with a simple loading icon would not provide good UX.
+
+#### Implementation
+
+Using styled-components' css allows you to inherit the css file itself as css.
+
+```js
+// css
+import { css } from "styled-components";
+import { skeleton } from "./keyframes";
+
+export default css`
+  background-color: #363636;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  &:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(
+      90deg,
+      rgba(54, 54, 54, 1) 20%,
+      rgba(144, 144, 144, 1) 50%,
+      rgba(54, 54, 54, 1) 80%
+    );
+    transform: translateX(-100%);
+    animation-name: ${skeleton};
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-direction: normal;
+  }
+`;
+// ...
+// keyframe
+export const skeleton = keyframes`
+  100% {
+    transform: translateX(100%);
+  }
+`;
+```
+
+Write the basic css for the skeleton as shown in the code above.
+
+Using styled-components' keyframes, we created an animation, attached it to css, and created a linear-gradient that repeats infinitely for 1.5 seconds through options.
+
+```jsx
+const SkeletonNameBlock = styled.div`
+  width: 120px;
+  height: 15px;
+  border-radius: 10px;
+  ${skeletonStyle};
+`;
+```
+
+Put this animation on elements similar to the elements where data goes in, and connect it with infinite scroll so that skeleton images are shown instead while data is being fetched.
+
+```jsx
+export default function MonthChartList({ gender, isactive }) {
+  const { items, ref, status, rootRef } = useInfiniteScroll(getCharts, {
+    gender,
+  });
+
+  return (
+    <ChartList
+      ref={rootRef}
+      style={{ display: isactive === true ? "grid" : "none" }}
+    >
+      {" "}
+      {items?.map((item, index) => (
+        <IdolChartCard key={item.id} item={item} index={index} ref={ref} />
+      ))}
+      {" "}
+      {status.isLoading &&
+        Array.from(Array(10)).map((_, index) => (
+          <IdolChartCardSkeleton key={index} />
+        ))}
+      {" "}
+    </ChartList>
+  );
+}
+```
+
+#### Result
+
+<img src="/images/2024-05-18/fandom-k-skeleton.gif" alt="fandom-k skeleton" />
+
+#### Trouble Shooting
+
+1. Problem where className wasn't applied because it wasn't directly inserted (styled component)
+
+For a styled component to be applied, the HTMLElement must have a className directly.
+
+```jsx
+export function Heading({ children, className }) {
+  return <HeadingContainer className={className}>{children}</HeadingContainer>;
+}
+```
+
+In this state, since HeadingContainer's className is already created by the styled component, the className received as a prop doesn't go down to that component, so the styling applied to it also doesn't get applied.
+
+```jsx
+export function Heading({ children, className }) {
+  return (
+    <div className={className}>
+      <HeadingContainer>{children}</HeadingContainer>{" "}
+    </div>
+  );
+}
+```
+
+You need an Element that receives className like this for the styling to be applied as is.
+
+<details>
+<summary>Terminal, git-related issues</summary>
+
+**Terminal**
+
+<br />
+
+The way to use WSL in vscode is to mark it as remote.
+
+<br />
+
+It's implemented to be controlled through a button in the bottom left.
+
+<br />
+
+**Git**
+
+<br />
+
+Using git squash merge allows you to receive the commit content as a single commit.
+
+<br />
+
+After that, you need to delete the existing feature branch and create a new feature.
+
+<br />
+
+</details>
+
+> These are experiences from working on the Codeit project.
+>
+> If you request that there are problematic parts, I will delete them.
+>
+> Thank you.
+

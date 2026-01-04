@@ -1,0 +1,267 @@
+# Background
+
+The mindset of this project was to become an individual who helps team members, and I was grateful to take on the role of team leader, so the responsibility was even greater.
+
+Due to that sense of responsibility, I did a lot of work so that team members could focus only on development, beyond my part.
+
+From implementing functions like uploading images to S3 URLs using S3, which are absolutely necessary, to developing components that help with blur processing, I did various tasks beyond my part.
+
+The problems our team encountered were two.
+
+1. Separating owner account and part-time worker account was possible using cookies, but implementing access restrictions was difficult.
+2. Vercel organization cannot deploy for free. In addition, I wanted to show previews when PRing.
+
+I'll explain the journey to solve this.
+
+# Implementation
+
+## middle ware
+
+I roughly knew about the existence of middleware when implementing an express server for capstone design.
+
+I thought of it as something that exists between things. After learning about the existence of middleware in Next's official documentation, I thought I should look into it more.
+
+In Next, you can think of middleware as existing between the browser and frontend server.
+
+I implemented logic that uses cookies stored on the frontend server to identify users and render appropriately.
+
+```tsx
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getCookie } from "./app/_util/cookie";
+
+/**
+ * Middleware that redirects to another place when caught by site restrictions.
+ * @author 이승현
+ * @param request
+ * @returns
+ */
+export default async function loginRequired(request: NextRequest) {
+  const token = await getCookie("accessToken");
+  const type = await getCookie("type");
+  const isLandingPage = request.nextUrl.pathname === "/";
+  const isAdminPage = request.nextUrl.pathname.startsWith("/admin");
+  const isAlbaPage =
+    request.nextUrl.pathname.startsWith("/profile-detail") ||
+    request.nextUrl.pathname.startsWith("/profile-register");
+
+  if (isLandingPage && token) {
+    return NextResponse.redirect(new URL("/notice-list", request.url));
+  }
+
+  if (isLandingPage) {
+    return NextResponse.next();
+  }
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (type === "employee" && isAdminPage) {
+    return NextResponse.redirect(new URL("/notice-list", request.url));
+  }
+  if (type === "employer" && isAlbaPage) {
+    return NextResponse.redirect(new URL("/notice-list", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [
+    // The pages below are pages that can be accessed in common.
+    "/((?!login|signup|notice-list|notice-detail|api|_next/static|_next/image|images|icons|fonts|favicon.ico).*)",
+  ],
+};
+```
+
+This is how it receives request, checks it, and processes it as response.
+
+I organized owner pages, part-time worker pages, initial screens, etc. well and put them in response to improve readability.
+
+## vercel github action
+
+Originally, I was going to use netlify that I used in a basic project, but since we're using Next, I thought deployment using Vercel would be good, and team members agreed, so we proceeded this way.
+
+I thought I would need to use GitHub action for automatic deployment this time too, but Vercel automatically deploys and shows previews for each PR, so I thought it would be convenient.
+
+The problem here is that for teams, you need to deploy for a fee.
+
+![](/images/2024-07-23/Pasted%20image%2020240722182732.png)
+
+While analyzing other yaml code, I found that preview uses CLI, and I started searching, wondering if organization is free in CLI?
+
+While searching, I saw a comment in a GitHub issue.
+
+> It seems like there's no way other than accessing through vercel CLI. Try using CLI once (English)
+
+organization GUI paid > organization CLI free was the case.
+
+I found documentation that perfectly matched my situation and proceeded. Now I'm happy that I know simple terms since I've done a lot.
+
+### vercel CLI Execution
+
+```terminal
+npm i -g vercel
+
+vercel
+```
+
+> There was a problem where it doesn't connect with CLI if .github file exists. Move it separately, connect, and proceed again.
+
+Install and run vercel.
+
+![](/images/2024-07-23/Pasted%20image%2020240722183549.png)
+
+After answering as instructed above, you can see that there is a `.vercel` folder in my project folder.
+
+```json
+// .vercel
+{ "orgId": "...", "projectId": "..." }
+```
+
+Like above. It exists to identify my project, so let's write it down somewhere.
+
+After that, I'll use [amondnet/vercel-action](https://github.com/amondnet/vercel-action) action to entrust build to vercel.
+
+For this, you need to issue an account token.
+
+![](/images/2024-07-23/Pasted%20image%2020240722183804.png)
+
+Let's put the 3 tokens obtained so far in secrets.
+
+![](/images/2024-07-23/Pasted%20image%2020240722183946.png)
+
+After that, get a GitHub token itself from developer and store it as a secret in API_TOKEN-GITHUB.
+
+Now preparation is complete. Let's put the files below in /.github/workflows.
+
+```yaml
+# vercel-merge.yml
+name: Deploy to vercel on merge
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.API_TOKEN_GITHUB }}
+          vercel-args: "--prod"
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID}}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
+```
+
+This file deploys using vercel-action with vercel token and github token. I specified branches, and since our team's main is the deployment branch, I set it to deploy to vercel the moment main is pushed.
+
+```yaml
+# vercel-pull-request.yml
+name: Create vercel preview URL on pull request
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: amondnet/vercel-action@v20
+        id: vercel-deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID}}
+          vercel-project-id: ${{ secrets.PROJECT_ID}}
+      - name: preview-url
+        run: |
+          echo ${{ steps.vercel-deploy.outputs.preview-url }}
+```
+
+Preview is the same. Now the top commit will change every time it's committed in PR.
+
+![](/images/2024-07-23/Pasted%20image%2020240722184634.png)
+
+You can confirm that automatic deployment using GitHub action is complete.
+
+https://gheup-pay-project.vercel.app/
+
+![](/images/2024-07-23/Pasted%20image%2020240722184808.png)
+
+You can confirm that preview is also successfully shown.
+
+![](/images/2024-07-23/Pasted%20image%2020240722184832.png)
+
+However, other code using vercel existed, and since preview is a part that team members use very frequently, the timing for replacement became ambiguous, so it wasn't applied.
+
+The code below also functions similarly to the code above.
+
+```yaml
+name: Preview
+
+on:
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  vercel-preview:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      deployments: write
+      id-token: write
+      issues: write
+      pull-requests: write
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Get Vercel Environment Variables
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
+          echo "preview_url=$(cat vercel-output.txt)" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with Preview URL
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🎉 구현한 기능 Preview: ${{ steps.deploy.outputs.preview_url }}
+```
+
+![](/images/2024-07-23/Pasted%20image%2020240722185400.png)
+
+Like above, it adds URL as a comment for each commit in PR.
+
+# reference
+
+<a href="https://gist.github.com/ky28059/1c9af929a9030105da8cf00006b50484">
+  vercel CLI deployment related gist
+</a>
+
+https://nextjs.org/docs/app/building-your-application/routing/middleware
+
+> This is an article containing the methods I considered, problems I encountered, and their solution processes during the Gheuppay project!
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

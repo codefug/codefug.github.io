@@ -1,0 +1,202 @@
+If you simply want to find data, you might think of sequential search. This is not appropriate for handling large amounts of data because in the worst case, you need to look at all data.
+
+If you set a rule for where any value is stored, you could find it by accessing it directly. The data structure born from this concept is `hash`.
+
+`hash` can be easily used as an Object in JavaScript, but internally it's implemented by using a hash function to convert values into indices and storing them as key-value pairs. Let's learn more in detail.
+
+> [!INFO]
+>
+> Hash stores keys and data in one-to-one correspondence, so you can access data directly through keys.
+
+# Concept
+
+Hash is a data structure we use a lot in our daily lives.
+![](/images/2025-06-14/Pasted%20image%2020250617224108.png)
+Contacts can be seen as a `hash` with a name as the key corresponding to a number as the value. To find a value using a key in hash, you need a hash function that converts the key into a hash value or index in between. I'll explain hash functions in more detail below. Let's first look at the characteristics.
+
+## Characteristics
+
+1. Hash operates unidirectionally. You can find values through keys, but you cannot find keys through values.
+2. You can find the desired value immediately with `O(1)` time complexity. This is because the key itself becomes an index through the hash function, so no search process is needed.
+3. To use values as indices, you need to go through an appropriate conversion process.
+
+> [!NOTE] Unidirectional Hash
+>
+> Hash that operates only unidirectionally has the characteristic of safely providing information externally, so it's used a lot in network security.
+
+When you need to find a phone number that matches a name, let's say there's no hash.
+![](/images/2025-06-14/Pasted%20image%2020250618081621.png)
+If you don't use hash, as shown in the picture above, you need to sequentially search all arrays to find the name, then use another array at the corresponding index to find the phone number. You can see the search efficiency is poor.
+
+But if you use hash, the story is different.
+![](/images/2025-06-14/Pasted%20image%2020250618082006.png)
+Because you can find the location of a specific value directly through the hash function, search efficiency is good.
+![](/images/2025-06-14/Pasted%20image%2020250618082154.png)
+
+> [!NOTE]
+>
+> Hash table: The space where keys and corresponding values are stored
+> bucket: Each data in the hash table
+
+## Fields That Utilize Hash Characteristics
+
+Hash can only search unidirectionally, but in return, it can quickly search for desired values. Due to these characteristics, it's used when storing and searching data, or when security is needed.
+
+> [!NOTE] Real-World Cases Where Hash Is Used
+>
+> - Password Management: Hash functions are used to store passwords when storing them.
+> - Database Indexing: Hash is used when efficiently searching data stored in databases.
+> - Blockchain: Each block in blockchain contains the hash value of the previous block, and you can verify data integrity through this.
+
+# Implementation
+
+As explained initially, in JavaScript you can use hash just by using Object. Understanding the principles of hash allows you to use this structure in other larger hierarchies as well, so knowing it is the path to becoming a great developer.
+
+## Hash Function
+
+There are things to consider when implementing hash functions.
+
+First, values returned by hash functions should not exceed the hash table.
+![](/images/2025-06-14/Pasted%20image%2020250618083156.png)
+Since the return value of the hash function becomes an index, the return value of the hash function should be a value from 0 to N-1, which is smaller than N, the size of the hash table.
+
+Second, collisions of values converted by hash functions should occur as little as possible.
+![](/images/2025-06-14/Pasted%20image%2020250618083427.png)
+Collisions in hash functions can't be completely avoided, but it's good to minimize them.
+
+### Commonly Used Hash Functions
+
+Let's see what hash functions are actually used.
+
+#### Numeric Hash Functions
+
+##### Division Method
+
+The division method is the easiest to think of. It's a method that uses the remainder when dividing a key by a prime number as an index.
+
+> h(x) = x mod k ( x%k, k should be a prime number to reduce collisions. )
+
+![](/images/2025-06-14/Pasted%20image%2020250618084825.png)
+
+> [!NOTE] Why Using Prime Numbers Reduces Collisions
+>
+> Let's use 15 instead of a prime number.
+> ![](/images/2025-06-14/Pasted%20image%2020250618084931.png)
+> If you apply 15, you can see that the same hash value repeats regularly as shown in the picture above. If it's a multiple of 3 or 5, which are divisors of k, it all proceeds in this form.
+>
+> The reason is simple. If one of N's divisors is M, then there's always a number where `M * K = N`. That's why we use prime numbers, which only have 1 or themselves as divisors.
+
+When using the division method, the table size becomes the prime number K used in the division method. If you need to store a very large amount of data, you need to find a prime number that large. Currently, there's no efficient way to find that number. That's why other methods were created.
+
+##### Multiplication Method
+
+The multiplication method uses modular operations similar to the division method but doesn't use prime numbers.
+
+> h(x) = ( ( ( x _ A ) mod 1 ) _ m) (m is the maximum number of buckets, A is the golden ratio)
+
+The golden ratio mathematically means the ratio where when you divide an arbitrary length into two parts, the ratio of the whole to the long part is the same as the ratio of the long part to the short part. For calculations, we'll use only the fractional part 0.618033... instead of the actual golden ratio 1.618033...
+
+Let's proceed with the formula.
+
+1.  x \* A: Add x and golden ratio A.
+
+![](/images/2025-06-14/Pasted%20image%2020250618085741.png)
+
+2. ( ( x \* A ) mod 1 ): Discard the integer part and take only the fractional part. ( ex) If it's 3.1523, only 0.1523 remains. )
+
+   ![](/images/2025-06-14/Pasted%20image%2020250618085806.png)
+
+3. ( ( ( x _ A ) mod 1 ) _ m): Multiply by m, the maximum number of buckets, to map to the hash table. Since we only took the fractional part in step 2, it was in the range 0 ~ 0.99..., and multiplying by m gives us the range 0 ~ m-1.
+   ![](/images/2025-06-14/Pasted%20image%2020250618125004.png)
+   The multiplication method implements logic using the golden ratio instead of prime numbers. Therefore, no additional work is needed even when the table size increases.
+
+#### String Hash Functions
+
+Let's create a hash where the key's data type is a string. String hashing converts string characters to numbers and converts these numbers to polynomial values for hashing.
+
+For this, we use the `polynomial rolling method`.
+
+> hash(s) = (s[0] + s[1] _ p + s[2]_ p² + ... + s[n− 1]\* p"-1) mod m ( p is 31, m is the maximum hash table size )
+
+> [!NOTE] Mersenne Prime
+>
+> A number that is prime among numbers that can be expressed in the format 2<sup>N</sup>-1.
+>
+> Research results show it's effective in reducing collisions in hashing.
+
+The operation process is as follows.
+
+1. A table matching a to z with numbers and a key
+   ![](/images/2025-06-14/Pasted%20image%2020250619081042.png)
+2. Calculate according to the table ( s`[0]*p`<sup>0</sup> is `1*1`. )
+   ![](/images/2025-06-14/Pasted%20image%2020250619081120.png)
+3. From `s[1]` onwards, numbers exceeding the table size start to appear. First, iterate through all of them.
+   ![](/images/2025-06-14/Pasted%20image%2020250619081147.png)
+4. After iterating through all numbers, add all those values and perform modular operation with the hash table size to fit the hash table size.
+   ![](/images/2025-06-14/Pasted%20image%2020250619081428.png)
+   Through the above process, you can convert a string to a number through a hashing function. The problem here is that even for a simple string like `apple`, too large a number came out as a result. If the string gets larger here, overflow can occur. To prevent this, perform the following operation.
+
+> (a+b)%c=(a%c+b%c)%c
+
+Simply put, instead of performing modular operation on the final value, perform modular operation at each calculation step. When the hash function is directly applied, it's in the following form
+
+> hash(s) =(s[0]%m+s[1]_ p%m+s[2]_ p² %m ...... s[n -1]\* p(n-1)%m)%m
+
+## Hash Function Collision Handling
+
+When hash function results are the same for different keys, it's called a `collision`. Since you can't put 2 values in one bucket, you must handle collisions when managing hash tables.
+
+![](/images/2025-06-14/Pasted%20image%2020250619082027.png)
+Various methods exist to solve this.
+
+### Handling with Chaining
+
+Connect data with the same hash value using a linked list.
+
+![](/images/2025-06-14/Pasted%20image%2020250619082251.png)
+If return values that went through the hash function collide, you can solve the problem by making the hash table elements themselves into linked lists and connecting them. However, there are two disadvantages here.
+
+1. Hash table space utilization: As collisions occur more, hash table space is used less and linked list length gradually increases.
+2. Search performance degradation: As collisions occur more, the linked list that needs to be traversed grows, eventually having `O(N)` time complexity.
+   ![](/images/2025-06-14/Pasted%20image%2020250619082613.png)
+
+### Handling with Open Addressing
+
+A method that finds an empty bucket and inserts the colliding value. It uses the hash table as much as possible, so it uses memory more efficiently than chaining.
+
+#### Linear Probing Method
+
+When a collision occurs, move at regular intervals until you find another empty bucket. (Usually the interval is 1.)
+
+> h(k,i) = ( h(k) + i ) mod m (m is the maximum number of buckets that can be accommodated, i is the interval)
+
+When doing linear probing, you must not exceed the table range, so modular operation is applied.
+![](/images/2025-06-14/Pasted%20image%2020250619082842.png)
+Of course, this method isn't perfect either. Moving down one space at a time, values that collided eventually gather in an area. This is called a cluster. As clusters form, the probability of hash values overlapping increases.
+
+> [!NOTE]
+>
+> There's also a method of moving by square numbers to prevent this, but the probability of the problem only decreases, it doesn't disappear.
+
+#### Double Hashing Method
+
+A method that uses 2 hash functions, and sometimes uses N functions for more robust hashing.
+
+The role of the second hash function is to decide what to do when a collision occurs with the first hash function.
+
+> h(k,i) = (h<sub>1</sub>(k) + i`*`h<sub>2</sub>(k)) mod m (h<sub>n</sub> is the nth hash)
+
+Similar to linear probing in that it adds, but to reduce clusters, m is made a square number or prime number. This is to make the jump position different for each given key through hash functions to avoid cluster formation as much as possible.
+
+# References
+
+https://product.kyobobook.co.kr/detail/S000213641007
+
+> [!SUMMARY]
+>
+> Algorithm concepts seem to disappear particularly quickly if you don't study them consistently.
+> I'll study consistently so I can fill them back in when they disappear.
+> If there are any incorrect knowledge, please leave a comment!
+>
+> Thank you for reading.
+

@@ -1,0 +1,174 @@
+## fetch
+
+### POST Request for Voting
+
+Asynchronous call of setState
+
+setState is called asynchronously (the setState call is asynchronous, but setState itself is a synchronous function. https://velog.io/@jay/setStateisnotasync). When passing state to fetch, the previous state may be passed. This can be solved using useEffect.
+
+```jsx
+const [id, setId] = useState(false);
+let idolId = false;
+
+const handleClick = (e) => {
+  if (!idolId) return;
+  setCredit(credit - 1000);
+  wrappedFunction(idolId);
+};
+
+useEffect(() => {
+  if (id !== false) {
+    idolId = id;
+  }
+}, [id]);
+```
+
+wrappedFunction contains fetch. If you pass the state id directly to fetch, the id may be passed before setId changes are confirmed, causing the logic to break.
+
+When id changes, update the variable and use the updated variable in the handler to get the state after asynchronous processing is complete.
+
+React uses batching to send virtual DOM changes all at once. If you send fetch before batching is complete, an error may occur.
+
+By using useEffect to update idolId based on id, you can send fetch requests with the updated Id.
+
+**When sending POST in fetch, the Content-Type in the header must match the Type of the data actually being sent.**
+
+```js
+export async function postVotes(Id) {
+  const URL = `${BASE_URL}/votes`;
+  const response = await fetch(URL, {
+    method: "POST",
+    mode: "cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idolId: +Id }),
+  });
+  return response.json();
+}
+```
+
+<img src="/images/2024-05-19/requestheader.png" alt="requestHeader" />
+
+### Trouble Shooting
+
+1. Infinite loop with setter and state
+
+When handling network requests, if you put a setter function in the same scope as the function that defines state, an infinite loop may occur. The process of the setter changing state and re-rendering repeats.
+
+```jsx
+const [status, setStatus] = useState({
+  isLoading: true,
+  errorMessage: null,
+});
+const wrappedFunction = async (...args) => {
+  try {
+    setStatus((prevStatus) => ({
+      ...prevStatus,
+      isLoading: true,
+      errorMessage: null,
+    }));
+    return await funcAsync(...args);
+  } catch (error) {
+    setStatus((prevStatus) => ({
+      ...prevStatus,
+      errorMessage: error,
+    }));
+  } finally {
+    setStatus((prevStatus) => ({
+      ...prevStatus,
+      isLoading: false,
+    }));
+  }
+};
+```
+
+If you handle fetch where state changes, it will keep fetching and cause errors. Use useEffect to call fetch only based on deps.
+
+```jsx
+useEffect(() => {
+  const fetchData = async () => {
+    const data = await wrappedFunction({ gender });
+    console.log(data);
+  };
+  fetchData();
+}, [gender]);
+```
+
+2. Duplicate fetch due to useEffect
+
+useEffect executes cleanup > setup > cleanup logic on every render. In development environment, it runs 2 more times.
+
+I put fetch in a useEffect with inView deps and also in another place, which resulted in 8 fetch requests: 4 basic fetches plus the intersection observer API on the first screen also working.
+
+useEffect runs on the first render even if it has deps. If you use different deps for the same logic, you should combine them into one useEffect.
+
+## scroll to Top
+
+When navigating pages, a router is used, but since the router's default behavior blocks the browser's default behavior, it's difficult to handle scroll position.
+
+React has SPA characteristics, so pages don't change directly and only parts of the page are changed with JS. Maintaining scroll position is a characteristic of SPAs.
+
+```jsx
+// ScrollToTop.js
+
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+export default function ScrollToTop(props) {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return <>{props.children}</>;
+}
+```
+
+This can be solved with the above code.
+
+After getting the current location with the useLocation hook, use useEffect to move the scroll to the top using window.scrollTo when the current location changes.
+
+## Removing useInview
+
+We decided to implement infinite scroll using pure Intersection Observer API without a library.
+
+I implemented the previously used useInView using the Intersection Observer API.
+
+```jsx
+import { useEffect, useRef, useState } from "react";
+
+export default function useCustomInView(option) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([{ isIntersecting }]) => {
+        setInView(isIntersecting);
+      },
+      { ...option },
+    );
+
+    if (ref.current && ref.current instanceof Element) {
+      observer.observe(ref.current);
+    }
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, [option]);
+
+  return { ref, inView };
+}
+```
+
+Since it returns ref and inView just like useInview, you can migrate by simply changing useInView to useCustomInView in existing code.
+
+> [!note] Other Implementation Knowledge
+>
+> You can easily customize svg type images using svg components. Use the svgr site to convert svg to components and import them with export.
+
+> These are experiences from working on the Codeit project.
+>
+> If you request that there are problematic parts, I will delete them.
+>
+> Thank you.
+

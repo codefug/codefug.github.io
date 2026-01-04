@@ -1,0 +1,93 @@
+## CI/CD
+
+After completing basic feature development, we prepared for deployment.
+CI/CD was not in the schedule, but we judged that automatic deployment through GitHub Actions would be efficient.
+After discussing with team members, we learned the basics of GitHub Actions and applied it to the project.
+
+### Concept
+
+GitHub Actions consists of two components.
+
+**Trigger** is a condition that triggers work, and **Jobs** are tasks that run when triggered.
+
+Triggers use Events associated with GitHub.
+Various events such as push, pr, issue, workflow-dispatch can be handled, and can be limited to specific conditions (e.g., only works when a pr is opened).
+
+Jobs have a hierarchical structure of job > step, and the final action unit is called an Action. Actions can be provided by GitHub or shared from GitHub Marketplace.
+
+We defined the conditions needed for the project.
+
+1. Run when PR is merged to Main
+2. Deploy app by connecting with Netlify
+
+For condition 1, we set constraints to only work when a PR is closed and merged on the Main branch.
+
+For condition 2, we needed a Netlify deployment action and an action to install node on ubuntu and install dependencies.
+
+We implemented the code as follows.
+
+```yaml
+name: build and deploy to Netlify
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup-nod
+        uses: actions/setup-node@v3
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{hashFiles('**/package-lock.json')}}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies, build
+        run: |
+          npm ci
+          npm run build
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: "./dist"
+          production-branch: "main"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
+```
+
+We improved performance on re-execution by applying cache. We completed the setup by getting tokens from Netlify and registering GITHUB_TOKEN in GitHub Secrets.
+
+### Trouble shooting
+
+1. npm error itself
+
+An npm error occurred during deployment.
+
+https://github.com/npm/cli/issues/4828
+
+We resolved it by deleting package.lock.json and node_modules and reinstalling as suggested in the issue.
+
+## Result
+
+<img src="/images/2024-05-20/githubActionResult.png" alt="githubActionResult" />
+
+> These are experiences from working on the Codeit project.
+>
+> If you request that there are problematic parts, I will delete them.
+>
+> Thank you.
+

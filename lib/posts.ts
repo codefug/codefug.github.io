@@ -5,9 +5,11 @@ import type { FrontMatter } from "@/constants/mdx";
 import { defaultLocale } from "@/i18n/config";
 
 const postsDirectory = join(process.cwd(), "markdown");
-const folderNames = readdirSync(postsDirectory);
-const getFrontMatterList = () =>
-  folderNames
+
+const getFrontMatterList = () => {
+  // 함수 내부에서 파일 시스템 작업 수행 (서버 사이드에서만 실행)
+  const folderNames = readdirSync(postsDirectory);
+  return folderNames
     .map((folderName) => {
       // SSG 모드에서는 항상 한국어(기본 locale) 사용
       const locale = defaultLocale;
@@ -26,5 +28,6 @@ const getFrontMatterList = () =>
       };
     })
     .reverse(); // 최신순으로 정렬
+};
 
 export default getFrontMatterList;

@@ -1,0 +1,584 @@
+# Background
+
+![](/images/2024-09-11/Pasted%20image%2020240727221740.png)
+
+This is the design mockup for this project.
+
+If you check the right property, you can see that button types change according to three criteria: style, size, and state.
+
+Thinking about problems in the current situation, there are about two.
+
+1. Since we use tailwind, there's a problem with easily managing various types.
+2. Since the design is not yet complete, there's a very high possibility that the design will change. We need to be able to easily see design changes according to code changes.
+
+# Implementation
+
+## Easily Managing Various Types of Buttons Implemented with Tailwind
+
+Tailwind styles using its own existing classes.
+
+This has the advantage of not creating situations where CSS files increase or you need to worry about class names,
+
+but since class names are ultimately strings, it has the disadvantage of making conditional styling inconvenient.
+
+In the case of CSS-in-JS like styled Component, there's a convenient method of passing styles as props and processing conditionally.
+
+https://styled-components.com/docs/basics#attaching-additional-props
+
+To solve this problem, you can simply process it as an object.
+
+```js
+const STYLE = {
+  white: "bg-white text-primary",
+  orange: "bg-primary text-white hover:bg-[#d43914] active:scale-[0.99]",
+};
+
+const BUTTON =
+  "w-full rounded-md border-[1.5px] border-primary py-2 text-center font-bold duration-200 hover:scale-[1.005] disabled:scale-[1] disabled:border-none disabled:bg-gray-40 disabled:text-white md:py-[10px] lg:py-[14px]";
+
+//...
+export default function Button({
+  children,
+  className,
+  btnColor = "orange",
+  btnType = "button",
+  ...rest
+}: ButtonProps) {
+  return (
+    <button
+      color={btnType}
+      className={`${BUTTON} ${STYLE[btnColor]} ${className}`}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+However, this method cannot receive VSCode's intellisense support, so you have to write it in the element's className and then move it again.
+
+With the confidence that the development world wouldn't go through such an inconvenient process, I started researching.
+
+Then I learned about cva.
+
+### cva (Class Variance Authority)
+
+After reading the documentation, it's a library that exists to conditionally apply CSS in tailwind.
+
+Let's see how to use it.
+
+```js
+import { cva } from "class-variance-authority";
+
+export const BUTTON_STYLE = cva(
+// Styles that will be applied by default
+  [
+    "flex",
+    //...
+    "disabled:scale-100",
+  ],
+  // variants can be seen as one large object. The lowest elements each mean one style. For example, btnSize has styles of large and x-small.
+  {
+    variants: {
+      btnSize: {
+        large: ["h-[48px]", "min-w-[280px]", "text-base", "py-3"],
+        "x-small": ["h-[32px]", "min-w-[74px]", "text-sm", "py-1.5"],
+      },
+      btnStyle: {
+        solid: [
+          "bg-brand-primary",
+          "text-white",
+          " hover:bg-interaction-hover",
+          "active:bg-interaction-pressed",
+          "disabled:bg-interaction-inactive",
+        ],
+        outlined: [
+          "border-brand-primary",
+          //...
+    },
+  },
+);
+
+// Usage
+buttonVariants({ className:"flex", btnStyle:large, btnSize:solid })
+// Style (string) of large solid button with flex className added
+```
+
+#### Intellisense Support
+
+If you put the code below in VSCode, you can also receive intellisense support.
+
+```json
+//settings.json
+{
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
+}
+```
+
+In addition, you can increase stability by also using the tw-merge (tailwind-merge) library to solve style conflicts that sometimes occur when using cva.
+
+```tsx
+import { cva, type VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
+
+const buttonVariants = cva(["your", "base", "classes"], {
+  variants: {
+    intent: {
+      primary: ["your", "primary", "classes"],
+    },
+  },
+  defaultVariants: {
+    intent: "primary",
+  },
+});
+
+export interface ButtonVariants extends VariantProps<typeof buttonVariants> {}
+
+export const button = (variants: ButtonVariants) =>
+  twMerge(buttonVariants(variants));
+```
+
+#### clsx + twMerge + cva
+
+I brought a util function that makes it convenient to use by utilizing clsx, a library that converts conditionally processed objects into arrays to strings using cva.
+(shadcn forever)
+
+```js
+import clsx from "clsx";
+import { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+/**
+ * Returns tailwind code with conditional processing and priority conflicts resolved.
+ * @param inputs cva variants
+ * @returns tailwind code with conditional processing complete and priority conflicts resolved
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+By utilizing this, you can implement a common button component like the code below.
+
+```js
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children?: React.ReactNode;
+  btnStyle:
+    | "solid"
+    | "outlined"
+    | "outlined_secondary"
+    | "danger"
+    | "none_background";
+  btnSize: "large" | "x-small";
+}
+
+/**
+ * Button component configured as defined in Figma.
+ * You can determine additional button styles with className.
+ * All attributes of basic button tag can be included.
+ * Button colors are set according to theme.
+ * @author 정지현, 이승현
+ * @param children : Write content to put inside button. (ex. "버튼")
+ * @param btnStyle : Determines button style.
+ * @param btnSize : Determines button size.
+ * @returns Returns button component.
+ * @example
+ *  <Button btnSize="x-small" btnStyle="solid">
+            solid x-small
+          </Button>
+    <Button btnSize="x-small" btnStyle="solid" disabled>
+            disabled
+          </Button>
+ */
+export default function Button({
+  children,
+  btnSize,
+  btnStyle,
+  className,
+  ...rest
+}: ButtonProps) {
+  return (
+    <button
+      type="submit"
+      className={cn(
+        buttonVariants({
+          btnStyle,
+          btnSize,
+          className,
+        }),
+      )}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+### Experience Where This Processing Was Helpful
+
+![](/images/2024-09-11/Pasted%20image%2020240805002120.png)
+
+The design mockup changed in the middle.
+
+A `none_background` btnStyle was added, and a situation arose where that style had to be added to the existing component.
+
+Thinking "this is why I optimized," I solved the situation by adding just the following two lines.
+
+One in type
+![](/images/2024-09-11/Pasted%20image%2020240805002252.png)
+
+One in variants
+![](/images/2024-09-11/Pasted%20image%2020240805002307.png)
+
+I thought it would be good since it's a util function frequently used in the industry, but it was an experience that really hit me during the maintenance process.
+
+Although it's a small and cute project compared to actual products now, in the case of large projects, good maintainability is an incredibly huge advantage.
+
+I don't think it's good to apply it to all components because the boilerplate isn't small (especially cva variants),
+
+but for common components or UI components that are likely to change design-wise, I think it's good to review it first with a good mindset.
+
+## Method to Easily Check Changed Items Due to Code Changes
+
+It didn't end here. At the point when I learned that design mockups change, I thought it would be good if there was a way to easily check all types.
+
+I decided to solve this problem using storybook that I had reviewed before.
+
+### storybook
+
+Storybook is one of the tools that stands out in collaboration with other professions.
+
+This is because developers can get a sense of what shape it will have just by looking at code, but other professions may not know, so showing it visually is important.
+
+In conclusion, work "efficiency" increases. I'll briefly explain the integration process and move on.
+
+#### Installation
+
+```terminal
+npx storybook@latest init
+```
+
+After various settings, a guide about storybook installation will appear.
+
+```terminal
+npm run storybook
+```
+
+![](/images/2024-09-11/Pasted%20image%2020240722213921.png)
+
+You can see that development mode is on at port 6006.
+
+![](/images/2024-09-11/Pasted%20image%2020240722214046.png)
+
+When you enter, it moves to a website like this.
+
+After that, the file will have the following files.
+
+![](/images/2024-09-11/Pasted%20image%2020240722214129.png)
+
+`.storybook` is files related to storybook's overall settings
+
+`stories` folder is where you write actual story files.
+
+![](/images/2024-09-11/Pasted%20image%2020240722214349.png)
+
+Things written in `args` are reflected on the storybook website.
+
+![](/images/2024-09-11/Pasted%20image%2020240722214454.png)
+
+#### Code Generation
+
+![](/images/2024-09-11/Pasted%20image%2020240722215100.png)
+
+```jsx
+// /components/CustomButton.tsx
+import "./customButton.css";
+import PropTypes from "prop-types";
+
+export const CustomButton = ({
+  size,
+  label,
+  variant,
+  backgroundColor,
+  color,
+}) => {
+  const style = {
+    backgroundColor,
+    color,
+  };
+  return (
+    <button
+      className={[
+        "custom-button",
+        `custom-button--${size}`,
+        `custom-button--${variant}`,
+      ].join(" ")}
+      style={style}
+    >
+      {label}
+    </button>
+  );
+};
+
+// You can manipulate these settings on the storybook settings website
+CustomButton.propTypes = {
+  size: PropTypes.oneOf(["sm", "md", "lg"]),
+  backgroundColor: PropTypes.string,
+  color: PropTypes.string,
+  label: PropTypes.string.isRequired,
+};
+
+// Default value settings if props are not passed.
+CustomButton.defaultProps = {
+  backgroundColor: null,
+  color: null,
+  size: "md",
+  variant: "outline",
+};
+```
+
+![](/images/2024-09-11/Pasted%20image%2020240722215325.png)
+
+```css
+.custom-button {
+  font-family: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  border: 0;
+  border-radius: 3em;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1;
+}
+
+.custom-button--outline {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.custom-button--solid {
+  background-color: black;
+  border: none;
+  color: white;
+}
+
+.custom-button--sm {
+  font-size: 12px;
+  padding: 10px 16px;
+}
+
+.custom-button--md {
+  font-size: 14px;
+  padding: 11px 20px;
+}
+
+.custom-button--lg {
+  font-size: 16px;
+  padding: 12px 24px;
+}
+```
+
+Classes change according to props, and different CSS is applied.
+
+#### Story Creation
+
+Create componentname.stories.ts in the stories folder. (This is a story.)
+
+![](/images/2024-09-11/Pasted%20image%2020240724211856.png)
+
+```tsx
+import { CustomButton } from "../components/CustomButton";
+
+export default {
+  title: "Test/CustomButton", // Set story name
+  component: CustomButton, // Import Component
+  args: {
+    label: "Button", // Specify commonly used props, here it's text inside button
+  },
+};
+
+export const Solid = {
+  // Pass those props to storybook with args.
+  args: {
+    variant: "solid",
+  },
+};
+
+export const Outline = {
+  args: {
+    variant: "outline",
+  },
+};
+
+export const Small = {
+  args: {
+    size: "sm",
+  },
+};
+
+export const Medium = {
+  args: {
+    size: "md",
+  },
+};
+
+export const Large = {
+  args: {
+    size: "lg",
+  },
+};
+```
+
+#### Toolbar Check
+
+![](/images/2024-09-11/Pasted%20image%2020240724213935.png)
+
+You can change themes by clicking the background icon.
+
+If you want to change themes to colors other than light and black, you can use parameters.
+
+![](/images/2024-09-11/Pasted%20image%2020240724214129.png)
+
+```ts
+export const Solid = {
+  args: {
+    variant: "solid",
+  },
+  parameters: {
+    backgrounds: {
+      values: [
+        {
+          name: "blue",
+          value: "blue",
+        },
+        {
+          name: "red",
+          value: "red",
+        },
+      ],
+    },
+  },
+};
+```
+
+Like above, you can change toolbar settings for specific components only.
+
+If you change `export default`
+
+```ts
+export default {
+  title: "Test/CustomButton",
+  component: CustomButton,
+  args: {
+    label: "Button",
+  },
+  parameters: {
+    backgrounds: {
+      values: [
+        {
+          name: "blue",
+          value: "blue",
+        },
+        {
+          name: "red",
+          value: "red",
+        },
+      ],
+    },
+  },
+};
+```
+
+If you want to put it in all components! You can add it to the `preview.js` file in the `.storybook` directory that handles storybook's overall settings.
+
+```js
+// .storybook/preview.js
+/** @type { import('@storybook/react').Preview } */
+const preview = {
+  parameters: {
+    actions: { argTypesRegex: "^on[A-Z].*" },
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/,
+      },
+    },
+    // Add inside parameters
+    backgrounds: {
+      values: [
+        {
+          name: "blue",
+          value: "blue",
+        },
+        {
+          name: "red",
+          value: "red",
+        },
+      ],
+    },
+  },
+};
+
+export default preview;
+```
+
+The integrated storybook launches a storybook-related website on port 6006. (when entering command)
+
+Even if button types are modified, you can easily check button states by just entering the command.
+
+#### Troubleshooting
+
+I thought I integrated it properly, but as development always goes, troubleshooting followed.
+
+I thought the great storybook had no fault and it was my fault, so I started looking for my mistakes.
+
+![](/images/2024-09-11/스토리북%20연결%20실패.png)
+(~~This is our project's common button component ta-da hehe~~)
+
+When this situation occurs, my internal manual is to first remove the impatient mind and create cases.
+
+There seemed to be three main ones.
+
+1. Compatibility with next.js > Looks fine in GitHub issues and recent posts
+2. **Compatibility with tailwind > I searched following the flow.**
+3. Storybook's own problem > Lowest probability, so put priority behind.
+
+After thinking about situation 2 and searching, I found the answer.
+
+```tsx
+import type { Preview } from "@storybook/react";
+
+import "../styles/globals.css";
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+  },
+};
+
+export default preview;
+```
+
+I had to think that preview is also a type of component file.
+
+In other words, if you don't put globals.css, it doesn't automatically apply styles when you put className. (tailwind is not connected.)
+
+![](/images/2024-09-11/스토리북%20연동.gif)
+
+Solved! Now by just entering the `pnpm storybook` command, you can easily understand what state components connected to storybook in our current project are in.
+
+> These are experiences I had during the Kkom-kkom project. I think I grew a lot today too!
+>
+> Thank you for reading! Please watch over me!
+>
+> Thank you.
+

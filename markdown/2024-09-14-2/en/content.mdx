@@ -1,0 +1,691 @@
+# Background
+
+![](/images/2024-09-14/progressbar%20예시.gif)
+
+The picture above is a Codeit site made with Next.js.
+
+You can see that when you click a tab element, which is a Link component, the address changes and a progress bar operates.
+
+Since the Kkom-kkom project is made with Next.js, rendering occurs frequently when URLs change. (There's also a lot of rendering related to searchParams.)
+
+I thought that adding a progress bar would greatly improve UX and started thinking about it.
+
+# Implementation
+
+Next doesn't expose router events externally, making it very difficult to implement loading that occurs when changing pages.
+
+I found a simple library that solved this, but I wanted to know the actual operation process, so I started researching focusing on actually implemented code.
+
+## Code Analysis
+
+https://buildui.com/posts/global-progress-in-nextjs
+
+I analyzed the post above.
+
+### layout.tsx
+
+```tsx
+// layout.tsx
+import { ReactNode } from "react";
+import { ProgressBarLink, ProgressBar } from "./progress-bar";
+
+export default function Layout({ children }: { children: ReactNode }) {
+  return (
+    <div>
+      <ProgressBar className="fixed top-0 h-1 bg-sky-500" />
+        <header className="border-b border-gray-700">
+          <nav className="m-4 flex gap-4">
+            <ProgressBarLink href="/demo-1">Home</ProgressBarLink>
+            <ProgressBarLink href="/demo-1/posts/1">Post 1</ProgressBarLink>
+            <ProgressBarLink href="/demo-1/posts/2">Post 2</ProgressBarLink>
+            <ProgressBarLink href="/demo-1/posts/3">Post 3</ProgressBarLink>
+          </nav>
+        </header>
+
+        <div className="m-4">{children}</div>
+      </ProgressBar>
+    </div>
+  );
+}
+```
+
+### progress-bar
+
+```tsx
+// progress-bar
+"use client";
+
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useSpring,
+} from "framer-motion";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ComponentProps,
+  ReactNode,
+  createContext,
+  startTransition,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+// Specify global state with createContext
+const ProgressBarContext = createContext<ReturnType<typeof useProgress> | null>(
+  null,
+);
+
+// Want to connect and use with useProgress using a hook called useProgressBar.
+export function useProgressBar() {
+  let progress = useContext(ProgressBarContext);
+  if (progress === null) {
+    throw new Error("Need to be inside provider");
+  }
+
+  return progress;
+}
+
+// Progress Bar component itself
+export function ProgressBar({
+  className,
+  children,
+}: {
+  className: string;
+  children: ReactNode;
+}) {
+  // Use useProgress
+  let progress = useProgress();
+  // useMotionTemplate: Hook that makes multiple motion values into one motion value
+  // Here, it's made to extend like width: ~%. Internally, when progress.value becomes 100, it's complete
+  let width = useMotionTemplate`${progress.value}%`;
+
+  return (
+    <ProgressBarContext.Provider value={progress}>
+      // progress.reset when animations of all existing nodes are complete //
+      AnimatePresence detects that progress.state is complete and can execute exit animation // After that, reset function is executed.
+      <AnimatePresence onExitComplete={progress.reset}>
+        // Get mounting state from progress
+        {progress.state !== "complete" && (
+          <motion.div
+            style={{ width }}
+            exit={{ opacity: 0 }}
+            className={className}
+          />
+        )}
+      </AnimatePresence>
+      {children}
+    </ProgressBarContext.Provider>
+  );
+}
+
+// Link component that will be linked with ProgressBar
+export function ProgressBarLink({
+  href,
+  children,
+  ...rest
+}: ComponentProps<typeof Link>) {
+  // Extract useProgress from context.
+  let progress = useProgressBar();
+  let router = useRouter();
+
+  return (
+    <Link
+      href={href}
+      onClick={(e) => {
+        // Delete default behavior.
+        e.preventDefault();
+        // Make progress in-progress state.
+        progress.start();
+        startTransition(() => {
+          // Change router.push to latest rendering. If you press something else in the middle, it can be immediately cancelled.
+          router.push(href.toString());
+          // router.push has void as return value and there's no way to know if the function is in progress. For this, transition is used.
+          // startTransition makes functions inside update all at once without UI rendering.
+          // Through this, router.push and progress.done update at once.
+
+          // When clicked, state change of progress.start happens immediately but state change of progress.done proceeds only after router.push ends.
+          // You can think of it as async in the state world.
+
+          // When push ends, end progress with done. (If initial or in-progress, make it complete.)
+          progress.done();
+        });
+      }}
+      {...rest}
+    >
+      {children}
+    </Link>
+  );
+}
+
+// useProgress (main body)
+function useProgress() {
+  // Current state
+  const [state, setState] = useState<
+    "initial" | "in-progress" | "completing" | "complete"
+  >("initial");
+
+  // Put animation value with Spring.
+  let value = useSpring(0, {
+    // Force applied to opposite side
+    damping: 25,
+    // Degree of inertia
+    mass: 0.5,
+    // Degree of sudden movement
+    stiffness: 300,
+    // If distance is lower than this, end animation.
+    restDelta: 0.1,
+  });
+
+  // Hook that executes callback function with interval
+  useInterval(
+    () => {
+      // Start progress but if bar is complete state, do reset first.
+      if (value.get() === 100) {
+        // Stop by making motionValue 0.
+        value.jump(0);
+      }
+
+      // Get motionValue
+      let current = value.get();
+
+      // Degree of change?
+      let diff;
+
+      // If 0, move 15 at once
+      if (current === 0) {
+        diff = 15;
+        // When 50 or less, move quickly
+      } else if (current < 50) {
+        diff = rand(1, 10);
+        // If exceeded, move 1 to 5.
+      } else {
+        diff = rand(1, 5);
+      }
+
+      // Add to motionValue (max 99)
+      value.set(Math.min(current + diff, 99));
+    },
+    // If in-progress state, delay (time interval) is 750 (0.75s), otherwise remove
+    state === "in-progress" ? 750 : null,
+  );
+
+  useEffect(() => {
+    // If initial, make it 0
+    if (state === "initial") {
+      value.jump(0);
+      // If completing, go to 100.
+    } else if (state === "completing") {
+      value.set(100);
+    }
+
+    // When value changes, if latest is 100, make it complete state.
+    return value.on("change", (latest) => {
+      // on event can get motionValue. latest is motionValue
+      if (latest === 100) {
+        setState("complete");
+      }
+    });
+    // value, state, event handler called value.on disappears every time component unmounts.
+  }, [value, state]);
+
+  function reset() {
+    // Make it initial
+    setState("initial");
+  }
+
+  function start() {
+    // Make it start
+    setState("in-progress");
+  }
+
+  function done() {
+    // Function that makes it completing if initial or in-progress, otherwise returns to original state
+    setState((state) =>
+      state === "initial" || state === "in-progress" ? "completing" : state,
+    );
+  }
+  return { state, value, start, done, reset };
+}
+
+// Function that randomly extracts one positive number between max and min
+function rand(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// useInterval: Function that gives interval if callback and delay are received
+function useInterval(callback: () => void, delay: number | null) {
+  // Closure that stores callback
+  const savedCallback = useRef(callback);
+
+  useEffect(() => {
+    // Function that changes callback
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    // Function that executes callback stored in ref
+    function tick() {
+      savedCallback.current();
+    }
+
+    if (delay !== null) {
+      // Execute once
+      tick();
+
+      // Turn on timer
+      let id = setInterval(tick, delay);
+      // Delete timer when unmounting
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+```
+
+### Analysis Results
+
+Very complex code came out, but in conclusion, it seems to start with the idea that progress bar doesn't have to be related to actual loading percentage.
+
+1. Progress bar immediately goes to 15 when operating.
+2. After that, progress bar is randomly filled from 15 to 99.
+3. When it becomes 99, router.push and progress bar unmount simultaneously using startTransition.
+4. When progress bar unmounts, component remains until animation ends using Framer-Motion's AnimatePresense. > Smooth unmount is achieved.
+
+Here, the part where progress bar unmount logic was put together with router.push using concurrent rendering with startTransition was very impressive.
+
+Analysis is complete, so now let's find a way to utilize it.
+
+Things to refactor for our project are as follows.
+
+1. Since we have our own LinkButton, we should make refactoring easy by not creating Link separately and receiving logic from hook and passing it down. => Create separately as hook, hide internal logic
+2. I'll make state management readable using useReducer.
+
+## Refactoring Results
+
+```tsx
+import { rand } from "@/utils/get-rand";
+import { useSpring } from "framer-motion";
+import { startTransition, useEffect, useReducer, useRef } from "react";
+
+import useInterval from "./use-interval";
+
+type StateType = "initial" | "in-progress" | "completing" | "complete";
+
+type ActionType =
+  | { type: "start" }
+  | { type: "done" }
+  | { type: "reset" }
+  | { type: "complete" };
+
+function reducer(state: StateType, action: ActionType): StateType {
+  switch (action.type) {
+    case "start":
+      return "in-progress";
+    case "done":
+      return state === "initial" || state === "in-progress"
+        ? "completing"
+        : state;
+    case "reset":
+      return "initial";
+    case "complete":
+      return "complete";
+    default:
+      throw new Error("Unhandled action type");
+  }
+}
+
+/**
+ * @author 이승현
+ * @description
+ * Hook containing progress internal logic.
+ *
+ * If you want to create a component (view) that displays like progress bar, you can use state, value, reset.
+ * Please refer to progress bar for detailed implementation
+ *
+ * If you want to create a component connected to a component like progress bar, you can use the progress function of "useProgressBar" instead of this hook.
+ *
+ * @example
+ * export function ProgressBar({
+  className,
+  children,
+}: {
+  className: string;
+  children: ReactNode;
+}) {
+  // Use useProgress
+  let progress = useProgress();
+  // useMotionTemplate: Hook that makes multiple motion values into one motion value
+  // Here, it's made to extend like width: ~%. Internally, when progress.value becomes 100, it's complete
+  let width = useMotionTemplate`${progress.value}%`;
+
+  return (
+    <ProgressBarContext.Provider value={progress}>
+      <AnimatePresence onExitComplete={progress.reset}>
+        {progress.state !== "complete" && (
+          <motion.div
+            style={{ width }}
+            exit={{ opacity: 0 }}
+            className={className}
+          />
+        )}
+      </AnimatePresence>
+      {children}
+    </ProgressBarContext.Provider>
+  );
+}
+ *
+ */
+export function useProgress() {
+  // Current state
+  const [state, dispatch] = useReducer(reducer, "initial");
+
+  // Put animation value with Spring.
+  let value = useSpring(0, {
+    // Force applied to opposite side
+    damping: 25,
+    // Degree of inertia
+    mass: 0.5,
+    // Degree of sudden movement
+    stiffness: 300,
+    // If distance is lower than this, end animation.
+    restDelta: 0.1,
+  });
+
+  // Hook that executes callback function with interval
+  useInterval(
+    () => {
+      // Start progress but if bar is complete state, do reset first.
+      if (value.get() === 100) {
+        // Stop by making motionValue 0.
+        value.jump(0);
+      }
+      // Get motionValue
+      let current = value.get();
+      // Degree of change?
+      let diff;
+      // If 0, move 15 at once
+      if (current === 0) {
+        diff = 15;
+        // When 50 or less, move quickly
+      } else if (current < 50) {
+        diff = rand(1, 10);
+        // If exceeded, move 1 to 5.
+      } else {
+        diff = rand(1, 5);
+      }
+      // Add to motionValue (max 99)
+      value.set(Math.min(current + diff, 99));
+    },
+    // If in-progress state, delay (time interval) is 750 (0.75s), otherwise remove
+    state === "in-progress" ? 750 : null,
+  );
+
+  useEffect(() => {
+    const unsubscribe = value.on("change", (latest) => {
+      if (latest === 100) {
+        dispatch({ type: "complete" });
+      }
+    });
+    // If initial, make it 0
+    if (state === "initial") {
+      value.jump(0);
+      // If completing, go to 100.
+    } else if (state === "completing") {
+      value.set(100);
+    }
+    return () => {
+      unsubscribe();
+    };
+    // When value changes, if latest is 100, make it complete state.
+    // value, state changes, event handler called value.on disappears every time component unmounts.
+  }, [value, state]);
+
+  const handleProgress = (func: () => void) => {
+    dispatch({ type: "start" });
+    startTransition(() => {
+      func();
+      dispatch({ type: "done" });
+    });
+  };
+
+  return {
+    state,
+    value,
+    reset: () => dispatch({ type: "reset" }),
+    progress: handleProgress,
+  };
+}
+```
+
+To summarize:
+
+1. useProgress hook passed down to view components like Progress Bar that display loading used flux pattern with useReducer to hide detailed state management and improve readability.
+2. From pattern where start and done were separated and usage side had to directly implement startTransition, it became hidden in useProgress hook.
+
+On the usage side:
+
+```tsx
+"use client";
+
+import Link, { LinkProps } from "next/link";
+import { useRouter } from "next/navigation";
+import { MouseEventHandler, useCallback } from "react";
+
+import { useProgressBar } from "../progress-bar/progress-bar";
+
+interface LinkWithProgressProps extends LinkProps {
+  className?: string;
+}
+
+export default function LinkWithProgress({
+  href,
+  className,
+  children,
+  ...props
+}: React.PropsWithChildren<LinkWithProgressProps>) {
+  const { progress } = useProgressBar();
+  const router = useRouter();
+
+  const handleClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      progress(() => router.push(href.toString()));
+    },
+    [href, progress, router],
+  );
+
+  return (
+    <Link href={href} onClick={handleClick} {...props}>
+      {children}
+    </Link>
+  );
+}
+```
+
+By just passing a callback to progress, it can be connected to progress Bar.
+
+If we add progress to existing LinkButton, it's as follows.
+
+```tsx
+"use client";
+//...
+export function LinkButton({
+  href,
+  children,
+  btnStyle,
+  btnSize,
+  className,
+  ...rest
+}: LinkButtonProps) {
+  const { progress } = useProgressBar();
+  const router = useRouter();
+
+  const handleClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      progress(() => router.push(href.toString()));
+    },
+    [href, progress, router],
+  );
+
+  return (
+    <Link
+      href={href}
+      className={cn(buttonVariants({ className, btnStyle, btnSize }))}
+      onClick={handleClick}
+      {...rest}
+    >
+      {children}
+    </Link>
+  );
+}
+```
+
+I saw a technique for the first time where state changes can proceed together with other functions using startTransition like async await, and I think I'll use it often!
+
+While refactoring to handle state management with flux pattern using useReducer, I felt the code becoming concise, and after directly feeling it,
+
+I understood why techniques implemented using flux patterns like useReducer or zustand are used when complex logic appears.
+
+As always, I think all technologies are well remembered when you look for them to solve your own problems. I learned a lot this time too.
+
+### It wasn't the end...
+
+![](/images/2024-09-14/progress%20bar%20리렌더링%20에러.gif)
+
+Re-rendering error hehe... I checked because it was too slow...
+
+![](/images/2024-09-14/Pasted%20image%2020240818002733.png)
+
+Components that receive progress function are also re-rendering due to progress bar
+
+useContext is a hook that injects state, so it re-renders child components in addition to things connected to state.
+
+Progress bar is a component whose state changes frequently and is at the top level, causing re-rendering.
+
+I tried to solve this by using zustand to "manage" state, but
+
+https://github.com/pmndrs/zustand/discussions/885
+
+It says that zustand using useSyncExternalStore is not compatible with startTransition without additional setup.
+
+![](/images/2024-09-14/Pasted%20image%2020240828114258.png)
+
+I found that the zustand developer made a custom hook.
+
+https://www.npmjs.com/package/use-zustand
+
+I used this, but since it's combining with a method connected using Next.js and context api, it didn't seem to be the exception handling the developer had conceived.
+
+I thought of a different method rather than using context api to create re-rendering or using zustand to create an incomplete loading bar.
+
+Then I confirmed a library called next-nprogress-bar in existing sites using Next.js.
+
+This wasn't a method using startTransition. I'll try it.
+
+## next-nprogress-bar
+
+```terminal
+pnpm install next-nprogress-bar
+```
+
+```tsx
+"use client";
+
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      {children}
+      <ProgressBar
+        height="4px"
+        color="#fffd00"
+        options={{ showSpinner: false }}
+        shallowRouting
+      />
+    </>
+  );
+};
+
+export default Providers;
+```
+
+<s>It's really unfair how easy it is ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ</s>
+
+It seemed to work by styling the html itself. I think I spent too much time on this, so I should definitely analyze the library next time.
+
+Now it says that if you don't put special options in Link itself, progress bar operates automatically.
+
+### Troubleshooting
+
+In Next.js, there's a lot of component rendering according to SearchParams.
+
+![](/images/2024-09-14/Pasted%20image%2020240914151931.png)
+(Example of free board page that sorts differently according to searchParams)
+
+It would be more natural if progress bar appears even when changing sort criteria from popular to latest.
+
+However, next-nprogress-bar wasn't implementing this.
+
+Therefore, I solved this problem using useEffect.
+
+```ts
+"use client";
+
+import { AppProgressBar, startProgress } from "next-nprogress-bar";
+import { useSearchParams } from "next/navigation";
+import { ReactNode, useEffect } from "react";
+
+export default function ProgressBarProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    startProgress();
+  }, [searchParams]);
+
+  return (
+    <>
+      {children}
+      <AppProgressBar
+        height="4px"
+        color="#10b981"
+        options={{
+          showSpinner: false,
+          minimum: 0.15,
+          easing: "ease",
+          speed: 500,
+        }}
+        shallowRouting
+      />
+    </>
+  );
+}
+
+```
+
+Now you can confirm that progress bar moves even when sorting.
+
+![](/images/2024-09-14/progressbar게시판.gif)
+
+## Afterword
+
+I learned what ideas are for implementing progress bar and how it's implemented in Next.js.
+
+Although it was applied to the project using a library, I learned a lot while analyzing code implemented through concurrent rendering in that process.
+
+I'll grow more.
+
+> These are experiences I had during the Kkom-kkom project. I think I grew a lot today too!
+>
+> Thank you for reading! Please watch over me!
+>
+> Thank you.
+

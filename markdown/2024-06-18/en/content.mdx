@@ -1,0 +1,535 @@
+# ESLint
+
+## Static Code Analysis
+
+Analysis that finds parts that can cause potential bugs in the code itself, regardless of code execution, and fixes them in advance is called `static code analysis`.
+
+### How ESLint Works
+
+#### 1. Read JS as a string.
+
+#### 2. Structure the code with a parser that analyzes JS.
+
+A commonly used parser is espree.
+
+https://astexplorer.net/
+You can check how it's structured on the above site. (AST explorer)
+
+Result of parsing with espree
+![](/images/2024-06-18/Pasted%20image%2020240617191611.png)
+
+It analyzes and tells you detailed information such as the exact location of the code, not just analyzing variables, functions, and function names. That way it understands line breaks, indentation, etc. in the code.
+
+For TS, there is also an espree-based parser called @typescript-eslint/typescript-estree.
+
+![](/images/2024-06-18/Pasted%20image%2020240617191548.png)
+Looking at the picture above, the parsed parts are similar to JS, but you can see that typeAnnotation has been added.
+
+#### 3. The structured tree is called AST (Abstract Syntax Tree) and is compared with rules.
+
+A collection of these rules is called plugins. Various rules exist, such as rules that make debugger only usable during development.
+
+How debugger looks when analyzed with espree
+
+```json
+{
+  "type": "Program",
+  "start": 0,
+  "end": 8,
+  "body": [
+    {
+      "type": "DebuggerStatement",
+      "start": 0,
+      "end": 8
+    }
+  ],
+  "sourceType": "module"
+}
+```
+
+no-debugger rule
+
+```json
+// no-debugger
+module.exports = {
+	meta: { // Meta information related to this rule
+		type: 'problem',
+		docs: {
+			description: 'Disallow the use of `debugger`',
+			recommended: true,
+			url: 'https://eslint.org/docs/rules/no-debugger',
+		},
+		fixabble: null, // Whether it can be fixed when fixed with docs, eslint --fix
+		schema: [],
+		messages: { // Warning message
+			unexpeccted: "Unexpected 'debugger' sstatement.",
+		},
+	},
+	create(context){ // Function that checks for problems
+		return {
+			DebuggerStatement(node){
+				context.report({
+					node,
+					messageId: 'unexpected',
+				})
+			},
+		}
+	},
+}
+```
+
+#### 4. Report or fix.
+
+## eslint-plugin
+
+A package that collects rules, ex) `eslint-plugin-import`, `eslint-plugin-react`
+
+## eslint-config
+
+A package that collects eslint-plugins and provides them as a set
+(A package that provides ESLint-related settings that can be used consistently across multiple projects)
+
+### Naming conventions for eslint-config and eslint-plugin
+
+1. Must have a name with a fixed prefix like eslint-plugin-\* with one word attached after it. (`ex: eslint-plugin-naver`)
+2. Attaching a Scope in front like `@titicaca/eslint-config-triple` is allowed.
+
+Usually `eslint-config` is more commonly created and distributed by companies rather than individual developers, so using others' often solves the problem.
+
+### Famous eslint-config
+
+#### eslint-config-airbnb
+
+Maintained by over 500 people and the most popular config
+
+#### @titicaca/triple-config-kit
+
+The most actively maintained and widely used config in the Korean community (developed by Interpark Triple.)
+
+1. Unlike airbnb, it was developed independently.
+2. Test code exists for rules provided externally
+3. Since frontend rules are also provided separately, you can apply rules suitable for Node.js environment or React environment.
+
+It's also easy to install because prettier and stylelint are also managed as a monorepo.
+
+#### eslint-config-next
+
+A config that is essential if the code is written with Next.js.
+
+## Creating Your Own ESLint Rules
+
+### 1. Modifying Existing Rules: Remove import React to reduce bundle size (Syntax that disappeared from React 17 due to JSX Runtime)
+
+The JS file started with npm run start and the JS file created with npm run build become the same size, which is what the bundler handled.
+
+It can be handled with tree shaking, but removing unnecessary import React can reduce tree shaking time, which will help improve build speed.
+
+You can detect issues by customizing existing rules. Let's use `no-restricted-imports`.
+
+```js
+module.exports = {
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        // Add modules to prohibit in paths.
+        paths: [
+          {
+            // Module name
+            name: "react",
+            // Module name
+            importNames: ["default"],
+            // Warning message
+            message: "import React form 'react' is not needed now.",
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+```terminal
+npm run lint // Command to run lint
+// You can check which files and which lines have code that doesn't match lint.
+```
+
+You should be able to confirm that it works as expected.
+
+In this way, you can also prevent libraries that are not tree-shaken from being imported.
+
+```js
+module.exports = {
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        // Add modules to prohibit in paths.
+        paths: [
+          {
+            // Module name
+            name: "lodash",
+            // Warning message
+            message:
+              "lodash는 트리쉐이킹되지 않습니다. lodash/* 형식으로 import 해주세요.",
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+### 2. Creating New Rules: Rule to prohibit new Date
+
+new Date() returns the device's time. To use only the server's time
+
+Let's analyze how AST is created in espree and create a new rule.
+
+```js
+new Date();
+```
+
+This becomes AST as
+
+```json
+{
+  "type": "Program",
+  "start": 0,
+  "end": 11,
+  "body": [
+    {
+      "type": "ExpressionStatement", // Entire expression of that code
+      "start": 0,
+      "end": 11,
+      "expression": {
+        // Check what expression is in ExpressionStatement
+        "type": "NewExpression", // What type that expression is (NewExpression = constructor)
+        "start": 0,
+        "end": 10,
+        "callee": {
+          // Name of constructor in expression representing constructor
+          "type": "Identifier",
+          "start": 4,
+          "end": 8,
+          "name": "Date"
+        },
+        "arguments": [] // Represents arguments passed to constructor in expression representing constructor
+      }
+    }
+  ],
+  "sourceType": "module"
+}
+```
+
+It's expressed like this. Now let's make it an ESLint rule.
+
+```json
+module.exports = {
+	meta: { // Meta information related to this rule
+		type: 'suggestion',
+		docs: {
+			description: 'Disallow use of the new Date()',
+			recommended: false,
+		},
+		fixabble: 'code', // Whether it can be fixed when fixed with docs, eslint --fix
+		schema: [],
+		messages: { // Warning message
+			message: "Unexpected 'debugger' sstatement.",
+		},
+	},
+	create(context){ // Function that checks for problems
+		return {
+			NewExpression: function (node){ // When NewExpression is found
+				if (node.callee.name === 'Date' && node.arguments.length === 0){ // Check if that constructor is Date
+					context.report({ // Report
+						node: node, // Node with problem
+						messageId: 'message', // Message you want to show (taken from meta.messages)
+						fix: function (fixer){ // Automatically fix using fix
+							return fixer.replaceText(node, 'ServerDate()')
+						}
+					})
+				}
+			}
+		}
+	},
+}
+```
+
+The create function must return an object, where you can declare selectors or event names that detect code smells.
+
+After that, you can deploy it in eslint-plugin form using `yo` and `generate-eslint`.
+
+## Things to Watch Out For
+
+### 1. Conflict with Prettier
+
+Prettier is a tool that helps format code. (Handles line breaks, indentation, single quotes and double quotes, etc.)
+
+You can either declare rules directly so they don't overlap, or use ESlint for JS and eslint-plugin-prettier for others.
+
+### 2. Exception handling for rules, and react-hooks/no-exhaustive-deps
+
+Exclude specific rules arbitrarily through `eslint-disable-` comments.
+
+```js
+// Exclude only specific line
+console.log("hw"); // eslint-disable-line no-console
+
+// Exclude next line
+// eslint-disable-next-line no-console
+console.log("hw");
+
+// Exclude specific multiple lines
+/*eslint-disable no-console*/
+console.log("hw");
+/*eslint-enable no-console*/
+
+// Exclude entire file
+/*eslint-disable no-console*/
+console.log("hw");
+```
+
+When using useEffect, if it internally depends on state but the rule is violated in deps, it's a problem in any case. You need to carefully check whether to turn off the rule or ignore only specific parts.
+
+### 3. ESLint Version Conflict
+
+If the ESLint version doesn't match, you may encounter an error that it couldn't be found because the internal version is different.
+
+# React Test Library
+
+Backend testing: Check whether desired data can be correctly retrieved from the server or database, whether deadlocks or race conditions occur during data modification, whether there is data loss, whether failures occur in specific situations, etc.
+
+Frontend testing: Performed in an environment identical or similar to general users
+
+Frontend has various libraries because testing design elements like HTML and CSS, user interactions, various scenarios that occur in browsers, etc. is cumbersome.
+(Unit tests at component and function level, tests that mimic all user operations, etc.)
+
+Among them, the most famous is React Testing Library.
+
+## React Testing Library
+
+It's based on DOM Testing Library.
+
+### DOM Testing Library
+
+It's based on jsdom.
+jsdom is a library that allows you to use HTML and DOM even in environments like Node.js where only JS exists without HTML
+
+#### jsdom Example
+
+```js
+const jsdom = require("jsdom");
+
+const { JSDOM } = jsdom;
+const dom = new JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
+
+console.log(dom.window.document.querySelector("p").textContent); // "Hello World"
+```
+
+### Basics of JavaScript Testing
+
+1. Select function or module to test
+2. Select value that function or module is expected to return
+3. Enter actual return value
+4. Check if expected value and return value match
+5. Success if match, error if mismatch
+
+Node.js provides an assert module. However, to check actual test information such as what was tested and how tests were performed, another library is needed.
+
+### Testing Framework
+
+Tests based on assertions + deliver helpful information
+
+There are Jest, Mocha, Karma, Jasmine, etc.
+
+#### Jest
+
+Let's look at Jest's actual operation process.
+
+```js
+// math.js
+function sum(a, b) {
+  return a + b;
+}
+
+module.exports = {
+  sum,
+};
+```
+
+```js
+// math.test.js
+const { sum } = require("./math");
+
+test("두 인수가 덧셈이 되어야 합니다.", () => {
+  expect(sum(1, 2)).toBe(3); // Pass
+});
+
+test("두 인수가 덧셈이 되어야 합니다.", () => {
+  expect(sum(2, 2)).toBe(3); // Error
+});
+```
+
+```terminal
+npm run test
+
+> jest
+```
+
+#### Writing React Component Test Code
+
+1. Render component
+2. Perform actions in component as needed
+3. Compare expected value and actual value
+
+##### Project Creation
+
+In the case of cra, it's already installed by default.
+
+```terminal
+npx create-react-app react-test --template typescript
+```
+
+Check App.test.tsx file creation
+
+```js
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import App from "./App";
+
+test("renders learn react link", () => {
+  render(<App />); // Render App
+  const linkElement = screen.getByText(/learn react/i); // Find DOM element with learn react string.
+  expect(linkElement).toBeInTheDocument(); // Check if DOM element is inside document
+});
+```
+
+Functions to get HTML elements with specific something
+
+1. getBy... : Returns element matching condition of argument, error on failure
+2. getAllBy...: Returns multiple elements matching condition of argument, error on failure
+3. findBy ... : getBy that returns Promise, default 1000ms timeout, finds asynchronously (used when finding elements after async actions), error on failure
+4. findAllBy... : Plural form of findBy, error on failure
+5. queryBy... : Same as getBy but returns null on failure
+6. queryAllBy... : Plural form of query, null on failure
+
+##### Static Components
+
+Components that always return the same result without separate state
+To test this, you can find the element you want to test after rendering and perform the test.
+
+Looking at the code in the book, you can organize the following methods.
+
+`beforeEach` : Function executed before each test
+
+`describe` : Role of grouping tests with similar properties into one group
+
+`it` : Alias for test.
+
+`getByTestId` : testid is a reserved word in React Testing Library. It can be used to select elements that are difficult or cumbersome to select with get and other selectors. It uses the DOM element's dataset (non-standard attribute), and if you do data-testid=~, you can select it with getByTestId, findByTestId, etc.
+
+```html
+<p data-testid="something">무언가</p>
+```
+
+There are also many intuitive methods like `toHaveAttribute`, `toBeVisible`, etc.
+
+##### Dynamic Components
+
+Pure components without any state values are easy to test. (stateless component)
+However, components with state values, components that manage state values using useState, need to be approached differently.
+
+###### Components where users change input through useState
+
+Testing Library mimics input and tests component changes according to state changes.
+(Refer to book, there are various action-related methods like userEvent.type)
+
+##### Components where async events occur
+
+In the case of complex functions like fetch (header settings, response types, etc.), mocking is difficult, making it hard to apply all scenarios to tests.
+
+To solve this, we use MSW, a library that intercepts actual networks and sends responses.
+
+The focus when using async components with fetch is fetch response mocking, and rendering comparison after async requests end using findBy.
+
+#### Custom Hook Testing
+
+Test custom hooks using `react-hooks-testing-library`.
+
+#### Things to Consider Before Writing Tests
+
+##### Test Coverage
+
+An indicator of how much software has been tested
+
+It's an indicator of how much code is being tested, but it cannot determine whether it's being done well.
+
+##### Judgment Conditions for Testing
+
+In practice, there are many cases that depend on QA. It's not easy to write and operate test code leisurely.
+
+Before writing test code, it's important to first identify the most vulnerable or important parts of the application.
+
+ex) Payment part
+
+Test code is written to gain confidence in software quality, a goal that cannot be easily achieved with simple code writing alone.
+
+##### Types of Testing
+
+Unit Test: Tests that verify whether each code or component works accurately as intended in an independently separated environment
+
+Integration Test: Tests that verify whether multiple components that passed unit tests work normally as one function when combined
+
+End to End Test: Called E2E test, tests that check the overall functionality of an application using robots that work like actual users
+
+```js
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <div></div>
+      <h1 aria-label="heading">{count}</h1>
+      <div className="card">
+        <button
+          data-testid="button"
+          onClick={() => {
+            Array.from({ length: 3000 }).forEach(function addDummy() {
+              DUMMY.push(Math.random().toString());
+            });
+            setCount(function toggle(prev) {
+              return prev + 1;
+            });
+          }}
+        >
+          {count}
+        </button>
+      </div>
+    </>
+  );
+}
+
+export default App;
+```
+
+```js
+import { fireEvent, render, screen } from "@testing-library/react";
+import { expect, test } from "vitest";
+import App from "./App";
+
+test("Button Push", () => {
+  render(<App />);
+
+  fireEvent.click(screen.findByTestId("button"));
+
+  const count = screen.getByLabelText("heading");
+
+  expect(count.textContent).toEqual("1");
+});
+```
+
+> This is content organized and fleshed out for Modern React Deep Dive study.
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

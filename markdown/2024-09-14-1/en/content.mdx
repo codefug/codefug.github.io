@@ -1,0 +1,782 @@
+# Background
+
+This project has really many types of modals.
+
+![](/images/2024-09-14/Pasted%20image%2020240731004520.png)
+
+Moreover, since the design mockup was not yet fully complete, there was a possibility that more would be added.
+
+# Implementation
+
+## Situation Analysis
+
+I thought about things that exist in common, even though all modals are slightly different.
+
+1. padding and border-radius
+2. Existence of backdrop
+3. background-color
+4. Overlapping UI elements like fonts for title and description
+
+For 1, 2, 3, I made a "modal" component so it can be assembled,
+
+and for 4, I thought it would be good to implement it so that the assembly side can do it easily, even though frequently used cases are bundled with Compound Pattern to increase coupling between components.
+
+The implementation method of the component itself was solved, and now I had to think about how to trigger rendering.
+
+## Rendering Method
+
+### Global State Management
+
+Embarrassingly, when I implemented modals before, I think I couldn't think of good code because I was pressed by deadlines...
+
+Below is the method I originally used. It's a modal that implements opening and closing using context api.
+
+```tsx
+// A kind of factory pattern.
+export default function Modal({ children, button }: ModalProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useClickOutside<HTMLDivElement>(() => setIsModalOpen(false));
+
+  const handleOpen = () => setIsModalOpen(true);
+  const handleClose = () => setIsModalOpen(false);
+  return (
+    <ModalContext.Provider value={{ handleClose, isModalOpen }}>
+      <section>
+        <div onClick={handleOpen}>{button}</div>
+      </section>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-40 flex items-end bg-black bg-opacity-50 md:items-center md:justify-center">
+          <div
+            ref={modalRef}
+            className="bg-background-secondary z-50 w-full rounded-t-xl md:w-[384px] md:rounded-b-xl"
+          >
+            {children}
+          </div>
+        </div>
+      )}
+    </ModalContext.Provider>
+  );
+}
+```
+
+A modal using context api like this
+
+![](/images/2024-09-14/context%20api를%20활용한%20모달.png)
+
+When the modal is opened, the button that opens the modal also re-renders.
+
+![](/images/2024-09-14/context%20api를%20활용한%20모달%20profiler.png)
+
+This is unavoidable because context ultimately changes state in the parent component
+
+It makes developers comfortable, but you can't prevent components in between from re-rendering when state changes (so context api is also called global state injection rather than global state management.)
+
+Since zustand was set as the global state management library in this project, I started thinking about using it to create.
+
+### toss slash
+
+While doing that, I found a hook that handles overlay in toss's open source library.
+
+Overlay means something laid on top, and here it means putting a screen on top of a screen.
+
+In other words, not only modals but also components on top of existing screens like sidebars and toasts are called overlays.
+
+#### Detailed Analysis of useOverlay
+
+https://github.com/toss/slash/blob/main/packages/react/use-overlay/src/useOverlay.ko.md
+
+##### OverlayProvider
+
+```tsx
+// OverlayProvider.tsx
+/** @tossdocs-ignore */
+import React, {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+
+// Store with context api
+export const OverlayContext = createContext<{
+  // Context that checks whether it's mounted or not
+  mount(id: string, element: ReactNode): void;
+  unmount(id: string): void;
+} | null>(null);
+// In deployment stage
+if (process.env.NODE_ENV !== "production") {
+  // Set displayName
+  OverlayContext.displayName = "OverlayContext";
+}
+
+// Create Provider that receives children
+export function OverlayProvider({ children }: PropsWithChildren) {
+  // Create state that stores id and component
+  const [overlayById, setOverlayById] = useState<Map<string, ReactNode>>(
+    new Map(),
+  );
+
+  // Create mount function
+  const mount = useCallback((id: string, element: ReactNode) => {
+    // Don't call mount continuously, only call when first mounted (useCallback)
+    setOverlayById((overlayById) => {
+      const cloned = new Map(overlayById);
+      cloned.set(id, element);
+      return cloned;
+    });
+  }, []);
+
+  // Create unmount function
+  const unmount = useCallback((id: string) => {
+    // Don't call unmount continuously, only call when first unmounted (useCallback)
+    setOverlayById((overlayById) => {
+      const cloned = new Map(overlayById);
+      cloned.delete(id);
+      return cloned;
+    });
+  }, []);
+
+  // Store mount, unmount in context
+  const context = useMemo(() => ({ mount, unmount }), [mount, unmount]);
+
+  // Pass context down using Context API and render components using id and element
+  return (
+    <OverlayContext.Provider value={context}>
+      {children}
+      {[...overlayById.entries()].map(([id, element]) => (
+        <React.Fragment key={id}>{element}</React.Fragment>
+      ))}
+    </OverlayContext.Provider>
+  );
+}
+```
+
+Role of OverlayProvider
+
+1. Has state that stores components and passes it down globally so it can be changed with context api.
+2. Opens components using state. (When empty, nothing is visible even if open.)
+
+> Added 2024-11-29
+>
+> Looking at the code above, you can see that `id:string` and `element:ReactNode` are put as elements of `Map` in a state called `overlayById` and then used inside `Provider`.
+>
+> At this time, you can see that `element:ReactNode` is used as `children` of `Fragment` inside `Provider`, and this is because `element:ReactNode` is a function called `createElement(tag, props, ...children)`. (To be precise, it's `JSX.Element`, and `ReactNode` is a broader concept that includes `string, number`, etc.)
+>
+> Actual `JSX.Element` like `<ComponentName/>` is internally changed by React to execution of `createElement` function, returns a JS object, and further makes it into Fiber, Fiber Tree.
+>
+> We directly used this intermediate stage. So we can't use the element of overlayById state like `<element key={id}/>` as if using a component, and must use it as `children`.
+
+##### useOverlay
+
+```tsx
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { OverlayContext } from "./OverlayProvider";
+/** @tossdocs-ignore */
+import { OverlayController, OverlayControlRef } from "./OverlayController";
+import { CreateOverlayElement } from "./types";
+
+let elementId = 1;
+
+interface Options {
+  exitOnUnmount?: boolean;
+}
+
+export function useOverlay({ exitOnUnmount = true }: Options = {}) {
+  // Get overlayContext (has mount, unmount)
+  const context = useContext(OverlayContext);
+
+  // Throw error if context doesn't exist (only usable within Provider)
+  if (context == null) {
+    throw new Error("useOverlay is only available within OverlayProvider.");
+  }
+
+  // Separate mount, unmount with destructuring
+  const { mount, unmount } = context;
+  // Create state that stores id
+  const [id] = useState(() => String(elementId++));
+
+  // Create overlayRef, provide close function using useImperativeHandle
+  const overlayRef = useRef<OverlayControlRef | null>(null);
+
+  useEffect(() => {
+    //  When exitOnUnmount is true, execute unmount when component unmounts
+    //  When exitOnUnmount is false, don't execute unmount when component unmounts, must directly call exit(unmount)
+    return () => {
+      if (exitOnUnmount) {
+        unmount(id);
+      }
+    };
+  }, [exitOnUnmount, id, unmount]);
+
+  // Cache object using useMemo
+  return useMemo(
+    () => ({
+      // Return open, close, exit functions
+      // open: receive overlayElement and execute mount
+      // close: execute overlayRef.current?.close()
+      // exit: execute unmount
+      open: (overlayElement: CreateOverlayElement) => {
+        mount(
+          id,
+          <OverlayController
+            // NOTE: state should be reset every time we open an overlay
+            key={Date.now()}
+            ref={overlayRef}
+            overlayElement={overlayElement}
+            onExit={() => {
+              unmount(id);
+            }}
+          />,
+        );
+      },
+      close: () => {
+        overlayRef.current?.close();
+      },
+      exit: () => {
+        unmount(id);
+      },
+    }),
+    [id, mount, unmount],
+  );
+}
+```
+
+Role of useOverlay
+
+1. Read context and provide functions that can mount and unmount (here mount and unmount are putting in memory (global state))
+2. Generate and inject id used internally in context
+
+##### OverlayController
+
+```tsx
+/** @tossdocs-ignore */
+import {
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
+
+import { CreateOverlayElement } from "./types";
+
+interface Props {
+  // Result
+  overlayElement: CreateOverlayElement;
+  onExit: () => void;
+}
+
+export interface OverlayControlRef {
+  close: () => void;
+}
+
+export const OverlayController = forwardRef(function OverlayController(
+  { overlayElement: OverlayElement, onExit }: Props,
+  ref: Ref<OverlayControlRef>,
+) {
+  // Whether it's rendered on actual DOM, not memory
+  const [isOpenOverlay, setIsOpenOverlay] = useState(false);
+
+  // Function to close Overlay from DOM
+  const handleOverlayClose = useCallback(() => setIsOpenOverlay(false), []);
+
+  // Add close function to object passed via ref
+  useImperativeHandle(ref, () => {
+    return { close: handleOverlayClose };
+  }, [handleOverlayClose]);
+
+  // Open Overlay when component mounts
+  useEffect(() => {
+    // NOTE: Without requestAnimationFrame, Open animation sometimes doesn't execute.
+    // Method that enables calling callback function before next repaint in browser
+    requestAnimationFrame(() => {
+      setIsOpenOverlay(true);
+    });
+  }, []);
+
+  // Render OverlayElement
+  return (
+    <OverlayElement
+      isOpen={isOpenOverlay}
+      close={handleOverlayClose}
+      exit={onExit}
+    />
+  );
+});
+```
+
+Role of OverlayController
+
+1. Render Element on actual DOM
+2. Process animation by calling function before repaint (requestAnimationFrame can execute function before repaint because it has its own queue and executes like micro queue.)
+3. Put handler to close modal with useOverlay's open
+4. Remove Element
+
+##### Overall Structure Diagram
+
+When comprehensively drawing the structure diagram, it's as follows.
+
+![](/images/2024-09-14/Pasted%20image%2020240828112132.png)
+
+Points solved through this:
+
+1. Modals are defined below main that doesn't have influence so that z-index is not buried in stacking context.
+2. Modal components can be directly injected from components.
+3. Multiple modals can appear on the same page and can exist simultaneously.
+
+> **Stacking context** is a 3D conceptualization of HTML elements using a virtual Z-axis. The Z-axis is user-based, assuming the user is looking at the viewport or webpage. Each HTML element occupies 3D space using priority according to its own attributes.
+> ![](/images/2024-09-14/Pasted%20image%2020240914114250.png)
+> It's complicated, but simply put, z-index cannot beat parent's z-index. Even if you have z-index: 6, if the parent is 4, you cannot beat elements higher than 4 at the parent level with z-index.
+> (`DIV #4 has z-index:6 but is behind DIV #1 with z-index:5.`)
+
+### Improvements Suited to Project
+
+After analysis was complete, I felt stronger after studying everything related. Haha..
+
+When thinking about points to improve in useOverlay for the project, they were as follows.
+
+1. Replacing global state injection with global state management can escape re-rendering problems. Since this project uses zustand for global state, work to carve it out with zustand is needed.
+2. Slash's library seemed like a previously implemented library. (It was importing React.) If we refactor it to some extent by current standards, we can increase readability. Simply, in the part that receives component id, a global variable was specified to put id, and this can be refactored to use `useId`, a hook made for React to create ids.
+3. OverlayController stage is separately divided into exit and close for animation processing related to mount and unmount (like Framer-Motion's AnimatePresense), but I thought this harmed readability. I thought we could create one state and process it when doing animation processing in the part that creates components like modals and sidebars, not putting it in the hook. I could confirm that in the existing library, this part had long comments, and personally, I think code that reads well without comments is better. Since our project didn't place great importance on mount and unmount animations, we decided to remove it.
+
+#### useCustomOverlay Structure Diagram
+
+![](/images/2024-09-14/Pasted%20image%2020240828112816.png)
+
+##### OverlayStore
+
+```ts
+import { ReactNode } from "react";
+import { devtools } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+
+export type OverlayState = {
+  ElementsInMemory: Map<string, ReactNode>;
+};
+
+export type OverlayActions = {
+  mount: (id: string, element: ReactNode) => void;
+  unmount: (id: string) => void;
+};
+
+export type OverlayStore = OverlayState & OverlayActions;
+
+export const initOverlayStore = (): OverlayState => {
+  return { ElementsInMemory: new Map() };
+};
+
+export const defaultInitState: OverlayState = {
+  ElementsInMemory: new Map(),
+};
+
+export const createOverlayStore = (
+  initState: OverlayState = defaultInitState,
+) => {
+  return createStore<OverlayStore>()(
+    devtools((set) => ({
+      ...initState,
+      mount: (id, element) => {
+        set(
+          (state) => {
+            state.ElementsInMemory.set(id, element);
+            return { ElementsInMemory: new Map(state.ElementsInMemory) };
+          },
+          undefined,
+          "mount",
+        );
+      },
+      unmount: (id) => {
+        set(
+          (state) => {
+            state.ElementsInMemory.delete(id);
+            return { ElementsInMemory: new Map(state.ElementsInMemory) };
+          },
+          undefined,
+          "unmount",
+        );
+      },
+    })),
+  );
+};
+```
+
+By using zustand store method, logic related to mount and unmount could be hidden in the store. (Logic separation good)
+
+###### Troubleshooting
+
+As a short troubleshooting, zustand uses shallow equal to detect state changes, so just deleting didn't cause re-rendering.
+
+When data changes, you need to put a new Map in return for re-rendering to occur normally.
+
+##### OverlayStoreProvider
+
+```ts
+"use client";
+
+import {
+  OverlayStore,
+  createOverlayStore,
+  initOverlayStore,
+} from "@/stores/modal-store";
+import {
+  Fragment,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useRef,
+} from "react";
+import { useStoreWithEqualityFn } from "zustand/traditional";
+
+export type OverlayStoreApi = ReturnType<typeof createOverlayStore>;
+
+export const OverlayStoreContext = createContext<OverlayStoreApi | undefined>(
+  undefined,
+);
+
+export const OverlayStoreProvider = ({ children }: PropsWithChildren) => {
+  const storeRef = useRef<OverlayStoreApi>();
+  if (!storeRef.current) {
+    storeRef.current = createOverlayStore(initOverlayStore());
+  }
+  return (
+    <OverlayStoreContext.Provider value={storeRef.current}>
+      {children}
+    </OverlayStoreContext.Provider>
+  );
+};
+
+export const OverlayProvider = () => {
+  const ElementsInMemory = useOverlayStore((store) => store.ElementsInMemory);
+  return (
+    <>
+      {[...ElementsInMemory.entries()].map(([id, element]) => (
+        <Fragment key={id}>{element}</Fragment>
+      ))}
+    </>
+  );
+};
+
+export const useOverlayStore = <T,>(
+  selector: (store: OverlayStore) => T,
+): T => {
+  const overlayStoreContext = useContext(OverlayStoreContext);
+
+  if (!overlayStoreContext) {
+    throw new Error(`useModalStore must be used within ModalStoreProvider`);
+  }
+
+  return useStoreWithEqualityFn(overlayStoreContext, selector);
+};
+```
+
+Component connected to OverlayStore. Must be placed below main to solve stacking context.
+
+Map's entries expand Map and take out components inside, and since they render sequentially, components implemented later win in stacking context and overwrite.
+
+##### useCustomOverlay
+
+```ts
+"use client";
+
+import { useOverlayStore } from "@/providers/modal-store-provider";
+import { useId, useMemo } from "react";
+
+import { CreateOverlayElement } from "./types";
+
+/**
+ * Hook that renders components below root by combining with Zustand.
+ * Renders components that receive close as prop.
+ * You can create components like Modal component that receive close function as prop and put them in.
+ * This component only lifts them below root. 
+ * 
+ * You can also create another CustomOverlay inside a modal to lift one more modal. 
+ * However, useOutSideClick must be handled separately.
+ * 
+ * @author 이승현
+ * @param overlayElement
+ * @returns The component is rendered below root.
+ *  const overlay1 = useCustomOverlay(({ close }) => (
+    <Modal close={close}>
+      <Modal.HeaderWithClose />
+      <Modal.Title>제목</Modal.Title>
+      <Modal.Description>난 예시다.</Modal.Description>
+      <Modal.Description>해냈다.</Modal.Description>
+    </Modal>
+  ));
+  return (
+    <button onClick={overlay1.open}>overlay1에 넣은 컴포넌트를 여는 버튼/button>
+ */
+export function useCustomOverlay(overlayElement: CreateOverlayElement) {
+  // Generate unique id with useId
+  const id = useId();
+  const mount = useOverlayStore((store) => store.mount);
+  const unmount = useOverlayStore((store) => store.unmount);
+
+  // Cache object using useMemo
+  return useMemo(
+    () => ({
+      open: () => {
+        mount(id, overlayElement({ close: () => unmount(id) }));
+      },
+      close: () => {
+        unmount(id);
+      },
+    }),
+    [id, mount, unmount, overlayElement],
+  );
+}
+```
+
+This is useCustomOverlay, which I liked the most while implementing.
+
+I processed id to have a unique value using useId, and made it call with a component when calling, so on the usage side,
+
+```ts
+const modalSendEmailOverlay = useCustomOverlay(({ close }) => (
+    <ModalSendEmail close={close} />
+  ));
+ //...
+onClick={modalSendEmailOverlay.open}    
+```
+
+I made it so that you can render by just using the open method.
+
+Now fellow developers can manage overlays by going through just three processes.
+
+1. Assemble component to display screen (must have close prop that closes overlay.)
+2. Put in useCustomOverlay
+3. instance.open
+
+This way, I implemented a universal hook that can be put not only in modals but also in sidebars and toasts!!!!!
+
+> ++ 2024-11-29
+>
+> Looking back, this method reduced useOverlay's functionality too much.
+>
+> In toss's useOverlay, modals can be handled simultaneously by using `Promise` to make it a handling function that performs specific actions rather than a function that opens modals.
+>
+> ```jsx
+> // Function that manages purchase action, not a function that opens purchase modal
+> const handlePurchase = useCallback(async () => {
+>   const isOk = await new Promise((resolve) => {
+>     overlay.open(({ close, isOpen }) => (
+>       <PurchaseModal
+>         handleCancel={() => {
+>           resolve(false);
+>           close();
+>         }}
+>         handleConfirm={() => {
+>           resolve(true);
+>           close();
+>         }}
+>         isOpen={isOpen}
+>       />
+>     ));
+>   });
+>
+>   if (isOk) {
+>     alert("결제가 완료되었습니다.");
+>   } else {
+>     alert("결제가 취소되었습니다.");
+>   }
+> }, [overlay]);
+> ```
+>
+> This enables declarative programming, making it a much better method in terms of readability or scalability. This will shine even more as the product grows.
+
+## Compound Pattern + useCustomOverlay Example (Common Modal Component)
+
+````ts
+interface ModalContextType {
+  close: () => void;
+}
+
+const ModalContext = createContext<ModalContextType | null>(null);
+
+interface ModalProps {
+  closeOnFocusOut: boolean;
+  close: () => void;
+  children: ReactNode;
+  className?: string;
+}
+
+/**
+ * Modal component
+ *
+ * @description Made with compound pattern and can be used together as an argument of useCustomOverlay.
+ * Each element doesn't have margin set. You can specify with className and combine to use.
+ *
+ * @author 이승현
+ * @param close Function to close modal
+ * @param children Inside modal
+ * @param closeOnFocusOut Whether to close modal when clicking outside screen
+ * @example
+ * ```tsx
+  export function ModalWarning({ handleConfirm, close }: ModalWarningProps) {
+    const handleClick = async () => {
+      await handleConfirm();
+      close();
+    };
+    return (
+      <Modal close={close} closeOnFocusOut>
+        <header className="flex justify-center pb-4 pt-6">
+          <Alert width={24} height={24} />
+        </header>
+        <div className="mx-12 text-center md:mx-9">
+          <Modal.Title className="mb-2 text-slate-50 md:text-text-primary">
+            회원 탈퇴를 진행하시겠어요?
+          </Modal.Title>
+          <Modal.Description className="mb-4">
+            그룹장에 있는 모든 그룹은 삭제되고, 모든 그룹에서 나가집니다.
+          </Modal.Description>
+          <Modal.TwoButtonSection
+            closeBtnStyle="outlined_secondary"
+            confirmBtnStyle="danger"
+            buttonDescription="회원 탈퇴"
+            onClick={handleClick}
+            close={close}
+          />
+        </div>
+      </Modal>
+    );
+  }
+ */
+export default function Modal({
+  children,
+  close,
+  closeOnFocusOut,
+  className,
+}: ModalProps) {
+  const modalRef = useClickOutside(() => {
+    close();
+  });
+
+  return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
+    <ModalContext.Provider value={{ close }}>
+      <section className={cn(overlayVariants())}>
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 100 }}
+          transition={{ duration: 0.1 }}
+          className={cn(modalVariants({ className }))}
+          ref={
+            closeOnFocusOut
+              ? (modalRef as LegacyRef<HTMLDivElement> | undefined)
+              : null
+          }
+        >
+          {children}
+        </motion.div>
+      </section>
+    </ModalContext.Provider>
+  );
+}
+//...
+export function useModal() {
+  const context = useContext(ModalContext);
+
+  if (!context) {
+    throw new Error("useModal must be used within a ModalProvider");
+  }
+
+  return context;
+}
+//...
+function HeaderWithClose({ className }: HeaderWithCloseProps) {
+  const { close } = useModal();
+  return (
+    <header className={headerWithCloseVariants({ className })}>
+      <button type="button" onClick={close} aria-label="닫기">
+        <CloseButton
+          className="rounded-xl duration-100 hover:scale-105"
+          width={24}
+          height={24}
+        />
+      </button>
+    </header>
+  );
+}
+HeaderWithClose.displayName = "Modal.HeaderWithClose";
+````
+
+As mentioned in useCustomOverlay analysis, you can confirm that animation processing related to mount and unmount is implemented inside components.
+
+In this project, since there are various modals with similar internal elements, I also implemented constituent elements with compound pattern.
+
+> Compound pattern is one of the design patterns used in frontend environments,
+> a pattern where you can bring only one component with internal state implemented using context api and utilize components inside properties, implementing various components as if assembling.
+> However, it also has the disadvantage that tree shaking is impossible, so caution is needed when using it.
+
+```ts
+export default function HandleArticleModal({
+  close,
+  onSubmit,
+  defaultContent,
+  defaultImage,
+  defaultTitle,
+}: HandleArticleModalProps) {
+  const { handleNext, handlePrev, isNext } = useNextPage();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleImageFile = useCallback((selectedImageFile: File | null) => {
+    setImageFile(selectedImageFile);
+  }, []);
+
+  usePreventScroll();
+
+  return (
+    <Modal close={close} closeOnFocusOut={false}>
+      <Modal.HeaderWithClose className="fixed right-7 top-7" />
+      <section className="relative">
+        {isNext ? (
+          <ArticleForm
+            file={imageFile}
+            handlePrev={handlePrev}
+            handlePost={onSubmit}
+            defaultContent={defaultContent}
+            defaultTitle={defaultTitle}
+            defaultImage={defaultImage}
+            close={close}
+          />
+        ) : (
+          <FileDragDown
+            file={imageFile}
+            onSelect={handleImageFile}
+            defaultPreview={defaultImage}
+            handleNext={handleNext}
+          />
+        )}
+      </section>
+    </Modal>
+  );
+}
+```
+
+This is an example of modal assembly using this. On the assembly side, you can confirm that it's implemented just by putting components and necessary logic inside Modal without needing to know the internal logic or styles that implement the modal.
+
+![](/images/2024-09-14/게시글%20추가.gif)
+
+# Afterword
+
+I met a good problem situation, so I was able to have time to analyze toss slash's hook this time.
+
+It was an experience where I learned a lot of knowledge I wouldn't have known if I hadn't analyzed things like requestAnimateFrame or useImperative hook.
+
+This useOverlay is a small size compared to other open source libraries, but
+
+I think I can now analyze even large open sources without fear when I meet good problems in the future.
+
+Let's grow more
+
+https://github.com/772-company/kkom-kkom/pull/80
+
+> These are experiences I had during the Kkom-kkom project. I think I grew a lot today too!
+>
+> Thank you for reading! Please watch over me!
+>
+> Thank you.
+
