@@ -11,6 +11,7 @@ import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
 import { useSidebar } from "../sidebar";
+import { LanguageSelector } from "./language-selector";
 import { HeaderSwitch } from "./switch";
 import headerVariant from "./variant";
 
@@ -45,6 +46,7 @@ export default function Header() {
         </section>
         <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
           <HeaderNavigation />
+          <LanguageSelector />
           <HeaderSwitch />
         </section>
       </div>
