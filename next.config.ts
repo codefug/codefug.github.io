@@ -1,7 +1,10 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
@@ -73,4 +76,4 @@ const withMDX = createMDX({
 });
 
 // Merge MDX config with Next.js config
-export default withMDX(nextConfig);
+export default withNextIntl(withMDX(nextConfig));
