@@ -30,5 +30,10 @@
     "growthJourney": {
       "title": "Growth Journey"
     }
+  },
+  "home": {
+    "recentPosts": "최신 게시물",
+    "allPosts": "모든 게시물",
+    "recentCategories": "최근 연구했던 카테고리"
   }
 }
