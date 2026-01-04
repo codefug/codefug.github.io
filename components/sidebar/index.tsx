@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,6 +26,7 @@ export default function AppSidebar({
 }: {
   totalFrontMatterList: FrontMatter[];
 }) {
+  const t = useTranslations();
   const { toggleSidebar } = useSidebar();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -41,16 +43,16 @@ export default function AppSidebar({
           </SidebarGroupLabel>
           <SidebarGroupContent className="flex min-h-full flex-col items-center px-2">
             <Avatar className="h-40 w-40">
-              <AvatarImage src="/images/me.jpg" alt="이승현 프로필 사진" />
+              <AvatarImage src="/images/me.jpg" alt={t("sidebar.profileAlt")} />
               <AvatarFallback className="group-hover:text-black group-hover:dark:text-white">
-                이승현
+                {t("sidebar.name")}
               </AvatarFallback>
             </Avatar>
             <h1 className="mt-4 text-center font-bold text-gray-400 text-lg group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
-              이승현
+              {t("sidebar.name")}
             </h1>
             <p className="text-gray-400 text-sm group-hover:text-black dark:text-gray-500 group-hover:dark:text-white">
-              Web Frontend Developer
+              {t("sidebar.jobTitle")}
             </p>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -69,7 +71,7 @@ export default function AppSidebar({
                         item.target === "_blank" ? undefined : toggleSidebar
                       }
                     >
-                      {item.label}
+                      {t(`navigation.${item.label.toLowerCase()}`)}
                     </SidebarAnchorButton>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

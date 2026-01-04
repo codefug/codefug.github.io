@@ -44,5 +44,15 @@
   },
   "post": {
     "notFound": "投稿が見つかりませんでした。"
+  },
+  "sidebar": {
+    "profileAlt": "イ・スンヒョンのプロフィール写真",
+    "name": "イ・スンヒョン",
+    "jobTitle": "Webフロントエンド開発者"
+  },
+  "navigation": {
+    "resume": "履歴書",
+    "portfolio": "ポートフォリオ",
+    "search": "検索"
   }
 }

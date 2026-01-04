@@ -44,5 +44,15 @@
   },
   "post": {
     "notFound": "해당 포스트를 찾을 수 없습니다."
+  },
+  "sidebar": {
+    "profileAlt": "이승현 프로필 사진",
+    "name": "이승현",
+    "jobTitle": "Web Frontend Developer"
+  },
+  "navigation": {
+    "resume": "Resume",
+    "portfolio": "Portfolio",
+    "search": "Search"
   }
 }

@@ -44,5 +44,15 @@
   },
   "post": {
     "notFound": "Post not found."
+  },
+  "sidebar": {
+    "profileAlt": "Profile photo of Seoung Hyun Lee",
+    "name": "Seoung Hyun Lee",
+    "jobTitle": "Web Frontend Developer"
+  },
+  "navigation": {
+    "resume": "Resume",
+    "portfolio": "Portfolio",
+    "search": "Search"
   }
 }
