@@ -6,6 +6,11 @@
     "meta": {
       "title": "Seoung Hyun Lee Portfolio",
       "description": "Portfolio of Seoung Hyun Lee, a frontend developer who pursues efficiency."
+    },
+    "skills": {
+      "title": "Skills",
+      "strong": "Strong",
+      "knowledgeable": "Knowledgeable"
     }
   }
 }
