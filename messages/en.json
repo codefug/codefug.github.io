@@ -54,5 +54,14 @@
     "resume": "Resume",
     "portfolio": "Portfolio",
     "search": "Search"
+  },
+  "meta": {
+    "title": "Codefug Blog",
+    "description": "A blog sharing project experiences and development notes",
+    "keywords": "development, programming, React, Next.js, JavaScript, TypeScript, blog",
+    "openGraph": {
+      "title": "Codefug Blog",
+      "description": "project experiences and development notes"
+    }
   }
 }
