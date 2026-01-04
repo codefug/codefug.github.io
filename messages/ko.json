@@ -11,6 +11,9 @@
       "title": "Skills",
       "strong": "Strong",
       "knowledgeable": "Knowledgeable"
+    },
+    "education": {
+      "title": "Education"
     }
   }
 }
