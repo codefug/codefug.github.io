@@ -3,6 +3,8 @@ import path from "node:path";
 import matter from "gray-matter";
 import type { Metadata } from "next";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
+import { PostContent } from "@/components/post/PostContent";
+import { PostHeaderClient } from "@/components/post/PostHeaderClient";
 import PostNotFound from "@/components/post/PostNotFound";
 import MenuBar from "@/components/postMenuBar/menu-bar";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -10,11 +12,10 @@ import {
   createAlternateLinks,
   createBlogPostStructuredData,
 } from "@/components/seo/utils";
-import PostHeader from "@/components/ui/post-header";
 import type { ParsedFrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import { defaultLocale } from "@/i18n/config";
-import { mdxMap } from "@/lib/mdxMap";
+import type { Locale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
 
 export async function generateMetadata({
   params,
@@ -27,6 +28,32 @@ export async function generateMetadata({
   };
 }
 
+async function getFrontMatterForAllLocales(id: string) {
+  const frontMatters: Record<Locale, ParsedFrontMatter> = {} as Record<
+    Locale,
+    ParsedFrontMatter
+  >;
+
+  for (const locale of locales) {
+    const mdxFilePath = path.join(
+      process.cwd(),
+      "markdown",
+      id,
+      locale,
+      "frontmatter.mdx",
+    );
+    try {
+      const fileContent = await readFile(mdxFilePath, "utf8");
+      const { data } = matter(fileContent);
+      frontMatters[locale] = data as ParsedFrontMatter;
+    } catch {
+      // If file doesn't exist for this locale, skip
+    }
+  }
+
+  return frontMatters;
+}
+
 export default async function Page({
   params,
 }: {
@@ -34,24 +61,16 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  // SSG 모드에서는 항상 한국어(기본 locale) 사용
-  const locale = defaultLocale;
+  // 모든 locale의 frontmatter를 읽어옴
+  const frontMatters = await getFrontMatterForAllLocales(id);
 
-  const mdxFilePath = path.join(
-    process.cwd(),
-    "markdown",
-    id,
-    locale,
-    "frontmatter.mdx",
-  );
-  const fileContent = await readFile(mdxFilePath, "utf8");
-  const { data } = matter(fileContent);
+  // 기본 locale의 frontmatter가 없으면 404
+  if (!frontMatters[defaultLocale]) {
+    return <PostNotFound />;
+  }
 
-  const mdxModule = mdxMap[id];
-  if (!mdxModule) return <PostNotFound />;
-  const Content = mdxModule.default;
-
-  const frontMatterData = data as ParsedFrontMatter;
+  // 기본 locale의 frontmatter를 사용 (SEO용)
+  const frontMatterData = frontMatters[defaultLocale];
   const structuredData = createBlogPostStructuredData({
     id,
     title: frontMatterData.title,
@@ -64,11 +83,11 @@ export default async function Page({
     <section>
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
-      <PostHeader {...frontMatterData} />
+      <PostHeaderClient frontMatters={frontMatters} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar />
         <section className="max-w-full">
-          <Content />
+          <PostContent postId={id} />
         </section>
       </section>
     </section>
