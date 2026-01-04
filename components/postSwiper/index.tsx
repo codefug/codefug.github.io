@@ -1,8 +1,10 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
+import { useLocale } from "next-intl";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
+import type { Locale } from "@/i18n/config";
 import PostCard from "../postCard";
 import {
   AppCarouselNext,
@@ -11,12 +13,16 @@ import {
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
 export default function PostSwiper({
-  postInfoList,
+  frontMatterListByLocale,
   cardNumber,
 }: {
-  postInfoList: FrontMatter[];
+  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
   cardNumber: number;
 }) {
+  const locale = useLocale() as Locale;
+  const postInfoList =
+    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
+
   const filteredPostInfoList = useMemo(
     () => postInfoList.slice(0, cardNumber),
     [postInfoList, cardNumber],
