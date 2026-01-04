@@ -1,0 +1,57 @@
+## Resolution Process
+
+A problem occurred while migrating a page made with JS(React) to TS.
+
+![](/images/2024-06-14/image-1.png)
+
+The layout structure was the same, but data could not be retrieved. The data request part seemed to be the problem, so I checked with developer tools.
+
+![](/images/2024-06-14/image-2.png)
+
+The URL contained undefined. It seemed to be a problem caused by values not being entered into variables.
+
+I determined it was an environment variable issue.
+
+I was working on environment variables along with the TS migration, and it seemed the problem occurred in this part.
+
+```env
+BASE_URL="address"
+```
+
+```ts
+// constants.ts
+export const BASE_URL = process.env.BASE_URL;
+```
+
+This is the existing env file and the ts file that uses it.
+
+process.env is an object that stores environment variables in the Node.js runtime environment. This is the way Express uses it, so it's incorrect access in a Vite environment.
+
+Next.js distinguishes between client and server environment variables with NEXT_PUBLIC_. I thought Vite might have a similar distinction, so I checked the official documentation.
+
+<a href="https://ko.vitejs.dev/guide/env-and-mode">Vite Official Documentation</a>
+
+Vite uses environment variables starting with VITE_. Some variable names are reserved by default.
+
+BASE_URL is a reserved variable in Vite that represents the base URL within the app. I changed it to URL to avoid conflicts.
+
+```env
+VITE_URL = "address"
+```
+
+```ts
+export const BASE_URL = import.meta.env.VITE_URL;
+```
+
+vite build brings variables to dist.
+
+Environment variables starting with VITE_ are always included during bundling. Sensitive information like database passwords should not be included.
+
+### Result
+
+![](/images/2024-06-14/image.png)
+
+> This happened while migrating from JS to TS!
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

@@ -1,0 +1,391 @@
+Bugs and debugging issues that occur in applications can also happen outside of React.
+
+To debug React's external environment such as JavaScript memory, network, source, actual HTML and CSS, browser developer tools are needed.
+
+# Chrome Dev Tool
+
+![](/images/2024-06-15/Pasted%20image%2020240615101247.png)
+
+As shown in the picture above, dev tool shows various information about the page.
+
+It's recommended to use developer tools in incognito mode.
+
+![](/images/2024-06-15/Pasted%20image%2020240615101714.png)
+
+This is because extensions can store global variables. In incognito mode
+
+![](/images/2024-06-15/Pasted%20image%2020240615101851.png)
+
+If there are no extensions available in incognito mode, global variables stored by extensions don't exist.
+
+## Element
+
+You can check information such as HTML, CSS, etc. that make up the current webpage.
+
+![](/images/2024-06-15/Pasted%20image%2020240615102351.png)
+
+### Element Screen
+
+Represents the HTML that makes up the current webpage.
+
+![](/images/2024-06-15/Pasted%20image%2020240615102820.png)
+
+You can add, delete, or modify elements and track code that causes changes using breakpoints.
+
+![](/images/2024-06-15/Pasted%20image%2020240615103356.png)
+
+![](/images/2024-06-15/Pasted%20image%2020240615103504.png)
+
+You can see that php was used in that part and what code is related to it.
+
+### Element Information
+
+![](/images/2024-06-15/Pasted%20image%2020240615104728.png)
+
+Styles: Check style information related to elements
+
+Computed: You can check CSS applied result values such as padding, border, margin, etc. Check what the final result is.
+
+Layout: Check CSS grid or layout-related information.
+
+Event listeners: Check event listeners. If you uncheck Ancestor, you can only see events assigned to that element.
+
+DOM Breakpoints: A tab that tells you if there are breakpoints.
+
+Properties: Displays all attribute values that the element has. The difference from js's .attributes is that it shows all attribute values, not just specified attributes.
+
+Accessibility: Values used by screen readers, etc. for people with disabilities and the elderly who have difficulty using the web.
+
+## Source
+
+You can check all files executed or referenced to load the web application.
+You can check various file information such as JS, CSS, HTML, Font, etc.
+
+### Check Files Generated on the Page
+
+![](/images/2024-06-15/Pasted%20image%2020240615105916.png)
+
+This is what it looks like when you press developer tools > ctrl+p on the inflearn site.
+When you enter a file, you can check the actual code content.
+
+In production mode, files are compressed, making them difficult to check, but in development mode, you can also check React code.
+
+![](/images/2024-06-15/Pasted%20image%2020240615111323.png)
+
+You can set breakpoints like in actual code and debug.
+
+![](/images/2024-06-15/Pasted%20image%2020240615111411.png)
+
+### Check Code Content
+
+![](/images/2024-06-15/Pasted%20image%2020240615112247.png)
+
+On the right side of Source, there's information like above.
+
+Watch: A menu where you declare variables you want to watch and check information about those variables.
+
+Breakpoints: Check breakpoints added on the current website. You can check all breakpoints added in the Source tab.
+
+Scope: Check local scope, closure, global scope, etc.
+
+Call Stack: Check the call stack of the current breakpoint.
+
+Global Listeners: List of listeners added to the global scope.
+
+XHR/fetch Breakpoints, DOM Breakpoints, Event Listener Breakpoints
+
+CSP Violation Breakpoints: Check various types of breakpoints.
+
+## Network
+
+All network-related operations that occur from the moment you access the page are recorded.
+All information communicating with external data is included.
+
+![](/images/2024-06-15/Pasted%20image%2020240615113622.png)
+
+On the 3rd line, you can create tags like Fetch/XHR, Doc, etc. to filter the types of network requests.
+
+![](/images/2024-06-15/Pasted%20image%2020240615113806.png)
+
+You can also check the status of specific networks.
+
+When running in developer mode, hot reloading happens through web sockets.
+
+![](/images/2024-06-15/Pasted%20image%2020240615120838.png)
+
+At the bottom, you can check the number of requests that occurred during the page load period and the size of downloaded resources.
+
+For mobile, you need to pay mobile network costs proportional to resource size and it affects speed, so you need to optimize the count and size.
+
+You can compress resources using `gzip` or `brotli`, or optimize images.
+
+![](/images/2024-06-15/Pasted%20image%2020240615121057.png)
+
+Click the settings in the top left and click Screenshots to check webpage loading according to network request flow.
+
+![](/images/2024-06-15/Pasted%20image%2020240615121335.png)
+
+It takes screenshots of the webpage over time and shows them.
+
+### Things to Check in Network
+
+1. Are there unnecessary or duplicate requests?
+2. Is the resource size needed to compose the webpage too large?
+3. Is the speed of loading resources appropriate?
+4. Are there resources that take too long?
+5. Are resources downloaded in the correct priority so the webpage is created naturally?
+
+## Memory
+
+Check memory-related information. It's a tool to check memory leaks, slowdowns, and webpage freezing that occur in applications.
+
+![](/images/2024-06-15/Pasted%20image%2020240615122034.png)
+
+Similar to React-dev-tool, you need to go through profiling to see the desired information.
+
+From top to bottom, the profiling types are as follows.
+
+Heap snapshot: You can take a snapshot of the memory situation like taking a picture.
+
+Allocation instrumentation of timeline: You can see memory changes over time. Check memory changes during the loading process and memory change processes when interacting.
+
+Allocation sampling: Check JavaScript functions occupying memory space.
+
+### Select JavaScript VM instance
+
+![](/images/2024-06-15/Pasted%20image%2020240615122625.png)
+
+You can select the JS VM environment you're debugging and check how much JavaScript heap the page actually occupies.
+
+![](/images/2024-06-15/Pasted%20image%2020240615122833.png)
+
+This is Google's example. The size changes in real-time according to JS execution, and since it burdens the browser by this size, it's worth noting.
+
+### Heap snapshot
+
+A memory profiling tool to check the current page's memory state.
+
+```jsx
+const DUMMY_LIST = []
+
+export default function App(){
+	function handleClick(){
+		Array.from({ length: 10_000_000 }).forEach((_,idx)=>
+			DUMMY_LIST.push(Math.random()*idx);
+		)
+	}
+	alert('complete');
+	return <button onClick={handleClick}>BUG</button>
+}//Component that pushes ten million random values to an array outside the component
+```
+
+![](/images/2024-06-15/Pasted%20image%2020240615124114.png)
+
+Memory state before pressing.
+
+![](/images/2024-06-15/Pasted%20image%2020240615124158.png)
+
+Memory state after pressing. You can see that an enormous size has been added to the array on the third line.
+
+![](/images/2024-06-15/Pasted%20image%2020240615124324.png)
+
+When you click Objects allocated between snapshot 1 and snapshot 2
+
+![](/images/2024-06-15/Pasted%20image%2020240615124451.png)
+
+Only the intersection of the two appears. If you open the array's toggle, you can check the objects inside.
+
+![](/images/2024-06-15/Pasted%20image%2020240615124752.png)
+
+If you specify it as a global object like above, you can also check what values are inside.
+
+![](/images/2024-06-15/Pasted%20image%2020240615124939.png)
+
+It's stored in window's temp1. The difference between shallow size and Retained Size is whether reference values are included.
+
+```js
+function Y() {
+  this.j = 5;
+}
+function X() {
+  this.x = 3;
+  this.y = new Y();
+}
+
+export default function App() {
+  function handleClick() {
+    instances.push(new X());
+  }
+  return <button onClick={handleClick}>+</button>;
+}
+```
+
+At this time, X has Shallow Size, Retained Size of 52, 100, and Y has 48, 48.
+
+X references Y, but since Y only has variables, only X includes reference values, so Retained Size is 100.
+
+If memory leaks are suspected, it's good to find objects with large differences between Retained Size and Shallow Size. (They reference multiple objects, so there's a high risk of leaks)
+
+This time, let's check through debugging whether useCallback is being reassigned.
+
+```jsx
+function Component({ number }: { number: number }) {
+  const callbackHandleClick = useCallback(() => {
+    console.log(number);
+  }, [number]);
+
+  const noCallbackHandleClick = () => {
+    console.log(number);
+  };
+
+  return (
+    <>
+      <button onClick={callbackHandleClick}>call</button>
+      <button onClick={noCallbackHandleClick}>no</button>
+    </>
+  );
+}
+
+function App(){
+	const [toggle, setToggle] = useState(false);
+	//...
+	return (<>
+	<button onClick={()=>{setToggle(()=>!toggle)}}>재렌더링</button>
+	<Component number={5} />
+	</>)
+}
+```
+
+The number props passed down is fixed, but as the parent component App re-renders, the child component Component also re-renders. Let's check that callbackHandleClick using useCallback is not re-invoked.
+
+![](/images/2024-06-15/Pasted%20image%2020240615163357.png)
+
+Comparing snapshots before and after looks like above. You can see that callbackHandleClick() doesn't exist and only noCallbakHandleClick() exists.
+
+The () @163297 below is an anonymous function. (setToggle's callback)
+
+```js
+setToggle(function toggle() {
+  return !toggle;
+});
+```
+
+If written as a named function, it looks like this.
+
+![](/images/2024-06-15/Pasted%20image%2020240615164016.png)
+
+### Allocation instrumentation on timeline
+
+Records memory changes over time.
+
+You can set a section and check what objects had changes.
+
+![](/images/2024-06-15/Pasted%20image%2020240615164419.png)
+
+You can also specify it as a global variable.
+![](/images/2024-06-15/Pasted%20image%2020240615164611.png)
+
+![](/images/2024-06-15/Pasted%20image%2020240615164544.png)
+
+## Allocation sampling
+
+Check memory occupation that occurs over time, and you can analyze it by JS execution stack, and this analysis is done by function unit.
+
+Let's look at the following code as an example.
+
+```jsx
+const DUMMY: Array<string> = [];
+
+function App() {
+  const [toggle, setToggle] = useState(false);
+  return (
+  // ...
+  <button
+          onClick={() => {
+            Array.from({ length: 3000 }).forEach(function addDummy() {
+              DUMMY.push(Math.random().toString());
+            });
+            setToggle(function toggle(prev) {
+              return !prev;
+            });
+          }}
+        >
+  )
+```
+
+When you press the button, 3000 pieces of data go into DUMMY after going through random().toString().
+
+If you run sampling, you can see that toString occupies the most.
+
+![](/images/2024-06-15/Pasted%20image%2020240615165927.png)
+
+You can also access source code through the file path on the far right.
+
+## Debugging Next.js Environment
+
+Client-side memory leaks differ by device and their impact only affects that device, but server-side memory leaks burden the server itself and affect all services.
+
+You can also debug the server side with dev tools.
+
+### Next.js Debug Mode
+
+#### Running Debug Mode
+
+```json
+// package.json
+{"scripts": { "dev" : NODE_OPTIONS='--inspect' next dev }}
+```
+
+```terminal
+npm run dev
+
+Various things appear
+
+Then a web socket address appears
+```
+
+##### Windows is Different
+
+https://nextjs.org/docs/pages/building-your-application/configuring/debugging
+
+After installing cross-env
+https://www.npmjs.com/package/cross-env
+
+```json
+{ "scripts": { "dev": "cross-env NODE_OPTIONS='--inspect' next dev" } }
+```
+
+You need to do this to run it.
+
+#### Opening Developer Tools
+
+![](/images/2024-06-15/Pasted%20image%2020240615171833.png)
+
+When you go to chrome://inspect, a screen like above appears.
+
+![](/images/2024-06-15/Pasted%20image%2020240615173042.png)
+
+Click Open dedicated DevTools for Node.
+
+![](/images/2024-06-15/Pasted%20image%2020240615173118.png)
+
+Now you can debug using that VM instance (node server environment).
+
+Let's set up a virtual scenario and generate traffic to the server to check.
+
+`ab` is a web server performance testing tool, an open-source tool that can benchmark HTTP server performance.
+
+```terminal
+ab -k -c 50 -n 10000 "http://127.0.0.1:3000/"
+```
+
+##### Installing ab for Windows
+
+https://stackoverflow.com/questions/49893994/apachebench-installation-on-windows-10
+
+With the above command, you can send 50 requests 10,000 times to that URL.
+
+If you debug the server side the same way, you can see that memory increases.
+
+If memory leaks in SSR, it keeps accumulating on the server and causes overload, so it must be implemented as a pure function.
+

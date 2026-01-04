@@ -1,0 +1,223 @@
+# Experience Understanding Library Internals
+
+## Importance of Convenience and Understanding
+
+Just because libraries are made for developer convenience doesn't mean you don't need to understand their internal operations.
+
+I've done work like directly implementing infinite scroll with Intersection Observer API, but the importance didn't hit me.
+
+While learning Next.js, I realized that understanding library internals is essential.
+
+## Background
+
+I tried to load data responsively using JavaScript.
+
+> npm install react-responsive --save
+
+I created a custom hook using react-responsive.
+
+I tried to make it easy to use by separating it into `{isMobile, isTablet, isDesktop}` format.
+
+An error occurred.
+
+> Error: Hydration failed because the initial UI does not match what was rendered on the server.
+
+I encountered a hydration error common in Next.js.
+
+## Resolution Process
+
+### Cause
+
+In SSR, the server sends HTML first when a user requests.
+
+Interactive parts are excluded, and then interactivity is added with JavaScript bundles.
+
+This process is called hydration, meaning to pour water.
+
+The error means "the HTML generated on the server differs from the UI generated on the client."
+
+react-responsive uses window-related APIs internally to check size.
+
+The server in a Node.js environment doesn't understand window APIs, so it generates initial HTML.
+
+Afterward, the JavaScript bundle understands window APIs and generates different UI.
+
+I decided to create a responsive custom hook myself, considering performance optimization.
+
+### Solution
+
+```js
+import { useEffect, useState } from "react";
+import { debounce } from "./debounce";
+
+export const useScreenDetector = () => {
+  const [screen, setScreen] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+  });
+
+  const handleWindowSizeChange = () => {
+    if (window.innerWidth <= 744)
+      setScreen((prev) => ({
+        isMobile: true,
+        isTablet: false,
+        isDesktop: false,
+      }));
+    else if (window.innerWidth > 1200)
+      setScreen((prev) => ({
+        isMobile: false,
+        isTablet: false,
+        isDesktop: true,
+      }));
+    else
+      setScreen((prev) => ({
+        isMobile: false,
+        isTablet: true,
+        isDesktop: false,
+      }));
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  return screen;
+};
+```
+
+I wanted to maintain receiving it as an object.
+
+I implemented it by making the object itself a state and checking innerWidth.
+
+#### Refactoring
+
+```js
+export function debounce(func: () => void, wait: number) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(func, wait);
+  };
+}
+```
+
+I applied debounce to reduce overload from resize events.
+
+```js
+import { useEffect, useState } from "react";
+import { debounce } from "./debounce";
+
+export const useScreenDetector = () => {
+  const [screen, setScreen] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+  });
+
+  const handleWindowSizeChange = () => {
+    if (window.innerWidth <= 744)
+      setScreen((prev) => ({
+        isMobile: true,
+        isTablet: false,
+        isDesktop: false,
+      }));
+    else if (window.innerWidth > 1200)
+      setScreen((prev) => ({
+        isMobile: false,
+        isTablet: false,
+        isDesktop: true,
+      }));
+    else
+      setScreen((prev) => ({
+        isMobile: false,
+        isTablet: true,
+        isDesktop: false,
+      }));
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", debounce(handleWindowSizeChange, 100));
+    return () => {
+      window.removeEventListener(
+        "resize",
+        debounce(handleWindowSizeChange, 100),
+      );
+    };
+  }, []);
+
+  return screen;
+};
+```
+
+## Reflection
+
+I learned through experience that you shouldn't blindly trust libraries.
+
+It was a good opportunity to study SSR in depth.
+
+I should become a developer who can solve problems in various ways.
+
+# Differences in Environment Variable Files
+
+## dotenv in JavaScript Environment
+
+In the JavaScript world, the dotenv library is often used to store environment variables.
+
+dotenv is an environment variable used in Node.js environments.
+
+The problem is that it cannot be used in browsers.
+
+For example
+
+```tsx
+export async function getCommentWithId(id: string, cursor: number | null) {
+  try {
+    const res = await fetch(
+      `${process.env.BASE_URL}/articles/${id}/comments?limit=10${cursor !== null ? `&&cursor=${cursor}` : ""}`,
+    );
+    const data: Comments = await res.json();
+    return data;
+  } catch (error) {
+    throw new Error();
+  }
+}
+```
+
+The above code works during SSR but can cause problems when CSR in the browser after rendering.
+
+Next.js has separated environment variables.
+
+https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables#bundling-environment-variables-for-the-browser
+
+Environment variables starting with NEXT_PUBLIC_ are included in the JavaScript bundle at build time.
+
+They become accessible in the browser.
+
+```tsx
+(async () => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/articles/${router.query.id}/comments?limit=10${cursor !== null ? `&&cursor=${cursor}` : ""}`,
+  );
+  const comments: Comments = await response.json();
+  setCommentList(comments.list);
+  setCursor(comments.nextCursor);
+})();
+```
+
+> [!note] Added 2025-04-21
+>
+> If you specify NEXT_PUBLIC, the variable is included in the build file.
+>
+> Important environment variables should not use NEXT_PUBLIC.
+>
+> You can solve this by using the frontend server's environment variables.
+>
+> process.env.~ is a server environment variable.
+>
+> Functions used on the server side such as server components, server-side rendering (getServerSideProps), route handlers, etc. can access this environment variable.
+
+> If there are any deficiencies, please let me know in the comments. Thank you.

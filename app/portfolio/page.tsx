@@ -7,7 +7,11 @@ import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
 import WorkExperience from "@/components/portfolio/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { createProfilePageStructuredData } from "@/components/seo/utils";
+import {
+  createAlternateLinks,
+  createProfilePageStructuredData,
+} from "@/components/seo/utils";
+import { PATH } from "@/constants/path";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("portfolio.meta");
@@ -15,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("title"),
     description: t("description"),
+    alternates: createAlternateLinks(PATH.PORTFOLIO),
   };
 }
 

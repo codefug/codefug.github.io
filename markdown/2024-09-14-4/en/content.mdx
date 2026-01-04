@@ -1,0 +1,592 @@
+# Background
+
+The Kkom-kkom project actively utilized tanstack query.
+
+Tanstack query is good for managing server state, but when used together with Next.js, there are disadvantages if you only use it in client components like React.
+
+For example, let's think about pagination of the entire free board page.
+
+![](/images/2024-09-14/Pasted%20image%2020240914202641.png)
+
+## Disadvantages of Existing CSR-based Pagination Method
+
+![](/images/2024-09-14/Pasted%20image%2020240816005045.png)
+
+1. Cannot use Next.js's unique fetch method using Streaming.
+2. Cannot enjoy the advantage of bringing HTML structure before Hydration to reduce TTFB, which is an advantage during SSR.
+3. Since skeletons can also be put as Suspense fallback during SSR, you can implement skeletons using tanstack query's isPending as is.
+
+Personally, I thought that not being able to use Streaming was the most fatal.
+
+Even if you use parallel fetch using Promise.all, similar effects would come out, but since it's not the best, if there's a way to combine them, combine them, and if there's no way, it seemed good to make rules between SSR (Streaming) and Tanstack query (parallel fetching) and use both.
+
+# Implementation
+
+## Streaming-style query
+
+While searching to solve this, I found the answer in the official documentation.
+
+https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#streaming-with-server-components
+
+If you read it, you can find clues to use streaming method and tanstackquery simultaneously.
+
+It's implemented in a way where prefetchQuery itself is thought of as SSR, skeleton is thrown first, and then when prefetchQuery ends, the corresponding component is rendered.
+
+This way, tanstack query's advantages and streaming method could be combined.
+
+After processing queryClient by referring to the documentation,
+
+useQuery > useSuspenseQuery
+
+```tsx
+export function useArticleQuery(articleId: number) {
+  return useSuspenseQuery({
+    queryKey: ["article", { articleId }],
+    queryFn: () => getArticlesArticleId({ articleId }),
+    staleTime: 2000,
+  });
+}
+```
+
+Dehydrate queryClient that uses prefetchQuery to make it a shell and pass it down.
+
+Components wrapped in Suspense will have fallback replace that position until queries used inside are fetched. (Streaming method)
+
+```tsx
+export default async function Page({ params: { boardId } }: Props) {
+  const articleId = Number(boardId);
+  const queryClient = getQueryClient();
+
+  queryClient.prefetchInfiniteQuery({
+    queryKey: ["comments", { articleId }],
+    queryFn: ({ pageParam }) =>
+      getArticlesArticleIdComments({ cursor: pageParam, articleId }),
+    initialPageParam: 0,
+  });
+
+  queryClient.prefetchQuery({
+    queryKey: ["getUser"],
+    queryFn: getUser,
+  });
+
+  queryClient.prefetchQuery({
+    queryKey: ["article", { articleId }],
+    queryFn: () => getArticlesArticleId({ articleId }),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <GtmPageView pageTitle={`boardId: ${boardId}`} />
+      <section className="border-b border-black border-opacity-10 dark:border-b dark:border-white dark:border-opacity-10">
+        <header className="text-text-primary mb-1 flex items-center gap-1 text-base font-medium">
+          <Image src="/icons/medal.svg" alt="Medal" width={16} height={16} />
+          <h2 className="selection:bg-inherit">베스트 랭킹</h2>
+        </header>
+        <Suspense fallback={<SkeletonRankingChart />}>
+          <ArticleRankingChart />
+        </Suspense>
+      </section>
+      <Suspense fallback={<SkeletonArticleHeader />}>
+        <ArticleHeader articleId={articleId} />
+      </Suspense>
+      <Suspense fallback={<SkeletonArticleContent />}>
+        <ArticleContent articleId={articleId} />
+      </Suspense>
+      <Suspense fallback={<SkeletonArticleLikeSection />}>
+        <LikeSection articleId={articleId} />
+      </Suspense>
+      <Suspense fallback={<SkeletonCommentForm />}>
+        <CommentForm articleId={articleId} />
+      </Suspense>
+      <Suspense fallback={<SkeletonCommentList />}>
+        <CommentsList articleId={articleId} />
+      </Suspense>
+    </HydrationBoundary>
+  );
+}
+```
+
+![](/images/2024-09-14/자유게시판%20streaming%20방식%20렌더링.gif)
+
+The video above is a video where communication processing was increased with the code below.
+
+```js
+new Promise((r) => setTimeout(r, ms));
+```
+
+### Troubleshooting
+
+There was a bug where Suspense wasn't applied to pagination.
+
+Suspense wasn't reading SearchParams changes, so streaming-style rendering wasn't working,
+
+I solved the problem by putting SearchParams as key in Suspense itself so each Suspense recognizes it as different.
+
+```tsx
+<Suspense key={JSON.stringify(searchParams)} fallback={<SkeletonCardList />}>
+  <ArticlesList searchParams={searchParams} />
+</Suspense>
+```
+
+## Optimistic Updates
+
+There are other ways to improve UX besides Streaming.
+
+Optimistic updates are one of them, and the logic can be easily explained as follows.
+
+1. Cancel current query. (before fetch execution)
+2. Save current query.
+3. Change query assuming it succeeded.
+4. If query succeeds, connect query with actual data (after fetch completion)
+   1. If query fails, restore query to query saved in step 2.
+
+onMutation is used for before fetch execution, and onError, onSettled are used for after fetch completion.
+
+You can easily think of a like button as an example.
+
+No matter how much you spam the like button, you've never experienced likes or unlikes becoming slow.
+
+### Like Button Implementation
+
+I actually had to implement a like button in this project too.
+
+Looking at the following code, you can confirm that the logic explained above is well contained.
+
+```tsx
+export function useHandleArticleLikeMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ articleId, isLiked }: HandleArticleLikeMutationProps) =>
+      isLiked
+        ? deleteArticlesArticleIdLike({ articleId })
+        : postArticlesArticleIdLike({ articleId }),
+    onMutate: async ({ articleId, isLiked }) => {
+      //  Cancel query
+      await queryClient.cancelQueries({
+        queryKey: ["article", { articleId }],
+      });
+
+      // Get current query.
+      const previousArticle =
+        queryClient.getQueryData<GetArticlesArticleIdResponse>([
+          "article",
+          { articleId },
+        ]);
+
+      // Modify query assuming it succeeded
+      queryClient.setQueryData<
+        GetArticlesArticleIdResponse,
+        [string, { articleId: number }],
+        GetArticlesArticleIdResponse
+      >(["article", { articleId }], (input) =>
+        input
+          ? {
+              ...input,
+              isLiked: isLiked === false,
+              likeCount:
+                isLiked === false ? input.likeCount + 1 : input.likeCount - 1,
+            }
+          : input,
+      );
+      return { previousArticle };
+    },
+    // Change to original query on cancel
+    onError: (error, { articleId }, context) => {
+      if (context?.previousArticle) {
+        queryClient.setQueryData<GetArticlesArticleIdResponse>(
+          ["article", { articleId }],
+          context.previousArticle,
+        );
+      }
+    },
+    // Connect with actual data whether success or error
+    onSettled: (data, error, { articleId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["article", { articleId }],
+      });
+    },
+  });
+}
+```
+
+As a result, you can confirm that no matter how much you press like, it doesn't operate slowly.
+
+![](/images/2024-09-14/좋아요,%20좋아요%20취소%20버튼.gif)
+
+## Infinite Scroll
+
+Infinite scroll is a method of increasing data as if scroll is infinite by utilizing logic that sends fetch when a specific part is detected.
+
+Since it's a very common pattern in frontend environments, Tanstack query has a hook that supports this.
+
+```tsx
+const {
+  data: postsData,
+  isPending,
+  isError,
+  fetchNextPage,
+} = useInfiniteQuery({
+  queryKey: ["posts"],
+  queryFn: ({ pageParam }) => getPosts(pageParam, PAGE_LIMIT),
+  initialPageParam: 0,
+  getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
+    lastPage.hasMore ? lastPageParam + 1 : undefined,
+});
+```
+
+It sends fetch using `fetchNextPage` function and determines if it's the last using getNextPageParam.
+
+However, this cannot use Suspense, but fortunately Tanstack Query was supporting useSuspenseInfiniteQuery, an InfiniteQuery with Suspense added.
+
+https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense
+
+## Streaming + Infinite Scroll + Optimistic Updates
+
+When I thought about it, I thought comments would be a part where all three (suspense, infinite scroll, optimistic updates) could be applied.
+
+I thought that if comments are implemented with streaming method and infinite scroll method, and optimistic updates are applied when modifying, adding, or deleting them, there would be tremendous UX improvement.
+
+The most difficult thing was TypeScript (it wasn't easy to analyze and make even inside...)
+
+```tsx
+export function usePostCommentsMutation() {
+  const queryClient = useQueryClient();
+  const mockTime = new Date().toISOString();
+  return useMutation({
+    mutationFn: ({ articleId, content }: PostCommentsMutation) =>
+      postArticlesArticleIdComments({
+        articleId,
+        data: { content },
+      }),
+    onMutate: async ({ articleId, content, id, image, nickname }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["comments", { articleId }],
+      });
+
+      const previousComments = queryClient.getQueryData<
+        InfiniteData<GetArticlesArticleIdCommentsResponse>
+      >(["comments", { articleId }]);
+
+      if (previousComments) {
+        queryClient.setQueryData<
+          InfiniteData<
+            GetArticlesArticleIdCommentsResponse,
+            GetArticlesArticleIdCommentsResponse["nextCursor"]
+          >,
+          [string, { articleId: number }],
+          InfiniteData<
+            GetArticlesArticleIdCommentsResponse,
+            GetArticlesArticleIdCommentsResponse["nextCursor"]
+          >
+        >(
+          ["comments", { articleId }],
+          (
+            input:
+              | InfiniteData<
+                  GetArticlesArticleIdCommentsResponse,
+                  GetArticlesArticleIdCommentsResponse["nextCursor"]
+                >
+              | undefined,
+          ) => {
+            if (!input) {
+              return {
+                pages: [
+                  {
+                    nextCursor: 0,
+                    list: [
+                      {
+                        writer: {
+                          image,
+                          nickname,
+                          id,
+                        },
+                        updatedAt: mockTime,
+                        createdAt: mockTime,
+                        content,
+                        id: -1,
+                      },
+                    ],
+                  },
+                ],
+                pageParams: [0],
+              };
+            }
+            return {
+              pages: [
+                {
+                  nextCursor: input.pages[0].nextCursor,
+                  list: [
+                    {
+                      writer: {
+                        image,
+                        nickname,
+                        id,
+                      },
+                      updatedAt: mockTime,
+                      createdAt: mockTime,
+                      content,
+                      id: -1,
+                    },
+                    ...input.pages[0].list,
+                  ],
+                },
+                ...input.pages.slice(1),
+              ],
+              pageParams: input.pageParams,
+            };
+          },
+        );
+      }
+      return { previousComments };
+    },
+    onError: (error, variables, context) => {
+      showToast("error", "댓글 등록에 실패했습니다.");
+      if (context?.previousComments) {
+        queryClient.setQueryData<
+          InfiniteData<GetArticlesArticleIdCommentsResponse>
+        >(
+          ["comments", { articleId: variables.articleId }],
+          context.previousComments,
+        );
+      }
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", { articleId: variables.articleId }],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["article", { articleId: variables.articleId }],
+      });
+    },
+  });
+}
+```
+
+The important thing is that data (query) that went through useInfiniteQuery has a different structure from data structure given by server
+
+Pages unit array and object with pageParams is the top-level structure.
+
+In conclusion, you only need to optimistically update the `pages[0]` part.
+
+Since I implemented add logic, delete and modify logic can also be implemented similarly.
+
+The code for comment deletion is as follows.
+
+```tsx
+export function useDeleteCommentsMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ commentId }: DeleteCommentsMutation) =>
+      deleteCommentsCommentId({
+        commentId,
+      }),
+    onMutate: async ({ articleId, commentId }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["comments", { articleId }],
+      });
+
+      const previousComments = queryClient.getQueryData<
+        InfiniteData<GetArticlesArticleIdCommentsResponse>
+      >(["comments", { articleId }]);
+
+      queryClient.setQueryData<
+        | InfiniteData<
+            GetArticlesArticleIdCommentsResponse,
+            GetArticlesArticleIdCommentsResponse["nextCursor"]
+          >
+        | undefined,
+        [string, { articleId: number }],
+        InfiniteData<
+          GetArticlesArticleIdCommentsResponse,
+          GetArticlesArticleIdCommentsResponse["nextCursor"]
+        >
+      >(["comments", { articleId }], (input) => {
+        if (!input) {
+          return input;
+        } else {
+          return {
+            pages: input.pages.map((page) => ({
+              nextCursor: page.nextCursor,
+              list: page.list.filter((comment) => comment.id !== commentId),
+            })),
+            pageParams: input.pageParams,
+          };
+        }
+      });
+      return { previousComments };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousComments) {
+        queryClient.setQueryData<
+          InfiniteData<GetArticlesArticleIdCommentsResponse>
+        >(
+          ["comments", { articleId: variables.articleId }],
+          context.previousComments,
+        );
+      }
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", { articleId: variables.articleId }],
+      });
+    },
+  });
+}
+```
+
+Comment modification code
+
+```tsx
+export function usePatchCommentsMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ commentId, data }: PatchCommentsMutation) =>
+      patchCommentsCommentId({ data, commentId }),
+    onMutate: async ({ articleId, data: { content }, commentId }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["comments", { articleId }],
+      });
+
+      const previousComments = queryClient.getQueryData<
+        InfiniteData<GetArticlesArticleIdCommentsResponse>
+      >(["comments", { articleId }]);
+
+      queryClient.setQueryData<
+        InfiniteData<
+          GetArticlesArticleIdCommentsResponse,
+          GetArticlesArticleIdCommentsResponse["nextCursor"]
+        >,
+        [string, { articleId: number }],
+        InfiniteData<
+          GetArticlesArticleIdCommentsResponse,
+          GetArticlesArticleIdCommentsResponse["nextCursor"]
+        >
+      >(["comments", { articleId }], (input) => {
+        if (!input) {
+          return input;
+        }
+        return {
+          pages: input.pages.map((page) => ({
+            nextCursor: page.nextCursor,
+            list: page.list.map((comment) => {
+              if (comment.id === commentId) {
+                return {
+                  ...comment,
+                  updatedAt: new Date().toISOString(),
+                  content,
+                };
+              }
+              return comment;
+            }),
+          })),
+          pageParams: input.pageParams,
+        };
+      });
+      return { previousComments };
+    },
+    onError: (error, { articleId }, context) => {
+      showToast("error", "댓글 수정에 실패했습니다.");
+      if (context?.previousComments) {
+        queryClient.setQueryData<
+          InfiniteData<GetArticlesArticleIdCommentsResponse>
+        >(["comments", { articleId }], context.previousComments);
+      }
+    },
+    onSettled: (data, error, { articleId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", { articleId }],
+      });
+    },
+  });
+}
+```
+
+I think I actually worked harder to read types of setQueryData and InfiniteData than to implement code.
+
+In conclusion, it was easy once I knew the following structure.
+
+1. `setQueryData<received data, query key, given data>`
+2. `InfiniteData<entire data structure, pageParam structure>`
+
+### Troubleshooting
+
+#### When comments are put consecutively, two are created.
+
+When I thought about it, if you send a comment while mutation that posts comments is in pending state or query connected to it is still fetching, mutations get tangled and problems occur.
+
+I was developing while checking Naver webtoon comments together to see how Naver solves comment-related problems, and there it seemed to solve this problem by blocking comments as spam prevention when inputting consecutively.
+
+I solved the problem by implementing logic that gets comment-related infiniteQuery, reads isFetching (check if query is fetching), reads mutation's isPending (check if mutation is executing), and shows alert if it meets restriction conditions.
+
+```tsx
+export default function CommentForm({ boardId }: ArticleCommentProps) {
+  const { register, handleSubmit, setValue } = useForm({
+    mode: "onSubmit",
+    resolver: yupResolver(schema),
+  });
+  const articleId = Number(boardId);
+  const { data: user } = useUserQuery();
+  const { isFetching } = useArticlesCommentsQuery(articleId);
+  const { mutate, isPending } = usePostCommentsMutation();
+
+  const onSubmit: SubmitHandler<CommentForm> = (formData) => {
+    if (isFetching || isPending) {
+      alert(
+        "도배 방지를 위하여 글을 입력한 후 일정시간 동안 추가입력을 제한하고 있습니다.",
+      );
+      return;
+    }
+    if (!user) {
+      alert("잠시 후에 다시 시도해주세요.");
+      return;
+    }
+    mutate({
+      articleId,
+      content: formData.content,
+      id: user.id,
+      image: user.image,
+      nickname: user.nickname,
+    });
+    setValue("content", "");
+  };
+
+  const onInvalid = (error: any) => {
+    alert(error.content.message);
+  };
+```
+
+#### Hydration Error
+
+A hydration error occurred when implementing comment modification.
+
+It was caused by time, and it was a problem where time from server-dehydrated query differed from time from client side.
+
+Since it was implemented with new Date(), it couldn't help but be different.
+
+To solve this, I removed SSR using suppressHydrationWarning and was able to apply optimistic updates normally.
+
+```tsx
+<time
+  className="border-border-primary text-text-disabled border-l border-opacity-10 pl-4 text-xs font-medium leading-3 md:text-sm md:leading-[14px]"
+  suppressHydrationWarning
+>
+  {timeDiff} {comment.updatedAt !== comment.createdAt && "(수정됨)"}
+</time>
+```
+
+# Afterword
+
+It was a precious experience where I was deeply immersed in Tanstack Query and managed queries.
+
+I think Tanstack query is a collection of features that would naturally exist in the development world where all tedious and repetitive tasks are made into functions.
+
+Learning new technologies always comes with troubleshooting, but the thrill of overcoming it is so good that I keep learning.
+
+I'll grow more.
+
+> These are experiences I had during the Kkom-kkom project. I think I grew a lot today too!
+>
+> Thank you for reading! Please watch over me!
+>
+> Thank you.
+

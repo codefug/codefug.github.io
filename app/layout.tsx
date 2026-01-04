@@ -4,8 +4,10 @@ import { Gothic_A1 } from "next/font/google";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
 import { LocaleProvider } from "@/components/providers/locale-provider";
+import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { defaultLocale } from "@/i18n/config";
 import getFrontMatterList from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
 import ThemeProvider from "@/provider/theme-provider";
@@ -34,10 +36,11 @@ export const metadata: Metadata = {
   creator: "Codefug",
   publisher: "Codefug",
   metadataBase: new URL("https://codefug.github.io"),
+  alternates: createAlternateLinks("/"),
   openGraph: {
     title: "Codefug Blog",
     description: "project experiences and development notes",
-    url: "https://codefug-blog.vercel.app",
+    url: "https://codefug.github.io",
     type: "website",
     images: [
       {
@@ -56,7 +59,7 @@ export default function RootLayout({
   const totalFrontMatterList = getFrontMatterList();
 
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={defaultLocale} suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className={`${gothicA1.className} antialiased`}>
         <LocaleProvider initialMessages={koMessages}>

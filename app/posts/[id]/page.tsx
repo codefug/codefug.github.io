@@ -1,15 +1,31 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import type { Metadata } from "next";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
 import PostNotFound from "@/components/post/PostNotFound";
 import MenuBar from "@/components/postMenuBar/menu-bar";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { createBlogPostStructuredData } from "@/components/seo/utils";
+import {
+  createAlternateLinks,
+  createBlogPostStructuredData,
+} from "@/components/seo/utils";
 import PostHeader from "@/components/ui/post-header";
 import type { ParsedFrontMatter } from "@/constants/mdx";
+import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 import { mdxMap } from "@/lib/mdxMap";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  return {
+    alternates: createAlternateLinks(`${PATH.POSTS}/${id}`),
+  };
+}
 
 export default async function Page({
   params,

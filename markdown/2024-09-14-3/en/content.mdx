@@ -1,0 +1,405 @@
+# Background
+
+In Next.js, fetch on the server side is overridden to add useful features like duplicate communication handling.
+
+Normally, if you just use fetch in server components and client components, you can use communication with that feature added.
+
+The problem here is when access token and refresh token are included.
+
+In server components, cookies are accessed using cookies from next/headers, and in client components, browser cookies are used to access cookies.
+
+Different methods become a problem when implementing functions for refresh token rotation.
+
+# Implementation
+
+The code below is code written by another team member before work came to me. It was a method implemented using middleware.
+
+```ts
+import { NextResponse } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
+
+import { PostTeamIdAuthRefreshTokenResponse } from "./lib/apis/type";
+
+export function middleware(request: NextRequest, event: NextFetchEvent) {
+  const hasAccessToken = request.cookies.has("accessToken");
+  const hasRefreshToken = request.cookies.has("refreshToken");
+  const { pathname } = request.nextUrl;
+
+  // NOTE - When accessing login, signup pages after login
+  if (
+    hasAccessToken &&
+    (pathname.startsWith("/login") || pathname.startsWith("/signup"))
+  ) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // NOTE - When accessing pages other than landing, login, signup pages before login
+  if (
+    !hasAccessToken &&
+    !(
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/signup") ||
+      pathname === "/"
+    )
+  ) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // NOTE - When accessToken has expired and new token must be issued through refreshToken
+  if (!hasAccessToken && hasRefreshToken) {
+    const refreshTokenValue = request.cookies.get("refreshToken")?.value;
+
+    // NOTE - Async work to receive new accessToken using Fetch
+    const fetchPromise = fetch(
+      `${process.env.NEXT_PUBLIC_KKOM_KKOM_URL}/auth/refresh-token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken: refreshTokenValue,
+        }),
+      },
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("refresh token 요청 실패");
+        }
+        const data: PostTeamIdAuthRefreshTokenResponse = await response.json();
+
+        // Create NextResponse object and set cookies
+        const nextResponse = NextResponse.next();
+        nextResponse.cookies.set("accessToken", data.accessToken);
+
+        return nextResponse;
+      })
+      .catch((error) => {
+        return NextResponse.redirect(new URL("/login", request.url));
+      });
+
+    // Use waitUntil to wait until async work is complete
+    event.waitUntil(fetchPromise);
+
+    // Continue request after async work is complete.
+    // Use NextResponse object returned from fetchPromise at this time
+    return new Promise((resolve) => {
+      fetchPromise.then((nextResponse) => {
+        resolve(nextResponse);
+      });
+    });
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+};
+```
+
+It was logic that processed tokens before desired communication using a method called `waitUntil` when routes changed.
+
+However, exceptions occurred in the following situations.
+
+1. If server actions are not used, requests are made without going through frontend server, so middleware is not passed
+2. refreshToken exists but branch processing to log in again (error)
+
+After thinking about it, I reached the conclusion that refreshToken must be processed in the fetch request itself, like axios's interceptor.
+
+## Import Using Server Actions
+
+next/headers cannot be on the client side and can be called in server components and server actions. (Error handling if called on client side)
+
+This applied to all cases even if it wasn't actually executed conditionally, as long as it was connected with import.
+
+The thought I had at this time was "Can't I just connect server actions and client fetch and do branch processing?"
+
+Then I wrote the following code.
+
+### myFetch
+
+```ts
+import { clientFetch } from "./clientFetch";
+import serverFetch from "./serverFetch";
+import { MyFetchOptions } from "./types";
+
+/**
+ * myFetch is a fetch function that can be used on server and client.
+ * When used on server, it uses serverFetch, and when used on client, it uses clientFetch.
+ * You can use it like fetch when using it.
+ * You can send cookies using the withCredentials option.
+ * Can be used in fetches that need accessToken.
+ * Internally, when accessToken expires, it issues a new accessToken using refreshToken.
+ *
+ * @author 이승현
+ * @param input
+ * @param init
+ * @returns Promise<T>
+ **/
+export async function myFetch<T>(
+  input: string | URL | globalThis.Request,
+  init?: MyFetchOptions,
+): Promise<T> {
+  if (typeof window !== "undefined") {
+    const response = await clientFetch(input, init);
+    const data = await response.json();
+    return data;
+  }
+  const response = await serverFetch(input, init);
+  const data = await response.json();
+  return data;
+}
+```
+
+This is fetch with token processing functionality attached, myFetch.
+
+### clientFetch
+
+```ts
+import { getCookie, setCookie } from "cookies-next";
+
+import { PostAuthRefreshTokenResponse } from "../type";
+import type { MyFetchOptions } from "./types";
+
+export async function clientFetch(
+  input: string | URL | globalThis.Request,
+  init?: MyFetchOptions,
+) {
+  // Read accessToken.
+  const accessToken = getCookie("accessToken");
+
+  let newInit = init;
+
+  // withCredentials is a flag that says we'll do token authentication processing.
+  if (newInit?.withCredentials === true) {
+    const headers = new Headers(init?.headers);
+    headers.set("Authorization", `Bearer ${accessToken}`);
+    newInit = { ...init, headers };
+  }
+
+  // Process tokens.
+  const res = await fetch(input, newInit);
+
+  // If token has expired
+  if (res.status === 401) {
+    // Process refresh token rotation
+    const refreshTokenValue = getCookie("refreshToken");
+    if (refreshTokenValue) {
+      const newAccessToken = await fetch(
+        `${process.env.NEXT_PUBLIC_KKOM_KKOM_URL}/auth/refresh-token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken: refreshTokenValue,
+          }),
+        },
+      );
+      if (newAccessToken.ok) {
+        const newAccessTokenValue: PostAuthRefreshTokenResponse =
+          await newAccessToken.json();
+        setCookie("accessToken", newAccessTokenValue.accessToken);
+        const headers = new Headers(init?.headers);
+        headers.set(
+          "Authorization",
+          `Bearer ${newAccessTokenValue.accessToken}`,
+        );
+        const newInitAfterFetch = { ...init, headers };
+        const newRes = await fetch(input, newInitAfterFetch);
+        return newRes;
+      }
+      throw new ResponseError("엑세스 토큰 호출 실패", newAccessToken);
+    } else {
+      throw new ResponseError("로그인을 다시 해주세요!", res);
+    }
+  } else if (!res.ok) {
+    throw new ResponseError("에러가 발생했습니다.", res);
+  }
+  return res;
+}
+```
+
+This is a function that executes when in client (`window !== undefined`) state. It has logic to receive and fetch again if refresh token rotation is needed.
+
+### serverFetch
+
+```tsx
+"use server";
+
+import { cookies } from "next/headers";
+
+import { MyFetchOptions } from ".";
+import { PostTeamIdAuthRefreshTokenResponse } from "../type";
+
+export async function serverFetch(
+  input: string | URL | globalThis.Request,
+  init?: MyFetchOptions,
+) {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+  if (init?.withCredentials === true) {
+    const headers = new Headers(init?.headers);
+    headers.set("Authorization", `Bearer ${accessToken}`);
+    init = { ...init, headers };
+  }
+
+  const res = await fetch(input, init);
+
+  if (res.status === 401) {
+    const refreshTokenValue = cookieStore.get("refreshToken")?.value;
+    if (refreshTokenValue) {
+      const newAccessToken = await fetch(
+        `${process.env.NEXT_PUBLIC_KKOM_KKOM_URL}/auth/refresh-token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken: refreshTokenValue,
+          }),
+        },
+      );
+      if (newAccessToken.ok) {
+        const newAccessTokenValue: PostTeamIdAuthRefreshTokenResponse =
+          await newAccessToken.json();
+        const headers = new Headers(init?.headers);
+        headers.set(
+          "Authorization",
+          `Bearer ${newAccessTokenValue.accessToken}`,
+        );
+        const newInit = { ...init, headers };
+        const newRes = await fetch(input, newInit);
+        return newRes;
+      } else {
+        throw new Error("엑세스 토큰 호출 실패");
+      }
+    } else {
+      throw new Error("로그인을 다시 해주세요!");
+    }
+  } else if (!res.ok) {
+    throw responseError(res);
+  }
+  return res;
+}
+```
+
+This is a function that executes when in server state (`window===undefined`). It executes refresh token rotation using cookies from next/headers.
+
+The following logic executes so errors don't occur.
+
+1. Because server actions are imported on client side, runtime errors are ignored.
+2. Pass next/header without error handling.
+3. Because branch processing was done with `window===undefined`, cases where server functions are used on client are blocked.
+4. Can be used on both server and client
+
+## Implementing axios's base url functionality
+
+While doing code review, I found code that receives URL as a constant and passes it down to myFetch.
+
+![](/images/2024-09-14/Pasted%20image%2020240914193655.png)
+
+In axios, there's functionality to store base url and write only routes after that url on the usage side.
+
+### Currying Function
+
+While thinking about how to implement this in functional programming, I remembered the currying function I learned before.
+
+> Currying function: Something that divides a function that receives multiple arguments into functions that receive only one argument so they can be called sequentially in chain form
+> The principle is to pass only one argument at a time. Because arguments received at each stage are all referenced in the last stage, they stack up in memory and become GC collection targets all at once when execution context ends after being called in the last stage.
+
+I started implementing using this.
+
+```ts
+// Currying function for instance
+export const newFetch =
+  (url: string) =>
+  <T>(input: string | URL | globalThis.Request, init?: MyFetchOptions) =>
+    myFetch<T>(url + input, init);
+
+// instance.tsx
+const instance = newFetch(`{url}`);
+```
+
+With the function above, base_url added myFetch with all types processed became usable.
+
+On the usage side, it became very simple now.
+
+```ts
+// Call site
+export async function getUserHistory() {
+  try {
+    const response = await instance<GetTeamIdUserHistoryResponse>(
+      "/user/history",
+      {
+        method: "GET",
+        withCredentials: true,
+      },
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+```
+
+Tokens were processed using only instance and withCredentials while detailed logic was hidden inside!!!
+
+The best point is that since only api changed, you only need to change myFetch to instance without needing to change other code.
+
+```ts
+// Side that uses getUserHistory
+import { GetTeamIdUserHistoryResponse } from "@/lib/apis/type";
+import { getUserHistory } from "@/lib/apis/user";
+
+import DateBoxCard from "./date-box-card";
+
+export default async function DateBoxList() {
+  const data = await getUserHistory(); // Can be used without changes.
+  if (data.tasksDone.length === 0) return null;
+  const history: Map<string, GetTeamIdUserHistoryResponse["tasksDone"]> =
+    data.tasksDone.reduce((acc, cur) => {
+      acc.set(cur.date, [...(acc.get(cur.date) || []), cur]);
+      return acc;
+    }, new Map());
+
+  return (
+    <section className="mt-[27px] flex flex-col gap-10 md:mt-6">
+      {[...history.entries()].map(([date, history]) => (
+        <DateBoxCard key={date} date={date} tasksDone={history} />
+      ))}
+    </section>
+  );
+}
+```
+
+# Afterword
+
+I had an experience of processing tokens using server actions.
+
+The thrill of making it with server actions was great, but the time when implementing base url was when I really thought I had grown a lot.
+
+It was content I saw in Core JavaScript a few months ago, but I felt like I finally understood it properly by utilizing it.
+
+It was an exciting experience thinking that knowledge stacks up.
+
+I'll grow more.
+
+> ++ 2024-11-29
+>
+> Later, I learned that if you use a method of reading cookies on the client, you can't apply httpOnly to those cookies, and this causes security problems, so I replaced all client-side cookies with server cookies.
+>
+> The logic of reading cookies through separation of server actions and client-side code became largely unnecessary.
+>
+> Token storage strategies are diverse and methods of attacking them are diverse, so I think it's something you always need to think about while working as a frontend developer.
+
+> These are experiences I had during the Kkom-kkom project. I think I grew a lot today too!
+>
+> Thank you for reading! Please watch over me!
+>
+> Thank you.
+

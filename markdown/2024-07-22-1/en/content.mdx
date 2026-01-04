@@ -1,0 +1,241 @@
+import YoutubePlayer from "@/components/mdx/youtube.tsx";
+
+# Design
+
+![](/images/2024-07-22/Pasted%20image%2020240722170554.png)
+
+This is part of the Gheuppay header. The notification window that opens when clicked is implemented with infinite scroll for that data.
+
+The initial value is held by the header throughout as a Server component, and when notifications are clicked and detected by interceptor observer, the next data is finally loaded.
+
+The principle of notification creation is as follows.
+
+1. Click apply button for a specific shop with part-time worker account
+2. Click approve or cancel button with that shop owner account
+3. Click notification window with part-time worker account
+4. If there are multiple, scroll down to activate infinite scroll
+5. Check that application notification among the called data
+
+In this process, two access tokens are needed (shop owner, part-time worker), and since we wanted to use mock data without worrying about data fetching, it wasn't easy to apply because infinite scroll had to be used.
+So while searching, I learned about MSW.
+
+MSW is a mocking server worker that mocks the server to intercept requests and return specified responses. I partially introduced MSW to check infinite scroll implementation in an environment where other development was not finished.
+
+# Implementation
+
+## MSW
+
+### Environment Setup
+
+```terminal
+npx msw init ./public --save
+```
+
+This is a shortcut to put MSW-related resources in the public folder.
+
+```ts
+// /mocks/browser.ts
+import { setupWorker } from "msw/browser";
+import { handlers } from "./handlers";
+export const worker = setupWorker(...handlers);
+
+// /mocks/server.ts
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+export const server = setupServer(...handlers);
+
+// /mocks/index.ts
+export async function initMsw() {
+  if (typeof window === "undefined") { // If server
+    const { server } = await import("../mocks/server");
+    server.listen();
+  } else { // If browser
+    const { worker } = await import("../mocks/browser");
+    await worker.start();
+  }
+}
+
+// /mocks/msw-component
+"use client";
+import { useEffect, useState } from "react";
+
+export const MSWComponent = ({ children }: { children: React.ReactNode }) => {
+  const [mswReady, setMswReady] = useState(false);
+ 
+  useEffect(() => {
+    const init = async () => {
+      const initMsw = await import("./index").then((res) => res.initMsw);
+      await initMsw();
+      setMswReady(true);
+    };
+
+    if (!mswReady) {
+      init();
+    }
+  }, [mswReady]);
+
+  return <>{children}</>;
+};
+```
+
+```ts
+export const metadata: Metadata = {
+  description:
+    "급하게 일손이 필요한 자리에 더 많은 시급을 제공해서 아르바이트생을 구할 수 있는 서비스",
+  title: {
+    template: "%s | 급PAY",
+    default: "급PAY",
+  },
+  icons: {
+    icon: "/icons/favicon.png",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko">
+      <MSWComponent>
+        <body className="relative">
+          <Header />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </body>
+      </MSWComponent>
+    </html>
+  );
+}
+```
+
+Put MSWComponent in Root so that MSW works when accessing Root.
+
+### Handler Design
+
+```ts
+/**
+ * @author 이승현
+ * @description
+ * You can use msw using handlers.
+ * 1. Uncomment MswComponent in layout.tsx in app.
+ * 2. Add desired api to handlers array using msw syntax.
+ * 3. Generate mock files for changed items with npx msw init ./public --save.
+ *
+ * @error Solution
+ * Errors may occur if something was deleted and differs from mock files.
+ *
+ * You can solve it by rebuilding with npx msw init ./public --save.
+ */
+export const handlers = [
+  http.get(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/users/*/alerts`,
+    ({ request, params, cookies }) => {
+      // params receives the * of the first argument. Therefore, you must use searchParams
+      // to get the desired query.
+      const offset = new URL(request.url).searchParams.get("offset");
+      if (offset === "0") {
+        // makeAlertMockData is a Mock function I arbitrarily created. I made it to give id randomly.
+        // Internally, it gets a random value in Node.js environment through Math.random() and then creates and sends id.
+        const alertMockData1 = makeAlertMockData(); // Privatize function's return value using closure.
+        // This is the Response object recommended by MSW. You can send responses
+        // in various forms like json, text, xml, etc.
+        return HttpResponse.json(alertMockData1);
+      } else if (offset === "6") {
+        const alertMockData2 = makeAlertMockData();
+        console.log("다음 offset으로 이동");
+        return HttpResponse.json(alertMockData2);
+      } else {
+        const alertMockData3 = makeAlertMockData();
+        return HttpResponse.json(alertMockData3);
+      }
+    },
+  ),
+];
+```
+
+As the comment says, you can intercept APIs by manipulating the handlers function. All requests matching the regex `users/*/alerts` will be intercepted and flow according to the function below.
+
+Each if, else if, else has meaning.
+
+Explaining the meanings in order:
+
+1. Check if data comes well (`offset==="0"`)
+2. Check if next data comes well and confirm that offset moves and it's the second data (`offset==='6'`)
+3. After that, since data comes without console.log, you can clearly confirm that infinite scroll implementation is complete.
+
+### Mock Data Design
+
+After that, mock data design is very important.
+
+The biggest concern was how to check if different data is being called.
+
+I found the answer after a shorter time than I thought.
+
+```ts
+// mock.ts
+export const makeAlertMockData = (): alertMockData => {
+  return {
+    offset: 0,
+    limit: 0,
+    count: 0, // Total count
+    hasNext: true, // Whether next content exists
+    items: [
+      {
+        item: {
+          id: Math.random().toString(),
+          createdAt: "hi",
+          result: "accepted",
+          read: false,
+          application: {
+            item: {
+              id: Math.random().toString(),
+//...
+```
+
+It's using Math.random() for id like above.
+
+In React, a fiber tree called workinprogress is created separately in the background, and when a different part appears, rendering is performed by committing to the current tree that is currently shown.
+
+Here, key plays an important role in checking "different parts". So React even shows a warning to always use key when creating components as arrays like the map method (to prevent unnecessary rendering)
+
+```tsx
+{alerts.length > 0 ? (
+        alerts.map((item, index) => {
+          if (alerts.length === index + 1)
+            return (
+              <IntersectionArea key={item.item.id} onImpression={onImpression}>
+                <AlertCard item={item} onDelete={onDelete} />
+              </IntersectionArea>
+            );
+```
+
+Like this. IntersetionArea is a component I made specifically for interceptor observer. When detected, it calls onImpression.
+
+Here, key is not used, but for the reason above, you must use it by putting a unique value in key. Usually id is put.
+
+Now you'll understand a bit why Math.random() was put in mock data!
+
+Because Math.random() always calls different values, you can easily check if it's the same data or not. If the same data was given, a warning would appear.
+
+### MSW Execution
+
+![](/images/2024-07-22/Pasted%20image%2020240702221704.png)
+
+Hehe
+
+After that, I successfully confirmed infinite scroll.
+
+<YoutubePlayer id="kJrTBYZtssQ" />
+
+# reference
+
+https://oliveyoung.tech/blog/2024-01-23/msw-frontend/
+https://www.handongryong.com/post/msw/
+https://velog.io/@sangpok/Next.js-App-Router-MSW
+
+> This is an article containing the methods I considered, problems I encountered, and their solution processes during the Gheuppay project!
+>
+> If there are any incorrect contents, please let me know. Thank you.
+

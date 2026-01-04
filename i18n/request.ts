@@ -1,5 +1,5 @@
 import { getRequestConfig } from "next-intl/server";
-import { defaultLocale } from "./config";
+import { defaultLocale, getTimeZone } from "./config";
 
 export default getRequestConfig(async () => {
   // Always use default locale for SSG build
@@ -9,5 +9,6 @@ export default getRequestConfig(async () => {
   return {
     locale,
     messages: (await import(`../messages/${locale}.json`)).default,
+    timeZone: getTimeZone(locale),
   };
 });

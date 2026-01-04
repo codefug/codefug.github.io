@@ -3,11 +3,16 @@
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { defaultLocale, type Locale, locales } from "@/i18n/config";
+import {
+  defaultLocale,
+  getTimeZone,
+  type Locale,
+  locales,
+} from "@/i18n/config";
 
 type Props = {
   children: ReactNode;
-  initialMessages: Record<string, any>;
+  initialMessages: Record<string, unknown>;
 };
 
 function getLocaleFromCookie(): Locale {
@@ -40,10 +45,21 @@ export function LocaleProvider({ children, initialMessages }: Props) {
         setMessages(mod.default);
       });
     }
+
+    // Update HTML lang attribute based on locale
+    const langMap: Record<Locale, string> = {
+      ko: "ko",
+      en: "en",
+    };
+    document.documentElement.lang = langMap[cookieLocale] || defaultLocale;
   }, []);
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messages}
+      timeZone={getTimeZone(locale)}
+    >
       {children}
     </NextIntlClientProvider>
   );
