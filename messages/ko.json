@@ -6,6 +6,11 @@
     "meta": {
       "title": "이승현 포트폴리오",
       "description": "효율을 추구하는 프론트엔드 개발자 이승현의 포트폴리오입니다."
+    },
+    "skills": {
+      "title": "Skills",
+      "strong": "Strong",
+      "knowledgeable": "Knowledgeable"
     }
   }
 }
