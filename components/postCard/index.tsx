@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
@@ -14,11 +17,12 @@ export default function PostCard({
   title,
   id,
 }: FrontMatter) {
+  const t = useTranslations("common.aria");
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
 
   return (
     // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )
-    <a href={linkHref} aria-label={`${title} 포스트 읽기`} rel="bookmark">
+    <a href={linkHref} aria-label={t("postRead", { title })} rel="bookmark">
       <Card className="group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
         <div className="relative h-52 w-full overflow-hidden rounded-t-md">
           <Image

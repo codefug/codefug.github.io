@@ -5,6 +5,7 @@ import { motion, useScroll, useSpring } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { PATH } from "@/constants/path";
@@ -16,6 +17,7 @@ import { HeaderSwitch } from "./switch";
 import headerVariant from "./variant";
 
 export default function Header() {
+  const t = useTranslations("common.aria");
   const { showFloatingHeader: isShow } = useShowFloatingHeader();
   const pathName = usePathname();
   const isShowVerticalScrollbar = useMemo(
@@ -34,7 +36,7 @@ export default function Header() {
           >
             <Image
               src="/images/main-logo.png"
-              alt="Codefug Blog 로고"
+              alt={t("logo")}
               height={28}
               width={28}
               sizes="28px"
@@ -57,6 +59,7 @@ export default function Header() {
 
 const HeaderNavigation = memo(function HeaderNavigation() {
   const pathName = usePathname();
+  const t = useTranslations("navigation.aria");
 
   return (
     <nav className="flex items-center gap-4 font-semibold text-sm md:text-base">
@@ -70,7 +73,9 @@ const HeaderNavigation = memo(function HeaderNavigation() {
             `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
             pathName === item.href && "text-black dark:text-white",
           )}
-          aria-label={item["aria-label"]}
+          aria-label={t(
+            item.label.toLowerCase() as "resume" | "portfolio" | "search",
+          )}
           rel={item.rel}
         >
           {item.label === "Search" ? (

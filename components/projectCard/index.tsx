@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Badge } from "../ui/badge";
 
 // components/ProjectCard.tsx
@@ -26,20 +29,21 @@ export default function ProjectCard({
   links,
   features,
 }: ProjectCardProps) {
+  const t = useTranslations("common.aria");
   return (
     <div className="space-y-4 rounded-2xl border bg-white p-6 shadow-md">
       <figure className="my-0 flex gap-6">
         <Image
           src={image}
-          alt={`${title}썸네일`}
+          alt={`${title} thumbnail`}
           width={144}
           height={144}
           className="h-36 w-36 rounded-lg border-2 object-contain"
         />
         <header className="mb-4 flex flex-grow flex-col justify-center">
-          <h2 className="mb-0 mt-0 text-xl font-bold">{title}</h2>
-          <div className="text-sm text-gray-500">{duration}</div>
-          <div className="text-sm font-medium text-gray-600">{role}</div>
+          <h2 className="mt-0 mb-0 font-bold text-xl">{title}</h2>
+          <div className="text-gray-500 text-sm">{duration}</div>
+          <div className="font-medium text-gray-600 text-sm">{role}</div>
         </header>
       </figure>
       <p className="text-base text-gray-700">{description}</p>
@@ -68,7 +72,7 @@ function ProjectFeatures({
   features: ProjectCardProps["features"];
 }) {
   return (
-    <ul className="list-disc space-y-1 pl-5 text-sm text-gray-700">
+    <ul className="list-disc space-y-1 pl-5 text-gray-700 text-sm">
       {features.map((feat) => (
         <li key={feat}>{feat}</li>
       ))}
@@ -77,11 +81,12 @@ function ProjectFeatures({
 }
 
 function ProjectLinks({ links }: { links: ProjectCardProps["links"] }) {
+  const t = useTranslations("portfolio.projects");
   return (
-    <div className="mt-2 flex gap-4 text-sm text-blue-600 underline">
+    <div className="mt-2 flex gap-4 text-blue-600 text-sm underline">
       {links?.website && (
         <a href={links.website} target="_blank" rel="noreferrer">
-          배포 링크
+          {t("deploymentLink")}
         </a>
       )}
       {links?.github && (

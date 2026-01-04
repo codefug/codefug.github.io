@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { memo, useEffect, useState } from "react";
 import { Skeleton } from "../skeleton";
@@ -5,6 +8,7 @@ import Switch from "../switch";
 
 export const HeaderSwitch = memo(function HeaderSwitch() {
   const { setTheme, theme } = useTheme();
+  const t = useTranslations("common");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -17,7 +21,7 @@ export const HeaderSwitch = memo(function HeaderSwitch() {
   return (
     <Switch
       checked={theme === "dark"}
-      aria-label="테마 전환"
+      aria-label={t("aria.themeToggle")}
       onCheckedChange={() =>
         theme === "light" ? setTheme("dark") : setTheme("light")
       }

@@ -1,12 +1,14 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PATH } from "@/constants/path";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("common.notFound");
   return (
     <div>
-      <h2>Not Found</h2>
-      <p>잘못된 페이지에요!</p>
-      <Link href={PATH.HOME}>홈으로 돌아가기</Link>
+      <h2>{t("title")}</h2>
+      <p>{t("message")}</p>
+      <Link href={PATH.HOME}>{t("backToHome")}</Link>
     </div>
   );
 }
