@@ -35,5 +35,11 @@
     "recentPosts": "最新の投稿",
     "allPosts": "すべての投稿",
     "recentCategories": "最近研究したカテゴリー"
+  },
+  "search": {
+    "placeholder": "検索キーワードを入力",
+    "noSearchYet": "検索で素早く確認！",
+    "noResults": "検索結果が見つかりませんでした。",
+    "resultsFor": "{query}の検索結果"
   }
 }

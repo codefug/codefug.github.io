@@ -35,5 +35,11 @@
     "recentPosts": "Recent Posts",
     "allPosts": "All Posts",
     "recentCategories": "Recently Studied Categories"
+  },
+  "search": {
+    "placeholder": "Enter search term",
+    "noSearchYet": "Search to find quickly!",
+    "noResults": "No search results found.",
+    "resultsFor": "Results for {query}"
   }
 }
