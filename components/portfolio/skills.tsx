@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { SKILLS } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
@@ -46,12 +49,14 @@ function SkillItem({
 }
 
 export default function Skills() {
+  const t = useTranslations("portfolio.skills");
+
   return (
     <div className="prose dark:prose-invert mx-auto mt-4 mb-2">
-      <HeadComponent>Skills</HeadComponent>
+      <HeadComponent>{t("title")}</HeadComponent>
       <div className="mt-4 flex w-full flex-col gap-8">
         <SkillItem
-          title="Strong"
+          title={t("strong")}
           itemList={SKILLS.strong.map(({ subtitle, list: skillList }) => ({
             subtitle,
             list: skillList.map((skill) => (
@@ -60,7 +65,7 @@ export default function Skills() {
           }))}
         />
         <SkillItem
-          title="Knowledgeable"
+          title={t("knowledgeable")}
           itemList={SKILLS.knowledgeable.map(
             ({ subtitle, list: skillList }) => ({
               subtitle,
