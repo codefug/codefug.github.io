@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { CONTACTS } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
 
@@ -27,9 +30,11 @@ function ContactItem({
 }
 
 export default function Contact() {
+  const t = useTranslations("portfolio.contact");
+
   return (
     <div className="prose dark:prose-invert mx-auto mt-4">
-      <HeadComponent>Contact</HeadComponent>
+      <HeadComponent>{t("title")}</HeadComponent>
       {CONTACTS.map((contact) => (
         <ContactItem
           key={contact.title}

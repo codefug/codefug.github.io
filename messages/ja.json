@@ -14,6 +14,9 @@
     },
     "education": {
       "title": "学歴"
+    },
+    "contact": {
+      "title": "連絡先"
     }
   }
 }
