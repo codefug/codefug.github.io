@@ -35,5 +35,11 @@
     "recentPosts": "최신 게시물",
     "allPosts": "모든 게시물",
     "recentCategories": "최근 연구했던 카테고리"
+  },
+  "search": {
+    "placeholder": "검색어를 입력하세요",
+    "noSearchYet": "검색으로 빠르게 확인하세요!",
+    "noResults": "검색 결과가 존재하지 않습니다.",
+    "resultsFor": "{query}에 대한 결과"
   }
 }

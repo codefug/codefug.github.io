@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   type FormEventHandler,
   useCallback,
@@ -17,6 +18,7 @@ export default function PostSearchGallery({
 }: {
   totalFrontMatterList: FrontMatter[];
 }) {
+  const t = useTranslations("search");
   const [value, setValue] = useState("");
   const regexValue = useMemo(() => new RegExp(value, "i"), [value]);
   const filteredFrontMatterList = useMemo(
@@ -37,7 +39,7 @@ export default function PostSearchGallery({
     <div>
       <form onSubmit={handleSubmit} className="mt-4 mb-7">
         <Input
-          placeholder="검색어를 입력하세요"
+          placeholder={t("placeholder")}
           ref={searchInputRef}
           className="h-9 md:h-16 md:text-xl"
         />
@@ -57,18 +59,19 @@ function PostSearchBarResult({
   value: string;
   filteredFrontMatterList: FrontMatter[];
 }) {
+  const t = useTranslations("search");
   const isEmpty = useMemo(
     () => filteredFrontMatterList.length === 0,
     [filteredFrontMatterList],
   );
   const isNotSearchYet = useMemo(() => value === "", [value]);
 
-  if (isNotSearchYet) return <div>검색으로 빠르게 확인하세요!</div>;
+  if (isNotSearchYet) return <div>{t("noSearchYet")}</div>;
 
-  if (isEmpty) return <div>검색 결과가 존재하지 않습니다.</div>;
+  if (isEmpty) return <div>{t("noResults")}</div>;
 
   return (
-    <BlockHeader title={`${value}에 대한 결과`}>
+    <BlockHeader title={t("resultsFor", { query: value })}>
       <PostGallery postInfoList={filteredFrontMatterList} />
     </BlockHeader>
   );
