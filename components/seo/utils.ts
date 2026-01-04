@@ -54,6 +54,10 @@ export interface BlogPostData {
   excerpt: string;
   date: string;
   thumbnailImageUrl?: string;
+  category?: string;
+  keywords?: string[];
+  modifiedDate?: string;
+  wordCount?: number;
 }
 
 export function createBlogPostStructuredData(
@@ -74,7 +78,12 @@ export function createBlogPostStructuredData(
         url: blogUrl,
         headline: data.title,
         description: data.excerpt,
-        image: [imageUrl],
+        image: {
+          "@type": "ImageObject",
+          url: imageUrl,
+          width: "1200",
+          height: "630",
+        },
         author: {
           "@type": "Person",
           name: messages[locale].seo.author,
@@ -87,12 +96,23 @@ export function createBlogPostStructuredData(
           logo: {
             "@type": "ImageObject",
             url: `${BASE_URL}/images/main-logo.png`,
+            width: "512",
+            height: "512",
           },
         },
         datePublished: new Date(data.date).toISOString(),
-        dateModified: new Date(data.date).toISOString(),
+        dateModified: data.modifiedDate
+          ? new Date(data.modifiedDate).toISOString()
+          : new Date(data.date).toISOString(),
         inLanguage: getHreflangCode(locale),
-        mainEntityOfPage: blogUrl,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": blogUrl,
+        },
+        ...(data.category && { articleSection: data.category }),
+        ...(data.keywords &&
+          data.keywords.length > 0 && { keywords: data.keywords }),
+        ...(data.wordCount && { wordCount: data.wordCount }),
       },
       {
         "@type": "BreadcrumbList",
@@ -160,18 +180,26 @@ export function createProfilePageStructuredData(locale: Locale = "ko") {
       "@type": "Person" as const,
       name: messages[locale].seo.author,
       alternateName: "codefug",
-      description: "Web Frontend Developer",
+      description: messages[locale].portfolio.intro,
       url: BASE_URL,
       image: `${BASE_URL}/images/main-logo.png`,
-      jobTitle: "Frontend Developer",
+      jobTitle: "Web Frontend Developer",
       worksFor: {
         "@type": "Organization" as const,
-        name: locale === "ko" ? "올라" : "Olla",
+        name: "Allra Fintech",
+        url: "https://www.allra.kr",
       },
       alumniOf: [
         {
           "@type": "EducationalOrganization" as const,
-          name: locale === "ko" ? "중앙대학교" : "Chung-Ang University",
+          name: locale === "ko" ? "인천대학교" : "Incheon National University",
+        },
+        {
+          "@type": "EducationalOrganization" as const,
+          name:
+            locale === "ko"
+              ? "코드잇 스프린트 FE 부트캠프"
+              : "Codeit Sprint FE Bootcamp",
         },
       ],
       knowsAbout: [
@@ -181,8 +209,17 @@ export function createProfilePageStructuredData(locale: Locale = "ko") {
         "JavaScript",
         "Frontend Development",
         "Web Development",
+        "Zustand",
+        "Tanstack Query",
+        "Playwright",
+        "Testing",
+        "CI/CD",
       ],
-      sameAs: ["https://github.com/codefug"],
+      sameAs: [
+        "https://github.com/codefug",
+        "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
+        "https://www.instagram.com/happy_fug/",
+      ],
     },
   };
 }
