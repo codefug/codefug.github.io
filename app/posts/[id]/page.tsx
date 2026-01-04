@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
+import PostNotFound from "@/components/post/PostNotFound";
 import MenuBar from "@/components/postMenuBar/menu-bar";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { createBlogPostStructuredData } from "@/components/seo/utils";
@@ -26,7 +27,7 @@ export default async function Page({
   const { data } = matter(fileContent);
 
   const mdxModule = mdxMap[id];
-  if (!mdxModule) return <div>해당 포스트를 찾을 수 없습니다.</div>;
+  if (!mdxModule) return <PostNotFound />;
   const Content = mdxModule.default;
 
   const frontMatterData = data as ParsedFrontMatter;

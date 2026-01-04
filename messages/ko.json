@@ -41,5 +41,8 @@
     "noSearchYet": "검색으로 빠르게 확인하세요!",
     "noResults": "검색 결과가 존재하지 않습니다.",
     "resultsFor": "{query}에 대한 결과"
+  },
+  "post": {
+    "notFound": "해당 포스트를 찾을 수 없습니다."
   }
 }

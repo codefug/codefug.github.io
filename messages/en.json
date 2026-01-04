@@ -41,5 +41,8 @@
     "noSearchYet": "Search to find quickly!",
     "noResults": "No search results found.",
     "resultsFor": "Results for {query}"
+  },
+  "post": {
+    "notFound": "Post not found."
   }
 }

@@ -41,5 +41,8 @@
     "noSearchYet": "検索で素早く確認！",
     "noResults": "検索結果が見つかりませんでした。",
     "resultsFor": "{query}の検索結果"
+  },
+  "post": {
+    "notFound": "投稿が見つかりませんでした。"
   }
 }
