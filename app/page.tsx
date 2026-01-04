@@ -5,7 +5,7 @@ import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
-  createWebSiteStructuredData,
+  createBlogItemListStructuredData,
 } from "@/components/seo/utils";
 import BlockHeader from "@/components/ui/block-header";
 import { defaultLocale } from "@/i18n/config";
@@ -24,7 +24,12 @@ export default async function Home() {
 
   return (
     <div>
-      <StructuredData jsonLd={createWebSiteStructuredData(defaultLocale)} />
+      <StructuredData
+        jsonLd={createBlogItemListStructuredData(
+          frontMatterListByLocale[defaultLocale],
+          defaultLocale,
+        )}
+      />
       <section className="mb-2">
         <BlockHeader
           title={
