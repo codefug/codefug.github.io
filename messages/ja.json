@@ -11,6 +11,9 @@
       "title": "スキル",
       "strong": "得意",
       "knowledgeable": "知識あり"
+    },
+    "education": {
+      "title": "学歴"
     }
   }
 }

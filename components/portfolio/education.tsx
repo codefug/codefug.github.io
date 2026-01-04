@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { EDUCATION } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
@@ -37,9 +40,11 @@ function DescriptionWithDuration({
 }
 
 export default function Education() {
+  const t = useTranslations("portfolio.education");
+
   return (
     <div className="prose dark:prose-invert mx-auto mt-4">
-      <HeadComponent>Education</HeadComponent>
+      <HeadComponent>{t("title")}</HeadComponent>
       {EDUCATION.map((edu) => (
         <DescriptionWithDuration
           key={edu.title}
