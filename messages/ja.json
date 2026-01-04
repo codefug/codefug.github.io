@@ -30,5 +30,10 @@
     "growthJourney": {
       "title": "成長の軌跡"
     }
+  },
+  "home": {
+    "recentPosts": "最新の投稿",
+    "allPosts": "すべての投稿",
+    "recentCategories": "最近研究したカテゴリー"
   }
 }
