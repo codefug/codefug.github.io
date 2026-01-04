@@ -9,27 +9,28 @@ type ProjectCardProps = {
   title: string;
   duration?: string;
   role: string;
-  description: string;
+  projectKey: string;
   stack: string[];
   image: string;
   links?: {
     website?: string;
     github?: string;
   };
-  features: string[];
 };
 
 export default function ProjectCard({
   title,
   duration,
   role,
-  description,
+  projectKey,
   image,
   stack,
   links,
-  features,
 }: ProjectCardProps) {
-  const t = useTranslations("common.aria");
+  const t = useTranslations(`portfolio.data.projects.${projectKey}`);
+  const description = t("description");
+  const features = t.raw("features") as string[];
+
   return (
     <div className="space-y-4 rounded-2xl border bg-white p-6 shadow-md">
       <figure className="my-0 flex gap-6">
@@ -66,14 +67,10 @@ function ProjectStack({ stack }: { stack: ProjectCardProps["stack"] }) {
   );
 }
 
-function ProjectFeatures({
-  features,
-}: {
-  features: ProjectCardProps["features"];
-}) {
+function ProjectFeatures({ features }: { features: string[] }) {
   return (
     <ul className="list-disc space-y-1 pl-5 text-gray-700 text-sm">
-      {features.map((feat) => (
+      {features.map((feat: string) => (
         <li key={feat}>{feat}</li>
       ))}
     </ul>

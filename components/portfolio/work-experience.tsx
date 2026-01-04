@@ -4,6 +4,20 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { HeadComponent } from "./HeadComponent";
 
+function TeamAndJob({ team, job }: { team: string; job: string }) {
+  const t = useTranslations("portfolio.workExperience");
+  return (
+    <>
+      <div>
+        {t("team")}: {team}
+      </div>
+      <div>
+        {t("job")}: {job}
+      </div>
+    </>
+  );
+}
+
 function DescriptionWithDuration({
   company,
   duration,
@@ -32,8 +46,7 @@ function DescriptionWithDuration({
         </section>
         <section className="text-gray-700 dark:text-gray-300">
           <div>{company}</div>
-          <div>Team: {team}</div>
-          <div>Job: {job}</div>
+          <TeamAndJob team={team} job={job} />
           <div>{duration}</div>
         </section>
       </figure>{" "}
@@ -45,7 +58,7 @@ export default function WorkExperience() {
   const t = useTranslations("portfolio.workExperience");
   return (
     <div className="prose dark:prose-invert mx-auto mt-4">
-      <HeadComponent>Work Experience</HeadComponent>
+      <HeadComponent>{t("title")}</HeadComponent>
       <DescriptionWithDuration
         company="Allra Fintech"
         imageUrl="/images/logos/allra-logo.webp"

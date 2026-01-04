@@ -167,10 +167,10 @@ export const SKILLS = {
 
 export const PROJECTS = [
   {
+    key: "allra" as const,
     title: "Allra",
     role: "Web Frontend Developer",
     image: "/images/logos/allra-logo.webp",
-    description: "Allra 선정산 서비스",
     stack: [
       "Next.js",
       "TypeScript",
@@ -186,13 +186,12 @@ export const PROJECTS = [
       "Mixpanel",
       "Datadog",
     ],
-    features: ["작성중..."],
   },
   {
+    key: "digitalFinance" as const,
     title: "Digital Finance",
     role: "Web Frontend Developer",
     image: "/images/logos/pwc-logo.svg",
-    description: "서비스 통합 관리 포털 서비스",
     stack: [
       "React (Vite)",
       "TypeScript",
@@ -204,19 +203,12 @@ export const PROJECTS = [
       "GitHub Actions",
       "Docker",
     ],
-    features: [
-      "CRA 기반 프로젝트를 Vite로 마이그레이션하여 보안 리스크 제거 및 빌드 속도 향상",
-      "Rollup 최적화를 통해 최대 번들 크기 1200kB → 500kB로 58.3% 감소",
-      "서버 상태와 UI 상태를 분리하여 구조 안정성 및 예측 가능성 향상",
-      "기능 기반 폴더 구조로 전환하고 문서화를 통해 유지보수 효율성 향상",
-      "사내 CSP 정책 대응을 위해 react-quill-new와 커스텀 모듈 react-quill-resize로 에디터 교체 및 이미지 업로드 안정성 확보",
-    ],
   },
   {
+    key: "documentAi" as const,
     title: "Document AI",
     role: "Web Frontend Developer",
     image: "/images/logos/pwc-logo.svg",
-    description: "AI 기반 보고서 분석 솔루션",
     stack: [
       "Next.js",
       "TypeScript",
@@ -229,39 +221,23 @@ export const PROJECTS = [
       "Jest",
       "React Testing Library",
     ],
-    features: [
-      "Canvas API를 활용한 커스텀 PDF Viewer 구현 및 최적화",
-      "Web Worker, react-window, 코드 스플리팅으로 초기 렌더링 시간 67% 개선 (5401ms → 1780ms)",
-      "CRA 기반 프로젝트를 Vite로 마이그레이션하여 CSP 및 성능 이슈 해결",
-      "Rollup 최적화로 최대 번들 크기 1200kB → 500kB로 58.3% 감소",
-      "멀티 스테이지 빌드와 Standalone 모드 적용으로 Docker 이미지 용량 2.22GB → 195MB로 91.36% 감소",
-      "불필요한 모듈 제거 및 dynamic import로 번들 크기 302kB → 143kB로 73.5% 감소",
-    ],
   },
   {
+    key: "designSystem" as const,
     title: "SamilDevKit Design System",
     role: "Web Frontend Developer",
     image: "/images/logos/pwc-logo.svg",
-    description:
-      "사내 디자인 통일성과 개발 생산성 강화를 위한 디자인 시스템 구축",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
-    features: [
-      "clsx, cva 도입을 주도하며 조건부 스타일링 및 클래스 네이밍 일관성 확보",
-      "반복되는 컴포넌트 패턴을 모듈화하여 재사용성 강화",
-      "ESLint, TypeScript 설정 정비 및 문서화로 개발 품질 향상 및 팀 내 코드 일관성 확보",
-      "의존성 업데이트 및 보안 취약점 대응을 통해 프로젝트 안정성 강화",
-    ],
   },
 ];
 
 export const SIDE_PROJECTS = [
   {
+    key: "reindeer" as const,
     title: "순록의 편지",
     duration: "2024.12.02 ~ 2025.01.20",
     role: "Web Frontend Developer",
     image: "/images/logos/reindeer-logo.png",
-    description:
-      "연말에 본인과 타인에게 음성 및 글 형태로 예약 편지를 작성·전달할 수 있는 서비스",
     stack: [
       "Next.js",
       "TypeScript",
@@ -273,20 +249,13 @@ export const SIDE_PROJECTS = [
       "GTM/GA",
       "pnpm",
     ],
-    features: [
-      "AbortController를 적용해 요청 중단과 에러 관리를 체계화, 네트워크 안정성과 사용자 경험을 개선",
-      "서버 상태를 관리하는 훅으로 연결하여 개발자 경험 향상",
-      "크롬 브라우저로 전환하는 기능을 구현하여 인앱 브라우저 제약 해결",
-      "react-window를 활용해 List Virtualization 적용, 성능 최적화 및 렌더링 시간 약 80% 감소",
-    ],
   },
   {
+    key: "kkomKkom" as const,
     title: "꼼꼼",
     duration: "2024-07-26 ~ 2024-09-20",
     role: "Web Frontend Developer",
     image: "/images/logos/kkom-kkom-logo.png",
-    description:
-      "팀을 구성하고 일정을 관리하여 꼼꼼이가 되는 서비스, 부트 캠프 최종 프로젝트",
     stack: [
       "Next.js",
       "TypeScript",
@@ -298,20 +267,13 @@ export const SIDE_PROJECTS = [
       "GTM/GA",
       "pnpm",
     ],
-    features: [
-      "zustand 기반 useOverlay 커스텀 훅을 통한 오버레이 시스템 개발",
-      "서버 액션을 활용하여 refresh token rotation을 위한 fetch 함수 구현",
-      "streaming 방식과 낙관적 업데이트, 무한 스크롤이 결합된 쿼리 관리",
-      "startTransition에 대한 이해, progress bar 구현을 통한 부드러운 상태 전환 UX 구현",
-    ],
   },
   {
+    key: "ghepay" as const,
     title: "급페이",
     duration: "2024.06.20 ~ 2024.07.07",
     image: "/images/logos/ghepay-logo.png",
     role: "Web Frontend Developer",
-    description:
-      "급하게 일손이 필요한 자리에 더 많은 시급을 제공해서 아르바이트생을 구할 수 있는 서비스",
     stack: [
       "Next.js",
       "TypeScript",
@@ -321,20 +283,13 @@ export const SIDE_PROJECTS = [
       "MSW",
       "yarn",
     ],
-    features: [
-      "전역 상태를 걷어내고 서버 쿠키를 활용하여 최근 본 공고 구현",
-      "알림창 무한 스크롤 mock fetching를 위한 MSW 연동",
-      "vercel CLI와 github action을 이용한 vercel organization 무료 자동 배포",
-      "미들웨어와 쿠키를 활용한 계정 분기 처리",
-    ],
   },
   {
+    key: "fandomK" as const,
     title: "Fandom-k",
     duration: "2024.04.30 ~ 2024.05.17",
     image: "/images/logos/fandom-k-logo.jpg",
     role: "Web Frontend Developer",
-    description:
-      "좋아하는 아이돌을 투표하고 후원할 수 있는 서비스, 첫번째 리액트 프로젝트",
     stack: [
       "React",
       "TypeScript",
@@ -344,39 +299,21 @@ export const SIDE_PROJECTS = [
       "Vercel",
       "GitHub Actions",
     ],
-    features: [
-      "Interception observer API를 활용하여 무한 스크롤 구현",
-      "router 이동시 스크롤을 상단 고정하는 공통 컴포넌트 구현",
-      "Github Action을 이용한 Netlify 자동 배포",
-    ],
   },
-] as const satisfies {
-  title: string;
-  duration: string;
-  role: string;
-  image: string;
-  description: string;
-  stack: string[];
-  features: string[];
-}[];
+];
 
 export const EDUCATION = [
   {
-    title: "인천대학교 졸업",
+    titleKey: "inu" as const,
     duration: "2017.03 ~ 2024.08",
     image: "/images/logos/inu-logo.png",
-    description: `인천대학교에서 영어영문학과와 컴퓨터공학과를 복수전공하며 학습하였습니다.
-      총 학점: 3.7 
-      컴퓨터공학 전공 학점: 4.02
-    `,
+    descriptionKey: "inu" as const,
   },
   {
-    title: "코드잇 스프린트 FE 부트캠프",
+    titleKey: "codeit" as const,
     duration: "2024.03 ~ 2024.09",
     image: "/images/logos/codeit-logo.png",
-    description: `코드잇 스프린트 FE 부트캠프에서 6개월간 집중적으로 프론트엔드 개발을 학습하였습니다.
-      다양한 도구와 기술을 활용하여 실제 프로젝트를 통해 협업 경험과 문제 해결 능력을 키웠습니다.
-    `,
+    descriptionKey: "codeit" as const,
   },
 ];
 
@@ -422,29 +359,23 @@ export const CONTACTS = [
   {
     title: "LinkedIn",
     url: "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
-    description: "codefug의 LinkedIn 구경하기",
+    descriptionKey: "linkedin" as const,
   },
   {
     title: "인스타",
     url: "https://www.instagram.com/happy_fug/",
-    description: "codefug의 Instagram 구경하기",
+    descriptionKey: "instagram" as const,
   },
   {
     title: "GitHub",
     url: "https://github.com/codefug",
-    description: "codefug의 GitHub 구경하기",
+    descriptionKey: "github" as const,
   },
   {
     title: "블로그",
     url: "/",
-    description: "codefug의 블로그 구경하기",
+    descriptionKey: "blog" as const,
   },
 ];
 
-export const GROWTH_JOURNEY = `
-  - 고등학교 시절 진로를 고민하며 학습에 집중했고, 꾸준함과 자기 주도성을 체득했습니다.
-  \n- 대학교에서 발표 활동을 통해 소통과 지식 공유의 즐거움을 경험했습니다.
-  \n- VR 테마파크에서 기획과 프로그램이 사용자 경험에 미치는 영향을 현장에서 관찰하며, 사용자 중심 개발에 관심을 갖고 프론트엔드 개발을 시작했습니다.
-  \n- 부트캠프에서 프론트엔드 기술을 익히고 적용하며 문제 해결 능력을 키웠습니다.
-  \n- 실무에서 기술과 커뮤니케이션 역량을 함께 성장시키고 있습니다.
-`;
+// GROWTH_JOURNEY는 이제 메시지 파일에서 관리됩니다
