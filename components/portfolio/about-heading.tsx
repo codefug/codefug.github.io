@@ -73,6 +73,7 @@ const IntroAnimation = ({ className }: { className?: string }) => {
   const t = useTranslations("portfolio");
   return (
     <TypeAnimation
+      key={t("intro")}
       sequence={[1000, t("intro"), 1000]}
       wrapper="div"
       speed={90}
