@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import GrowthJourney from "@/components/growth-journey";
 import AboutHeading from "@/components/portfolio/about-heading";
 import { FadeInSection } from "@/components/portfolio/fadeInSection";
@@ -9,13 +9,8 @@ import WorkExperience from "@/components/portfolio/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { createProfilePageStructuredData } from "@/components/seo/utils";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "portfolio.meta" });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("portfolio.meta");
 
   return {
     title: t("title"),
@@ -37,9 +32,7 @@ const StudyGroup = dynamic(() => import("@/components/portfolio/study-group"));
 
 const Contact = dynamic(() => import("@/components/portfolio/contact"));
 
-export default async function Page({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
+export default function Page() {
   return (
     <>
       <StructuredData jsonLd={createProfilePageStructuredData()} />

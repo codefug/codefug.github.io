@@ -1,10 +1,9 @@
 "use client";
 
 import { Globe } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-import { memo, useState } from "react";
-import { routing } from "@/i18n/routing";
+import { memo, useState, useTransition } from "react";
+import { type Locale, locales } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
 const LOCALE_LABELS: Record<string, string> = {
@@ -15,14 +14,15 @@ const LOCALE_LABELS: Record<string, string> = {
 
 export const LanguageSelector = memo(function LanguageSelector() {
   const currentLocale = useLocale();
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [, startTransition] = useTransition();
 
-  const handleLocaleChange = (newLocale: string) => {
-    // Remove current locale from pathname
-    const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}/, "");
-    // Reload with new locale using window.location to avoid hydration issues
-    window.location.href = `/${newLocale}${pathnameWithoutLocale}`;
+  const handleLocaleChange = (newLocale: Locale) => {
+    // Set cookie and reload
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+    startTransition(() => {
+      window.location.reload();
+    });
   };
 
   return (
@@ -49,7 +49,7 @@ export const LanguageSelector = memo(function LanguageSelector() {
             aria-label="언어 선택 닫기"
           />
           <div className="absolute top-full right-0 z-50 mt-2 w-32 rounded-lg border bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-            {routing.locales.map((locale) => (
+            {locales.map((locale) => (
               <button
                 key={locale}
                 type="button"
