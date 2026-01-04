@@ -29,7 +29,7 @@ export default function StudyGroup() {
       <HeadComponent>{t("title")}</HeadComponent>
       {STUDY_GROUPS.map((studyGroup) => (
         <DescriptionWithDuration
-          key={studyGroup.title}
+          key={studyGroup.titleKey}
           title={
             studyGroup.url ? (
               <Link
@@ -37,13 +37,13 @@ export default function StudyGroup() {
                 href={studyGroup.url}
                 target="_blank"
               >
-                {studyGroup.title}
+                {t(studyGroup.titleKey)}
               </Link>
             ) : (
-              studyGroup.title
+              t(studyGroup.titleKey)
             )
           }
-          duration={studyGroup.duration}
+          duration={t(`duration.${studyGroup.durationKey}`)}
         />
       ))}
     </div>

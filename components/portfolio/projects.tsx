@@ -14,8 +14,7 @@ export default function Projects() {
       <div className="mt-3 flex flex-col gap-8">
         {PROJECTS.map((project) => (
           <ProjectCard
-            key={project.title}
-            title={project.title}
+            key={project.key}
             image={project.image}
             role={project.role}
             projectKey={project.key}
@@ -36,8 +35,7 @@ export function SideProjects() {
       <div className="mt-3 flex flex-col gap-8">
         {SIDE_PROJECTS.map((project) => (
           <ProjectCard
-            key={project.title}
-            title={project.title}
+            key={project.key}
             image={project.image}
             duration={project.duration}
             role={project.role}

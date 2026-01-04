@@ -234,7 +234,6 @@ export const PROJECTS = [
 export const SIDE_PROJECTS = [
   {
     key: "reindeer" as const,
-    title: "순록의 편지",
     duration: "2024.12.02 ~ 2025.01.20",
     role: "Web Frontend Developer",
     image: "/images/logos/reindeer-logo.png",
@@ -252,7 +251,6 @@ export const SIDE_PROJECTS = [
   },
   {
     key: "kkomKkom" as const,
-    title: "꼼꼼",
     duration: "2024-07-26 ~ 2024-09-20",
     role: "Web Frontend Developer",
     image: "/images/logos/kkom-kkom-logo.png",
@@ -270,7 +268,6 @@ export const SIDE_PROJECTS = [
   },
   {
     key: "ghepay" as const,
-    title: "급페이",
     duration: "2024.06.20 ~ 2024.07.07",
     image: "/images/logos/ghepay-logo.png",
     role: "Web Frontend Developer",
@@ -286,7 +283,6 @@ export const SIDE_PROJECTS = [
   },
   {
     key: "fandomK" as const,
-    title: "Fandom-k",
     duration: "2024.04.30 ~ 2024.05.17",
     image: "/images/logos/fandom-k-logo.jpg",
     role: "Web Frontend Developer",
@@ -319,38 +315,38 @@ export const EDUCATION = [
 
 export const STUDY_GROUPS = [
   {
-    title: "프론트엔드 최적화",
-    duration: "2025.12 ~ (진행중)",
+    titleKey: "frontendOptimization" as const,
+    durationKey: "frontendOptimization" as const,
   },
   {
-    title: "AWS",
-    duration: "2025.10 ~ 2025.12",
+    titleKey: "aws" as const,
+    durationKey: "aws" as const,
   },
   {
-    title: "타입스크립트 우아하게 쓰기",
-    duration: "2025.07 ~ 2025.10",
+    titleKey: "typescriptElegant" as const,
+    durationKey: "typescriptElegant" as const,
   },
   {
-    title: "리액트 디자인 패턴과 테스팅",
-    duration: "2025.04 ~ 2025.07",
+    titleKey: "reactDesignPattern" as const,
+    durationKey: "reactDesignPattern" as const,
   },
   {
-    title: "코딩테스트",
-    duration: "2024.09 ~ 2025.07",
+    titleKey: "codingTest" as const,
+    durationKey: "codingTest" as const,
   },
   {
-    title: "CS 스터디",
-    duration: "2024.07 ~ 2024.08",
+    titleKey: "csStudy" as const,
+    durationKey: "csStudy" as const,
     url: "https://github.com/FE-tech-talk/TechTalk-CS",
   },
   {
-    title: "모던 리액트 딥다이브",
-    duration: "2024.05 ~ 2024.07",
+    titleKey: "modernReactDeepDive" as const,
+    durationKey: "modernReactDeepDive" as const,
     url: "https://github.com/FE-tech-talk/TechTalk-React",
   },
   {
-    title: "코어 자바스크립트",
-    duration: "2024.04 ~ 2024.05",
+    titleKey: "coreJavaScript" as const,
+    durationKey: "coreJavaScript" as const,
     url: "https://github.com/FE-tech-talk/codeit14_techtalk",
   },
 ];
@@ -362,7 +358,7 @@ export const CONTACTS = [
     descriptionKey: "linkedin" as const,
   },
   {
-    title: "인스타",
+    title: "Instagram",
     url: "https://www.instagram.com/happy_fug/",
     descriptionKey: "instagram" as const,
   },
@@ -372,10 +368,8 @@ export const CONTACTS = [
     descriptionKey: "github" as const,
   },
   {
-    title: "블로그",
+    title: "Blog",
     url: "/",
     descriptionKey: "blog" as const,
   },
 ];
-
-// GROWTH_JOURNEY는 이제 메시지 파일에서 관리됩니다

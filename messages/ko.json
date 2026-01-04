@@ -19,7 +19,25 @@
       "title": "Contact"
     },
     "studyGroup": {
-      "title": "Study Groups"
+      "title": "Study Groups",
+      "frontendOptimization": "프론트엔드 최적화",
+      "aws": "AWS",
+      "typescriptElegant": "타입스크립트 우아하게 쓰기",
+      "reactDesignPattern": "리액트 디자인 패턴과 테스팅",
+      "codingTest": "코딩테스트",
+      "csStudy": "CS 스터디",
+      "modernReactDeepDive": "모던 리액트 딥다이브",
+      "coreJavaScript": "코어 자바스크립트",
+      "duration": {
+        "frontendOptimization": "2025.12 ~ (진행중)",
+        "aws": "2025.10 ~ 2025.12",
+        "typescriptElegant": "2025.07 ~ 2025.10",
+        "reactDesignPattern": "2025.04 ~ 2025.07",
+        "codingTest": "2024.09 ~ 2025.07",
+        "csStudy": "2024.07 ~ 2024.08",
+        "modernReactDeepDive": "2024.05 ~ 2024.07",
+        "coreJavaScript": "2024.04 ~ 2024.05"
+      }
     },
     "projects": {
       "title": "Projects",
@@ -57,10 +75,12 @@
       "growthJourney": "- 고등학교 시절 진로를 고민하며 학습에 집중했고, 꾸준함과 자기 주도성을 체득했습니다.\n- 대학교에서 발표 활동을 통해 소통과 지식 공유의 즐거움을 경험했습니다.\n- VR 테마파크에서 기획과 프로그램이 사용자 경험에 미치는 영향을 현장에서 관찰하며, 사용자 중심 개발에 관심을 갖고 프론트엔드 개발을 시작했습니다.\n- 부트캠프에서 프론트엔드 기술을 익히고 적용하며 문제 해결 능력을 키웠습니다.\n- 실무에서 기술과 커뮤니케이션 역량을 함께 성장시키고 있습니다.",
       "projects": {
         "allra": {
+          "title": "Allra",
           "description": "Allra 선정산 서비스",
           "features": ["작성중..."]
         },
         "digitalFinance": {
+          "title": "Digital Finance",
           "description": "서비스 통합 관리 포털 서비스",
           "features": [
             "CRA 기반 프로젝트를 Vite로 마이그레이션하여 보안 리스크 제거 및 빌드 속도 향상",
@@ -71,6 +91,7 @@
           ]
         },
         "documentAi": {
+          "title": "Document AI",
           "description": "AI 기반 보고서 분석 솔루션",
           "features": [
             "Canvas API를 활용한 커스텀 PDF Viewer 구현 및 최적화",
@@ -82,6 +103,7 @@
           ]
         },
         "designSystem": {
+          "title": "SamilDevKit Design System",
           "description": "사내 디자인 통일성과 개발 생산성 강화를 위한 디자인 시스템 구축",
           "features": [
             "clsx, cva 도입을 주도하며 조건부 스타일링 및 클래스 네이밍 일관성 확보",
@@ -91,6 +113,7 @@
           ]
         },
         "reindeer": {
+          "title": "순록의 편지",
           "description": "연말에 본인과 타인에게 음성 및 글 형태로 예약 편지를 작성·전달할 수 있는 서비스",
           "features": [
             "AbortController를 적용해 요청 중단과 에러 관리를 체계화, 네트워크 안정성과 사용자 경험을 개선",
@@ -100,6 +123,7 @@
           ]
         },
         "kkomKkom": {
+          "title": "꼼꼼",
           "description": "팀을 구성하고 일정을 관리하여 꼼꼼이가 되는 서비스, 부트 캠프 최종 프로젝트",
           "features": [
             "zustand 기반 useOverlay 커스텀 훅을 통한 오버레이 시스템 개발",
@@ -109,6 +133,7 @@
           ]
         },
         "ghepay": {
+          "title": "급페이",
           "description": "급하게 일손이 필요한 자리에 더 많은 시급을 제공해서 아르바이트생을 구할 수 있는 서비스",
           "features": [
             "전역 상태를 걷어내고 서버 쿠키를 활용하여 최근 본 공고 구현",
@@ -118,6 +143,7 @@
           ]
         },
         "fandomK": {
+          "title": "Fandom-K",
           "description": "좋아하는 아이돌을 투표하고 후원할 수 있는 서비스, 첫번째 리액트 프로젝트",
           "features": [
             "Interception observer API를 활용하여 무한 스크롤 구현",

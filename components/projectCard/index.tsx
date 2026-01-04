@@ -6,7 +6,6 @@ import { Badge } from "../ui/badge";
 
 // components/ProjectCard.tsx
 type ProjectCardProps = {
-  title: string;
   duration?: string;
   role: string;
   projectKey: string;
@@ -19,7 +18,6 @@ type ProjectCardProps = {
 };
 
 export default function ProjectCard({
-  title,
   duration,
   role,
   projectKey,
@@ -28,6 +26,7 @@ export default function ProjectCard({
   links,
 }: ProjectCardProps) {
   const t = useTranslations(`portfolio.data.projects.${projectKey}`);
+  const title = t("title");
   const description = t("description");
   const features = t.raw("features") as string[];
 

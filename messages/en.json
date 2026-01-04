@@ -19,7 +19,25 @@
       "title": "Contact"
     },
     "studyGroup": {
-      "title": "Study Groups"
+      "title": "Study Groups",
+      "frontendOptimization": "Frontend Optimization",
+      "aws": "AWS",
+      "typescriptElegant": "Elegant TypeScript",
+      "reactDesignPattern": "React Design Patterns and Testing",
+      "codingTest": "Coding Test",
+      "csStudy": "CS Study",
+      "modernReactDeepDive": "Modern React Deep Dive",
+      "coreJavaScript": "Core JavaScript",
+      "duration": {
+        "frontendOptimization": "2025.12 ~ (Ongoing)",
+        "aws": "2025.10 ~ 2025.12",
+        "typescriptElegant": "2025.07 ~ 2025.10",
+        "reactDesignPattern": "2025.04 ~ 2025.07",
+        "codingTest": "2024.09 ~ 2025.07",
+        "csStudy": "2024.07 ~ 2024.08",
+        "modernReactDeepDive": "2024.05 ~ 2024.07",
+        "coreJavaScript": "2024.04 ~ 2024.05"
+      }
     },
     "projects": {
       "title": "Projects",
@@ -57,10 +75,12 @@
       "growthJourney": "- During high school, I focused on learning while contemplating my career path, cultivating consistency and self-direction.\n- In university, I experienced the joy of communication and knowledge sharing through presentation activities.\n- At a VR theme park, I observed how planning and programs impact user experience in the field, sparking my interest in user-centered development and starting my frontend development journey.\n- Through a bootcamp, I learned and applied frontend technologies while developing problem-solving skills.\n- In professional work, I'm growing both my technical and communication capabilities.",
       "projects": {
         "allra": {
+          "title": "Allra",
           "description": "Allra advance payment service",
           "features": ["Work in progress..."]
         },
         "digitalFinance": {
+          "title": "Digital Finance",
           "description": "Integrated service management portal",
           "features": [
             "Migrated CRA-based project to Vite, eliminating security risks and improving build speed",
@@ -71,6 +91,7 @@
           ]
         },
         "documentAi": {
+          "title": "Document AI",
           "description": "AI-based report analysis solution",
           "features": [
             "Implemented and optimized custom PDF Viewer using Canvas API",
@@ -82,6 +103,7 @@
           ]
         },
         "designSystem": {
+          "title": "SamilDevKit Design System",
           "description": "Building a design system to strengthen internal design consistency and development productivity",
           "features": [
             "Led the adoption of clsx and cva to ensure conditional styling and class naming consistency",
@@ -91,6 +113,7 @@
           ]
         },
         "reindeer": {
+          "title": "Reindeer's Letter",
           "description": "A service for writing and sending scheduled letters in voice and text format to yourself and others at year-end",
           "features": [
             "Improved network stability and user experience by systematizing request cancellation and error management with AbortController",
@@ -100,6 +123,7 @@
           ]
         },
         "kkomKkom": {
+          "title": "KkomKkom",
           "description": "A service for forming teams and managing schedules to become meticulous, bootcamp final project",
           "features": [
             "Developed overlay system through zustand-based useOverlay custom hook",
@@ -109,6 +133,7 @@
           ]
         },
         "ghepay": {
+          "title": "Ghepay",
           "description": "A service for recruiting part-time workers by offering higher wages for urgently needed positions",
           "features": [
             "Implemented recently viewed job postings by removing global state and using server cookies",
@@ -118,6 +143,7 @@
           ]
         },
         "fandomK": {
+          "title": "Fandom-K",
           "description": "A service for voting and sponsoring favorite idols, first React project",
           "features": [
             "Implemented infinite scroll using Intersection Observer API",
