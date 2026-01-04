@@ -2,15 +2,21 @@
 
 import { Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { memo, useState, useTransition } from "react";
+import { memo, useLayoutEffect, useState, useTransition } from "react";
 import { type Locale, locales } from "@/i18n/config";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "../skeleton";
 
 export const LanguageSelector = memo(function LanguageSelector() {
   const currentLocale = useLocale();
   const t = useTranslations("common.language");
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [, startTransition] = useTransition();
+
+  useLayoutEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleLocaleChange = (newLocale: Locale) => {
     // Set cookie and reload
@@ -20,10 +26,24 @@ export const LanguageSelector = memo(function LanguageSelector() {
     });
   };
 
+  // locale이 로드되기 전까지 스켈레톤 표시
+  if (!isMounted) {
+    return (
+      <div className="relative">
+        <div className="flex items-center gap-1">
+          <Globe className="h-5 w-5 text-gray-400" />
+          <Skeleton className="hidden h-5 w-12 md:block" />
+        </div>
+      </div>
+    );
+  }
+
   const LOCALE_LABELS: Record<Locale, string> = {
     ko: t("ko"),
     en: t("en"),
   };
+
+  const currentLocaleTyped = currentLocale as Locale;
 
   return (
     <div className="relative">
@@ -34,7 +54,9 @@ export const LanguageSelector = memo(function LanguageSelector() {
         aria-label={t("select")}
       >
         <Globe className="h-5 w-5" />
-        <span className="hidden md:inline">{LOCALE_LABELS[currentLocale]}</span>
+        <span className="hidden md:inline">
+          {LOCALE_LABELS[currentLocaleTyped]}
+        </span>
       </button>
 
       {isOpen && (
@@ -59,7 +81,7 @@ export const LanguageSelector = memo(function LanguageSelector() {
                 }}
                 className={cn(
                   "block w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 dark:hover:bg-gray-700",
-                  currentLocale === locale &&
+                  currentLocaleTyped === locale &&
                     "bg-gray-100 font-semibold dark:bg-gray-700",
                 )}
               >
