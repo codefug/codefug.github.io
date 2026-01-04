@@ -146,29 +146,6 @@ export function createBlogPostStructuredData(
   };
 }
 
-export function createWebSiteStructuredData(locale: Locale = "ko") {
-  return {
-    "@context": "https://schema.org" as const,
-    "@type": "Blog" as const,
-    "@id": `${BASE_URL}#website`,
-    name: "Codefug Blog",
-    alternateName: "코드퍼그 블로그",
-    description: messages[locale].meta.description,
-    url: BASE_URL,
-    inLanguage: getHreflangCode(locale),
-    author: {
-      "@type": "Person" as const,
-      "@id": `${BASE_URL}#author`,
-      name: messages[locale].seo.author,
-    },
-    publisher: {
-      "@type": "Person" as const,
-      "@id": `${BASE_URL}#author`,
-      name: messages[locale].seo.author,
-    },
-  };
-}
-
 export function createProfilePageStructuredData(locale: Locale = "ko") {
   return {
     "@context": "https://schema.org" as const,
