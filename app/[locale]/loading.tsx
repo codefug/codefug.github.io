@@ -13,7 +13,7 @@ export default function Loading() {
             className="drop-shadow-lg"
           />
         </div>
-        <p className="mt-6 animate-pulse text-lg font-bold text-gray-600">
+        <p className="mt-6 animate-pulse font-bold text-gray-600 text-lg">
           Codefug Blog
         </p>
       </div>
