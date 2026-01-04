@@ -1,12 +1,13 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Gothic_A1 } from "next/font/google";
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import Layout from "@/components/layout";
 import { LocaleProvider } from "@/components/providers/locale-provider";
 import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { defaultLocale } from "@/i18n/config";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
@@ -45,13 +46,33 @@ export const metadata: Metadata = {
   },
 };
 
+function SidebarWrapper() {
+  const frontMatterListByLocale = getFrontMatterListForAllLocales();
+  return <Sidebar frontMatterListByLocale={frontMatterListByLocale} />;
+}
+
+function SidebarSkeleton() {
+  return (
+    <div className="fixed inset-y-0 z-10 hidden h-svh w-64 bg-sidebar md:flex">
+      <div className="flex h-full w-full flex-col p-4">
+        <Skeleton className="mx-auto h-40 w-40 rounded-full" />
+        <Skeleton className="mx-auto mt-4 h-6 w-32" />
+        <Skeleton className="mx-auto mt-2 h-4 w-24" />
+        <div className="mt-8 space-y-2">
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const frontMatterListByLocale = getFrontMatterListForAllLocales();
-
   return (
     <html lang={defaultLocale} suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
@@ -64,7 +85,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <SidebarProvider defaultOpen={false}>
-              <Sidebar frontMatterListByLocale={frontMatterListByLocale} />
+              <Suspense fallback={<SidebarSkeleton />}>
+                <SidebarWrapper />
+              </Suspense>
               <Layout>{children}</Layout>
             </SidebarProvider>
           </ThemeProvider>
