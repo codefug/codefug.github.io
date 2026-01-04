@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { STUDY_GROUPS } from "@/constants/about";
 import { HeadComponent } from "./HeadComponent";
@@ -19,9 +22,11 @@ function DescriptionWithDuration({
 }
 
 export default function StudyGroup() {
+  const t = useTranslations("portfolio.studyGroup");
+
   return (
     <div className="prose dark:prose-invert mx-auto mt-4">
-      <HeadComponent>Study Groups</HeadComponent>
+      <HeadComponent>{t("title")}</HeadComponent>
       {STUDY_GROUPS.map((studyGroup) => (
         <DescriptionWithDuration
           key={studyGroup.title}
