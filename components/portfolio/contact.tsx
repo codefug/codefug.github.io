@@ -35,7 +35,7 @@ export default function Contact() {
 
   return (
     <div className="prose dark:prose-invert mx-auto mt-4">
-      <HeadComponent>{t("title")}</HeadComponent>
+      <HeadComponent className="mb-4">{t("title")}</HeadComponent>
       {CONTACTS.map((contact) => (
         <ContactItem
           key={contact.title}
