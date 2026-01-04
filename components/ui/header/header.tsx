@@ -26,7 +26,7 @@ export default function Header() {
   );
   return (
     <header className={cn(headerVariant({ isShow, isShowVerticalScrollbar }))}>
-      <div className="flex items-center justify-between gap-6 py-4">
+      <div className="flex items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
           <SideBarToggleButton />
           <Link
@@ -96,15 +96,13 @@ const SideBarToggleButton = memo(function SideBarToggleButton() {
     [state, isMobile],
   );
   return (
-    <div className="ml-2">
-      <SidebarButton>
-        {isNeedCloseButton ? (
-          <PanelLeftClose size={20} />
-        ) : (
-          <PanelLeftOpen size={20} />
-        )}
-      </SidebarButton>
-    </div>
+    <SidebarButton>
+      {isNeedCloseButton ? (
+        <PanelLeftClose size={20} />
+      ) : (
+        <PanelLeftOpen size={20} />
+      )}
+    </SidebarButton>
   );
 });
 

@@ -176,6 +176,11 @@ const Sidebar = React.forwardRef<
     ref,
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+      setIsMounted(true);
+    }, []);
 
     if (collapsible === "none")
       return (
@@ -191,7 +196,8 @@ const Sidebar = React.forwardRef<
         </div>
       );
 
-    if (isMobile)
+    // 하이드레이션 에러 방지: 마운트 전에는 데스크톱 버전 렌더링
+    if (isMounted && isMobile)
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
           <SheetTitle className="hidden" />
