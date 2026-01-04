@@ -1,13 +1,13 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Gothic_A1 } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
+import { LocaleProvider } from "@/components/providers/locale-provider";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import getFrontMatterList from "@/lib/posts";
+import koMessages from "@/messages/ko.json";
 import ThemeProvider from "@/provider/theme-provider";
 import "./globals.css";
 
@@ -48,19 +48,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const messages = await getMessages();
   const totalFrontMatterList = getFrontMatterList();
 
   return (
     <html lang="ko" suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className={`${gothicA1.className} antialiased`}>
-        <NextIntlClientProvider messages={messages}>
+        <LocaleProvider initialMessages={koMessages}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -72,7 +71,7 @@ export default async function RootLayout({
               <Layout>{children}</Layout>
             </SidebarProvider>
           </ThemeProvider>
-        </NextIntlClientProvider>
+        </LocaleProvider>
       </body>
     </html>
   );
