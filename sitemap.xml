@@ -1,243 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://codefug.github.io/posts/2025-07-20</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-07-20" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-07-20" />
 <lastmod>2025-07-20T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2025-06-21</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-06-21" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-06-21" />
 <lastmod>2025-06-21T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2025-06-14</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-06-14" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-06-14" />
 <lastmod>2025-06-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2025-06-07</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-06-07" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-06-07" />
 <lastmod>2025-06-07T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2025-05-31</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-05-31" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-05-31" />
 <lastmod>2025-05-31T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2025-05-24</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2025-05-24" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2025-05-24" />
 <lastmod>2025-05-24T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-11-10</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-11-10" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-11-10" />
 <lastmod>2024-11-10T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-09-14-4</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-09-14-4" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-09-14-4" />
 <lastmod>2024-09-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-09-14-3</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-09-14-3" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-09-14-3" />
 <lastmod>2024-09-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-09-14-2</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-09-14-2" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-09-14-2" />
 <lastmod>2024-09-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-09-14-1</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-09-14-1" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-09-14-1" />
 <lastmod>2024-09-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-09-11</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-09-11" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-09-11" />
 <lastmod>2024-09-11T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-07-22-2</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-07-22-2" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-07-22-2" />
 <lastmod>2024-07-22T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-07-22-1</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-07-22-1" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-07-22-1" />
 <lastmod>2024-07-22T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-07-21</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-07-21" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-07-21" />
 <lastmod>2024-07-21T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-18</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-18" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-18" />
 <lastmod>2024-06-18T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-17</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-17" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-17" />
 <lastmod>2024-06-17T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-15</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-15" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-15" />
 <lastmod>2024-06-15T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-14</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-14" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-14" />
 <lastmod>2024-06-14T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-10</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-10" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-10" />
 <lastmod>2024-06-10T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-06-08</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-06-08" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-06-08" />
 <lastmod>2024-06-08T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-31</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-31" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-31" />
 <lastmod>2024-05-31T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-23</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-23" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-23" />
 <lastmod>2024-05-23T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-22</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-22" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-22" />
 <lastmod>2024-05-22T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-20</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-20" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-20" />
 <lastmod>2024-05-20T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-19</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-19" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-19" />
 <lastmod>2024-05-19T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/posts/2024-05-18</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/posts/2024-05-18" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/posts/2024-05-18" />
 <lastmod>2024-05-18T00:00:00.000Z</lastmod>
-<changefreq>daily</changefreq>
+<changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 <url>
 <loc>https://codefug.github.io</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io" />
-<lastmod>2026-01-04T14:48:05.119Z</lastmod>
-<changefreq>daily</changefreq>
+<lastmod>2026-01-04T16:38:25.340Z</lastmod>
+<changefreq>weekly</changefreq>
 <priority>1</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/portfolio</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/portfolio" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/portfolio" />
-<lastmod>2026-01-04T14:48:05.119Z</lastmod>
-<changefreq>daily</changefreq>
+<lastmod>2026-01-04T16:38:25.340Z</lastmod>
+<changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://codefug.github.io/search</loc>
-<xhtml:link rel="alternate" hreflang="ko-KR" href="https://codefug.github.io/search" />
-<xhtml:link rel="alternate" hreflang="en-US" href="https://codefug.github.io/search" />
-<lastmod>2026-01-04T14:48:05.119Z</lastmod>
-<changefreq>daily</changefreq>
+<lastmod>2026-01-04T16:38:25.340Z</lastmod>
+<changefreq>weekly</changefreq>
 <priority>0.8</priority>
 </url>
 </urlset>
