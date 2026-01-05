@@ -9,6 +9,8 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig: NextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  // Allow trailing slashes in URLs
+  trailingSlash: true,
   // Optionally, add any other Next.js config below
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   webpack(config: any) {
