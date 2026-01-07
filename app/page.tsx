@@ -1,5 +1,6 @@
 import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
+import { BirthdayBanner } from "@/components/event/birthday-banner";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -30,6 +31,7 @@ export default async function Home() {
           defaultLocale,
         )}
       />
+      <BirthdayBanner />
       <section className="mb-2">
         <BlockHeader
           title={
