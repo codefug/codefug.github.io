@@ -1,5 +1,6 @@
 import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
+import { BirthdayBanner } from "@/components/event/birthday-banner";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -10,6 +11,7 @@ import {
 import BlockHeader from "@/components/ui/block-header";
 import { defaultLocale } from "@/i18n/config";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
+import { shouldShowBirthdayBanner } from "@/util/birthday";
 import { HomeClientContent } from "../components/home/home-client-content";
 import { HomeSectionTitle } from "../components/home/home-section-title";
 
@@ -21,6 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const frontMatterListByLocale = getFrontMatterListForAllLocales();
+  const showBirthdayBanner = shouldShowBirthdayBanner();
 
   return (
     <div>
@@ -30,7 +33,7 @@ export default async function Home() {
           defaultLocale,
         )}
       />
-      {/* <BirthdayBanner /> */}
+      {showBirthdayBanner && <BirthdayBanner />}
       <section className="mb-2">
         <BlockHeader
           title={
