@@ -56,6 +56,8 @@ import * as MDX_en_2025_06_21 from "@/markdown/2025-06-21/en/content.mdx";
 import * as MDX_ko_2025_06_21 from "@/markdown/2025-06-21/ko/content.mdx";
 import * as MDX_en_2025_07_20 from "@/markdown/2025-07-20/en/content.mdx";
 import * as MDX_ko_2025_07_20 from "@/markdown/2025-07-20/ko/content.mdx";
+import * as MDX_en_2026_01_18 from "@/markdown/2026-01-18/en/content.mdx";
+import * as MDX_ko_2026_01_18 from "@/markdown/2026-01-18/ko/content.mdx";
 
 export const mdxMap: Record<Locale, Record<string, MDXModule>> = {
   ko: {
@@ -86,6 +88,7 @@ export const mdxMap: Record<Locale, Record<string, MDXModule>> = {
     "2025-06-14": MDX_ko_2025_06_14,
     "2025-06-21": MDX_ko_2025_06_21,
     "2025-07-20": MDX_ko_2025_07_20,
+    "2026-01-18": MDX_ko_2026_01_18,
   },
   en: {
     "2024-05-18": MDX_en_2024_05_18,
@@ -115,5 +118,6 @@ export const mdxMap: Record<Locale, Record<string, MDXModule>> = {
     "2025-06-14": MDX_en_2025_06_14,
     "2025-06-21": MDX_en_2025_06_21,
     "2025-07-20": MDX_en_2025_07_20,
+    "2026-01-18": MDX_en_2026_01_18,
   },
 };
