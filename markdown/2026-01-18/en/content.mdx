@@ -765,42 +765,6 @@ flowchart TD
 
 useCallback and useMemo are not simple performance optimization tools.
 
-```mermaid
-flowchart TB
-    subgraph 핵심["핵심 포인트"]
-        A["참조형 = 매 렌더링마다 새 주소"]
-        B["deps 비교 = Object.is (주소 비교)"]
-        C["ESLint = 훅 반환값은 신뢰"]
-    end
-
-    subgraph 결과["발생하는 문제"]
-        D["불필요한 effect 재실행"]
-        E["무한 리렌더링"]
-        F["React.memo 무효화"]
-    end
-
-    subgraph 해결["해결책"]
-        G["useCallback - 함수 메모이제이션"]
-        H["useMemo - 값/객체 메모이제이션"]
-        I["커스텀 훅 설계 시 반환값 메모이제이션"]
-    end
-
-    A --> D
-    A --> E
-    A --> F
-    B --> D
-    B --> E
-    C --> E
-
-    D --> G
-    D --> H
-    E --> G
-    E --> H
-    F --> G
-    F --> H
-    F --> I
-```
-
 1. They are necessary due to **reference type characteristics**. Even with identical content, new memory addresses are assigned on every render.
 2. Using reference types directly in **useEffect dependency arrays** causes unintended effect re-execution or infinite loops.
 3. Passing reference type props to **components wrapped with React.memo** nullifies the memoization effect.
