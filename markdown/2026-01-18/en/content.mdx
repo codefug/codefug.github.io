@@ -40,20 +40,123 @@ console.log(obj1 === obj2); // false
 
 `obj1` and `obj2` have the same content but point to different memory addresses. The comparison operator (`===`) compares addresses, so it returns `false`.
 
+### Memory Structure in Detail
+
+Let's examine step by step how reference type data is stored in memory.
+
+**Step 1: Object Creation**
+
+```javascript
+const user = { name: 'Kim', age: 25 };
+```
+
+**Step 2: Memory Allocation**
+
+The JavaScript engine stores the object in heap memory and only stores the address in the stack.
+
 ```mermaid
-flowchart LR
-    subgraph 원시형
-        A[변수 a] --> V1[값: 1]
-        B[변수 b] --> V2[값: 1]
+flowchart TB
+    subgraph Stack["Stack"]
+        direction TB
+        V1["Variable user<br/>Address: @1000"]
     end
 
-    subgraph 참조형
-        C[변수 obj1] --> M1[메모리 주소 @100]
-        D[변수 obj2] --> M2[메모리 주소 @200]
-        M1 --> O1["{ value: 1 }"]
-        M2 --> O2["{ value: 1 }"]
+    subgraph Heap["Heap"]
+        direction TB
+        O1["@1000<br/>{ name: 'Kim', age: 25 }"]
     end
+
+    V1 --> O1
 ```
+
+**Step 3: Primitive Values Inside Objects**
+
+Primitive values inside objects (`name`, `age`) are stored directly within the object's memory space.
+
+```mermaid
+flowchart TB
+    subgraph Stack["Stack"]
+        V1["Variable user<br/>Address: @1000"]
+    end
+
+    subgraph Heap["Heap"]
+        subgraph Object["Object @1000"]
+            P1["name: 'Kim'"]
+            P2["age: 25"]
+        end
+    end
+
+    V1 --> Object
+```
+
+**Step 4: Nested Objects**
+
+When an object contains another object, the inner object also has its own separate memory address.
+
+```javascript
+const user = {
+  name: 'Kim',
+  address: { city: 'Seoul', zip: '12345' }
+};
+```
+
+```mermaid
+flowchart TB
+    subgraph Stack["Stack"]
+        V1["Variable user<br/>Address: @1000"]
+    end
+
+    subgraph Heap["Heap"]
+        subgraph Object1["Object @1000"]
+            P1["name: 'Kim'"]
+            P2["address: @2000"]
+        end
+
+        subgraph Object2["Object @2000"]
+            P3["city: 'Seoul'"]
+            P4["zip: '12345'"]
+        end
+    end
+
+    V1 --> Object1
+    P2 --> Object2
+```
+
+### Primitive vs Reference Comparison
+
+Now let's compare the memory behavior differences between primitives and references at a glance.
+
+```mermaid
+flowchart TB
+    subgraph Primitive["Primitive"]
+        direction TB
+        subgraph Stack1["Stack"]
+            A["Variable a = 1"]
+            B["Variable b = 1"]
+        end
+        Note1["Stores value itself<br/>a === b → true"]
+    end
+
+    subgraph Reference["Reference"]
+        direction TB
+        subgraph Stack2["Stack"]
+            C["Variable obj1 = @100"]
+            D["Variable obj2 = @200"]
+        end
+        subgraph Heap2["Heap"]
+            O1["@100: { value: 1 }"]
+            O2["@200: { value: 1 }"]
+        end
+        Note2["Stores address<br/>obj1 === obj2 → false"]
+    end
+
+    C --> O1
+    D --> O2
+```
+
+**Key Differences:**
+- **Primitive**: The value itself is stored in the stack, and values are compared during comparison
+- **Reference**: The object is stored in the heap, and only the address is stored in the stack. Addresses are compared during comparison
 
 ## Functions Are Also Reference Types
 
