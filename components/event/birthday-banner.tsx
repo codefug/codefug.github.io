@@ -94,7 +94,7 @@ export function BirthdayBanner() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          2026.01.07
+          {new Date().getFullYear()}.01.07
         </motion.p>
 
         <motion.p
