@@ -13,7 +13,7 @@ export function BirthdayBanner() {
   const canvasRef = useConfetti();
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-lg border border-gray-800 bg-black py-12">
+    <div className="relative mb-6 overflow-hidden rounded-lg py-12">
       {/* Canvas for confetti - 처음 한 번만 실행 */}
       <canvas
         ref={canvasRef}
