@@ -16,7 +16,7 @@ JavaScript의 데이터 타입은 원시형(Primitive)과 참조형(Reference)�
 
 ## 원시형 데이터
 
-원시형은 값 자체가 변수에 저장됩니다. JavaScript 엔진은 원시형 값을 스택(Stack) 메모리에 직접 저장합니다.
+원시형은 값 자체가 메모리 주소에 직접 저장됩니다. 변수는 그 메모리 주소를 가리키며, 그 주소에 값이 저장되어 있습니다.
 
 ```javascript
 let a = 1;
@@ -28,28 +28,36 @@ console.log(a === b); // true
 **메모리 구조:**
 
 ```mermaid
-flowchart LR
-    subgraph Stack["스택 (Stack) - 실행 컨텍스트"]
+flowchart TB
+    subgraph Memory["메모리"]
         direction TB
-        A["변수 a<br/>값: 1"]
-        B["변수 b<br/>값: 1"]
+        A1["메모리 주소 @100<br/>값: 1"]
+        B1["메모리 주소 @200<br/>값: 1"]
     end
     
-    Note1["각 변수는 독립적인<br/>메모리 공간에 값 저장"]
+    subgraph Variables["변수"]
+        direction TB
+        A2["변수 a → @100"]
+        B2["변수 b → @200"]
+    end
     
-    Stack --> Note1
+    A2 --> A1
+    B2 --> B1
+    
+    Note1["원시형 데이터는<br/>메모리 주소에 값이 직접 저장됨"]
+    
+    Memory --> Note1
 ```
 
-`a`와 `b`는 각각 독립적인 스택 메모리 공간에 `1`이라는 값을 직접 저장합니다. 비교 연산자(`===`)는 저장된 값 자체를 비교하므로 `true`를 반환합니다.
+`a`는 메모리 주소 @100을 가리키고, 그 주소에 값 `1`이 직접 저장됩니다. `b`는 메모리 주소 @200을 가리키고, 그 주소에 값 `1`이 직접 저장됩니다. 비교 연산자(`===`)는 저장된 값 자체를 비교하므로 `true`를 반환합니다.
 
-**특징:**
-- 값이 복사되어 전달됩니다 (값에 의한 전달, Pass by Value)
-- 변수에 값을 할당하면 새로운 메모리 공간에 값이 복사됩니다
-- 한 변수를 변경해도 다른 변수에 영향을 주지 않습니다
+**핵심:**
+- 원시형 데이터는 해당 데이터를 담는 메모리 주소를 그대로 사용합니다
+- 메모리 주소에 값이 직접 저장되어 있습니다
 
 ## 참조형 데이터
 
-참조형은 힙(Heap) 메모리에 실제 데이터를 저장하고, 스택에는 그 메모리 주소(참조)만 저장합니다.
+참조형은 객체를 위한 메모리 주소가 있고, 그 주소로 가면 객체 내부의 원시형 데이터들이 각각의 메모리 위치를 가지고 있습니다.
 
 ```javascript
 const obj1 = { value: 1 };
@@ -62,105 +70,77 @@ console.log(obj1 === obj2); // false
 
 ```mermaid
 flowchart TB
-    subgraph Stack["스택 (Stack)"]
+    subgraph Variables["변수"]
         direction TB
-        V1["변수 obj1<br/>주소: @1000"]
-        V2["변수 obj2<br/>주소: @2000"]
+        V1["변수 obj1 → @1000"]
+        V2["변수 obj2 → @2000"]
     end
     
-    subgraph Heap["힙 (Heap) - 동적 메모리"]
+    subgraph Heap["힙 메모리"]
         direction TB
-        O1["@1000<br/>{ value: 1 }"]
-        O2["@2000<br/>{ value: 1 }"]
+        subgraph O1["객체 @1000"]
+            direction TB
+            P1["@1000+0x00: value<br/>값: 1<br/>(원시형 숫자)"]
+        end
+        
+        subgraph O2["객체 @2000"]
+            direction TB
+            P2["@2000+0x00: value<br/>값: 1<br/>(원시형 숫자)"]
+        end
     end
     
     V1 -->|"참조"| O1
     V2 -->|"참조"| O2
     
-    Note1["내용은 같지만<br/>주소가 다름"]
+    Note1["객체 주소(@1000)로 가면<br/>내부 원시형 값들이<br/>각각의 메모리 위치를 가짐"]
     
     O1 -.-> Note1
     O2 -.-> Note1
 ```
 
-`obj1`과 `obj2`는 내용이 동일하지만 서로 다른 힙 메모리 주소(@1000, @2000)를 가리킵니다. 비교 연산자(`===`)는 스택에 저장된 주소를 비교하므로 `false`를 반환합니다.
+`obj1`은 객체 주소 @1000을 가리키고, 그 주소로 가면 내부의 `value` 프로퍼티가 메모리 위치 @1000+0x00에 저장되어 있습니다. `obj2`는 객체 주소 @2000을 가리키고, 내부의 `value`는 @2000+0x00에 저장되어 있습니다. 비교 연산자(`===`)는 객체 주소를 비교하므로 `false`를 반환합니다.
 
-**특징:**
-- 주소가 복사되어 전달됩니다 (참조에 의한 전달, Pass by Reference)
-- 변수에 객체를 할당하면 주소만 복사됩니다
-- 같은 주소를 가리키는 변수들은 같은 객체를 공유합니다
+**핵심:**
+- 참조형 데이터는 객체를 위한 메모리 주소가 있습니다
+- 그 주소로 가면 객체 내부의 원시형 데이터들이 각각의 메모리 위치를 가지고 있습니다
 
-### 메모리 구조 상세
+### 메모리 구조 상세 예시
 
-참조형 데이터가 메모리에 어떻게 저장되는지 단계별로 살펴보겠습니다.
-
-#### 스택과 힙의 역할
-
-- **스택 (Stack)**: 실행 컨텍스트와 변수명, 원시형 값, 참조형의 주소를 저장하는 고정 크기 메모리 영역
-- **힙 (Heap)**: 동적으로 크기가 변하는 객체와 배열을 저장하는 메모리 영역
-
-**1단계: 객체 생성**
+더 복잡한 예시로 메모리 구조를 살펴보겠습니다.
 
 ```javascript
 const user = { name: 'Kim', age: 25 };
 ```
 
-**2단계: 메모리 할당 과정**
-
-1. JavaScript 엔진이 힙 메모리에 객체를 할당하고 주소(@1000)를 받습니다
-2. 스택에 변수명 `user`와 힙 주소(@1000)를 저장합니다
-
-```mermaid
-flowchart TB
-    subgraph Process["메모리 할당 과정"]
-        direction LR
-        Step1["1. 힙에 객체 할당<br/>@1000"]
-        Step2["2. 스택에 주소 저장<br/>user = @1000"]
-    end
-    
-    Step1 --> Step2
-    
-    subgraph Stack["스택 (Stack)"]
-        direction TB
-        V1["변수: user<br/>값: @1000<br/>(힙 주소)"]
-    end
-
-    subgraph Heap["힙 (Heap)"]
-        direction TB
-        O1["주소: @1000<br/>객체 데이터<br/>{ name: 'Kim', age: 25 }"]
-    end
-
-    V1 -->|"참조"| O1
-```
-
 **3단계: 객체 내부 구조**
 
-객체 내부의 원시형 값(`name`, `age`)은 힙 메모리의 객체 공간 안에 직접 저장됩니다. 객체는 프로퍼티 이름과 값의 쌍으로 구성됩니다.
+객체 내부의 원시형 값들도 각각의 메모리 주소를 가집니다. 객체 주소(@1000)로 가면 내부의 원시형 값들이 각각의 메모리 위치를 가지고 있습니다.
 
 ```mermaid
 flowchart TB
-    subgraph Stack["스택 (Stack)"]
-        direction TB
-        V1["변수: user<br/>주소: @1000"]
+    subgraph Variables["변수"]
+        V1["변수 user → @1000"]
     end
-
-    subgraph Heap["힙 (Heap) - 객체 @1000"]
+    
+    subgraph Heap["힙 메모리"]
         direction TB
-        subgraph Object["객체 구조"]
-            direction LR
-            P1["프로퍼티: name<br/>값: 'Kim'<br/>(원시형 문자열)"]
-            P2["프로퍼티: age<br/>값: 25<br/>(원시형 숫자)"]
+        subgraph Object["객체 @1000"]
+            direction TB
+            P1["@1000+0x00: name<br/>값: 'Kim'<br/>(원시형 문자열)"]
+            P2["@1000+0x10: age<br/>값: 25<br/>(원시형 숫자)"]
         end
     end
-
+    
     V1 -->|"참조"| Object
     Object --> P1
     Object --> P2
+    
+    Note1["객체 주소(@1000)로 가면<br/>내부 원시형 값들이<br/>각각의 메모리 주소를 가짐"]
+    
+    Object -.-> Note1
 ```
 
-**4단계: 중첩 객체의 경우**
-
-객체 안에 또 다른 객체가 있으면, 내부 객체도 별도의 힙 메모리 주소를 할당받습니다. 외부 객체는 내부 객체의 주소만 저장합니다.
+**중첩 객체 예시:**
 
 ```javascript
 const user = {
@@ -171,61 +151,32 @@ const user = {
 
 ```mermaid
 flowchart TB
-    subgraph Stack["스택 (Stack)"]
-        direction TB
-        V1["변수: user<br/>주소: @1000"]
+    subgraph Variables["변수"]
+        V1["변수 user → @1000"]
     end
-
-    subgraph Heap["힙 (Heap)"]
-        direction TB
-        subgraph Object1["객체 @1000"]
-            direction TB
-            P1["name: 'Kim'<br/>(원시형)"]
-            P2["address: @2000<br/>(참조형 주소)"]
-        end
-
-        subgraph Object2["객체 @2000"]
-            direction TB
-            P3["city: 'Seoul'<br/>(원시형)"]
-            P4["zip: '12345'<br/>(원시형)"]
-        end
-    end
-
-    V1 -->|"참조"| Object1
-    P2 -->|"참조"| Object2
-```
-
-**5단계: 참조 복사**
-
-객체를 다른 변수에 할당하면 주소만 복사됩니다. 두 변수는 같은 객체를 가리킵니다.
-
-```javascript
-const user1 = { name: 'Kim', age: 25 };
-const user2 = user1; // 주소만 복사
-
-user2.age = 30;
-console.log(user1.age); // 30 (같은 객체를 가리키므로)
-```
-
-```mermaid
-flowchart TB
-    subgraph Stack["스택 (Stack)"]
-        direction TB
-        V1["변수: user1<br/>주소: @1000"]
-        V2["변수: user2<br/>주소: @1000<br/>(같은 주소!)"]
-    end
-
-    subgraph Heap["힙 (Heap)"]
-        direction TB
-        O1["@1000<br/>{ name: 'Kim', age: 30 }<br/>(user1과 user2가 공유)"]
-    end
-
-    V1 -->|"참조"| O1
-    V2 -->|"참조"| O1
     
-    Note1["user1과 user2는<br/>같은 객체를 가리킴"]
+    subgraph Heap["힙 메모리"]
+        direction TB
+        subgraph O1["객체 @1000"]
+            direction TB
+            P1["@1000+0x00: name<br/>값: 'Kim'<br/>(원시형)"]
+            P2["@1000+0x10: address<br/>값: @2000<br/>(참조형 주소)"]
+        end
+        
+        subgraph O2["객체 @2000"]
+            direction TB
+            P3["@2000+0x00: city<br/>값: 'Seoul'<br/>(원시형)"]
+            P4["@2000+0x10: zip<br/>값: '12345'<br/>(원시형)"]
+        end
+    end
+    
+    V1 -->|"참조"| O1
+    P2 -->|"참조"| O2
+    
+    Note1["각 객체 내부의<br/>원시형 값들이<br/>각각의 메모리 주소를 가짐"]
     
     O1 -.-> Note1
+    O2 -.-> Note1
 ```
 
 ### 원시형 vs 참조형 비교

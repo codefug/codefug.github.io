@@ -16,7 +16,7 @@ JavaScript data types are divided into Primitive and Reference types.
 
 ## Primitive Data
 
-Primitives store the value itself in the variable. The JavaScript engine stores primitive values directly in stack memory.
+Primitive data stores the value directly in the memory address. Variables point to that memory address, and the value is stored at that address.
 
 ```javascript
 let a = 1;
@@ -28,28 +28,36 @@ console.log(a === b); // true
 **Memory Structure:**
 
 ```mermaid
-flowchart LR
-    subgraph Stack["Stack - Execution Context"]
+flowchart TB
+    subgraph Memory["Memory"]
         direction TB
-        A["Variable a<br/>Value: 1"]
-        B["Variable b<br/>Value: 1"]
+        A1["Memory Address @100<br/>Value: 1"]
+        B1["Memory Address @200<br/>Value: 1"]
     end
     
-    Note1["Each variable stores<br/>value in independent<br/>memory space"]
+    subgraph Variables["Variables"]
+        direction TB
+        A2["Variable a → @100"]
+        B2["Variable b → @200"]
+    end
     
-    Stack --> Note1
+    A2 --> A1
+    B2 --> B1
+    
+    Note1["Primitive data stores<br/>value directly in<br/>memory address"]
+    
+    Memory --> Note1
 ```
 
-`a` and `b` each store `1` directly in independent stack memory spaces. The comparison operator (`===`) compares the stored values themselves, so it returns `true`.
+`a` points to memory address @100, where value `1` is directly stored. `b` points to memory address @200, where value `1` is directly stored. The comparison operator (`===`) compares the stored values themselves, so it returns `true`.
 
-**Characteristics:**
-- Values are copied when passed (Pass by Value)
-- Assigning a value to a variable creates a copy in a new memory space
-- Changing one variable does not affect others
+**Key Point:**
+- Primitive data uses the memory address that directly contains the data
+- The value is stored directly at the memory address
 
 ## Reference Data
 
-Reference types store the actual data in heap memory, and only store the memory address (reference) in the stack.
+Reference data has a memory address for the object, and when you go to that address, the primitive data inside the object each have their own memory locations.
 
 ```javascript
 const obj1 = { value: 1 };
@@ -62,105 +70,75 @@ console.log(obj1 === obj2); // false
 
 ```mermaid
 flowchart TB
-    subgraph Stack["Stack"]
+    subgraph Variables["Variables"]
         direction TB
-        V1["Variable obj1<br/>Address: @1000"]
-        V2["Variable obj2<br/>Address: @2000"]
+        V1["Variable obj1 → @1000"]
+        V2["Variable obj2 → @2000"]
     end
     
-    subgraph Heap["Heap - Dynamic Memory"]
+    subgraph Heap["Heap Memory"]
         direction TB
-        O1["@1000<br/>{ value: 1 }"]
-        O2["@2000<br/>{ value: 1 }"]
+        subgraph O1["Object @1000"]
+            direction TB
+            P1["@1000+0x00: value<br/>Value: 1<br/>(Primitive number)"]
+        end
+        
+        subgraph O2["Object @2000"]
+            direction TB
+            P2["@2000+0x00: value<br/>Value: 1<br/>(Primitive number)"]
+        end
     end
     
     V1 -->|"reference"| O1
     V2 -->|"reference"| O2
     
-    Note1["Same content but<br/>different addresses"]
+    Note1["When you go to object address (@1000),<br/>primitive values inside<br/>each have their own memory locations"]
     
     O1 -.-> Note1
     O2 -.-> Note1
 ```
 
-`obj1` and `obj2` have the same content but point to different heap memory addresses (@1000, @2000). The comparison operator (`===`) compares the addresses stored in the stack, so it returns `false`.
+`obj1` points to object address @1000, and when you go to that address, the `value` property inside is stored at memory location @1000+0x00. `obj2` points to object address @2000, and the `value` inside is stored at @2000+0x00. The comparison operator (`===`) compares object addresses, so it returns `false`.
 
-**Characteristics:**
-- Addresses are copied when passed (Pass by Reference)
-- Assigning an object to a variable only copies the address
-- Variables pointing to the same address share the same object
+**Key Point:**
+- Reference data has a memory address for the object
+- When you go to that address, the primitive data inside the object each have their own memory locations
 
-### Memory Structure in Detail
+### Memory Structure in Detail Example
 
-Let's examine step by step how reference type data is stored in memory.
-
-#### Roles of Stack and Heap
-
-- **Stack**: Fixed-size memory area that stores execution context, variable names, primitive values, and addresses of reference types
-- **Heap**: Memory area that stores dynamically sized objects and arrays
-
-**Step 1: Object Creation**
+Let's examine the memory structure with a more complex example.
 
 ```javascript
 const user = { name: 'Kim', age: 25 };
 ```
 
-**Step 2: Memory Allocation Process**
-
-1. The JavaScript engine allocates an object in heap memory and receives an address (@1000)
-2. The stack stores the variable name `user` and the heap address (@1000)
+**Memory Structure:**
 
 ```mermaid
 flowchart TB
-    subgraph Process["Memory Allocation Process"]
-        direction LR
-        Step1["1. Allocate object in heap<br/>@1000"]
-        Step2["2. Store address in stack<br/>user = @1000"]
+    subgraph Variables["Variables"]
+        V1["Variable user → @1000"]
     end
     
-    Step1 --> Step2
-    
-    subgraph Stack["Stack"]
+    subgraph Heap["Heap Memory"]
         direction TB
-        V1["Variable: user<br/>Value: @1000<br/>(heap address)"]
-    end
-
-    subgraph Heap["Heap"]
-        direction TB
-        O1["Address: @1000<br/>Object data<br/>{ name: 'Kim', age: 25 }"]
-    end
-
-    V1 -->|"reference"| O1
-```
-
-**Step 3: Internal Object Structure**
-
-Primitive values inside objects (`name`, `age`) are stored directly within the object's memory space in the heap. Objects consist of property name-value pairs.
-
-```mermaid
-flowchart TB
-    subgraph Stack["Stack"]
-        direction TB
-        V1["Variable: user<br/>Address: @1000"]
-    end
-
-    subgraph Heap["Heap - Object @1000"]
-        direction TB
-        subgraph Object["Object Structure"]
-            direction LR
-            P1["Property: name<br/>Value: 'Kim'<br/>(primitive string)"]
-            P2["Property: age<br/>Value: 25<br/>(primitive number)"]
+        subgraph Object["Object @1000"]
+            direction TB
+            P1["@1000+0x00: name<br/>Value: 'Kim'<br/>(Primitive string)"]
+            P2["@1000+0x10: age<br/>Value: 25<br/>(Primitive number)"]
         end
     end
-
+    
     V1 -->|"reference"| Object
     Object --> P1
     Object --> P2
+    
+    Note1["When you go to object address (@1000),<br/>primitive values inside<br/>each have their own memory addresses"]
+    
+    Object -.-> Note1
 ```
 
-**Step 4: Nested Objects**
-
-When an object contains another object, the inner object also receives its own separate heap memory address. The outer object only stores the inner object's address.
+**Nested Object Example:**
 
 ```javascript
 const user = {
@@ -171,61 +149,32 @@ const user = {
 
 ```mermaid
 flowchart TB
-    subgraph Stack["Stack"]
-        direction TB
-        V1["Variable: user<br/>Address: @1000"]
+    subgraph Variables["Variables"]
+        V1["Variable user → @1000"]
     end
-
-    subgraph Heap["Heap"]
-        direction TB
-        subgraph Object1["Object @1000"]
-            direction TB
-            P1["name: 'Kim'<br/>(primitive)"]
-            P2["address: @2000<br/>(reference address)"]
-        end
-
-        subgraph Object2["Object @2000"]
-            direction TB
-            P3["city: 'Seoul'<br/>(primitive)"]
-            P4["zip: '12345'<br/>(primitive)"]
-        end
-    end
-
-    V1 -->|"reference"| Object1
-    P2 -->|"reference"| Object2
-```
-
-**Step 5: Reference Copying**
-
-When an object is assigned to another variable, only the address is copied. Both variables point to the same object.
-
-```javascript
-const user1 = { name: 'Kim', age: 25 };
-const user2 = user1; // Only address is copied
-
-user2.age = 30;
-console.log(user1.age); // 30 (pointing to the same object)
-```
-
-```mermaid
-flowchart TB
-    subgraph Stack["Stack"]
-        direction TB
-        V1["Variable: user1<br/>Address: @1000"]
-        V2["Variable: user2<br/>Address: @1000<br/>(same address!)"]
-    end
-
-    subgraph Heap["Heap"]
-        direction TB
-        O1["@1000<br/>{ name: 'Kim', age: 30 }<br/>(shared by user1 and user2)"]
-    end
-
-    V1 -->|"reference"| O1
-    V2 -->|"reference"| O1
     
-    Note1["user1 and user2<br/>point to the same object"]
+    subgraph Heap["Heap Memory"]
+        direction TB
+        subgraph O1["Object @1000"]
+            direction TB
+            P1["@1000+0x00: name<br/>Value: 'Kim'<br/>(Primitive)"]
+            P2["@1000+0x10: address<br/>Value: @2000<br/>(Reference address)"]
+        end
+        
+        subgraph O2["Object @2000"]
+            direction TB
+            P3["@2000+0x00: city<br/>Value: 'Seoul'<br/>(Primitive)"]
+            P4["@2000+0x10: zip<br/>Value: '12345'<br/>(Primitive)"]
+        end
+    end
+    
+    V1 -->|"reference"| O1
+    P2 -->|"reference"| O2
+    
+    Note1["Primitive values inside each object<br/>each have their own memory addresses"]
     
     O1 -.-> Note1
+    O2 -.-> Note1
 ```
 
 ### Primitive vs Reference Comparison
