@@ -765,42 +765,6 @@ flowchart TD
 
 useCallback과 useMemo는 단순한 성능 최적화 도구가 아닙니다.
 
-```mermaid
-flowchart TB
-    subgraph 핵심["핵심 포인트"]
-        A["참조형 = 매 렌더링마다 새 주소"]
-        B["deps 비교 = Object.is (주소 비교)"]
-        C["ESLint = 훅 반환값은 신뢰"]
-    end
-
-    subgraph 결과["발생하는 문제"]
-        D["불필요한 effect 재실행"]
-        E["무한 리렌더링"]
-        F["React.memo 무효화"]
-    end
-
-    subgraph 해결["해결책"]
-        G["useCallback - 함수 메모이제이션"]
-        H["useMemo - 값/객체 메모이제이션"]
-        I["커스텀 훅 설계 시 반환값 메모이제이션"]
-    end
-
-    A --> D
-    A --> E
-    A --> F
-    B --> D
-    B --> E
-    C --> E
-
-    D --> G
-    D --> H
-    E --> G
-    E --> H
-    F --> G
-    F --> H
-    F --> I
-```
-
 1. **참조형 데이터의 특성** 때문에 필요합니다. 내용이 같아도 매 렌더링마다 새로운 메모리 주소가 할당됩니다.
 2. **useEffect 의존성 배열**에서 참조형을 그대로 사용하면 의도치 않은 effect 재실행이나 무한 루프가 발생합니다.
 3. **React.memo로 감싼 컴포넌트**에 참조형 props를 전달하면 메모이제이션 효과가 사라집니다.
