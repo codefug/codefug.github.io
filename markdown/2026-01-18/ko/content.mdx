@@ -40,20 +40,123 @@ console.log(obj1 === obj2); // false
 
 `obj1`과 `obj2`는 내용이 동일하지만 서로 다른 메모리 주소를 가리킵니다. 비교 연산자(`===`)는 주소를 비교하므로 `false`를 반환합니다.
 
+### 메모리 구조 상세
+
+참조형 데이터가 메모리에 어떻게 저장되는지 단계별로 살펴보겠습니다.
+
+**1단계: 객체 생성**
+
+```javascript
+const user = { name: 'Kim', age: 25 };
+```
+
+**2단계: 메모리 할당**
+
+JavaScript 엔진은 힙(Heap) 메모리에 객체를 저장하고, 스택(Stack)에는 그 주소만 저장합니다.
+
 ```mermaid
-flowchart LR
-    subgraph 원시형
-        A[변수 a] --> V1[값: 1]
-        B[변수 b] --> V2[값: 1]
+flowchart TB
+    subgraph Stack["스택 (Stack)"]
+        direction TB
+        V1["변수 user<br/>주소: @1000"]
     end
 
-    subgraph 참조형
-        C[변수 obj1] --> M1[메모리 주소 @100]
-        D[변수 obj2] --> M2[메모리 주소 @200]
-        M1 --> O1["{ value: 1 }"]
-        M2 --> O2["{ value: 1 }"]
+    subgraph Heap["힙 (Heap)"]
+        direction TB
+        O1["@1000<br/>{ name: 'Kim', age: 25 }"]
     end
+
+    V1 --> O1
 ```
+
+**3단계: 객체 내부의 원시형 값**
+
+객체 내부의 원시형 값(`name`, `age`)은 객체 메모리 공간 안에 직접 저장됩니다.
+
+```mermaid
+flowchart TB
+    subgraph Stack["스택 (Stack)"]
+        V1["변수 user<br/>주소: @1000"]
+    end
+
+    subgraph Heap["힙 (Heap)"]
+        subgraph Object["객체 @1000"]
+            P1["name: 'Kim'"]
+            P2["age: 25"]
+        end
+    end
+
+    V1 --> Object
+```
+
+**4단계: 중첩 객체의 경우**
+
+객체 안에 또 다른 객체가 있으면, 내부 객체도 별도의 메모리 주소를 가집니다.
+
+```javascript
+const user = {
+  name: 'Kim',
+  address: { city: 'Seoul', zip: '12345' }
+};
+```
+
+```mermaid
+flowchart TB
+    subgraph Stack["스택 (Stack)"]
+        V1["변수 user<br/>주소: @1000"]
+    end
+
+    subgraph Heap["힙 (Heap)"]
+        subgraph Object1["객체 @1000"]
+            P1["name: 'Kim'"]
+            P2["address: @2000"]
+        end
+
+        subgraph Object2["객체 @2000"]
+            P3["city: 'Seoul'"]
+            P4["zip: '12345'"]
+        end
+    end
+
+    V1 --> Object1
+    P2 --> Object2
+```
+
+### 원시형 vs 참조형 비교
+
+이제 원시형과 참조형의 메모리 동작 차이를 한눈에 비교해보겠습니다.
+
+```mermaid
+flowchart TB
+    subgraph 원시형["원시형 (Primitive)"]
+        direction TB
+        subgraph Stack1["스택"]
+            A["변수 a = 1"]
+            B["변수 b = 1"]
+        end
+        Note1["값 자체를 저장<br/>a === b → true"]
+    end
+
+    subgraph 참조형["참조형 (Reference)"]
+        direction TB
+        subgraph Stack2["스택"]
+            C["변수 obj1 = @100"]
+            D["변수 obj2 = @200"]
+        end
+        subgraph Heap2["힙"]
+            O1["@100: { value: 1 }"]
+            O2["@200: { value: 1 }"]
+        end
+        Note2["주소를 저장<br/>obj1 === obj2 → false"]
+    end
+
+    C --> O1
+    D --> O2
+```
+
+**핵심 차이점:**
+- **원시형**: 값 자체가 스택에 저장되고, 비교 시 값을 비교
+- **참조형**: 힙에 객체가 저장되고, 스택에는 주소만 저장. 비교 시 주소를 비교
 
 ## 함수도 참조형입니다
 
