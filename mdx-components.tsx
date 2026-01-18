@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import { createElement, type ReactNode } from "react";
 import Callout from "./components/mdx/callout";
+import Mermaid from "./components/mdx/mermaid";
 import { getHeaderHltr } from "./constants/header-hltr";
 import processCallout from "./util/callout";
 
@@ -67,6 +68,36 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       const { type, title, content } = processCallout(children);
       if (type === null) return createElement("blockquote", props);
       return <Callout type={type} title={title} content={content} />;
+    },
+    pre: (props) => {
+      const { children } = props;
+
+      // Check if the code block is mermaid
+      if (children && typeof children === "object") {
+        // Handle React element
+        if ("props" in children && children.props) {
+          const codeProps = children.props as {
+            className?: string;
+            children?: ReactNode;
+          };
+
+          if (
+            codeProps.className &&
+            typeof codeProps.className === "string" &&
+            codeProps.className.includes("language-mermaid")
+          ) {
+            const codeContent =
+              typeof codeProps.children === "string"
+                ? codeProps.children
+                : Array.isArray(codeProps.children)
+                  ? codeProps.children.join("")
+                  : String(codeProps.children || "");
+            return <Mermaid>{codeContent}</Mermaid>;
+          }
+        }
+      }
+
+      return createElement("pre", props);
     },
     // a: CustomLink,
     // img: (props) => {
