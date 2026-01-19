@@ -12,8 +12,8 @@ tanstack query가 서버 상태를 관리하는데는 좋지만 Next.js와 함�
 
 ![](/images/2024-09-14/Pasted%20image%2020240816005045.png)
 
-1. Streaming을 이용한 Next.js 만의 fetch 방식을 사용할 수 없다.
-2. SSR시에 장점인 Hydration 이전의 HTML 구조를 가져와서 TTFB를 줄일 수 있다는 장점을 누릴 수 없다.
+1. Streaming을 이용한 Next.js 만의 fetch 방식을 사용할 수 없습니다.
+2. SSR시에 장점인 Hydration 이전의 HTML 구조를 가져와서 TTFB를 줄일 수 있다는 장점을 누릴 수 없습니다.
 3. SSR시 스켈레톤을 Suspense fallback으로도 넣을 수 있기 때문에 tanstack query의 isPending을 활용한 스켈레톤을 그대로 구현할 수 있습니다.
 
 개인적으로는 Streaming 방식을 사용할 수 없는 것이 제일 치명적이라고 생각했습니다.
@@ -24,7 +24,7 @@ Promise.all을 이용한 병렬 fetch를 사용해도 비슷한 효과가 나오
 
 ## streaming 방식의 query
 
-이를 해결하기 위해 찾아보던 중 공식문서에서 답을 찾게 되었다.
+이를 해결하기 위해 찾아보던 중 공식문서에서 답을 찾게 되었습니다.
 
 https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#streaming-with-server-components
 
@@ -132,7 +132,7 @@ Suspense 자체에 SeachParams를 key로 넣어서 각 Suspense가 다른 것으
 
 UX를 향상시키는 방법에는 Streaming 이외에도 존재합니다.
 
-낙관적 업데이트가 그 중 하나인데 쉽게 로직을 설명해보면 다음과 같다.
+낙관적 업데이트가 그 중 하나인데 쉽게 로직을 설명해보면 다음과 같습니다.
 
 1. 현재 쿼리를 취소합니다. (fetch 실행전)
 2. 현재 쿼리를 저장합니다.
@@ -236,17 +236,17 @@ const {
 
 `fetchNextPage`라는 함수를 이용해서 fetch를 보내고 getNextPageParam을 이용해서 마지막인지를 판별합니다.
 
-하지만 이는 Suspense를 사용할 수는 없는데 다행히 Tanstack Query에서는 Suspense가 첨가된 InfiniteQuery인 useSuspenseInfiniteQuery를 지원해주고 있었다.
+하지만 이는 Suspense를 사용할 수는 없는데 다행히 Tanstack Query에서는 Suspense가 첨가된 InfiniteQuery인 useSuspenseInfiniteQuery를 지원해주고 있었습니다.
 
 https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#new-hooks-for-suspense
 
 ## Streaming + 무한스크롤 + 낙관적 업데이트
 
-고민을 해보니 위의 세가지 (suspense, 무한스크롤, 낙관적 업데이트) 를 모두 적용할 수 있는 부분이 댓글 이라는 생각이 들었다.
+고민을 해보니 위의 세가지 (suspense, 무한스크롤, 낙관적 업데이트) 를 모두 적용할 수 있는 부분이 댓글 이라는 생각이 들었습니다.
 
-댓글은 streaming방식과 무한스크롤 방식으로 구현하면 좋고 이를 수정, 추가, 삭제할 때 낙관적 업데이트가 적용된다면 엄청난 UX 향상이 있지 않나 싶었다.
+댓글은 streaming방식과 무한스크롤 방식으로 구현하면 좋고 이를 수정, 추가, 삭제할 때 낙관적 업데이트가 적용된다면 엄청난 UX 향상이 있지 않나 싶었습니다.
 
-제일 까다로운건 타입스크립트였다 (안에까지 들어가서 분석하면서 만드는게 참 쉽지 않았다...)
+제일 까다로운건 타입스크립트였습니다 (안에까지 들어가서 분석하면서 만드는게 참 쉽지 않았습니다...)
 
 ```tsx
 export function usePostCommentsMutation() {
@@ -370,7 +370,7 @@ pages 단위의 배열과 pageParams를 가진 객체가 최상단 구조입니�
 
 추가 로직을 구현했으니 삭제, 수정 로직도 비슷하게 구현할 수 있습니다.
 
-댓글 삭제의 코드는 다음과 같다.
+댓글 삭제의 코드는 다음과 같습니다.
 
 ```tsx
 export function useDeleteCommentsMutation() {
@@ -501,9 +501,9 @@ export function usePatchCommentsMutation() {
 }
 ```
 
-사실 코드 구현보다도 setQueryData와 InfiniteData의 타입을 읽으려고 더 노력했던 것 같다.
+사실 코드 구현보다도 setQueryData와 InfiniteData의 타입을 읽으려고 더 노력했던 것 같습니다.
 
-결론적으로는 다음의 구조만 알면 쉬웠다.
+결론적으로는 다음의 구조만 알면 쉬웠습니다.
 
 1. `setQueryData<받는 데이터, 쿼리 키, 주는 데이터>`
 2. `InfiniteData<전체 데이터 구조, pageParam의 구조>`
@@ -576,11 +576,11 @@ new Date()로 구현되어 있기 때문에 다를 수 밖에 없었다.
 
 # 후기
 
-Tanstack Query에 푹 빠져서 쿼리 관리를 했던 소중한 경험이었다.
+Tanstack Query에 푹 빠져서 쿼리 관리를 했던 소중한 경험이었습니다.
 
-귀찮고 반복적인 일은 전부 함수로 만들어 놓은 개발의 세계에서 당연히 있겠지 싶었던 기능들의 집합체가 Tanstack query지 않나 싶었다.
+귀찮고 반복적인 일은 전부 함수로 만들어 놓은 개발의 세계에서 당연히 있겠지 싶었던 기능들의 집합체가 Tanstack query지 않나 싶었습니다.
 
-새로운 기술을 배우는 건 늘 트러블 슈팅이 따르지만 그걸 해내는 쾌감이 너무 좋아서 계속 배우게 되는 것 같다.
+새로운 기술을 배우는 건 늘 트러블 슈팅이 따르지만 그걸 해내는 쾌감이 너무 좋아서 계속 배우게 되는 것 같습니다.
 
 더 성장해보겠습니다.
 

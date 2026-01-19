@@ -81,9 +81,9 @@ request를 받아서 확인한 후 response로 처리한 모습입니다.
 
 ## vercel github action
 
-원래는 기초 프로젝트에서 사용했던 netlify를 사용하려고 했으나 Next를 쓰는 것이니 만큼 vercel을 이용한 배포가 좋지 않을까 생각하였고 팀원들도 동의해줘서 이대로 진행하게 되었다.
+원래는 기초 프로젝트에서 사용했던 netlify를 사용하려고 했으나 Next를 쓰는 것이니 만큼 vercel을 이용한 배포가 좋지 않을까 생각하였고 팀원들도 동의해줘서 이대로 진행하게 되었습니다.
 
-이번에도 자동 배포를 위해서 github aciton을 사용해야 되나 생각했지만 그럴 필요 없이 vercel에서 자동배포를 해주고 preview까지 pr마다 보여준다고 해서 편하게 생각했었다.
+이번에도 자동 배포를 위해서 github aciton을 사용해야 되나 생각했지만 그럴 필요 없이 vercel에서 자동배포를 해주고 preview까지 pr마다 보여준다고 해서 편하게 생각했었습니다.
 
 여기서 문제는 team일 경우에는 유료로 배포를 해야한다는 것입니다.
 
@@ -91,13 +91,13 @@ request를 받아서 확인한 후 response로 처리한 모습입니다.
 
 다른 yaml 코드를 분석하던 중에 preview 쪽에서 CLI를 이용하는 것을 발견하고 organization은 CLI에서 무료인가? 생각 후 찾아보기 시작했습니다.
 
-찾아보던 중 깃허브 이슈에서 한마디를 보게 되었다.
+찾아보던 중 깃허브 이슈에서 한마디를 보게 되었습니다.
 
 > vercel CLI로 접근하는 것 밖에는 방법이 없는 것 같네. CLI 한번 써봐 (영어)
 
 organization GUI 유료 > organization CLI 무료 인 거였습니다.
 
-나의 상황에 딱 맞는 문서를 찾게 되어서 진행하게 되었다. 이제 많이 했기에 간단한 용어 정도는 알고 있음에 기뻐하며 말입니다.
+저의 상황에 딱 맞는 문서를 찾게 되어서 진행하게 되었습니다. 이제 많이 했기에 간단한 용어 정도는 알고 있음에 기뻐하며 말입니다.
 
 ### vercel CLI 실행
 
@@ -120,7 +120,7 @@ vercel을 설치후 실행합니다.
 { "orgId": "...", "projectId": "..." }
 ```
 
-위처럼 말입니다. 내 프로젝트를 식별하기 위해서 존재하니 어디에 적어두자.
+위처럼 말입니다. 내 프로젝트를 식별하기 위해서 존재하니 어디에 적어두세요.
 
 이후엔 vercel에 build를 맡기기 위해 [amondnet/vercel-action](https://github.com/amondnet/vercel-action) 라는 액션을 쓸 것입니다.
 
@@ -132,9 +132,9 @@ vercel을 설치후 실행합니다.
 
 ![](/images/2024-07-23/Pasted%20image%2020240722183946.png)
 
-이후 developer에서 github 자체 토큰도 하나 얻어서 API_TOKEN-GITHUB에 secret으로 저장해놓는다.
+이후 developer에서 github 자체 토큰도 하나 얻어서 API_TOKEN-GITHUB에 secret으로 저장해놓습니다.
 
-이제 준비는 끝났다. /.github/workflows 파일에 아래의 파일들을 넣어주자.
+이제 준비는 끝났습니다. /.github/workflows 파일에 아래의 파일들을 넣어주세요.
 
 ```yaml
 # vercel-merge.yml
@@ -197,7 +197,7 @@ https://gheup-pay-project.vercel.app/
 
 ![](/images/2024-07-23/Pasted%20image%2020240722184832.png)
 
-하지만 기존에 vercel을 사용하는 다른 코드가 존재했고 preview는 팀원들이 굉장히 자주 쓰는 부분이기 때문에 교체하는 시기가 애매해져서 적용은 하지 않게 되었다.
+하지만 기존에 vercel을 사용하는 다른 코드가 존재했고 preview는 팀원들이 굉장히 자주 쓰는 부분이기 때문에 교체하는 시기가 애매해져서 적용은 하지 않게 되었습니다.
 
 아래의 코드도 위의 코드와 유사하게 기능하는 코드입니다.
 
