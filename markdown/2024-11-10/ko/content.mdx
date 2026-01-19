@@ -10,11 +10,11 @@ JS는 Single Thread에서 작동합니다. 즉 한 번에 하나의 작업만 �
 
 사용자가 검색어를 입력해 검색을 위한 네트워크 요청이 발생한 순간에도 다른 작업을 처리할 수 있습니다. (비동기적 작업 방식)
 
-> 리액트에서는 16 버전에 접어들면서 비동기식으로 작동하는 방법이 소개 되었다.
+> 리액트에서는 16 버전에 접어들면서 비동기식으로 작동하는 방법이 소개되었습니다.
 
 ## 싱글 스레드 자바스크립트
 
-과거, 프로그램을 실행하는 단위가 오직 **Process** 뿐이었다.
+과거, 프로그램을 실행하는 단위가 오직 **Process** 뿐이었습니다.
 
 > **Process**
 >
@@ -28,17 +28,17 @@ JavaScript는 기본적으로 싱글 쓰레드 입니다.
 
 ## JS가 멀티 쓰레드가 아닌 이유
 
-1. 멀티 쓰레드는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요하다.
+1. 멀티 쓰레드는 내부적으로 처리가 복잡하며 같은 자원에 대해 여러 번 수정하는 등 동시성 문제가 발생할 수 있기에 이에 대한 처리가 필요합니다.
 2. 각각 격리되어 있는 **Process**와 다르게 하나의 **Thread**가 문제가 생기면 다른 **Thread**도 문제가 발생할 수 있습니다.
-3. JS이 **멀티 스레딩**을 지원해서 동시에 여러 쓰레드가 DOM을 조작할 수 있었다면 메모리 공유로 인해 동시에 같은 자원에 접근하게 되고 이 때문에 타이밍 이슈가 발생할 수 있고 DOM 표시에 큰 문제를 발생시킬 수 있습니다.
+3. JS이 **멀티 스레딩**을 지원해서 동시에 여러 쓰레드가 DOM을 조작할 수 있었다면 메모리 공유로 인해 동시에 같은 자원에 접근하게 되고 이 때문에 타이밍 이슈가 발생할 수 있으며 DOM 표시에 큰 문제를 발생시킬 수 있습니다.
 
 ## Event Loop
 
 비동기 동작과 뗄 수 없는 개념은 `Event Loop`입니다.
 
-`Node.js`와 마찬가지로 브라우저 측 자바스크립트 실행 흐름도 `Event Loop`에 기반을 둔다.
+`Node.js`와 마찬가지로 브라우저 측 자바스크립트 실행 흐름도 `Event Loop`에 기반을 둡니다.
 
-`Event Loop`를 잘 알고 있어야 올바른 아키텍처 설계가 가능하다.
+`Event Loop`를 잘 알고 있어야 올바른 아키텍처 설계가 가능합니다.
 
 ### 자바스크립트 엔진 동작 방식
 
@@ -47,23 +47,23 @@ JavaScript는 기본적으로 싱글 쓰레드 입니다.
 1. 처리해야 할 task가 있는 경우
    1. 먼저 들어온 task부터 차례대로 처리합니다.
 2. 처리해야 할 task가 없는 경우
-   1. 잠들어 있다가 새로운 task가 추가되면 다시 1번 과정으로 돌아간다.
+   1. 잠들어 있다가 새로운 task가 추가되면 다시 1번 과정으로 돌아갑니다.
 
-자바스크립트 엔진은 대부분 시간을 아무런 일도 하지 않고 쉬다가 스크립트나 핸들러, 이벤트가 활성화될 때만 돌아간다.
+자바스크립트 엔진은 대부분 시간을 아무런 일도 하지 않고 쉬다가 스크립트나 핸들러, 이벤트가 활성화될 때만 돌아갑니다.
 
-자바스크립트 엔진을 활성화하는 task는 다음과 같다.
+자바스크립트 엔진을 활성화하는 task는 다음과 같습니다.
 
 1. 외부 스크립트 `<script src="...">`가 로드될 때, 이 스크립트를 실행하는 것
 2. 사용자가 마우스를 움직일 때 `mousemove` 이벤트와 이벤트 핸들러를 실행하는 것
 3. `setTimeout`에서 설정한 시간이 다 된 경우, 콜백 함수를 실행하는 것
 4. 기타 등등
 
-task는 하나의 집합을 이룬다. 자바스크립트 엔진은 해당 task를 차례대로 처리하며 새로운 task가 추가될 때까지 기다린다. task를 기다리는 동안 CPU 자원 소비는 0에 가까워지고 엔진은 잠들게 됩니다.
+task는 하나의 집합을 이룹니다. 자바스크립트 엔진은 해당 task를 차례대로 처리하며 새로운 task가 추가될 때까지 기다립니다. task를 기다리는 동안 CPU 자원 소비는 0에 가까워지고 엔진은 잠들게 됩니다.
 
 엔진이 바쁠 때 task가 추가되면 해당 task는 **Macrotask queue**에 추가됩니다.
 
 > 참고로 `task queue`의 구조는 `queue`가 아닌 `set`입니다. 선택된 큐에서 실행 가능한 가장 오래된 task를 가져와야 하기 때문입니다.
-> 무조건 먼저 들어온 첫번째 큐를 `dequeue`하는 것이 아니라 실행 가능한 것들 중에 가장 오래된 task를 차례대로 실행시킨다.
+> 무조건 먼저 들어온 첫번째 큐를 `dequeue`하는 것이 아니라 실행 가능한 것들 중에 가장 오래된 task를 차례대로 실행시킵니다.
 >
 > https://html.spec.whatwg.org/multipage/webappapis.html#definitions-3
 
@@ -75,7 +75,7 @@ JavaScript 엔진은 이들을 차례대로 처리합니다.
 
 이때 알아야 할 두가지는
 
-1. 엔진이 task를 처리하는 동안은 렌더링이 일어나지 않는다. 처리를 완료하면 DOM 변경을 화면에 반영합니다.
+1. 엔진이 task를 처리하는 동안은 렌더링이 일어나지 않습니다. 처리를 완료하면 DOM 변경을 화면에 반영합니다.
 2. task에 긴 시간이 걸리면 task를 처리하는 동안 발생한 새로운 task를 처리하지 못합니다. ( 응답 없는 페이지라는 alert 창은 페이지 전체와 함께 현재 task를 최소시킬지 말지를 선택하게 합니다. )
 
 ### 예시 1: CPU 소모가 많은 task 쪼개기
@@ -100,7 +100,7 @@ count();
 ```
 
 1e9 (0이 9개)을 센 다음 alert를 하는 코드인데 해당 count()가 실행되는 동안 브라우저는 사용자 이벤트 처리나 DOM 관련 작업을 완전히 멈추게 되는 것을 확인할 수 있습니다.
-( 실행시키고 페이지에 마우스 우클릭을 하면 alert가 나올때까지 아무것도 안 보이다가 alert가 나오고 마우스 우클릭시 나오는 메뉴가 나온다. )
+( 실행시키고 페이지에 마우스 우클릭을 하면 alert가 나올때까지 아무것도 안 보이다가 alert가 나오고 마우스 우클릭시 나오는 메뉴가 나옵니다. )
 
 코드를 쪼개서 이를 개선해보겠습니다.
 
@@ -157,12 +157,12 @@ count();
 
 부분 카운팅 (`do...while`)이 일어나기 전에 부분 재스케줄링(`setTimeout`)이 일어나게 됩니다.
 
-setTimeout 호출이 많은 경우, 브라우저 최소 대기 시간이 4밀리초이기 때문에 숫자 세기 전에 스케줄링을 하면 숫자를 세면서 대기 시간을 소모하기 때문에 실행이 더 빨라진다.
+setTimeout 호출이 많은 경우, 브라우저 최소 대기 시간이 4밀리초이기 때문에 숫자 세기 전에 스케줄링을 하면 숫자를 세면서 대기 시간을 소모하기 때문에 실행이 더 빨라집니다.
 (setTimeout 로직이 뒤쪽에 있으면 setTimeout(count) 실행되고 바로 다음 macrotask로 count 함수가 실행돼야 되는데 안 가고 4ms 있다가 실행된다는 뜻)
 
 ### 예시 2: Progress bar
 
-task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `progress bar`를 만들 때도 드러난다.
+task를 여러 개로 쪼갤 때의 장점은 진행 상태를 나타내주는 `progress bar`를 만들 때도 드러납니다.
 
 ```js
 <div id="progress"></div>
@@ -228,7 +228,7 @@ menu.onclick = function () {
 };
 ```
 
-위를 살펴보면 "menu-open" 이라는 커스텀 이벤트를 만든 후 해당 이벤트를 setTimeout으로 넘겼다.
+위를 살펴보면 "menu-open" 이라는 커스텀 이벤트를 만든 후 해당 이벤트를 setTimeout으로 넘겼습니다.
 
 이제 menu의 click 이벤트가 완전히 핸들링된 후에 `menu-open` 이벤트를 dispatching하게 됩니다.
 
@@ -236,7 +236,7 @@ menu.onclick = function () {
 
 ### Microtask
 
-`Microtask`는 주로 `Promise`를 사용해 만든다.
+`Microtask`는 주로 `Promise`를 사용해 만듭니다.
 
 `Promise`와 함께 쓰이는 `.then/catch/finally`의 핸들러 (소비 함수)가 `Microtask`가 됩니다. 또는 `Promise`를 핸들링하는 `await`를 사용해 만들기도 합니다.
 
@@ -274,7 +274,7 @@ script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에 s
 
 이런 처리순서가 아주 중요한 이유는 마우스 좌표 변경이나 네트워크 통신에 의한 데이터 변경같이 애플리케이션 환경에 변화를 주는 작업에 영향을 받지 않고 모든 `Microtask`를 동일한 환경에서 처리할 수 있기 때문입니다.
 
-"현재 실행 중인 macrotask 실행이 끝나면 > 현재 존재하는 모든 microtask 실행 > 렌더링 > 다음 macrotask 실행" 의 순서를 가진다.
+"현재 실행 중인 macrotask 실행이 끝나면 > 현재 존재하는 모든 microtask 실행 > 렌더링 > 다음 macrotask 실행" 의 순서를 가집니다.
 
 위 과정을 확인하기 위해서 리페인트 전에 콜백 함수를 호출하는 **requestAnimationFrame**으로 확인해보겠습니다.
 
@@ -288,7 +288,7 @@ script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에 s
 >
 > 별도의 큐에서 관리되어 프레임 단위로 렌더링할 수 있도록 보장합니다. ( 초당 프레임 기준은 모니터 주사율에 의해 설정됩니다. )
 >
-> 프레임 단위의 렌더링을 보장하기 때문에 애니메이션 동작이 더 부드러워진다.
+> 프레임 단위의 렌더링을 보장하기 때문에 애니메이션 동작이 더 부드러워집니다.
 
 만약 임의로 특정 함수를 `Microtask Queue`로 보내고 싶다면 `queueMicrotask` 함수를 사용하면 됩니다.
 ( `setTimeout`과 다른 점은 만약 `ms`가 0초인 `setTimeout`을 이용할 때는 `Macrotask queue`로 보내져서 기존의 `Microtask Queue`가 다 끝나고 다음 `Macrotask`가 실행될 때 특정 함수가 실행될 것입니다.)
@@ -336,7 +336,7 @@ button.addEventListener("click", () => {
 });
 ```
 
-위 핸들러를 실행시키면 다음의 결과가 나온다.
+위 핸들러를 실행시키면 다음의 결과가 나옵니다.
 
 1. `sync`는 렌더링이 일어나지 않다가 100,000 상태가 됩니다.
 2. `micro`는 렌더링이 일어나지 않다가 100,000 상태가 됩니다.
@@ -344,7 +344,7 @@ button.addEventListener("click", () => {
 
 ![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
 
-이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) 이 실행되고 있을 때는 브라우저에서 다른 동작을 할 수 없다. ( 콜 스택에 있는거 다 버리고 동작을 진행할 수는 없으니 )
+이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queryMicrotask`) 이 실행되고 있을 때는 브라우저에서 다른 동작을 할 수 없습니다. ( 콜 스택에 있는거 다 버리고 동작을 진행할 수는 없으니 )
 
 > `setTimeout`의 타이밍 함수 (시간을 새서 콜백을 던져주는 함수)같은 WEB API는 `Macrotask queue`가 할당되는 외부 쓰레드에서 진행됩니다. 작업을 할당해 처리하는 것은 브라우저나 Node.js의 역할입니다.
 
@@ -379,13 +379,13 @@ loadScript("/my/script.js");
 
 이때 스크립트는 비동기적으로 실행됩니다.
 
-따라서 loadScript 아래 코드들은 loadScript가 끝나는 것을 기다리지 않는다.
+따라서 loadScript 아래 코드들은 loadScript가 끝나는 것을 기다리지 않습니다.
 
 ```js
 loadScript("/my/script.js"); // script.js엔 "function newFunction() {…}"이 있습니다.
 
 // script.js에 있는 newFunction을 사용하려고 하는데
-// 함수가 존재하지 않는다는 에러가 발생한다!
+// 함수가 존재하지 않는다는 에러가 발생합니다!
 newFunction();
 ```
 
@@ -415,7 +415,7 @@ loadScript('/my/script.js', function() {
 
 위의 방식을 콜백 기반 비동기 프로그래밍이라고 합니다.
 
-loadScript에 콜백 함수를 전해줘서 newFunction이 비동기 실행과 나란히 일어날 수 있게 해준다.
+loadScript에 콜백 함수를 전해줘서 newFunction이 비동기 실행과 나란히 일어날 수 있게 해줍니다.
 
 ### 에러 핸들링
 
@@ -430,7 +430,7 @@ function loadScript(src, callback) {
 
   // 성공 시 null과 script를 인수에 넣고
   script.onload = () => callback(null, script);
-  // 실패 시 에러 객체를 인수에 넣는다.
+  // 실패 시 에러 객체를 인수에 넣습니다.
   script.onerror = () =>
     callback(new Error(`${src}를 불러오는 도중에 에러가 발생했습니다.`));
 
@@ -469,7 +469,7 @@ loadScript("/my/script.js", function (script) {
 
 ![](/images/2024-11-10/Pasted%20image%2020241107193715.png)
 
-위 방식은 멸망의 피라미드, 콜백 지옥이라 부르는 상황을 만든다.
+위 방식은 멸망의 피라미드, 콜백 지옥이라 부르는 상황을 만듭니다.
 (코드가 오른쪽으로 점점 옮겨지면서 가독성도 해치고 코드 재사용이 어려운 상황)
 
 이를 해결하기 위해서 논리적으로 다음과 같이 짤 수는 있는데
@@ -508,9 +508,9 @@ function step3(error, script) {
 
 ### 무조건 콜백을 사용하면 안될까?
 
-아니다.
+아닙니다.
 
-특정 동작이 끝나는 것이 보장되고 그다음 코드를 실행해야 할 때 사용하면 여전히 유용하다.
+특정 동작이 끝나는 것이 보장되고 그다음 코드를 실행해야 할 때 사용하면 여전히 유용합니다.
 
 ```js
 showCircle(150, 150, 100, (div) => {
@@ -519,7 +519,7 @@ showCircle(150, 150, 100, (div) => {
 });
 ```
 
-showCircle(cx, cy, radius, callback)은 천천히 커지는 원을 만드는 함수라고 치자.
+showCircle(cx, cy, radius, callback)은 천천히 커지는 원을 만드는 함수라고 칩시다.
 
 함수 내부에서 해당 callback을 이용해서 원을 다 만든 후에 요소에 "안녕하세요!"를 그리는 함수를 실행하도록 할 수 있습니다.
 
@@ -528,7 +528,7 @@ showCircle(cx, cy, radius, callback)은 천천히 커지는 원을 만드는 함
 
 ## Promise
 
-시간이 얼마나 걸리던 상관없이 약속한 결과를 만들어내는 "제작 코드"가 준비되었을 때, 모든 "소비 코드"가 결과를 사용할 수 있도록 해준다.
+시간이 얼마나 걸리던 상관없이 약속한 결과를 만들어내는 "제작 코드"가 준비되었을 때, 모든 "소비 코드"가 결과를 사용할 수 있도록 해줍니다.
 
 > **제작 코드**
 >
@@ -557,7 +557,7 @@ executor에서는 resolve, reject를 신경 쓰지 않고 코드를 작성하면
 
 ![](/images/2024-11-10/Pasted%20image%2020241107200211.png)
 
-new Promise 생성자가 반환하는 promise 객체는 PromiseState, PromiseResult라는 내부 프로퍼티를 가진다.
+new Promise 생성자가 반환하는 promise 객체는 PromiseState, PromiseResult라는 내부 프로퍼티를 가집니다.
 
 resolve, reject 둘 다 일어나지 않았을 때
 
@@ -574,7 +574,7 @@ reject일 때
 #### executor 예시
 
 1. executor는 `new Promise`에 의해 자동으로 그리고 즉각적으로 호출됩니다.
-2. executor는 인자로 `resolve`와 `reject` 함수를 받는다. 이 함수들은 자바스크립트 엔진이 미리 정의한 함수이므로 개발자가 따로 만들 필요가 없다. 다만, `resolve`나 `reject` 중 하나는 반드시 호출해야 합니다.
+2. executor는 인자로 `resolve`와 `reject` 함수를 받습니다. 이 함수들은 자바스크립트 엔진이 미리 정의한 함수이므로 개발자가 따로 만들 필요가 없습니다. 다만, `resolve`나 `reject` 중 하나는 반드시 호출해야 합니다.
 
 ```js
 let promise = new Promise(function (resolve, reject) {
@@ -596,11 +596,11 @@ let promise = new Promise(function (resolve, reject) {
 
 ![](/images/2024-11-10/Pasted%20image%2020241107200740.png)
 
-`resolve`나 `reject`가 완료된 `Promise`를 `settled Promise` 라고 부른다.
+`resolve`나 `reject`가 완료된 `Promise`를 `settled Promise` 라고 부릅니다.
 
 ### 주의사항
 
-#### 1. 한번 처리된 Promise는 바뀌지 않는다.
+#### 1. 한번 처리된 Promise는 바뀌지 않습니다.
 
 ```js
 let promise = new Promise(function (resolve, reject) {
@@ -624,7 +624,7 @@ let promise = new Promise(function (resolve, reject) {
 
 위 방식대로 하면 즉시 이행 상태가 됩니다.
 
-#### 4. PromiseState와 PromiseResult는 내부 프로퍼티이기 때문에 직접 접근할 수 있습니다.
+#### 4. PromiseState와 PromiseResult는 내부 프로퍼티이기 때문에 직접 접근할 수 없습니다.
 
 ### 소비함수
 
@@ -712,7 +712,7 @@ function loadScript(src, callback) {
 }
 ```
 
-위 코드는 콜백 방식입니다. onload와 onerror 안에 직접 callback을 박아 넣어서 구현했습니다.
+위 코드는 콜백 방식입니다. onload와 onerror 안에 직접 callback을 넣어서 구현했습니다.
 
 ```js
 function loadScript(src) {
@@ -744,7 +744,7 @@ promise.then(
 promise.then((script) => alert("또 다른 핸들러..."));
 ```
 
-이제 then, catch, finally 메소드를 활용해서 소비 함수만 던져주면 저장된 promise에서 알아서 소비 함수 안에 인자를 넣어서 실행시킨다.
+이제 then, catch, finally 메소드를 활용해서 소비 함수만 던져주면 저장된 promise에서 알아서 소비 함수 안에 인자를 넣어서 실행시킵니다.
 
 ### Promise Chaining
 
@@ -845,7 +845,7 @@ loadScript("/article/promise-chaining/one.js").then((script1) => {
 });
 ```
 
-하지만 이는 다른 콜백지옥을 만들게 됩니다.
+하지만 이는 다른 콜백 지옥을 만들게 됩니다.
 
 이때 가장 내부에 있는 loadScript는 외부 스코프에 전부 접근할 수 있어서 필요에 의해선 위 코드처럼 사용하는 게 좋을 수도 있습니다.
 
@@ -855,7 +855,7 @@ loadScript("/article/promise-chaining/one.js").then((script1) => {
 
 핸들러(executor, 소비함수 등등)는 Promise가 아닌 `thenable` 객체를 반환하기도 합니다.
 
-thenable 객체는 서드파티 라이브러리가 Promise와 호환 가능한 자체 객체를 구현할 수 있다는 점에서 나오게 되었다.
+thenable 객체는 서드파티 라이브러리가 Promise와 호환 가능한 자체 객체를 구현할 수 있다는 점에서 나오게 되었습니다.
 
 ```js
 class Thenable {
@@ -1075,7 +1075,7 @@ new Promise((resolve, reject) => {
 
 ![](/images/2024-11-10/Pasted%20image%2020241110214430.png)
 
-해당 암시적 `try... catch`는 핸들러 위쪽에서 발생한 비정상 에러 또한 잡는다.
+해당 암시적 `try... catch`는 핸들러 위쪽에서 발생한 비정상 에러 또한 잡습니다.
 
 ```js
 new Promise((resolve, reject) => {
@@ -1087,7 +1087,7 @@ new Promise((resolve, reject) => {
   .catch(alert); // ReferenceError: blabla is not defined
 ```
 
-단 동기적 에러가 암시적 `try...catch`에서 처리되는 것입니다. 다음과 같이 비동기 코드가 executor 내부에 존재하고 내부에 에러가 발생한다면 해당 에러를 감지할 수 없다.
+단 동기적 에러가 암시적 `try...catch`에서 처리되는 것입니다. 다음과 같이 비동기 코드가 executor 내부에 존재하고 내부에 에러가 발생한다면 해당 에러를 감지할 수 없습니다.
 
 ```js
 new Promise(function (resolve, reject) {
@@ -1099,7 +1099,7 @@ new Promise(function (resolve, reject) {
 
 #### 다시 던지기
 
-`.catch`가 정상적으로 종료되면 `fulfilled`인 `Promise`를 리턴할 것입니다. 그래서 다음과 같은 로직이 가능하다.
+`.catch`가 정상적으로 종료되면 `fulfilled`인 `Promise`를 리턴할 것입니다. 그래서 다음과 같은 로직이 가능합니다.
 
 ```js
 // 실행 순서: catch -> then
@@ -1153,7 +1153,7 @@ new Promise(function () {
 }); // 끝에 .catch가 없음!
 ```
 
-예외를 처리해 줄 핸들러가 없으면 에러가 갇혀 버린다.
+예외를 처리해 줄 핸들러가 없으면 에러가 갇혀 버립니다.
 
 `try...catch`에서 일반적인 에러가 발생하고 이를 처리하지 못했을 때 스크립트가 죽고 콘솔 창에 메시지가 출력되는데
 `rejected Promise`가 처리되지 않아도 동일한 일이 발생합니다.
@@ -1180,7 +1180,7 @@ new Promise(function () {
 
 #### Promise.all
 
-여러 개의 Promise를 동시에 실행시키고 모든 Promise가 준비될 때까지 기다린다.
+여러 개의 Promise를 동시에 실행시키고 모든 Promise가 준비될 때까지 기다립니다.
 
 ```js
 // let promise = Promise.all([...promises...]);
@@ -1259,7 +1259,7 @@ Promise.all([
 
 > **Promise reject가 일어나도 호출은 계속 일어난다.**
 >
-> 별도의 처리 (AbortController) 가 없다면 Promise rejected가 일어나도 다른 Promise 처리가 취소되진 않는다. 단, 결과는 무시됩니다.
+> 별도의 처리 (AbortController) 가 없다면 Promise rejected가 일어나도 다른 Promise 처리가 취소되진 않습니다. 단, 결과는 무시됩니다.
 >
 > ![](/images/2024-11-10/Pasted%20image%2020241108152428.png)
 >
@@ -1285,7 +1285,7 @@ Promise.all([
 
 #### Promise.allSettled
 
-Promise.all은 하나라도 에러가 나면 전부 결과를 못 받는다.
+Promise.all은 하나라도 에러가 나면 전부 결과를 못 받습니다.
 
 ```js
 Promise.all([
@@ -1338,7 +1338,7 @@ Promise.race([
 
 #### Promise.resolve와 Promise.reject
 
-resolve와 reject 메소드는 async/ await의 등장으로 잘 사용되지 않는다. 하지만 추후 나올 폴리 필을 이해하기 위해서라도 필요하기에 한번 알아보도록 하겠습니다.
+resolve와 reject 메소드는 async/ await의 등장으로 잘 사용되지 않습니다. 하지만 추후 나올 폴리 필을 이해하기 위해서라도 필요하기에 한번 알아보도록 하겠습니다.
 ( `async function`은 리턴값을 무조건 Promise로 꺼내고 내부에 throw Error해주면 rejected 상태의 Promise를 리턴합니다. )
 
 ##### Promise.resolve
@@ -1406,7 +1406,7 @@ let promise = Promise.reject(error);
 
 ### Fetch: Abort
 
-> 글 흐름을 위해 Promise 파트에 넣어놓긴 했지만 엄밀히 말하면 Promise API는 아니다.
+> 글 흐름을 위해 Promise 파트에 넣어놓긴 했지만 엄밀히 말하면 Promise API는 아닙니다.
 
 Promise.all 에서도 에러 발생시 Promise 결과는 무시되나 호출은 막을 수 없다고 하였습니다.
 AbortController라는 빌트인 객체를 활용하면 Promise 호출 자체를 막을 수 있습니다.
@@ -1458,7 +1458,7 @@ fetch(url, {
 
 이제 이전과 같이 `controller.abort()` 함수로 `fetch` 요청을 제어해주면 됩니다.
 
-> 단, fetch가 abort하는 시기보다 더 빨리 끝나면 이미 나온 결과를 없애진 않는다.
+> 단, fetch가 abort하는 시기보다 더 빨리 끝나면 이미 나온 결과를 없애진 않습니다.
 
 #### AbortController는 확장성 있습니다.
 
@@ -1635,7 +1635,7 @@ alert("코드 종료");
 1. 먼저 들어온 작업을 먼저 실행합니다. (`FIFO`)
 2. 실행할 것이 아무것도 남아있지 않을 때만 큐에 있는 작업이 실행되기 시작합니다.
 
-요약하면 어떤 `Promise` 가 준비되었을 때 이 `Promise`의 `.then/catch/finally` 핸들러는 큐에 들어가게 되며 여전히 실행되지 않는다.
+요약하면 어떤 `Promise` 가 준비되었을 때 이 `Promise`의 `.then/catch/finally` 핸들러는 큐에 들어가게 되며 여전히 실행되지 않습니다.
 
 이후 현재 코드에서 자유로운 상태가 되었을 때 자바스크립트 엔진은 큐에서 작업을 꺼내 실행합니다.
 
@@ -1698,7 +1698,7 @@ window.addEventListener("unhandledrejection", (event) =>
 
 ## async, await
 
-`Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 탄생하게 되었다.
+`Promise`를 편하게 사용하기 위해 `async`, `await` 문법이 탄생하게 되었습니다.
 
 ### async function
 
@@ -1732,7 +1732,7 @@ async funciton f2(){
 let value = await promise;
 ```
 
-`await` 키워드를 만나면 Promise가 처리될 때까지 기다린다. `await`키워드 아래에 있는 동일 블록의 코드들은 `Microtask Queue`로 이동합니다. ( 기능적으로 `.then`으로 넘기는 것과 같다. )
+`await` 키워드를 만나면 Promise가 처리될 때까지 기다립니다. `await`키워드 아래에 있는 동일 블록의 코드들은 `Microtask Queue`로 이동합니다. ( 기능적으로 `.then`으로 넘기는 것과 같습니다. )
 
 ```js
 async function f() {
@@ -1748,11 +1748,11 @@ async function f() {
 f();
 ```
 
-Promise가 처리될 때까지 기다리는 동안 엔진은 다른 일(다른 스크립트 실행, 이벤트 처리)을 처리할 수 있기 때문에 CPU 리소스가 낭비되지 않는다.
+Promise가 처리될 때까지 기다리는 동안 엔진은 다른 일(다른 스크립트 실행, 이벤트 처리)을 처리할 수 있기 때문에 CPU 리소스가 낭비되지 않습니다.
 
 > 즉, `await`은 `promise.then`보다 좀 더 세련되게 Promise의 `result` 값을 얻을 수 있도록 해주는 문법입니다.
 
-**fetch와 체이닝 함께 응용** 파트에서 예시로 있었던 `showAvatar` 코드를 `async / await` 문법으로 정리해보면 다음과 같다.
+**fetch와 체이닝 함께 응용** 파트에서 예시로 있었던 `showAvatar` 코드를 `async / await` 문법으로 정리해보면 다음과 같습니다.
 
 ```js
 async function showAvatar(url) {
@@ -1784,7 +1784,7 @@ async function showAvatar(url) {
 showAvatar();
 ```
 
-> await은 최상위 레벨 코드에서 동작하지 않는다.
+> await은 최상위 레벨 코드에서 동작하지 않습니다.
 > 이를 위해서 `IIFE ( Immediately Invoked function expression )`를 사용할 수 있습니다.
 
 ```js
@@ -1837,7 +1837,7 @@ new Waiter().wait().then(alert); // 1
 반면 `Promise`가 거부되면 마치 `throw`문을 작성한 것처럼 에러를 던진다.
 
 ```js
-// 아래 두 코드의 기능은 같다.
+// 아래 두 코드의 기능은 같습니다.
 async function f() {
   await Promise.reject(new Error("에러 발생!"));
 }
@@ -1944,9 +1944,9 @@ export const testFn = async () => {
 # 마무리
 
 > 기존에는 비동기 코드가 Microtask Queue와 이벤트 루프를 활용해서 돌아간다는 정도만 알고 있었다면, 이제는 브라우저 렌더링 흐름과 함께 이해하면서
-> **비동기 방식이 왜 필요한지**를 더 정확히 알 수 있었다.  
-> 기본기를 탄탄하게 다져 보자는 생각으로 시작한 글이기에, 촘촘하게 배우려고 노력했고, 파편화된 지식을 모을 좋은 기회가 되었다.  
-> **이 기술이 왜 필요한지에** 집중하면서부터는 좀 더 다양한 시각으로 볼 수 있게 된 것 같다.  
+> **비동기 방식이 왜 필요한지**를 더 정확히 알 수 있었습니다.
+> 기본기를 탄탄하게 다지자는 생각으로 시작한 글이기에, 촘촘하게 배우려고 노력했고, 파편화된 지식을 모을 좋은 기회가 되었습니다.
+> **이 기술이 왜 필요한지에** 집중하면서부터는 좀 더 다양한 시각으로 볼 수 있게 되었습니다.
 > 이제 더 나아가 보겠습니다.
 
 # 참고 문헌
