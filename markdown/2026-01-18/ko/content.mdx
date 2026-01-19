@@ -385,22 +385,28 @@ function SearchPage() {
 ```
 
 실행 흐름:
-1. 컴포넌트 렌더링 → `inlineSaveDraft` 함수 생성 (@100)
-2. useEffect 실행 → `inlineSaveDraft()` 호출 → `setSearchCount` 실행
-3. 상태 변경으로 리렌더링 → `inlineSaveDraft` 함수 재생성 (@200)
-4. useEffect가 `@100 !== @200` 감지 → 다시 실행
-5. 2~4 반복 (무한 루프)
+1. 사용자가 input에 입력 → `keyword` 상태 변경
+2. 컴포넌트 리렌더링 → `inlineSaveDraft` 함수 재생성 (@200, 새 주소)
+3. useEffect deps 비교: `inlineSaveDraft @100 !== @200` → effect 실행
+4. effect 실행 → `inlineSaveDraft()` 호출 → `setSearchCount` 실행
+5. `searchCount` 변경으로 리렌더링 → `inlineSaveDraft` 함수 또 재생성 (@300)
+6. useEffect deps 비교: `inlineSaveDraft @200 !== @300` → effect 또 실행
+7. 4~6 반복 (무한 루프)
 
 ```mermaid
-flowchart TD
-    A["컴포넌트 렌더링"] --> B["inlineSaveDraft 함수 생성 (새 주소)"]
-    B --> C["useEffect deps 비교"]
-    C --> D{"inlineSaveDraft 주소가 다른가?"}
-    D -->|Yes| E["effect 실행: inlineSaveDraft()"]
-    E --> F["setSearchCount 호출"]
-    F --> G["상태 변경 → 리렌더링"]
-    G --> A
-    D -->|No| H["effect 건너뜀"]
+flowchart LR
+    A["사용자가 input에 입력"] --> B["keyword 상태 변경"]
+    B --> C["컴포넌트 리렌더링"]
+    C --> D["inlineSaveDraft 함수 재생성 (새 주소 @200)"]
+    D --> E["useEffect deps 비교"]
+    E --> F{"inlineSaveDraft 주소가 다른가?<br/>(@100 !== @200)"}
+    F -->|Yes| G["effect 실행: inlineSaveDraft()"]
+    G --> H["setSearchCount 호출"]
+    H --> I["searchCount 변경 → 리렌더링"]
+    I --> J["inlineSaveDraft 함수 또 재생성 (새 주소 @300)"]
+    J --> K["useEffect deps 비교<br/>(@200 !== @300)"]
+    K --> G
+    F -->|No| L["effect 건너뜀"]
 ```
 
 ### Chrome DevTools로 확인한 메모리 주소 변화
@@ -441,7 +447,7 @@ function SearchPage() {
       // searchCount를 변경해도 saveDraft 주소는 유지되므로 effect가 재실행되지 않음
       setSearchCount((prev) => prev + 1);
     }
-  }, [saveDraft, keyword]); // keyword가 변경될 때만 effect 실행
+  }, [saveDraft, keyword]); // saveDraft는 keyword에 의존하므로 keyword 변경 시에만 effect 실행
 
   return (
     <>
@@ -452,28 +458,242 @@ function SearchPage() {
 }
 ```
 
-```mermaid
-flowchart TD
-    subgraph "useCallback 없음 (inlineSaveDraft)"
-        A1["keyword='react' 입력"] --> B1["inlineSaveDraft @100"]
-        B1 --> E1["effect 실행, searchCount=1"]
-        E1 --> A2["리렌더링 (searchCount 변경)"]
-        A2 --> B2["inlineSaveDraft @200 (새 주소)"]
-        B2 --> E2["effect 또 실행, searchCount=2"]
-        E2 --> A3["리렌더링..."]
-        A3 --> B3["무한 루프!"]
-    end
+#### ❌ 문제 상황: useCallback 없을 때
 
-    subgraph "useCallback 적용 (saveDraft)"
-        C1["keyword='react' 입력"] --> D1["saveDraft @100"]
-        D1 --> F1["effect 실행, searchCount=1"]
-        F1 --> C2["리렌더링 (searchCount 변경)"]
-        C2 --> D1
-        D1 --> F2["effect 건너뜀 (주소 동일)"]
-        F2 --> C3["keyword 변경 시에만"]
-        C3 --> D2["saveDraft @200 (새 주소)"]
-        D2 --> F3["effect 실행, searchCount=2"]
-    end
+**문제가 있는 코드:**
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // ⚠️ 매 렌더링마다 새로운 함수 생성 (메모이제이션 없음)
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword);
+  };
+
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+      setSearchCount((prev) => prev + 1); // 검색 횟수 추적
+    }
+  }, [inlineSaveDraft, keyword]); // 무한 루프 발생!
+}
+```
+
+**실행 흐름:**
+
+```jsx
+// 1단계: 사용자가 input에 "react" 입력
+<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+// → setKeyword('react') 호출
+// → keyword: '' → 'react'
+
+// 2단계: 컴포넌트 리렌더링
+function SearchPage() {
+  // 3단계: 매 렌더링마다 새로운 함수 생성
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword);
+  }; // @100 (새 메모리 주소)
+
+  // 4단계: useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft(); // 실행
+      setSearchCount((prev) => prev + 1); // searchCount: 0 → 1
+    }
+  }, [inlineSaveDraft, keyword]);
+  // 이전 deps: [undefined, ''] (첫 렌더링)
+  // 현재 deps: [@100, 'react']
+  // @100 !== undefined → effect 실행 ✅
+}
+
+// 5단계: searchCount 변경으로 리렌더링 발생
+// searchCount: 0 → 1
+
+// 6단계: 리렌더링으로 inlineSaveDraft 함수 또 새로 생성
+function SearchPage() {
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword);
+  }; // @200 (새 메모리 주소, @100과 다름!)
+
+  // 7단계: useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft(); // 또 실행
+      setSearchCount((prev) => prev + 1); // searchCount: 1 → 2
+    }
+  }, [inlineSaveDraft, keyword]);
+  // 이전 deps: [@100, 'react']
+  // 현재 deps: [@200, 'react']
+  // @100 !== @200 → effect 또 실행! ⚠️
+}
+
+// 8단계: searchCount 변경으로 또 리렌더링
+// searchCount: 1 → 2
+
+// 9단계: 리렌더링으로 inlineSaveDraft 함수 또 새로 생성
+// @300 생성 → effect 또 실행 → searchCount: 2 → 3
+// @400 생성 → effect 또 실행 → searchCount: 3 → 4
+// ... 무한 반복 🔄
+```
+
+**핵심 문제:**
+- `keyword`는 변경되지 않았지만 (`'react'`로 동일)
+- `inlineSaveDraft` 함수만 계속 새로 생성됨 (메모리 주소만 변경: @100 → @200 → @300)
+- React는 deps 비교 시 메모리 주소를 비교하므로 (`@100 !== @200`)
+- 매번 "변경됨"으로 판단하여 effect를 실행
+- effect 실행 → `setSearchCount` → 리렌더링 → 함수 재생성 → effect 실행 (무한 반복)
+
+```mermaid
+flowchart LR
+    A1["사용자가 input에 입력"] --> B1["keyword 변경"]
+    B1 --> C1["리렌더링"]
+    C1 --> D1["inlineSaveDraft @100 생성"]
+    D1 --> E1["effect 실행 (주소 변경 감지)"]
+    E1 --> F1["setSearchCount → searchCount=1"]
+    F1 --> G1["리렌더링 (searchCount 변경)"]
+    G1 --> H1["inlineSaveDraft @200 생성 (새 주소)"]
+    H1 --> I1["effect 또 실행 (주소 변경 감지)"]
+    I1 --> J1["setSearchCount → searchCount=2"]
+    J1 --> K1["무한 루프!"]
+    
+    style K1 fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    style D1 fill:#ffe3e3,stroke:#ff6b6b
+    style H1 fill:#ffe3e3,stroke:#ff6b6b
+```
+
+#### ✅ 해결 방법: useCallback 적용
+
+**해결된 코드:**
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // ✅ useCallback으로 함수 참조 안정화
+  // keyword가 변경될 때만 함수 재생성 (searchCount 변경과 무관)
+  const saveDraft = useCallback(() => {
+    console.log('검색 실행:', keyword);
+  }, [keyword]); // keyword가 변경될 때만 함수 재생성
+
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      // searchCount를 변경해도 saveDraft 주소는 유지되므로 effect가 재실행되지 않음
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+}
+```
+
+**실행 흐름:**
+
+```jsx
+// 1단계: 사용자가 input에 "react" 입력
+<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+// → setKeyword('react') 호출
+// → keyword: '' → 'react'
+
+// 2단계: 컴포넌트 리렌더링
+function SearchPage() {
+  // 3단계: useCallback으로 함수 참조 안정화
+  const saveDraft = useCallback(() => {
+    console.log('검색 실행:', keyword);
+  }, [keyword]); // keyword가 '' → 'react'로 변경되었으므로 새 함수 생성
+  // @100 생성 (keyword='react'에 의존)
+
+  // 4단계: useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      saveDraft(); // 실행
+      setSearchCount((prev) => prev + 1); // searchCount: 0 → 1
+    }
+  }, [saveDraft, keyword]);
+  // 이전 deps: [undefined, '']
+  // 현재 deps: [@100, 'react']
+  // @100 !== undefined → effect 실행 ✅
+}
+
+// 5단계: searchCount 변경으로 리렌더링 발생
+// searchCount: 0 → 1
+
+// 6단계: 리렌더링이지만 keyword는 동일하므로 saveDraft 주소 유지
+function SearchPage() {
+  const saveDraft = useCallback(() => {
+    console.log('검색 실행:', keyword);
+  }, [keyword]); // keyword='react' (변경 없음)
+  // @100 유지! (keyword가 동일하므로 useCallback이 같은 참조 반환)
+
+  // 7단계: useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+  // 이전 deps: [@100, 'react']
+  // 현재 deps: [@100, 'react']
+  // @100 === @100 && 'react' === 'react' → effect 건너뜀! ✅
+}
+
+// 8단계: 사용자가 input에 "vue" 입력
+// keyword: 'react' → 'vue'
+
+// 9단계: keyword 변경으로 리렌더링
+function SearchPage() {
+  const saveDraft = useCallback(() => {
+    console.log('검색 실행:', keyword);
+  }, [keyword]); // keyword='vue'로 변경되었으므로 새 함수 생성
+  // @200 생성 (keyword='vue'에 의존)
+
+  // 10단계: useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      saveDraft(); // 실행
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+  // 이전 deps: [@100, 'react']
+  // 현재 deps: [@200, 'vue']
+  // @100 !== @200 → effect 실행 ✅ (의도한 대로!)
+}
+```
+
+**핵심 해결책:**
+- `useCallback`이 `keyword`가 변경될 때만 함수를 재생성
+- `searchCount`가 변경되어도 `keyword`는 동일하므로 `saveDraft` 주소 유지 (@100)
+- React는 deps 비교 시 `@100 === @100`이므로 "변경 없음"으로 판단
+- effect는 `keyword`가 실제로 변경될 때만 실행됨
+- 무한 루프 해결! ✅
+
+**비교 요약:**
+
+| 상황 | inlineSaveDraft (메모이제이션 없음) | saveDraft (useCallback) |
+|------|-----------------------------------|------------------------|
+| keyword 변경 | @100 → @200 (새 함수) | @100 → @200 (새 함수) |
+| searchCount 변경 | @200 → @300 (새 함수) ⚠️ | @100 → @100 (동일 참조) ✅ |
+| effect 실행 | 매번 실행 (무한 루프) | keyword 변경 시만 실행 |
+
+```mermaid
+flowchart LR
+    A2["사용자가 input에 입력"] --> B2["keyword 변경"]
+    B2 --> C2["리렌더링"]
+    C2 --> D2["saveDraft @100 생성<br/>(keyword 의존)"]
+    D2 --> E2["effect 실행 (주소 변경 감지)"]
+    E2 --> F2["setSearchCount → searchCount=1"]
+    F2 --> G2["리렌더링 (searchCount 변경)"]
+    G2 --> H2["saveDraft @100 유지<br/>(keyword 동일)"]
+    H2 --> I2["effect 건너뜀 (주소 동일)"]
+    I2 --> J2["keyword 변경 시에만"]
+    J2 --> K2["saveDraft @200 생성<br/>(새 keyword 의존)"]
+    K2 --> L2["effect 실행"]
+    
+    style H2 fill:#d3f9d8,stroke:#51cf66,color:#000
+    style I2 fill:#d3f9d8,stroke:#51cf66,color:#000
+    style D2 fill:#e7f5ff,stroke:#339af0
+    style K2 fill:#e7f5ff,stroke:#339af0
 ```
 
 ### React Query가 있으면 더 복잡해집니다
@@ -513,28 +733,235 @@ function SearchPage() {
 }
 ```
 
-```mermaid
-flowchart TD
-    subgraph "React Query와 함께 사용 시 문제"
-        A["사용자가 'react' 입력"] --> B["keyword 변경 → 리렌더링"]
-        B --> C["inlineSaveDraft 새로 생성 (@200)"]
-        C --> D["useEffect 실행"]
-        D --> E["refetch() 호출"]
-        E --> F["React Query 상태 변경<br/>(isFetching: true → false)"]
-        F --> G["리렌더링 발생"]
-        G --> H["inlineSaveDraft 또 새로 생성 (@300)"]
-        H --> I["useEffect 또 실행"]
-        I --> J["refetch() 또 호출"]
-        J --> K["무한 루프!"]
-    end
+**문제점:**
+- 사용자가 input에 값을 입력하면 `keyword` 상태가 변경됩니다
+- `keyword` 변경으로 리렌더링되면 `inlineSaveDraft` 함수가 새로 생성됩니다 (새 주소)
+- useEffect의 deps에 `inlineSaveDraft`가 있으면 주소 변경을 감지해 effect가 실행됩니다
+- effect 내부에서 `refetch()`를 호출하면 React Query 상태가 변경되어 리렌더링이 발생합니다
+- 리렌더링으로 `inlineSaveDraft`가 또 새로 생성되어 무한 루프가 발생합니다
+
+#### 1단계: 초기 입력으로 인한 리렌더링
+
+사용자가 input 필드에 "react"를 입력하는 순간부터 시작됩니다.
+
+```jsx
+// 사용자가 input에 "react" 입력
+<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+// → setKeyword('react') 호출
 ```
+
+**실행 흐름:**
+
+```jsx
+// 1. keyword 상태 변경
+const [keyword, setKeyword] = useState(''); // '' → 'react'
+
+// 2. 컴포넌트 리렌더링 발생
+function SearchPage() {
+  // 3. 매 렌더링마다 새로운 함수 생성 (새 메모리 주소)
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword); // @200 (이전 렌더링에서는 @100)
+    refetch();
+  };
+
+  // 4. useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+    }
+  }, [inlineSaveDraft, keyword]); 
+  // 이전 deps: [@100, ''] 
+  // 현재 deps: [@200, 'react']
+  // @100 !== @200 → effect 실행!
+}
+```
+
+```mermaid
+flowchart LR
+    A["사용자가 input에 입력"] --> B["keyword 상태 변경"]
+    B --> C["컴포넌트 리렌더링"]
+    C --> D["inlineSaveDraft 새로 생성<br/>(@100 → @200)"]
+    D --> E["useEffect deps 비교<br/>(@100 !== @200)"]
+    E --> F["effect 실행"]
+    
+    style D fill:#ffe3e3,stroke:#ff6b6b
+    style E fill:#fff3cd,stroke:#ffc107
+    style F fill:#ffe3e3,stroke:#ff6b6b
+```
+
+**핵심 문제:** `inlineSaveDraft` 함수가 매 렌더링마다 새로운 메모리 주소를 받기 때문에, React는 이를 "변경된 값"으로 인식합니다.
+
+#### 2단계: React Query 상태 변경으로 인한 연쇄 반응
+
+1단계에서 effect가 실행되면, 내부에서 `refetch()`가 호출됩니다.
+
+```jsx
+useEffect(() => {
+  if (keyword) {
+    inlineSaveDraft(); // 이 함수 내부에서 refetch() 호출
+  }
+}, [inlineSaveDraft, keyword]);
+
+// inlineSaveDraft 함수 내부
+const inlineSaveDraft = () => {
+  console.log('검색 실행:', keyword);
+  refetch(); // ⚠️ 여기서 문제 시작!
+};
+```
+
+**실행 흐름:**
+
+```jsx
+// 1. effect 실행 → inlineSaveDraft() 호출
+useEffect(() => {
+  inlineSaveDraft(); // refetch() 호출
+}, [inlineSaveDraft, keyword]);
+
+// 2. refetch() 호출로 React Query 상태 변경
+const { data, refetch, isFetching } = useQuery({
+  queryKey: ['search', keyword],
+  queryFn: () => fetchSearchResults(keyword),
+  enabled: !!keyword,
+});
+// isFetching: false → true → false (로딩 완료)
+// data: undefined → [...results] (데이터 업데이트)
+
+// 3. React Query 상태 변경으로 컴포넌트 리렌더링 발생
+// → SearchPage() 함수 전체가 다시 실행됨
+
+// 4. 리렌더링으로 inlineSaveDraft 함수가 또 새로 생성
+function SearchPage() {
+  const inlineSaveDraft = () => { // @300 (이전에는 @200)
+    console.log('검색 실행:', keyword);
+    refetch();
+  };
+
+  // 5. useEffect deps 비교
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+    }
+  }, [inlineSaveDraft, keyword]);
+  // 이전 deps: [@200, 'react']
+  // 현재 deps: [@300, 'react']
+  // @200 !== @300 → effect 또 실행!
+}
+```
+
+```mermaid
+flowchart LR
+    F["effect 실행"] --> G["refetch() 호출"]
+    G --> H["React Query 상태 변경<br/>(isFetching: true → false)"]
+    H --> I["리렌더링 발생"]
+    I --> J["inlineSaveDraft 또 새로 생성<br/>(@200 → @300)"]
+    J --> K["useEffect deps 비교<br/>(@200 !== @300)"]
+    K --> F
+    
+    style H fill:#ffe3e3,stroke:#ff6b6b
+    style J fill:#ffe3e3,stroke:#ff6b6b
+    style K fill:#fff3cd,stroke:#ffc107
+```
+
+**핵심 문제:** `refetch()`가 React Query 상태를 변경하고, 이로 인해 컴포넌트가 리렌더링되면서 `inlineSaveDraft` 함수가 또 새로 생성됩니다. 개발자는 "keyword가 변경되어서 effect가 실행됐겠지"라고 생각하지만, 실제로는 React Query 상태 변경 → 함수 재생성 → effect 재실행의 연쇄 반응입니다.
+
+#### 3단계: 무한 루프 발생
+
+2단계에서 effect가 다시 실행되면, 같은 과정이 반복됩니다.
+
+```jsx
+// 2단계에서 effect 재실행
+useEffect(() => {
+  if (keyword) {
+    inlineSaveDraft(); // @300 주소의 함수 호출
+  }
+}, [inlineSaveDraft, keyword]); // [@300, 'react']
+
+// inlineSaveDraft 실행 → refetch() 호출
+const inlineSaveDraft = () => {
+  console.log('검색 실행:', keyword);
+  refetch(); // React Query 상태 변경
+};
+
+// React Query 상태 변경 → 리렌더링
+// → inlineSaveDraft @400 생성
+// → useEffect deps 비교: @300 !== @400
+// → effect 또 실행
+// → refetch() 또 호출
+// → 리렌더링
+// → inlineSaveDraft @500 생성
+// → ... 무한 반복 🔄
+```
+
+**실행 흐름 (무한 반복):**
+
+```jsx
+// 렌더링 1
+const inlineSaveDraft = () => { ... }; // @200
+useEffect(..., [@200, 'react']); // effect 실행
+
+// 렌더링 2 (refetch로 인한 리렌더링)
+const inlineSaveDraft = () => { ... }; // @300
+useEffect(..., [@300, 'react']); // @200 !== @300 → effect 실행
+
+// 렌더링 3 (refetch로 인한 리렌더링)
+const inlineSaveDraft = () => { ... }; // @400
+useEffect(..., [@400, 'react']); // @300 !== @400 → effect 실행
+
+// 렌더링 4 (refetch로 인한 리렌더링)
+const inlineSaveDraft = () => { ... }; // @500
+useEffect(..., [@500, 'react']); // @400 !== @500 → effect 실행
+
+// ... 무한 반복
+```
+
+**브라우저 콘솔에서 확인할 수 있는 증상:**
+
+```jsx
+// 콘솔 출력 (무한 반복)
+검색 실행: react
+검색 실행: react
+검색 실행: react
+검색 실행: react
+// ... 계속 반복
+```
+
+**React DevTools에서 확인:**
+
+- Components 탭에서 컴포넌트가 계속 깜빡임 (리렌더링)
+- Profiler에서 렌더링이 무한 반복되는 것을 확인 가능
+
+```mermaid
+flowchart LR
+    K["useEffect deps 비교<br/>(@200 !== @300)"] --> F["effect 실행"]
+    F --> G["refetch() 호출"]
+    G --> H["React Query 상태 변경"]
+    H --> I["리렌더링 발생"]
+    I --> J["inlineSaveDraft 또 새로 생성<br/>(@300 → @400)"]
+    J --> K2["useEffect deps 비교<br/>(@300 !== @400)"]
+    K2 --> F
+    F --> L["무한 루프! 🔄"]
+    
+    style L fill:#ff6b6b,stroke:#c92a2a,color:#fff,stroke-width:3px
+    style F fill:#ffe3e3,stroke:#ff6b6b
+    style J fill:#ffe3e3,stroke:#ff6b6b
+```
+
+**왜 이렇게 되는가?**
+
+1. `keyword`는 변경되지 않았지만 (`'react'`로 동일)
+2. `inlineSaveDraft` 함수만 계속 새로 생성됨 (메모리 주소만 변경)
+3. React는 deps 비교 시 메모리 주소를 비교하므로 (`@200 !== @300 !== @400`)
+4. 매번 "변경됨"으로 판단하여 effect를 실행
+5. effect 실행 → refetch → 리렌더링 → 함수 재생성 → effect 실행 (무한 반복)
 
 **왜 추적이 어려운가?**
 
-1. `keyword`가 변경되면 당연히 effect가 실행되어야 합니다 (의도된 동작)
-2. React Query의 `refetch()`가 호출되면 쿼리 상태(`isFetching`, `data` 등)가 변경됩니다
-3. 쿼리 상태 변경으로 컴포넌트가 리렌더링되고, `inlineSaveDraft`가 새로 생성됩니다
-4. 개발자는 "keyword가 변경되어서 effect가 실행됐겠지"라고 생각하지만, 실제로는 React Query의 상태 변경 → 함수 재생성 → effect 재실행의 연쇄 반응이 발생합니다
+1. 사용자가 input에 값을 입력하면 `keyword` 상태가 변경됩니다
+2. `keyword` 변경으로 리렌더링되면 `inlineSaveDraft` 함수가 새로 생성됩니다 (새 메모리 주소)
+3. useEffect의 deps에 `inlineSaveDraft`가 있으면 주소 변경을 감지해 effect가 실행됩니다
+4. effect 내부에서 `refetch()`를 호출하면 React Query의 쿼리 상태(`isFetching`, `data` 등)가 변경됩니다
+5. 쿼리 상태 변경으로 컴포넌트가 또 리렌더링되고, `inlineSaveDraft`가 또 새로 생성됩니다
+6. 개발자는 "keyword가 변경되어서 effect가 실행됐겠지"라고 생각하지만, 실제로는 React Query의 상태 변경 → 함수 재생성 → effect 재실행의 연쇄 반응이 발생합니다
 
 ESLint는 이 상황에서 경고하지만, React Query가 개입되면 어떤 의존성이 문제인지 파악하기 매우 어렵습니다. 특히 `refetch`가 상태를 변경하고, 그 상태 변경이 다시 렌더링을 유발하는 순환 구조를 이해해야 합니다.
 
@@ -872,7 +1299,7 @@ function useWindowSize() {
 | 숫자/문자열/불리언 | 계산 비용 고려   | 원시형은 값 비교, 비용이 클 때만 useMemo |
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["훅에서 값 반환"] --> B{"반환값 타입?"}
     B -->|"함수"| C["useCallback 필수"]
     B -->|"객체/배열"| D["useMemo 필수"]
@@ -931,7 +1358,7 @@ const sortedItems = useMemo(
 ```
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["메모이제이션이 필요한가?"] --> B{"참조형인가?"}
     B -->|"Yes"| C{"deps에 들어가거나<br/>memo된 컴포넌트에 전달?"}
     C -->|"Yes"| D["메모이제이션 필요"]
