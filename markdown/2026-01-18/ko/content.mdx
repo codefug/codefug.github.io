@@ -356,42 +356,49 @@ sequenceDiagram
 
 ## 무한 리렌더링 발생 케이스
 
-함수를 의존성 배열에 넣고, 그 함수 내부에서 상태를 변경하면 무한 루프가 발생합니다.
+실제 프로젝트에서 흔히 발생하는 패턴입니다. 함수를 의존성 배열에 넣고 effect 내부에서 상태를 변경하면 무한 루프가 발생합니다.
 
 ```jsx
-function AutoSaveEditor() {
-  const [content, setContent] = useState('');
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
 
   // 매 렌더링마다 새로운 함수 생성
-  const saveDraft = () => {
-    console.log('저장:', content);
-    // 만약 여기서 상태를 변경한다면...
-    setContent(content + ' (저장됨)');
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword);
   };
 
   useEffect(() => {
-    saveDraft();
-  }, [saveDraft]); // 무한 루프!
+    if (keyword) {
+      inlineSaveDraft();
+      setSearchCount((prev) => prev + 1); // 검색 횟수 추적 → 리렌더링 유발
+    }
+  }, [inlineSaveDraft, keyword]); // 무한 루프!
 
-  return <textarea value={content} onChange={(e) => setContent(e.target.value)} />;
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="검색어 입력" />
+      <div>검색 횟수: {searchCount}</div>
+    </>
+  );
 }
 ```
 
 실행 흐름:
-1. 컴포넌트 렌더링 → `saveDraft` 함수 생성 (@100)
-2. useEffect 실행 → `saveDraft()` 호출 → `setContent` 실행
-3. 상태 변경으로 리렌더링 → `saveDraft` 함수 재생성 (@200)
+1. 컴포넌트 렌더링 → `inlineSaveDraft` 함수 생성 (@100)
+2. useEffect 실행 → `inlineSaveDraft()` 호출 → `setSearchCount` 실행
+3. 상태 변경으로 리렌더링 → `inlineSaveDraft` 함수 재생성 (@200)
 4. useEffect가 `@100 !== @200` 감지 → 다시 실행
 5. 2~4 반복 (무한 루프)
 
 ```mermaid
 flowchart TD
-    A[컴포넌트 렌더링] --> B["saveDraft 함수 생성 (새 주소)"]
+    A["컴포넌트 렌더링"] --> B["inlineSaveDraft 함수 생성 (새 주소)"]
     B --> C["useEffect deps 비교"]
-    C --> D{"주소가 다른가?"}
-    D -->|Yes| E["effect 실행: saveDraft()"]
-    E --> F["setContent 호출"]
-    F --> G["상태 변경"]
+    C --> D{"inlineSaveDraft 주소가 다른가?"}
+    D -->|Yes| E["effect 실행: inlineSaveDraft()"]
+    E --> F["setSearchCount 호출"]
+    F --> G["상태 변경 → 리렌더링"]
     G --> A
     D -->|No| H["effect 건너뜀"]
 ```
@@ -418,41 +425,118 @@ flowchart TD
 useCallback을 사용하면 함수의 참조를 안정적으로 유지할 수 있습니다.
 
 ```jsx
-function AutoSaveEditor() {
-  const [content, setContent] = useState('');
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
 
   // useCallback으로 함수 참조 안정화
+  // keyword가 변경될 때만 함수 재생성 (searchCount 변경과 무관)
   const saveDraft = useCallback(() => {
-    console.log('저장:', content);
-    // 상태 변경이 필요하면 함수형 업데이트 사용
-  }, [content]); // content가 변경될 때만 함수 재생성
+    console.log('검색 실행:', keyword);
+  }, [keyword]); // keyword가 변경될 때만 함수 재생성
 
   useEffect(() => {
-    saveDraft();
-  }, [saveDraft]); // content가 변경될 때만 effect 실행
+    if (keyword) {
+      saveDraft();
+      // searchCount를 변경해도 saveDraft 주소는 유지되므로 effect가 재실행되지 않음
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]); // keyword가 변경될 때만 effect 실행
 
-  return <textarea value={content} onChange={(e) => setContent(e.target.value)} />;
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="검색어 입력" />
+      <div>검색 횟수: {searchCount}</div>
+    </>
+  );
 }
 ```
 
 ```mermaid
 flowchart TD
-    subgraph "useCallback 없음"
-        A1[렌더링] --> B1["saveDraft @100"]
-        A2[리렌더링] --> B2["saveDraft @200"]
-        A3[리렌더링] --> B3["saveDraft @300"]
-        B1 --> E1["effect 실행"]
-        B2 --> E2["effect 실행"]
-        B3 --> E3["effect 실행"]
+    subgraph "useCallback 없음 (inlineSaveDraft)"
+        A1["keyword='react' 입력"] --> B1["inlineSaveDraft @100"]
+        B1 --> E1["effect 실행, searchCount=1"]
+        E1 --> A2["리렌더링 (searchCount 변경)"]
+        A2 --> B2["inlineSaveDraft @200 (새 주소)"]
+        B2 --> E2["effect 또 실행, searchCount=2"]
+        E2 --> A3["리렌더링..."]
+        A3 --> B3["무한 루프!"]
     end
 
-    subgraph "useCallback 적용"
-        C1[렌더링] --> D1["saveDraft @100"]
-        C2[리렌더링] --> D1
-        C3[리렌더링] --> D1
-        D1 --> F1["effect 1회만 실행"]
+    subgraph "useCallback 적용 (saveDraft)"
+        C1["keyword='react' 입력"] --> D1["saveDraft @100"]
+        D1 --> F1["effect 실행, searchCount=1"]
+        F1 --> C2["리렌더링 (searchCount 변경)"]
+        C2 --> D1
+        D1 --> F2["effect 건너뜀 (주소 동일)"]
+        F2 --> C3["keyword 변경 시에만"]
+        C3 --> D2["saveDraft @200 (새 주소)"]
+        D2 --> F3["effect 실행, searchCount=2"]
     end
 ```
+
+### React Query가 있으면 더 복잡해집니다
+
+실제 프로젝트에서는 React Query(TanStack Query)와 함께 사용하는 경우가 많습니다. 이 경우 문제 추적이 훨씬 어려워집니다.
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+
+  // React Query 사용
+  const { data, refetch, isFetching } = useQuery({
+    queryKey: ['search', keyword],
+    queryFn: () => fetchSearchResults(keyword),
+    enabled: !!keyword,
+  });
+
+  // 매 렌더링마다 새로운 함수 생성
+  const inlineSaveDraft = () => {
+    console.log('검색 실행:', keyword);
+    refetch(); // 데이터 다시 가져오기
+  };
+
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+    }
+  }, [inlineSaveDraft, keyword]); // 문제 발생!
+
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+      {isFetching && <div>로딩 중...</div>}
+      <ul>{data?.map((r, i) => <li key={i}>{r}</li>)}</ul>
+    </>
+  );
+}
+```
+
+```mermaid
+flowchart TD
+    subgraph "React Query와 함께 사용 시 문제"
+        A["사용자가 'react' 입력"] --> B["keyword 변경 → 리렌더링"]
+        B --> C["inlineSaveDraft 새로 생성 (@200)"]
+        C --> D["useEffect 실행"]
+        D --> E["refetch() 호출"]
+        E --> F["React Query 상태 변경<br/>(isFetching: true → false)"]
+        F --> G["리렌더링 발생"]
+        G --> H["inlineSaveDraft 또 새로 생성 (@300)"]
+        H --> I["useEffect 또 실행"]
+        I --> J["refetch() 또 호출"]
+        J --> K["무한 루프!"]
+    end
+```
+
+**왜 추적이 어려운가?**
+
+1. `keyword`가 변경되면 당연히 effect가 실행되어야 합니다 (의도된 동작)
+2. React Query의 `refetch()`가 호출되면 쿼리 상태(`isFetching`, `data` 등)가 변경됩니다
+3. 쿼리 상태 변경으로 컴포넌트가 리렌더링되고, `inlineSaveDraft`가 새로 생성됩니다
+4. 개발자는 "keyword가 변경되어서 effect가 실행됐겠지"라고 생각하지만, 실제로는 React Query의 상태 변경 → 함수 재생성 → effect 재실행의 연쇄 반응이 발생합니다
+
+ESLint는 이 상황에서 경고하지만, React Query가 개입되면 어떤 의존성이 문제인지 파악하기 매우 어렵습니다. 특히 `refetch`가 상태를 변경하고, 그 상태 변경이 다시 렌더링을 유발하는 순환 구조를 이해해야 합니다.
 
 ## useMemo로 객체 안정화하기
 
