@@ -102,11 +102,11 @@ export function LoginPage() {
   } = useForm({ resolver: zodResolver(SignInSchema) });
 ```
 
-위의 코드에서 useUserStore()로 한 스토어를 통째로 가져올 수 있는데 이는 스토어와 연결된 모든 컴포넌트들을 리렌더링시킬 수 있기 때문에 지양하는 것이 좋다.
+위의 코드에서 useUserStore()로 한 스토어를 통째로 가져올 수 있는데 이는 스토어와 연결된 모든 컴포넌트들을 리렌더링시킬 수 있기 때문에 지양하는 것이 좋습니다.
 
-되도록이면 위처럼 하나씩 가져오자.
+되도록이면 위처럼 하나씩 가져오는 것이 좋습니다.
 
-이제 로컬스토리지에 담고 상태로 추적하며 이로 인해 컴포넌트가 바뀌는 함수는 처리가 완료되었다.
+이제 로컬스토리지에 담고 상태로 추적하며 이로 인해 컴포넌트가 바뀌는 함수는 처리가 완료되었습니다.
 
 다음은 refresh Token에 대해 고민해보겠습니다.
 
@@ -191,7 +191,7 @@ const refreshTokenRotation = () => {
 };
 ```
 
-분석이 완료된 후 실제 코드와 연결하여 적용해보았다.
+분석이 완료된 후 실제 코드와 연결하여 적용해보았습니다.
 
 ##### 응용 코드
 
@@ -287,7 +287,7 @@ authInstance.interceptors.request.use(setAuthHeader);
 export { authInstance, instance };
 ```
 
-이제 authorization이 필요한 네트워크 요청에 사용되는 axios instance가 완성되었다. 자동으로 accessToken을 검사해서 없으면 refreshToken을 이용해서 재조정해준다.
+이제 authorization이 필요한 네트워크 요청에 사용되는 axios instance가 완성되었습니다. 자동으로 accessToken을 검사해서 없으면 refreshToken을 이용해서 재조정해줍니다.
 
 ```tsx
 import { useStore } from "@/app/store";
@@ -315,7 +315,7 @@ export function LoginPage() {
   } = useForm({ resolver: zodResolver(schema) });
   // zod를 react-hook-form에서 사용하기 위한 resolver 지정
 
-// 자체 async는 사용할 수 없다.
+// 자체 async는 사용할 수 없습니다.
   const onSubmit = (d: FieldValues) => {
   // handleSubmit으로부터 FieldValues를 받아서 로그인 처리함.
   // 로그인 처리는 네트워크 요청 > accessToken을 zustand store에 담는 것으로 종료
@@ -344,7 +344,7 @@ export function LoginPage() {
         {errors.password?.message && (
           <p style={{color:"red"}}>{errors.password?.message as string}</p>
         )}
-     {/* form event를 제출한다. */}
+     {/* form event를 제출합니다. */}
         <input type="submit" />
       </form>
       <Link to="/signup">회원가입</Link>
@@ -353,7 +353,7 @@ export function LoginPage() {
 }
 ```
 
-> 하지만 위의 과정은 백엔드와의 소통이 필요하다. refresh 토큰을 받았을 때 refresh Token과 access Token을 같이 전달해주는 로직이 필요하고 더불어 두 개의 브라우저 (웹, 모바일) 에서 동시에 접속했을 때 하나의 기기에서 refresh Token을 받으면 다른 기기의 refresh Token은 stale하게 되어 로그아웃되는 사태가 발생한다.
+> 하지만 위의 과정은 백엔드와의 소통이 필요합니다. refresh 토큰을 받았을 때 refresh Token과 access Token을 같이 전달해주는 로직이 필요하고 더불어 두 개의 브라우저 (웹, 모바일) 에서 동시에 접속했을 때 하나의 기기에서 refresh Token을 받으면 다른 기기의 refresh Token은 stale하게 되어 로그아웃되는 사태가 발생합니다.
 >
 > <s>수많은 삽질 끝에</s> 일반적으로 어떤 방식으로 로그인을 처리하는지
 > 알아보았고 그 과정에서 알게된 기술을 몽땅 적용해보기로 하였다.
@@ -509,13 +509,13 @@ return (
     </>
 ```
 
-위 코드처럼 zodResolver라는 함수에 넣어서 schema를 적용시킨다.
+위 코드처럼 zodResolver라는 함수에 넣어서 schema를 적용시킵니다.
 
 이제 끝난걸까?
 
-아니다. RTR이 실패했기 때문에 또다른 refresh Token 여정을 떠나야 한다!
+아닙니다. RTR이 실패했기 때문에 또다른 refresh Token 여정을 떠나야 합니다!
 
-기존의 api 요청은 axios로 header나 기본 설정들을 간단하게 처리했었다.
+기존의 api 요청은 axios로 header나 기본 설정들을 간단하게 처리했었습니다.
 
 refresh Token은 정말 기본적인 웹 개념이니까 axios에서 처리할 수 있는 무언가를 만들지 않았을까 하는 생각에 문서를 정독했습니다.
 

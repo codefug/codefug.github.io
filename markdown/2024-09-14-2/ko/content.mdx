@@ -6,7 +6,7 @@
 
 Link 컴포넌트인 탭 요소를 누르면 주소가 바뀌면서 progress bar가 동작하는 것을 확인할 수 있습니다.
 
-꼼꼼 프로젝트는 Next.js로 만들어졌기 때문에 url이 변경되면서 렌더링이 일어나는 경우가 많다. (searchParams와 관련된 렌더링도 많다.)
+꼼꼼 프로젝트는 Next.js로 만들어졌기 때문에 url이 변경되면서 렌더링이 일어나는 경우가 많습니다. (searchParams와 관련된 렌더링도 많습니다.)
 
 이때 progress bar를 추가하면 UX가 크게 향상될 것이라고 생각하고 고민을 시작했습니다.
 
@@ -20,7 +20,7 @@ Next는 router event를 외부에 노출시키지 않아서 페이지 바꿀 때
 
 https://buildui.com/posts/global-progress-in-nextjs
 
-위의 포스팅을 분석해보았다.
+위의 포스팅을 분석해보았습니다.
 
 ### layout.tsx
 
@@ -462,10 +462,10 @@ export function useProgress() {
 }
 ```
 
-정리하자면 다음과 같다.
+정리하자면 다음과 같습니다.
 
 1. Progress Bar처럼 로딩을 표시하는 view 컴포넌트에 내려줄 useProgress 훅은 useReducer를 이용한 flux 패턴으로 세부 상태 관리는 감추어서 가독성을 높였습니다.
-2. start, done으로 나누어져 사용하는 쪽에서 startTransition을 직접 구현해야했던 패턴에서 useProgress 훅으로 해당 훅을 숨기게 되었다.
+2. start, done으로 나누어져 사용하는 쪽에서 startTransition을 직접 구현해야했던 패턴에서 useProgress 훅으로 해당 훅을 숨기게 되었습니다.
 
 사용하는 쪽에서는
 
@@ -507,7 +507,7 @@ export default function LinkWithProgress({
 }
 ```
 
-progress에 콜백을 넘기는 것 만으로도 progress Bar와 연결될 수 있게 되었다.
+progress에 콜백을 넘기는 것 만으로도 progress Bar와 연결될 수 있게 되었습니다.
 
 기존 LinkButton 에 progress를 추가해보면 다음과 같다.
 
@@ -550,7 +550,7 @@ export function LinkButton({
 
 useReducer를 활용한 flux 패턴으로 상태 관리를 처리하는 리팩토링을 진행하면서 코드가 간결해지는 것을 느꼈고 직접 느껴보니
 
-복잡한 로직이 나올 때 useReducer나 zustand 같은 flux 패턴을 사용하여 구현된 기법을 사용하는 이유를 알게 되었다.
+복잡한 로직이 나올 때 useReducer나 zustand 같은 flux 패턴을 사용하여 구현된 기법을 사용하는 이유를 알게 되었습니다.
 
 늘 느끼지만 모든 기술이 자신의 문제를 해결하기 위해 찾아볼 때 기억에 잘 새겨지는 것 같다. 이번에도 많이 배웠다.
 
@@ -562,7 +562,7 @@ useReducer를 활용한 flux 패턴으로 상태 관리를 처리하는 리팩�
 
 ![](/images/2024-09-14/Pasted%20image%2020240818002733.png)
 
-progress라는 함수를 받는 컴포넌트도 progress bar로 인해서 리렌더링 되는 상황이다
+progress라는 함수를 받는 컴포넌트도 progress bar로 인해서 리렌더링 되는 상황입니다
 
 useContext는 상태를 주입하는 훅이기에 상태와 연결된 것 이외에도 하위 컴포넌트들을 리렌더링 시킨다.
 
@@ -580,9 +580,9 @@ useSyncExternalStore를 활용하는 zustand는 별도의 추가 없이는 start
 
 https://www.npmjs.com/package/use-zustand
 
-이걸 사용했지만 next.js와 context api를 활용해서 연결된 방식과 결합하는 것이다 보니 개발자가 구상했었던 예외처리가 아닌 것 같았다.
+이걸 사용했지만 next.js와 context api를 활용해서 연결된 방식과 결합하는 것입니다 보니 개발자가 구상했었던 예외처리가 아닌 것 같았습니다.
 
-구조적으로 context api를 활용해서 리렌더링을 만드는 것, zustand로 불완전한 로딩바를 만드는 것보다는 다른 방법을 생각하게 되었다.
+구조적으로 context api를 활용해서 리렌더링을 만드는 것, zustand로 불완전한 로딩바를 만드는 것보다는 다른 방법을 생각하게 되었습니다.
 
 그러다 기존 next.js를 활용한 사이트들에서 next-nprogress-bar 라는 라이브러리를 확인했습니다.
 
@@ -679,9 +679,9 @@ export default function ProgressBarProvider({
 
 ## 후기
 
-progress bar를 구현하기 위한 아이디어는 무엇이고 next.js에서는 그것을 어떻게 구현하는지를 알아보았다.
+progress bar를 구현하기 위한 아이디어는 무엇이고 next.js에서는 그것을 어떻게 구현하는지를 알아보았습니다.
 
-비록 프로젝트에는 라이브러리를 활용하는 쪽으로 적용되었지만 그 과정에서 동시성 렌더링을 통해서 구현한 코드를 분석하면서 많은 것을 배웠다.
+비록 프로젝트에는 라이브러리를 활용하는 쪽으로 적용되었지만 그 과정에서 동시성 렌더링을 통해서 구현한 코드를 분석하면서 많은 것을 배웠습니다.
 
 더 성장해보겠습니다.
 
