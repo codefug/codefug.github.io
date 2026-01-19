@@ -44,18 +44,6 @@ import * as MDX_en_2024_09_14_4 from "@/markdown/2024-09-14-4/en/content.mdx";
 import * as MDX_ko_2024_09_14_4 from "@/markdown/2024-09-14-4/ko/content.mdx";
 import * as MDX_en_2024_11_10 from "@/markdown/2024-11-10/en/content.mdx";
 import * as MDX_ko_2024_11_10 from "@/markdown/2024-11-10/ko/content.mdx";
-import * as MDX_en_2025_05_24 from "@/markdown/2025-05-24/en/content.mdx";
-import * as MDX_ko_2025_05_24 from "@/markdown/2025-05-24/ko/content.mdx";
-import * as MDX_en_2025_05_31 from "@/markdown/2025-05-31/en/content.mdx";
-import * as MDX_ko_2025_05_31 from "@/markdown/2025-05-31/ko/content.mdx";
-import * as MDX_en_2025_06_07 from "@/markdown/2025-06-07/en/content.mdx";
-import * as MDX_ko_2025_06_07 from "@/markdown/2025-06-07/ko/content.mdx";
-import * as MDX_en_2025_06_14 from "@/markdown/2025-06-14/en/content.mdx";
-import * as MDX_ko_2025_06_14 from "@/markdown/2025-06-14/ko/content.mdx";
-import * as MDX_en_2025_06_21 from "@/markdown/2025-06-21/en/content.mdx";
-import * as MDX_ko_2025_06_21 from "@/markdown/2025-06-21/ko/content.mdx";
-import * as MDX_en_2025_07_20 from "@/markdown/2025-07-20/en/content.mdx";
-import * as MDX_ko_2025_07_20 from "@/markdown/2025-07-20/ko/content.mdx";
 import * as MDX_en_2026_01_18 from "@/markdown/2026-01-18/en/content.mdx";
 import * as MDX_ko_2026_01_18 from "@/markdown/2026-01-18/ko/content.mdx";
 
@@ -82,12 +70,6 @@ export const mdxMap: Record<Locale, Record<string, MDXModule>> = {
     "2024-09-14-3": MDX_ko_2024_09_14_3,
     "2024-09-14-4": MDX_ko_2024_09_14_4,
     "2024-11-10": MDX_ko_2024_11_10,
-    "2025-05-24": MDX_ko_2025_05_24,
-    "2025-05-31": MDX_ko_2025_05_31,
-    "2025-06-07": MDX_ko_2025_06_07,
-    "2025-06-14": MDX_ko_2025_06_14,
-    "2025-06-21": MDX_ko_2025_06_21,
-    "2025-07-20": MDX_ko_2025_07_20,
     "2026-01-18": MDX_ko_2026_01_18,
   },
   en: {
@@ -112,12 +94,6 @@ export const mdxMap: Record<Locale, Record<string, MDXModule>> = {
     "2024-09-14-3": MDX_en_2024_09_14_3,
     "2024-09-14-4": MDX_en_2024_09_14_4,
     "2024-11-10": MDX_en_2024_11_10,
-    "2025-05-24": MDX_en_2025_05_24,
-    "2025-05-31": MDX_en_2025_05_31,
-    "2025-06-07": MDX_en_2025_06_07,
-    "2025-06-14": MDX_en_2025_06_14,
-    "2025-06-21": MDX_en_2025_06_21,
-    "2025-07-20": MDX_en_2025_07_20,
     "2026-01-18": MDX_en_2026_01_18,
   },
 };
