@@ -354,44 +354,51 @@ sequenceDiagram
 
 ## Infinite Re-rendering Case
 
-If you put a function in the dependency array and change state inside that function, an infinite loop occurs.
+This is a common pattern in real projects. When you put a function in the dependency array and change state inside the effect, an infinite loop occurs.
 
 ```jsx
-function AutoSaveEditor() {
-  const [content, setContent] = useState('');
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
 
   // New function created on every render
-  const saveDraft = () => {
-    console.log('저장:', content);
-    // If we change state here...
-    setContent(content + ' (저장됨)');
+  const inlineSaveDraft = () => {
+    console.log('Executing search:', keyword);
   };
 
   useEffect(() => {
-    saveDraft();
-  }, [saveDraft]); // Infinite loop!
+    if (keyword) {
+      inlineSaveDraft();
+      setSearchCount((prev) => prev + 1); // Track search count → triggers re-render
+    }
+  }, [inlineSaveDraft, keyword]); // Infinite loop!
 
-  return <textarea value={content} onChange={(e) => setContent(e.target.value)} />;
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="Enter search term" />
+      <div>Search count: {searchCount}</div>
+    </>
+  );
 }
 ```
 
 Execution flow:
-1. Component renders → `saveDraft` function created (@100)
-2. useEffect executes → calls `saveDraft()` → executes `setContent`
-3. State change causes re-render → `saveDraft` function recreated (@200)
+1. Component renders → `inlineSaveDraft` function created (@100)
+2. useEffect executes → calls `inlineSaveDraft()` → executes `setSearchCount`
+3. State change causes re-render → `inlineSaveDraft` function recreated (@200)
 4. useEffect detects `@100 !== @200` → executes again
 5. Steps 2-4 repeat (infinite loop)
 
 ```mermaid
 flowchart TD
-    A[컴포넌트 렌더링] --> B["saveDraft 함수 생성 (새 주소)"]
-    B --> C["useEffect deps 비교"]
-    C --> D{"주소가 다른가?"}
-    D -->|Yes| E["effect 실행: saveDraft()"]
-    E --> F["setContent 호출"]
-    F --> G["상태 변경"]
+    A["Component renders"] --> B["inlineSaveDraft function created (new address)"]
+    B --> C["useEffect deps comparison"]
+    C --> D{"inlineSaveDraft address different?"}
+    D -->|Yes| E["effect runs: inlineSaveDraft()"]
+    E --> F["setSearchCount called"]
+    F --> G["State change → re-render"]
     G --> A
-    D -->|No| H["effect 건너뜀"]
+    D -->|No| H["effect skipped"]
 ```
 
 ### Memory Address Changes Confirmed in Chrome DevTools
@@ -416,41 +423,118 @@ In each snapshot, the `inlineSaveDraft` function has different memory addresses 
 Using useCallback allows you to maintain a stable function reference.
 
 ```jsx
-function AutoSaveEditor() {
-  const [content, setContent] = useState('');
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
 
   // Stabilize function reference with useCallback
+  // Function only recreated when keyword changes (unrelated to searchCount changes)
   const saveDraft = useCallback(() => {
-    console.log('저장:', content);
-    // Use functional update if state change is needed
-  }, [content]); // Function recreated only when content changes
+    console.log('Executing search:', keyword);
+  }, [keyword]); // Function recreated only when keyword changes
 
   useEffect(() => {
-    saveDraft();
-  }, [saveDraft]); // Effect runs only when content changes
+    if (keyword) {
+      saveDraft();
+      // Even if searchCount changes, saveDraft address remains the same so effect doesn't re-run
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]); // Effect runs only when keyword changes
 
-  return <textarea value={content} onChange={(e) => setContent(e.target.value)} />;
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="Enter search term" />
+      <div>Search count: {searchCount}</div>
+    </>
+  );
 }
 ```
 
 ```mermaid
 flowchart TD
-    subgraph "useCallback 없음"
-        A1[렌더링] --> B1["saveDraft @100"]
-        A2[리렌더링] --> B2["saveDraft @200"]
-        A3[리렌더링] --> B3["saveDraft @300"]
-        B1 --> E1["effect 실행"]
-        B2 --> E2["effect 실행"]
-        B3 --> E3["effect 실행"]
+    subgraph "Without useCallback (inlineSaveDraft)"
+        A1["keyword='react' typed"] --> B1["inlineSaveDraft @100"]
+        B1 --> E1["effect runs, searchCount=1"]
+        E1 --> A2["Re-render (searchCount changed)"]
+        A2 --> B2["inlineSaveDraft @200 (new address)"]
+        B2 --> E2["effect runs again, searchCount=2"]
+        E2 --> A3["Re-render..."]
+        A3 --> B3["Infinite loop!"]
     end
 
-    subgraph "useCallback 적용"
-        C1[렌더링] --> D1["saveDraft @100"]
-        C2[리렌더링] --> D1
-        C3[리렌더링] --> D1
-        D1 --> F1["effect 1회만 실행"]
+    subgraph "With useCallback (saveDraft)"
+        C1["keyword='react' typed"] --> D1["saveDraft @100"]
+        D1 --> F1["effect runs, searchCount=1"]
+        F1 --> C2["Re-render (searchCount changed)"]
+        C2 --> D1
+        D1 --> F2["effect skipped (same address)"]
+        F2 --> C3["Only when keyword changes"]
+        C3 --> D2["saveDraft @200 (new address)"]
+        D2 --> F3["effect runs, searchCount=2"]
     end
 ```
+
+### React Query Makes It Even More Complex
+
+In real projects, you often use React Query (TanStack Query) together. This makes debugging much harder.
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+
+  // Using React Query
+  const { data, refetch, isFetching } = useQuery({
+    queryKey: ['search', keyword],
+    queryFn: () => fetchSearchResults(keyword),
+    enabled: !!keyword,
+  });
+
+  // New function created on every render
+  const inlineSaveDraft = () => {
+    console.log('Executing search:', keyword);
+    refetch(); // Refetch data
+  };
+
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+    }
+  }, [inlineSaveDraft, keyword]); // Problem occurs!
+
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+      {isFetching && <div>Loading...</div>}
+      <ul>{data?.map((r, i) => <li key={i}>{r}</li>)}</ul>
+    </>
+  );
+}
+```
+
+```mermaid
+flowchart TD
+    subgraph "Problem with React Query"
+        A["User types 'react'"] --> B["keyword changes → re-render"]
+        B --> C["inlineSaveDraft recreated (@200)"]
+        C --> D["useEffect runs"]
+        D --> E["refetch() called"]
+        E --> F["React Query state changes<br/>(isFetching: true → false)"]
+        F --> G["Re-render occurs"]
+        G --> H["inlineSaveDraft recreated again (@300)"]
+        H --> I["useEffect runs again"]
+        I --> J["refetch() called again"]
+        J --> K["Infinite loop!"]
+    end
+```
+
+**Why is it hard to track?**
+
+1. When `keyword` changes, the effect should run (intended behavior)
+2. When React Query's `refetch()` is called, query state (`isFetching`, `data`, etc.) changes
+3. Query state change causes component re-render, and `inlineSaveDraft` is recreated
+4. Developers think "the effect ran because keyword changed," but in reality, a chain reaction occurs: React Query state change → function recreation → effect re-execution
+
+ESLint warns in this situation, but when React Query is involved, it's very difficult to identify which dependency is the problem. You need to understand the circular structure where `refetch` changes state, and that state change triggers another render.
 
 ## Stabilizing Objects with useMemo
 
