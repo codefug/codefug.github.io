@@ -22,7 +22,12 @@ export default function PostCard({
 
   return (
     // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )
-    <a href={linkHref} aria-label={t("postRead", { title })} rel="bookmark">
+    <a
+      href={linkHref}
+      aria-label={t("postRead", { title })}
+      rel="bookmark"
+      title={title}
+    >
       <Card className="group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
         <div className="relative h-52 w-full overflow-hidden rounded-t-md">
           <Image
