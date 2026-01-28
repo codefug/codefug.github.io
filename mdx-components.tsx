@@ -99,6 +99,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
       return createElement("pre", props);
     },
+    table: (props) => (
+      <div className="my-6 w-full overflow-x-auto">
+        <table {...props} />
+      </div>
+    ),
     // a: CustomLink,
     // img: (props) => {
     //   const { src } = props;
