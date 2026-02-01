@@ -77,7 +77,11 @@
         "allra": {
           "title": "Allra",
           "description": "Allra 선정산 서비스",
-          "features": ["작성중..."]
+          "features": [
+            "Playwright Sharding과 Biome 도입으로 평균 CI 시간 28% 개선, 배포 효율성 향상",
+            "그로스 팀 협업을 통한 사용자 퍼널 개선, 모바일 재방문율 17% 및 신규 가입자 정산 달력 진입률 42% 향상",
+            "구조화된 메타데이터 설계로 검색 정확도 개선 및 내부 개발 가이드 작성"
+          ]
         },
         "digitalFinance": {
           "title": "Digital Finance",
