@@ -28,7 +28,7 @@ export default function PostCard({
       rel="bookmark"
       title={title}
     >
-      <Card className="group h-[450px] cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
+      <Card className="group relative h-[450px] cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
         <div className="relative h-52 w-full overflow-hidden rounded-t-md">
           <Image
             priority={false}
@@ -58,7 +58,7 @@ export default function PostCard({
             {excerpt}
           </p>
         </div>
-        <div className="flex justify-end px-5 pb-5">
+        <div className="absolute right-0 bottom-0 left-0 flex justify-end px-5 pb-5">
           <time className="text-gray-500 text-sm">{date}</time>
         </div>
       </Card>
