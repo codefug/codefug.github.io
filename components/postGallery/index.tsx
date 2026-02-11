@@ -23,7 +23,7 @@ const PostGallery = memo(function PostGallery({
         ))}
       </div>
       {postInfoList.length / POST_ITEM_PER_PAGE > page && (
-        <div ref={ref} className="w-full">
+        <div ref={ref} key={page} className="w-full">
           <Loader2Icon className="mx-auto mt-4 animate-spin text-primary" />
         </div>
       )}
