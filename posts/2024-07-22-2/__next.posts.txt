@@ -1,0 +1,4 @@
+1:"$Sreact.fragment"
+2:I[25270,["https://codefug.github.io/_next/static/chunks/221e0744b683f94b.js","https://codefug.github.io/_next/static/chunks/5090c931644d1265.js"],"default"]
+3:I[85455,["https://codefug.github.io/_next/static/chunks/221e0744b683f94b.js","https://codefug.github.io/_next/static/chunks/5090c931644d1265.js"],"default"]
+0:{"buildId":"Udcjnt5qzXBsrU8zOljHl","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
