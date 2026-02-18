@@ -46,8 +46,8 @@ Produce one improved version that incorporates all applicable improvement option
 
 ## Input
 
-- Document draft or structure: (e.g., current structure or table of contents of a "Creating React Components" document)
-- (optional) Document goal and audience: (e.g., "help readers understand the basic principles of creating React components and write code themselves")
-- (optional) Current problems: (e.g., "too much content mixed on one page making it hard to find information" or "no overview making it hard to follow the document flow")
+- Document draft or structure: (e.g., "React 컴포넌트 생성" 문서의 현재 구조 혹은 목차)
+- (optional) Document goal and audience: (e.g., "독자가 React 컴포넌트 생성의 기본 원리를 이해하고 직접 코드를 작성할 수 있도록 돕는 것")
+- (optional) Current problems: (e.g., "한 페이지에 너무 많은 내용이 혼합되어 있어 독자가 원하는 정보를 찾기 어렵다" or "개요가 없어서 문서 전체 흐름이 파악되지 않는다")
 
 Based on the above, suggest specific feedback and an improvement plan for the document structure.
