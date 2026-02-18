@@ -12,7 +12,7 @@ export function AppCarouselNext() {
     <div className="group/next hover:cursor-pointer">
       <CarouselNext
         ref={nextButtonRef}
-        className="right-0 h-full w-20 rounded-none rounded-r-xl border-none bg-transparent group-hover/next:bg-accent group-hover/next:text-accent-foreground"
+        className="right-0 h-full w-20 rounded-none rounded-r-xl border-none bg-transparent shadow-none group-hover/next:bg-accent group-hover/next:text-accent-foreground"
         aria-label={t("nextSlide")}
       />
       <ChevronsRight
@@ -35,7 +35,7 @@ export function AppCarouselPrevious() {
     <div className="group/prev hover:cursor-pointer">
       <CarouselPrevious
         ref={previousButtonRef}
-        className="left-0 h-full w-20 rounded-none rounded-l-xl border-none bg-transparent group-hover/prev:bg-accent group-hover/prev:text-accent-foreground"
+        className="left-0 h-full w-20 rounded-none rounded-l-xl border-none bg-transparent shadow-none group-hover/prev:bg-accent group-hover/prev:text-accent-foreground"
         aria-label={t("previousSlide")}
       />
       <ChevronsLeft
