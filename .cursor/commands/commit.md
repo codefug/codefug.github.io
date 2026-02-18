@@ -20,7 +20,7 @@ If there is a problem in the current work unit and the previous work unit, deter
 - perf: improve performance
 - ci: continuous integration
 - revert: revert previous commit
-- build: 빌드 관련 작업
+- build: build-related tasks
 - release: release
 - revert: revert previous commit
 
