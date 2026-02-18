@@ -1,5 +1,4 @@
 export const TAG_LIST = {
-  DATA_STRUCTURE: "data-structure",
   JAVASCRIPT: "javascript",
   TYPESCRIPT: "typescript",
   KKOM_KKOM: "kkom-kkom",
@@ -14,7 +13,6 @@ export const TAG_LIST = {
 export const TAG_GROUP_TO_ARRAY_MAP: {
   [key in string]: (typeof TAG_LIST)[keyof typeof TAG_LIST][];
 } = {
-  "Computer Science": [TAG_LIST.DATA_STRUCTURE],
   Project: [TAG_LIST.FANDOMK, TAG_LIST.KKOM_KKOM, TAG_LIST.GHEUPPAY],
   Web: [TAG_LIST.WEB],
   language: [TAG_LIST.TYPESCRIPT, TAG_LIST.JAVASCRIPT],
