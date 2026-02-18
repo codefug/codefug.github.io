@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "private": true,
   "homepage": "https://codefug.github.io",
+  "type": "module",
   "scripts": {
     "generate-mdx": "node scripts/generateMdxMap.mjs",
     "prebuild": "npm run generate-mdx",
