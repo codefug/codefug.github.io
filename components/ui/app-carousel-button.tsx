@@ -9,7 +9,7 @@ export function AppCarouselNext() {
   const t = useTranslations("common.aria");
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   return (
-    <div className="group/next hover:cursor-pointer">
+    <div className="group/next cursor-pointer">
       <CarouselNext
         ref={nextButtonRef}
         className="right-0 h-full w-20 rounded-none rounded-r-xl border-none bg-transparent shadow-none group-hover/next:bg-accent group-hover/next:text-accent-foreground"
@@ -32,7 +32,7 @@ export function AppCarouselPrevious() {
   const t = useTranslations("common.aria");
   const previousButtonRef = useRef<HTMLButtonElement>(null);
   return (
-    <div className="group/prev hover:cursor-pointer">
+    <div className="group/prev cursor-pointer">
       <CarouselPrevious
         ref={previousButtonRef}
         className="left-0 h-full w-20 rounded-none rounded-l-xl border-none bg-transparent shadow-none group-hover/prev:bg-accent group-hover/prev:text-accent-foreground"
