@@ -45,6 +45,7 @@ export default function PostCategoryGallery({
               }}
               aria-label={t("aria.allCategorySelect")}
               aria-pressed={value === ""}
+              className="cursor-pointer"
             >
               <Badge
                 className="h-8 text-sm dark:text-white"
@@ -65,6 +66,7 @@ export default function PostCategoryGallery({
                   count: total,
                 })}
                 aria-pressed={value === category}
+                className="cursor-pointer"
               >
                 <Badge
                   className="h-8 text-sm dark:text-white"
