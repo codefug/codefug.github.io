@@ -6,7 +6,7 @@ export default function BlockHeader({
   title,
   className,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   title: ReactNode;
   className?: string;
 }) {
