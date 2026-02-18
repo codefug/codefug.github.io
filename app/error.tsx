@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-export default function GlobalError({
+export default function ErrorPage({
   error,
   reset,
 }: {
