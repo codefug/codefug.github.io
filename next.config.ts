@@ -1,8 +1,6 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import rehypeHighlight from "rehype-highlight";
-import remarkGfm from "remark-gfm";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -69,11 +67,11 @@ const nextConfig: NextConfig = {
   output: "export",
 };
 
+// Turbopack 호환: 플러그인은 문자열(모듈 이름)로 지정해야 직렬화 가능
 const withMDX = createMDX({
-  // add markdown plugins here, as desired
   options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypeHighlight],
+    remarkPlugins: ["remark-gfm"],
+    rehypePlugins: ["rehype-highlight"],
   },
 });
 
