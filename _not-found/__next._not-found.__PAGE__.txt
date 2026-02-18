@@ -2,5 +2,5 @@
 2:I[51506,["https://codefug.github.io/_next/static/chunks/97eaaf2c7454fd66.js","https://codefug.github.io/_next/static/chunks/9f6ca53883411a84.js","https://codefug.github.io/_next/static/chunks/6b898cdbc81315e2.js","https://codefug.github.io/_next/static/chunks/bf02a872d1b2cf4b.js","https://codefug.github.io/_next/static/chunks/3dfce5e2d534d1e7.js","https://codefug.github.io/_next/static/chunks/2b4d6a7c3528f199.js"],""]
 3:I[95276,["https://codefug.github.io/_next/static/chunks/221e0744b683f94b.js","https://codefug.github.io/_next/static/chunks/5090c931644d1265.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"Udcjnt5qzXBsrU8zOljHl","rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","h2",null,{"children":"Not Found"}],["$","p",null,{"children":"잘못된 페이지에요!"}],["$","$L2",null,{"href":"/","children":"홈으로 돌아가기"}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"Nubb2nNKnhFeLXJLqO_qI","rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","h2",null,{"children":"Not Found"}],["$","p",null,{"children":"잘못된 페이지에요!"}],["$","$L2",null,{"href":"/","children":"홈으로 돌아가기"}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
