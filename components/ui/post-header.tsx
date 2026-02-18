@@ -22,7 +22,7 @@ export default function PostHeader({
           priority
           className="object-cover object-center transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/70" />
 
         {/* 카테고리 태그 - 이미지 위에 배치 */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2 sm:top-6 sm:left-6">

@@ -47,7 +47,7 @@ export function FloatingShapesBackground() {
       <div className="absolute bottom-[20%] left-[60%] h-72 w-72 animate-float-fast rounded-full bg-cyan-500/5 blur-3xl dark:bg-cyan-500/10" />
 
       {/* 그라디언트 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50/30 via-transparent to-purple-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20" />
 
       {/* 바이너리 숫자들 */}
       <div className="absolute top-[10%] left-[40%] animate-float-medium font-mono text-gray-400/20 text-sm dark:text-gray-600/30">
