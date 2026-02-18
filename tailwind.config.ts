@@ -1,36 +1,11 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  safelist: [
-    "bg-quote-blue",
-    "bg-quote-green",
-    "bg-quote-yellow",
-    "bg-quote-orange",
-    "bg-quote-red",
-    "bg-quote-purple",
-    "bg-quote-gray",
-    "bg-quote-sky-blue",
-    "text-blue-500",
-    "text-green-500",
-    "text-yellow-500",
-    "text-orange-500",
-    "text-red-500",
-    "text-purple-500",
-    "text-gray-500",
-    "border-blue-500",
-    "border-green-500",
-    "border-yellow-500",
-    "border-orange-500",
-    "border-red-500",
-    "border-purple-500",
-    "border-gray-500",
-    "border-blue-200",
   ],
   theme: {
     extend: {
