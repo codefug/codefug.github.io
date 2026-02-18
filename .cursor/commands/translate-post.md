@@ -1,47 +1,47 @@
-# 블로그 포스트 자동 번역
+# Auto-translate blog post
 
-## 목적
-한국어로 작성된 마크다운 블로그 포스트를 영어로 자동 번역하여 다국어 블로그를 운영합니다.
+## Purpose
+Automatically translate a Korean markdown blog post into English to operate a multilingual blog.
 
-## 작업 흐름
+## Workflow
 
-1. **한국어 원본 확인**
-   - `markdown/{post-id}/ko/content.mdx` 파일을 읽습니다
-   - `markdown/{post-id}/ko/frontmatter.mdx` 파일을 읽습니다
+1. **Read the Korean source**
+   - Read `markdown/{post-id}/ko/content.mdx`
+   - Read `markdown/{post-id}/ko/frontmatter.mdx`
 
-2. **영어 번역 생성**
-   - content.mdx의 모든 한국어 텍스트를 자연스러운 영어로 번역
-   - frontmatter.mdx의 title, excerpt, category를 영어로 번역
-   - 코드 블록, 코드 주석은 그대로 유지
-   - 기술 용어는 적절히 처리 (예: "리액트" → "React")
-   - `markdown/{post-id}/en/content.mdx`에 저장
-   - `markdown/{post-id}/en/frontmatter.mdx`에 저장
+2. **Generate English translation**
+   - Translate all Korean text in content.mdx into natural English
+   - Translate title, excerpt, and category fields in frontmatter.mdx into English
+   - Keep code blocks and code comments as-is
+   - Handle technical terms appropriately (e.g., "리액트" → "React")
+   - Save to `markdown/{post-id}/en/content.mdx`
+   - Save to `markdown/{post-id}/en/frontmatter.mdx`
 
-## 번역 가이드라인
+## Translation guidelines
 
-### 일반 원칙
-- **자연스러운 번역**: 직역보다는 영어의 자연스러운 표현 사용
-- **기술 용어**: 일관성 있게 처리
-  - 영어: 원어 그대로 (React, TypeScript, Next.js)
-- **코드 유지**: 코드 블록, 인라인 코드, 파일명은 번역하지 않음
-- **마크다운 구조**: 헤딩, 리스트, 링크 등 마크다운 문법은 동일하게 유지
+### General principles
+- **Natural translation**: Use natural English expressions rather than literal translation
+- **Technical terms**: Handle consistently
+  - English terms: use as-is (React, TypeScript, Next.js)
+- **Preserve code**: Do not translate code blocks, inline code, or file names
+- **Markdown structure**: Keep markdown syntax (headings, lists, links, etc.) identical
 
-### Frontmatter 필드
+### Frontmatter fields
 ```yaml
 ---
-title: "제목 번역"
-excerpt: "요약 번역"
-category: "카테고리 번역"
-date: "2024-XX-XX"  # 변경하지 않음
-author: "이승현"  # 변경하지 않음
+title: "translated title"
+excerpt: "translated excerpt"
+category: "translated category"
+date: "2024-XX-XX"  # do not change
+author: "이승현"  # do not change
 header:
-  teaser: "/images/..."  # 변경하지 않음
+  teaser: "/images/..."  # do not change
 ---
 ```
 
-### 예시
+### Example
 
-**한국어 (ko/content.mdx)**:
+**Korean (ko/content.mdx)**:
 ```markdown
 # 리액트 훅 완벽 가이드
 
@@ -54,7 +54,7 @@ const [count, setCount] = useState(0);
 \`\`\`
 ```
 
-**영어 (en/content.mdx)**:
+**English (en/content.mdx)**:
 ```markdown
 # Complete Guide to React Hooks
 
@@ -67,14 +67,14 @@ const [count, setCount] = useState(0);
 \`\`\`
 ```
 
-## 사용 방법
+## How to use
 
-이 프롬프트를 실행하면:
-1. 지정한 포스트 ID의 한국어 원본을 읽습니다
-2. 영어로 번역합니다
-3. 영어 폴더에 파일을 생성합니다
+When you run this prompt:
+1. Reads the Korean source of the specified post ID
+2. Translates it into English
+3. Creates the files in the English folder
 
-## 주의사항
-- 번역 전에 원본 파일의 백업을 권장합니다
-- 번역 후 반드시 검토하여 기술 용어와 문맥이 올바른지 확인하세요
-- 이미지 경로나 링크는 절대 변경하지 마세요
+## Notes
+- Back up the source files before translating
+- Always review after translation to verify technical terms and context are correct
+- Never change image paths or links
