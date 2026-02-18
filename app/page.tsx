@@ -1,6 +1,7 @@
 import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
 import { BirthdayBanner } from "@/components/event/birthday-banner";
+import { HomeClientContent } from "@/components/home/home-client-content";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -12,7 +13,6 @@ import BlockHeader from "@/components/ui/block-header";
 import { defaultLocale } from "@/i18n/config";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import { shouldShowBirthdayBanner } from "@/util/birthday";
-import { HomeClientContent } from "../components/home/home-client-content";
 import { HomeSectionTitle } from "../components/home/home-section-title";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -42,14 +42,13 @@ export default async function Home() {
               icon={<Flame className="text-red-500" />}
             />
           }
-        >
-          <HomeClientContent
-            cardNumber={10}
-            frontMatterListByLocale={frontMatterListByLocale}
-          />
-        </BlockHeader>
+        />
       </section>
       <div className="mb-14 rounded-lg py-3">
+        <HomeClientContent
+          cardNumber={10}
+          frontMatterListByLocale={frontMatterListByLocale}
+        />
         <PostSwiper
           cardNumber={10}
           frontMatterListByLocale={frontMatterListByLocale}
