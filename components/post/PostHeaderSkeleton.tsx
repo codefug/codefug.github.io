@@ -7,7 +7,7 @@ export function PostHeaderSkeleton() {
       {/* 히어로 이미지 스켈레톤 */}
       <div className="relative mb-6 h-[300px] w-full overflow-hidden rounded-xl sm:h-[400px] md:h-[450px]">
         <Skeleton className="h-full w-full" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/70" />
 
         {/* 카테고리 태그 스켈레톤 */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2 sm:top-6 sm:left-6">

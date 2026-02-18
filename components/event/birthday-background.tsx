@@ -38,11 +38,11 @@ export function BirthdayBackground() {
   return (
     <>
       {/* 그라데이션 배경 */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-transparent" />
 
       {/* 움직이는 그라데이션 오버레이 */}
       <motion.div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-blue-500/10"
+        className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-500/10 via-transparent to-blue-500/10"
         animate={{
           x: ["-50%", "50%"],
           opacity: [0.3, 0.6, 0.3],
