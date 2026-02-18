@@ -40,7 +40,7 @@ export default function ProjectCard({
           height={144}
           className="h-36 w-36 rounded-lg border-2 object-contain"
         />
-        <header className="mb-4 flex flex-grow flex-col justify-center">
+        <header className="mb-4 flex grow flex-col justify-center">
           <h2 className="mt-0 mb-0 font-bold text-xl">{title}</h2>
           <div className="text-gray-500 text-sm">{duration}</div>
           <div className="font-medium text-gray-600 text-sm">{role}</div>

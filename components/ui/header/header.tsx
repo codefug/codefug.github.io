@@ -32,7 +32,7 @@ export default function Header() {
           <Link
             href={PATH.HOME}
             passHref
-            className="flex flex-shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg"
+            className="flex shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg"
           >
             <Image
               src="/images/main-logo.png"
