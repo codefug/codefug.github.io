@@ -41,6 +41,6 @@ Produce one improved version that incorporates all applicable improvement option
 
 ## Input
 
-- Sentence to improve: (e.g., "You can get a normal response from this API only when you include the request header and authentication information in the call.")
+- Sentence to improve: (e.g., "이 API를 호출할 때 요청 헤더와 인증 정보를 포함해야 정상적으로 응답을 받을 수 있습니다.")
 
 Based on the above, provide feedback and a revised version of the given sentence that is more effective and concise.
