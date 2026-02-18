@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Email from "../../public/icons/email.svg";
-import Github from "../../public/icons/github.svg";
+import Email from "@/assets/icons/EmailIcon";
+import Github from "@/assets/icons/GithubIcon";
 
 export default function Footer() {
   return (
@@ -46,7 +46,7 @@ export default function Footer() {
           </div>
 
           {/* 저작권 정보 */}
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             © {new Date().getFullYear()} CodeFug Blog
           </p>
         </div>
