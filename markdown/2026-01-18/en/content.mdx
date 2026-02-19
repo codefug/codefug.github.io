@@ -5,8 +5,12 @@ The reason for using useCallback and useMemo in React is not simply "performance
 After reading this document, you will understand:
 - Memory behavior differences between primitive and reference types
 - Why reference types are dangerous in useEffect dependency arrays
-- Hidden pitfalls in custom hooks that ESLint cannot warn about
+- The relationship between React.memo and props reference stability
+- ESLint's limitations in detecting pitfalls inside custom hooks
 - Memoization design principles for reference type data
+- Common memoization mistakes
+- The cost of indiscriminate memoization
+- When to apply memoization and structural optimizations
 
 ---
 
@@ -16,7 +20,7 @@ JavaScript data types are divided into Primitive and Reference types.
 
 ## Primitive Data
 
-Primitive data stores the value directly in the memory address. Variables point to that memory address, and the value is stored at that address.
+Primitive data stores values directly in memory. Variables point to memory addresses where values are stored.
 
 ```javascript
 let a = 1;
@@ -29,35 +33,26 @@ console.log(a === b); // true
 
 ```mermaid
 flowchart TB
-    subgraph Memory["Memory"]
+    subgraph Stack["Stack (Stack)"]
         direction TB
-        A1["Memory Address @100<br/>Value: 1"]
-        B1["Memory Address @200<br/>Value: 1"]
+        A["Variable a<br/>Value: 1<br/>(stored directly)"]
+        B["Variable b<br/>Value: 1<br/>(stored directly)"]
     end
-    
-    subgraph Variables["Variables"]
-        direction TB
-        A2["Variable a → @100"]
-        B2["Variable b → @200"]
-    end
-    
-    A2 --> A1
-    B2 --> B1
-    
-    Note1["Primitive data stores<br/>value directly in<br/>memory address"]
-    
-    Memory --> Note1
+
+    Note1["Primitive data is stored<br/>directly on the stack"]
+
+    Stack --> Note1
 ```
 
-`a` points to memory address @100, where value `1` is directly stored. `b` points to memory address @200, where value `1` is directly stored. The comparison operator (`===`) compares the stored values themselves, so it returns `true`.
+`a` stores the value `1` directly on the stack. `b` also stores the value `1` directly on the stack. The comparison operator (`===`) compares the values themselves, so it returns `true`.
 
 **Key Point:**
-- Primitive data uses the memory address that directly contains the data
-- The value is stored directly at the memory address
+- Primitive data values are stored directly on the stack
+- Variables themselves hold the values, so comparison compares the values themselves
 
 ## Reference Data
 
-Reference data has a memory address for the object, and when you go to that address, the primitive data inside the object each have their own memory locations.
+Reference data has a memory address for the object. When you go to that address, the primitive data inside the object each has its own memory location.
 
 ```javascript
 const obj1 = { value: 1 };
@@ -70,75 +65,43 @@ console.log(obj1 === obj2); // false
 
 ```mermaid
 flowchart TB
-    subgraph Variables["Variables"]
+    subgraph Stack["Stack (Stack)"]
         direction TB
-        V1["Variable obj1 → @1000"]
-        V2["Variable obj2 → @2000"]
+        V1["Variable obj1<br/>Address: @1000"]
+        V2["Variable obj2<br/>Address: @2000"]
     end
-    
+
     subgraph Heap["Heap Memory"]
         direction TB
         subgraph O1["Object @1000"]
             direction TB
-            P1["@1000+0x00: value<br/>Value: 1<br/>(Primitive number)"]
+            P1["@1000+0x00: value<br/>Value: 1 (Primitive)"]
         end
-        
+
         subgraph O2["Object @2000"]
             direction TB
-            P2["@2000+0x00: value<br/>Value: 1<br/>(Primitive number)"]
+            P2["@2000+0x00: value<br/>Value: 1 (Primitive)"]
         end
     end
-    
+
     V1 -->|"reference"| O1
     V2 -->|"reference"| O2
-    
-    Note1["When you go to object address (@1000),<br/>primitive values inside<br/>each have their own memory locations"]
-    
-    O1 -.-> Note1
-    O2 -.-> Note1
+
+    Note1["Stack stores only addresses<br/>Heap stores actual objects"]
+
+    Stack -.-> Note1
+    Heap -.-> Note1
 ```
 
-`obj1` points to object address @1000, and when you go to that address, the `value` property inside is stored at memory location @1000+0x00. `obj2` points to object address @2000, and the `value` inside is stored at @2000+0x00. The comparison operator (`===`) compares object addresses, so it returns `false`.
+`obj1` points to object address @1000, and at that address, the `value` property is stored at memory location @1000+0x00. `obj2` points to object address @2000, and the `value` is stored at @2000+0x00. The comparison operator (`===`) compares object addresses, so it returns `false`.
 
 **Key Point:**
 - Reference data has a memory address for the object
-- When you go to that address, the primitive data inside the object each have their own memory locations
+- At that address, primitive data inside the object each has its own memory location
 
-### Memory Structure in Detail Example
+### Nested Object Example
 
-Let's examine the memory structure with a more complex example.
-
-```javascript
-const user = { name: 'Kim', age: 25 };
-```
-
-**Memory Structure:**
-
-```mermaid
-flowchart TB
-    subgraph Variables["Variables"]
-        V1["Variable user → @1000"]
-    end
-    
-    subgraph Heap["Heap Memory"]
-        direction TB
-        subgraph Object["Object @1000"]
-            direction TB
-            P1["@1000+0x00: name<br/>Value: 'Kim'<br/>(Primitive string)"]
-            P2["@1000+0x10: age<br/>Value: 25<br/>(Primitive number)"]
-        end
-    end
-    
-    V1 -->|"reference"| Object
-    Object --> P1
-    Object --> P2
-    
-    Note1["When you go to object address (@1000),<br/>primitive values inside<br/>each have their own memory addresses"]
-    
-    Object -.-> Note1
-```
-
-**Nested Object Example:**
+Let's look at the memory structure of nested objects. Nested objects are cases where reference type data exists inside reference type data. For nested objects, the address of the outer reference type data is stored in the stack, and the address of the nested reference type data is stored directly in the heap.
 
 ```javascript
 const user = {
@@ -149,10 +112,10 @@ const user = {
 
 ```mermaid
 flowchart TB
-    subgraph Variables["Variables"]
-        V1["Variable user → @1000"]
+    subgraph Variables["Stack (Stack)"]
+        V1["Variable user<br/>Address: @1000"]
     end
-    
+
     subgraph Heap["Heap Memory"]
         direction TB
         subgraph O1["Object @1000"]
@@ -160,26 +123,21 @@ flowchart TB
             P1["@1000+0x00: name<br/>Value: 'Kim'<br/>(Primitive)"]
             P2["@1000+0x10: address<br/>Value: @2000<br/>(Reference address)"]
         end
-        
+
         subgraph O2["Object @2000"]
             direction TB
             P3["@2000+0x00: city<br/>Value: 'Seoul'<br/>(Primitive)"]
             P4["@2000+0x10: zip<br/>Value: '12345'<br/>(Primitive)"]
         end
     end
-    
+
     V1 -->|"reference"| O1
     P2 -->|"reference"| O2
-    
-    Note1["Primitive values inside each object<br/>each have their own memory addresses"]
-    
-    O1 -.-> Note1
-    O2 -.-> Note1
 ```
 
-### Primitive vs Reference Comparison
+## Primitive vs Reference Comparison
 
-Now let's compare the memory behavior differences between primitives and references at a glance.
+Let's compare the memory behavior differences between primitive and reference types at a glance.
 
 ```javascript
 // Primitive example
@@ -195,55 +153,49 @@ console.log(obj1 === obj2); // false
 
 ```mermaid
 flowchart TB
-    subgraph Primitive["Primitive"]
+    subgraph Primitive["Primitive (Primitive)"]
         direction TB
-        subgraph Stack1["Stack"]
+        subgraph Stack1["Stack (Stack)"]
             A["Variable a<br/>Value: 1<br/>(stored directly)"]
             B["Variable b<br/>Value: 1<br/>(stored directly)"]
         end
         Compare1["Comparison: a === b<br/>Value comparison → true"]
-        Note1["Each variable stores value<br/>in independent memory space"]
     end
 
-    subgraph Reference["Reference"]
+    subgraph Reference["Reference (Reference)"]
         direction TB
-        subgraph Stack2["Stack"]
+        subgraph Stack2["Stack (Stack)"]
             C["Variable obj1<br/>Address: @100"]
             D["Variable obj2<br/>Address: @200"]
         end
-        subgraph Heap2["Heap"]
+        subgraph Heap2["Heap (Heap)"]
             O1["@100<br/>{ value: 1 }"]
             O2["@200<br/>{ value: 1 }"]
         end
         Compare2["Comparison: obj1 === obj2<br/>Address comparison → false"]
-        Note2["Stack stores only address<br/>Heap stores actual object"]
     end
 
     Stack1 --> Compare1
-    Compare1 --> Note1
-    
+
     Stack2 --> Compare2
     C --> O1
     D --> O2
-    Compare2 --> Note2
 ```
 
-**Key Differences Summary:**
+**Summary of Key Differences:**
 
-| Aspect | Primitive | Reference |
-|--------|-----------|-----------|
-| **Storage Location** | Value stored directly in stack | Object stored in heap, only address in stack |
+| Category | Primitive | Reference |
+|------|--------|--------|
+| **Storage Location** | Stack stores values directly | Heap stores objects, stack stores only addresses |
 | **Assignment Method** | Value copy (Pass by Value) | Address copy (Pass by Reference) |
-| **Comparison** | Compares values themselves | Compares addresses |
-| **Independence** | Each variable has independent value | Variables pointing to same address share object |
-| **Memory** | Fixed size, fast access | Dynamic size, slower access |
+| **Comparison** | Values themselves are compared | Addresses are compared |
 
-**Practical Example:**
+**Practical Execution Example:**
 
 ```javascript
 // Primitive: Value copy
 let x = 10;
-let y = x;  // y gets a copy of 10
+let y = x;  // y is a copy of 10
 y = 20;     // Only y changes
 console.log(x); // 10 (x is unaffected)
 
@@ -251,7 +203,7 @@ console.log(x); // 10 (x is unaffected)
 let objA = { count: 10 };
 let objB = objA;  // objB copies objA's address
 objB.count = 20;  // Modifies the same object
-console.log(objA.count); // 20 (objA is affected)
+console.log(objA.count); // 20 (objA is also affected)
 ```
 
 ## Functions Are Also Reference Types
@@ -265,13 +217,12 @@ const fn2 = () => console.log('hello');
 console.log(fn1 === fn2); // false
 ```
 
-Even functions with identical code are assigned new memory addresses each time they are declared.
+Even if functions have identical code, each declaration assigns a new memory address.
 
-## JavaScript Type Classification
-
+**JavaScript Type Classification**
 ```mermaid
 flowchart TB
-    subgraph Primitive["Primitive"]
+    subgraph Primitive["Primitive (Primitive)"]
         P1[number]
         P2[string]
         P3[boolean]
@@ -281,7 +232,7 @@ flowchart TB
         P7[bigint]
     end
 
-    subgraph Reference["Reference"]
+    subgraph Reference["Reference (Reference)"]
         R1[Object]
         R2[Array]
         R3[Function]
@@ -383,23 +334,25 @@ function SearchPage() {
 ```
 
 Execution flow:
-1. Component renders → `inlineSaveDraft` function created (@100)
-2. useEffect executes → calls `inlineSaveDraft()` → executes `setSearchCount`
-3. State change causes re-render → `inlineSaveDraft` function recreated (@200)
-4. useEffect detects `@100 !== @200` → executes again
-5. Steps 2-4 repeat (infinite loop)
+1. User types in input → `keyword` state changes
+2. Component re-renders → `inlineSaveDraft` function recreated (@200, new address)
+3. useEffect deps comparison: `inlineSaveDraft @100 !== @200` → effect executes
+4. Effect executes → `inlineSaveDraft()` called → `setSearchCount` executes
+5. `searchCount` changes → re-render → `inlineSaveDraft` function recreated again (@300)
+6. useEffect deps comparison: `inlineSaveDraft @200 !== @300` → effect executes again
+7. Steps 4-6 repeat (infinite loop)
 
 ```mermaid
 flowchart LR
     A["User types in input"] --> B["keyword state changes"]
     B --> C["Component re-renders"]
-    C --> D["inlineSaveDraft function recreated<br/>(@100 → @200)"]
+    C --> D["inlineSaveDraft function recreated (new address @200)"]
     D --> E["useEffect deps comparison"]
     E --> F{"inlineSaveDraft address different?<br/>(@100 !== @200)"}
     F -->|Yes| G["effect runs: inlineSaveDraft()"]
     G --> H["setSearchCount called"]
     H --> I["searchCount changes → re-render"]
-    I --> J["inlineSaveDraft function recreated again<br/>(@200 → @300)"]
+    I --> J["inlineSaveDraft function recreated again (new address @300)"]
     J --> K["useEffect deps comparison<br/>(@200 !== @300)"]
     K --> G
     F -->|No| L["effect skipped"]
@@ -463,7 +416,7 @@ function SearchPage() {
   const [keyword, setKeyword] = useState('');
   const [searchCount, setSearchCount] = useState(0);
 
-  // ⚠️ New function created on every render (no memoization)
+  // New function created on every render (no memoization)
   const inlineSaveDraft = () => {
     console.log('Executing search:', keyword);
   };
@@ -480,10 +433,10 @@ function SearchPage() {
 **Execution flow:**
 
 ```jsx
-// Step 1: User types "react" in input
+// Step 1: User types "a" in input
 <input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-// → setKeyword('react') called
-// → keyword: '' → 'react'
+// → setKeyword('a') called
+// → keyword: '' → 'a'
 
 // Step 2: Component re-renders
 function SearchPage() {
@@ -500,18 +453,18 @@ function SearchPage() {
     }
   }, [inlineSaveDraft, keyword]);
   // Previous deps: [undefined, ''] (first render)
-  // Current deps: [@100, 'react']
-  // @100 !== undefined → effect runs ✅
+  // Current deps: [@100, 'a']
+  // @100 !== undefined + 'a' !== '' → effect runs ✅
 }
 
-// Step 5: Re-render occurs due to searchCount change
+// Step 5: searchCount changes, re-render occurs
 // searchCount: 0 → 1
 
-// Step 6: Re-render causes inlineSaveDraft function to be created again
+// Step 6: Re-render, inlineSaveDraft function created again
 function SearchPage() {
   const inlineSaveDraft = () => {
     console.log('Executing search:', keyword);
-  }; // @200 (new memory address, different from @100!)
+  }; // @200 (new memory address, @100 and different!)
 
   // Step 7: useEffect deps comparison
   useEffect(() => {
@@ -520,22 +473,22 @@ function SearchPage() {
       setSearchCount((prev) => prev + 1); // searchCount: 1 → 2
     }
   }, [inlineSaveDraft, keyword]);
-  // Previous deps: [@100, 'react']
-  // Current deps: [@200, 'react']
+  // Previous deps: [@100, 'a']
+  // Current deps: [@200, 'a']
   // @100 !== @200 → effect runs again! ⚠️
 }
 
-// Step 8: Another re-render due to searchCount change
+// Step 8: Re-render occurs due to searchCount change
 // searchCount: 1 → 2
 
-// Step 9: Re-render causes inlineSaveDraft function to be created again
+// Step 9: Re-render, inlineSaveDraft function created again
 // @300 created → effect runs again → searchCount: 2 → 3
 // @400 created → effect runs again → searchCount: 3 → 4
 // ... infinite loop 🔄
 ```
 
 **Core problem:**
-- `keyword` hasn't changed (still `'react'`)
+- `keyword` hasn't changed (still `'a'`)
 - Only `inlineSaveDraft` function keeps being recreated (only memory address changes: @100 → @200 → @300)
 - React compares memory addresses in deps comparison (`@100 !== @200`)
 - React considers it "changed" every time and runs the effect
@@ -553,7 +506,7 @@ flowchart LR
     H1 --> I1["effect runs again (address change detected)"]
     I1 --> J1["setSearchCount → searchCount=2"]
     J1 --> K1["Infinite loop!"]
-    
+
     style K1 fill:#ff6b6b,stroke:#c92a2a,color:#fff
     style D1 fill:#ffe3e3,stroke:#ff6b6b
     style H1 fill:#ffe3e3,stroke:#ff6b6b
@@ -587,18 +540,18 @@ function SearchPage() {
 **Execution flow:**
 
 ```jsx
-// Step 1: User types "react" in input
+// Step 1: User types "a" in input
 <input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-// → setKeyword('react') called
-// → keyword: '' → 'react'
+// → setKeyword('a') called
+// → keyword: '' → 'a'
 
 // Step 2: Component re-renders
 function SearchPage() {
   // Step 3: Stabilize function reference with useCallback
   const saveDraft = useCallback(() => {
     console.log('Executing search:', keyword);
-  }, [keyword]); // keyword changed from '' → 'react', so new function created
-  // @100 created (depends on keyword='react')
+  }, [keyword]); // keyword changed from '' → 'a', so new function created
+  // @100 created (depends on keyword='a')
 
   // Step 4: useEffect deps comparison
   useEffect(() => {
@@ -608,18 +561,18 @@ function SearchPage() {
     }
   }, [saveDraft, keyword]);
   // Previous deps: [undefined, '']
-  // Current deps: [@100, 'react']
+  // Current deps: [@100, 'a']
   // @100 !== undefined → effect runs ✅
 }
 
-// Step 5: Re-render occurs due to searchCount change
+// Step 5: searchCount change causes re-render
 // searchCount: 0 → 1
 
 // Step 6: Re-render but keyword is same, so saveDraft address maintained
 function SearchPage() {
   const saveDraft = useCallback(() => {
     console.log('Executing search:', keyword);
-  }, [keyword]); // keyword='react' (no change)
+  }, [keyword]); // keyword='a' (no change)
   // @100 maintained! (keyword is same, so useCallback returns same reference)
 
   // Step 7: useEffect deps comparison
@@ -629,31 +582,9 @@ function SearchPage() {
       setSearchCount((prev) => prev + 1);
     }
   }, [saveDraft, keyword]);
-  // Previous deps: [@100, 'react']
-  // Current deps: [@100, 'react']
-  // @100 === @100 && 'react' === 'react' → effect skipped! ✅
-}
-
-// Step 8: User types "vue" in input
-// keyword: 'react' → 'vue'
-
-// Step 9: Re-render due to keyword change
-function SearchPage() {
-  const saveDraft = useCallback(() => {
-    console.log('Executing search:', keyword);
-  }, [keyword]); // keyword changed to 'vue', so new function created
-  // @200 created (depends on keyword='vue')
-
-  // Step 10: useEffect deps comparison
-  useEffect(() => {
-    if (keyword) {
-      saveDraft(); // Execute
-      setSearchCount((prev) => prev + 1);
-    }
-  }, [saveDraft, keyword]);
-  // Previous deps: [@100, 'react']
-  // Current deps: [@200, 'vue']
-  // @100 !== @200 → effect runs ✅ (as intended!)
+  // Previous deps: [@100, 'a']
+  // Current deps: [@100, 'a']
+  // @100 === @100 && 'a' === 'a' → effect skipped! ✅
 }
 ```
 
@@ -685,14 +616,14 @@ flowchart LR
     I2 --> J2["Only when keyword changes"]
     J2 --> K2["saveDraft @200 created<br/>(new keyword dependent)"]
     K2 --> L2["effect runs"]
-    
+
     style H2 fill:#d3f9d8,stroke:#51cf66,color:#000
     style I2 fill:#d3f9d8,stroke:#51cf66,color:#000
     style D2 fill:#e7f5ff,stroke:#339af0
     style K2 fill:#e7f5ff,stroke:#339af0
 ```
 
-### React Query Makes It Even More Complex
+## React Query Makes It Even More Complex
 
 In real projects, you often use React Query (TanStack Query) together. This makes debugging much harder.
 
@@ -729,228 +660,47 @@ function SearchPage() {
 }
 ```
 
-#### Step 1: Initial Input Causes Re-render
-
-This starts the moment the user types "react" in the input field.
-
-```jsx
-// User types "react" in input
-<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-// → setKeyword('react') called
-```
+**Problem points:**
+- When the user types in the input, `keyword` state changes
+- When `keyword` changes and re-render occurs, `inlineSaveDraft` function is recreated (new address)
+- If `inlineSaveDraft` is in useEffect deps, the address change is detected and the effect executes
+- When effect calls `refetch()`, React Query state changes, causing a re-render
+- Re-render recreates `inlineSaveDraft` with a new address, triggering the effect again
+- This creates an infinite loop
 
 **Execution flow:**
 
 ```jsx
-// 1. keyword state changes
-const [keyword, setKeyword] = useState(''); // '' → 'react'
+// 1. User types 'a' → keyword state changes → re-render
+const inlineSaveDraft = () => { ... }; // @200 (new memory address)
+useEffect(..., [inlineSaveDraft, keyword]); // [@100, ''] → [@200, 'a']
+// @100 !== @200 + 'a' !== '' → effect runs
 
-// 2. Component re-renders
-function SearchPage() {
-  // 3. New function created on every render (new memory address)
-  const inlineSaveDraft = () => {
-    console.log('Executing search:', keyword); // @200 (was @100 in previous render)
-    refetch();
-  };
+// 2. Effect runs → inlineSaveDraft() called → refetch()
+// refetch() changes React Query state(isFetching, data) → re-render
 
-  // 4. useEffect deps comparison
-  useEffect(() => {
-    if (keyword) {
-      inlineSaveDraft();
-    }
-  }, [inlineSaveDraft, keyword]); 
-  // Previous deps: [@100, ''] 
-  // Current deps: [@200, 'react']
-  // @100 !== @200 → effect runs!
-}
-```
-
-```mermaid
-flowchart LR
-    A["User types in input"] --> B["keyword state changes"]
-    B --> C["Component re-renders"]
-    C --> D["inlineSaveDraft newly created<br/>(@100 → @200)"]
-    D --> E["useEffect deps comparison<br/>(@100 !== @200)"]
-    E --> F["effect runs"]
-    
-    style D fill:#ffe3e3,stroke:#ff6b6b
-    style E fill:#fff3cd,stroke:#ffc107
-    style F fill:#ffe3e3,stroke:#ff6b6b
-```
-
-**Core problem:** Since the `inlineSaveDraft` function receives a new memory address on every render, React recognizes it as a "changed value."
-
-#### Step 2: Chain Reaction from React Query State Change
-
-When the effect runs in Step 1, `refetch()` is called inside it.
-
-```jsx
-useEffect(() => {
-  if (keyword) {
-    inlineSaveDraft(); // This function calls refetch() inside
-  }
-}, [inlineSaveDraft, keyword]);
-
-// Inside inlineSaveDraft function
-const inlineSaveDraft = () => {
-  console.log('Executing search:', keyword);
-  refetch(); // ⚠️ Problem starts here!
-};
-```
-
-**Execution flow:**
-
-```jsx
-// 1. effect runs → inlineSaveDraft() called
-useEffect(() => {
-  inlineSaveDraft(); // Calls refetch()
-}, [inlineSaveDraft, keyword]);
-
-// 2. refetch() called, causing React Query state to change
-const { data, refetch, isFetching } = useQuery({
-  queryKey: ['search', keyword],
-  queryFn: () => fetchSearchResults(keyword),
-  enabled: !!keyword,
-});
-// isFetching: false → true → false (loading complete)
-// data: undefined → [...results] (data updated)
-
-// 3. React Query state change causes component re-render
-// → SearchPage() function runs again
-
-// 4. Re-render causes inlineSaveDraft function to be created again
-function SearchPage() {
-  const inlineSaveDraft = () => { // @300 (was @200 before)
-    console.log('Executing search:', keyword);
-    refetch();
-  };
-
-  // 5. useEffect deps comparison
-  useEffect(() => {
-    if (keyword) {
-      inlineSaveDraft();
-    }
-  }, [inlineSaveDraft, keyword]);
-  // Previous deps: [@200, 'react']
-  // Current deps: [@300, 'react']
-  // @200 !== @300 → effect runs again!
-}
-```
-
-```mermaid
-flowchart LR
-    F["effect runs"] --> G["refetch() called"]
-    G --> H["React Query state changes<br/>(isFetching: true → false)"]
-    H --> I["Re-render occurs"]
-    I --> J["inlineSaveDraft newly created again<br/>(@200 → @300)"]
-    J --> K["useEffect deps comparison<br/>(@200 !== @300)"]
-    K --> F
-    
-    style H fill:#ffe3e3,stroke:#ff6b6b
-    style J fill:#ffe3e3,stroke:#ff6b6b
-    style K fill:#fff3cd,stroke:#ffc107
-```
-
-**Core problem:** `refetch()` changes React Query state, which causes the component to re-render, and `inlineSaveDraft` function is created again. Developers think "the effect ran because keyword changed," but in reality, a chain reaction occurs: React Query state change → function recreation → effect re-execution.
-
-#### Step 3: Infinite Loop Occurs
-
-When the effect runs again in Step 2, the same process repeats.
-
-```jsx
-// Effect re-executes from Step 2
-useEffect(() => {
-  if (keyword) {
-    inlineSaveDraft(); // Calls function at address @300
-  }
-}, [inlineSaveDraft, keyword]); // [@300, 'react']
-
-// inlineSaveDraft executes → refetch() called
-const inlineSaveDraft = () => {
-  console.log('Executing search:', keyword);
-  refetch(); // React Query state changes
-};
-
-// React Query state changes → re-render
-// → inlineSaveDraft @400 created
-// → useEffect deps comparison: @300 !== @400
-// → effect runs again
-// → refetch() called again
-// → re-render
-// → inlineSaveDraft @500 created
-// → ... infinite loop 🔄
-```
-
-**Execution flow (infinite loop):**
-
-```jsx
-// Render 1
-const inlineSaveDraft = () => { ... }; // @200
-useEffect(..., [@200, 'react']); // effect runs
-
-// Render 2 (re-render due to refetch)
+// 3. Re-render, inlineSaveDraft created again
 const inlineSaveDraft = () => { ... }; // @300
-useEffect(..., [@300, 'react']); // @200 !== @300 → effect runs
+useEffect(..., [inlineSaveDraft, keyword]); // [@200, 'a'] → [@300, 'a']
+// keyword unchanged but @200 !== @300 → effect runs again
 
-// Render 3 (re-render due to refetch)
-const inlineSaveDraft = () => { ... }; // @400
-useEffect(..., [@400, 'react']); // @300 !== @400 → effect runs
-
-// Render 4 (re-render due to refetch)
-const inlineSaveDraft = () => { ... }; // @500
-useEffect(..., [@500, 'react']); // @400 !== @500 → effect runs
-
-// ... infinite loop
+// 4. Effect runs → refetch() → re-render → inlineSaveDraft @400 → ... infinite loop 🔄
 ```
-
-**Symptoms you can see in browser console:**
-
-```jsx
-// Console output (infinite loop)
-Executing search: react
-Executing search: react
-Executing search: react
-Executing search: react
-// ... continues indefinitely
-```
-
-**Check in React DevTools:**
-
-- Components tab shows component constantly flickering (re-rendering)
-- Profiler shows infinite rendering loop
 
 ```mermaid
 flowchart LR
-    K["useEffect deps comparison<br/>(@200 !== @300)"] --> F["effect runs"]
-    F --> G["refetch() called"]
-    G --> H["React Query state changes"]
-    H --> I["Re-render occurs"]
-    I --> J["inlineSaveDraft newly created again<br/>(@300 → @400)"]
-    J --> K2["useEffect deps comparison<br/>(@300 !== @400)"]
-    K2 --> F
-    F --> L["Infinite loop! 🔄"]
-    
-    style L fill:#ff6b6b,stroke:#c92a2a,color:#fff,stroke-width:3px
+    A["keyword changes → re-render"] --> B["inlineSaveDraft new created<br/>(@100 → @200)"]
+    B --> C["effect runs<br/>(@100 !== @200<br/>'a' !== '')"]
+    C --> D["refetch() called"]
+    D --> E["React Query state change<br/>→ re-render"]
+    E --> F["inlineSaveDraft created again<br/>(@200 → @300)"]
+    F --> G["effect runs again<br/>(@200 !== @300)"]
+    G --> D
+
+    style B fill:#ffe3e3,stroke:#ff6b6b
     style F fill:#ffe3e3,stroke:#ff6b6b
-    style J fill:#ffe3e3,stroke:#ff6b6b
+    style G fill:#fff3cd,stroke:#ffc107
 ```
-
-**Why does this happen?**
-
-1. `keyword` hasn't changed (still `'react'`)
-2. Only `inlineSaveDraft` function keeps being recreated (only memory address changes)
-3. React compares memory addresses in deps comparison (`@200 !== @300 !== @400`)
-4. React considers it "changed" every time and runs the effect
-5. Effect runs → refetch → re-render → function recreated → effect runs (infinite loop)
-
-**Why is it hard to track?**
-
-1. When `keyword` changes, the effect should run (intended behavior)
-2. When React Query's `refetch()` is called, query state (`isFetching`, `data`, etc.) changes
-3. Query state change causes component re-render, and `inlineSaveDraft` is recreated
-4. Developers think "the effect ran because keyword changed," but in reality, a chain reaction occurs: React Query state change → function recreation → effect re-execution
-
-ESLint warns in this situation, but when React Query is involved, it's very difficult to identify which dependency is the problem. You need to understand the circular structure where `refetch` changes state, and that state change triggers another render.
 
 ## Stabilizing Objects with useMemo
 
@@ -1115,30 +865,6 @@ function Editor() {
 }
 ```
 
-```mermaid
-flowchart LR
-    subgraph "useAutoSave Hook"
-        A["Create save function (no memoization)"]
-        B["return { save }"]
-    end
-
-    subgraph Component
-        C["const { save } = useAutoSave()"]
-        D["useEffect deps: [save]"]
-    end
-
-    subgraph ESLint
-        E["Function inside component"]
-        F["Function returned from hook"]
-    end
-
-    A --> B
-    B --> C
-    C --> D
-    E -->|"Warns"| D
-    F -->|"Does not warn"| D
-```
-
 ESLint warns when functions declared inside components are in deps, but assumes functions returned from hooks are "already stable references." However, if hooks don't memoize internally, new functions are created on every render.
 
 ## Result: Hidden Performance Issues
@@ -1205,21 +931,6 @@ function useCounter() {
 }
 ```
 
-```mermaid
-flowchart TB
-    subgraph "Without memoization"
-        A1[Render 1] --> B1["increment @100"]
-        A2[Render 2] --> B2["increment @200"]
-        A3[Render 3] --> B3["increment @300"]
-    end
-
-    subgraph "With useCallback"
-        C1[Render 1] --> D1["increment @100"]
-        C2[Render 2] --> D1
-        C3[Render 3] --> D1
-    end
-```
-
 ## Principle 2: Consider Calculation Cost for Primitive Return Values
 
 Since primitives use value comparison, memoization is not mandatory. Use useMemo only when calculation cost is high.
@@ -1279,21 +990,11 @@ function useWindowSize() {
 
 ## Summary: Memoization Guide by Type
 
-| Return Value Type | Memoization     | Reason                                           |
-| ----------------- | --------------- | ------------------------------------------------ |
-| Function          | useCallback required | Reference type, can be used in dependency arrays |
-| Object/Array      | useMemo required | Reference type, can be used in dependency arrays |
+| Return Value Type | Memoization | Reason |
+| --- | --- | --- |
+| Function | useCallback required | Reference type, can be used in dependency arrays |
+| Object/Array | useMemo required | Reference type, can be used in dependency arrays |
 | Number/String/Boolean | Consider calculation cost | Primitives use value comparison, useMemo only when cost is high |
-
-```mermaid
-flowchart LR
-    A["Return value from hook"] --> B{"Return value type?"}
-    B -->|"Function"| C["useCallback required"]
-    B -->|"Object/Array"| D["useMemo required"]
-    B -->|"Primitive"| E{"Is calculation cost high?"}
-    E -->|"Yes"| F["useMemo recommended"]
-    E -->|"No"| G["Memoization unnecessary"]
-```
 
 ---
 
@@ -1344,25 +1045,332 @@ const sortedItems = useMemo(
 );
 ```
 
-```mermaid
-flowchart LR
-    A["Is memoization needed?"] --> B{"Is it a reference type?"}
-    B -->|"Yes"| C{"Goes into deps or<br/>passed to memoized component?"}
-    C -->|"Yes"| D["Memoization needed"]
-    C -->|"No"| E["May be unnecessary"]
-    B -->|"No (Primitive)"| F{"Is calculation cost high?"}
-    F -->|"Yes"| G["Consider useMemo"]
-    F -->|"No"| H["Memoization unnecessary"]
+---
+
+# When to Apply Memoization: The Principle
+
+Indiscriminate memoization causes other problems beyond what it solves.
+
+## 1. Memory Occupancy & Garbage Collection Burden
+
+Garbage collection in browsers automatically removes unused data. While memoization is maintained, garbage collection cannot collect that data.
+
+```jsx
+const filtered = useMemo(
+  () => items.filter((item) => item.category === filter),
+  [items, filter]
+);
 ```
+
+```mermaid
+flowchart TB
+    subgraph Without["Without memoization"]
+        direction TB
+        A1["Render 1: result @100"]
+        A2["Render 2: result @200<br/>(new render)"]
+        A1 -->|"Next render, reference released"| GC1["@100 GC collectable ✅"]
+        A2 -->|"Next render, reference released"| GC2["@200 GC collectable ✅"]
+    end
+
+    subgraph With["With useMemo"]
+        direction TB
+        C1["Render 1: result @100"]
+        C2["Render 2 (deps same)"]
+        C3["Render 3 (deps same)"]
+        CACHE["Cache: @100 maintained"]
+        C1 --> CACHE
+        C2 -->|"Return cache"| CACHE
+        C3 -->|"Return cache"| CACHE
+        CACHE --> BLOCK["@100 GC uncollectable ❌<br/>Until deps change<br/>Memory occupied"]
+    end
+
+    style BLOCK fill:#ffe3e3,stroke:#ff6b6b
+    style GC1 fill:#d3f9d8,stroke:#51cf66
+    style GC2 fill:#d3f9d8,stroke:#51cf66
+    style CACHE fill:#fff3cd,stroke:#ffc107
+```
+
+useMemo maintains one cached value at a time. As long as deps don't change, the currently cached result (@100) stays in memory and GC cannot collect it. This occupies memory while the component is mounted.
+
+## 2. Dependency Array Comparison Cost
+
+On every re-render, the values in the dependency array are compared with previous values. This comparison cost is O(n) where n is the array length.
+
+```jsx
+// Dependency array gets longer, comparison cost increases
+const result = useMemo(
+  () => a + b + c + d + e, // Just simple calculation
+  [a, b, c, d, e] // But 5 Object.is comparisons every render
+);
+
+// For simple calculations, just calculating is faster
+const result = a + b + c + d + e;
+```
+
+For simple calculations, the comparison cost itself can exceed the actual calculation cost.
+
+## 3. Unnecessary Memoization of Primitives
+
+Primitive types don't need memoization. Moreover, it hurts readability.
+
+```jsx
+// Bad: Unnecessary memoization of primitives
+const doubled = useMemo(() => count * 2, [count]);
+const isEven = useMemo(() => count % 2 === 0, [count]);
+const label = useMemo(() => `Count: ${count}`, [count]);
+
+// Good: Just calculate
+const doubled = count * 2;
+const isEven = count % 2 === 0;
+const label = `Count: ${count}`;
+```
+
+Primitives compare by value, so if the value is the same on every render, the `Object.is` comparison returns `true`. What React prevents is not the calculation itself, but unnecessary re-renders of child components that receive these values as props.
+
+## 4. Promotes Mistakes
+
+When all data is memoized, later developers cannot tell which data has expensive calculations. Also, if dependency array data is missing, stale closure bugs occur.
+
+```jsx
+const [count, setCount] = useState(0);
+
+// Missing count in deps causes stale closure
+const handleClick = useCallback(() => {
+  console.log(count); // Always prints 0 (fixed to initial value)
+}, []); // ⚠️ count is missing
+
+// No matter how count changes, handleClick references count=0 closure
+```
+
+> [!NOTE] stale closure
+>
+> A phenomenon where memoization keeps previous data and maintains only that. The situation where values are not updated to the latest.
 
 ---
 
-# Conclusion
+# Memoization Application Principles
 
-useCallback and useMemo are not simple performance optimization tools.
+Now that you understand the cost of indiscriminate memoization, let's learn the principles for applying it correctly.
 
-1. They are necessary due to **reference type characteristics**. Even with identical content, new memory addresses are assigned on every render.
-2. Using reference types directly in **useEffect dependency arrays** causes unintended effect re-execution or infinite loops.
-3. Passing reference type props to **components wrapped with React.memo** nullifies the memoization effect.
-4. **ESLint cannot warn beyond custom hook boundaries.** You must directly ensure reference stability of return values when designing hooks.
-5. **Always memoize reference type return values in custom hooks.** For primitives, decide based on calculation cost.
+## Principle 1: Early Optimization Is a Trap
+
+Write code first, measure actual bottlenecks with Profiler, then optimize.
+
+```jsx
+// ❌ Optimize before confirming it's slow
+function ItemList({ items, onSelect }) {
+  const filtered = useMemo(() => items.filter(isActive), [items]);
+  const handleClick = useCallback((id) => onSelect(id), [onSelect]);
+
+  return filtered.map((item) => (
+    <Item key={item.id} data={item} onClick={handleClick} />
+  ));
+}
+
+// ✅ Write first, check Profiler for bottleneck, then optimize
+function ItemList({ items, onSelect }) {
+  const filtered = items.filter(isActive);
+
+  return filtered.map((item) => (
+    <Item key={item.id} data={item} onClick={(id) => onSelect(id)} />
+  ));
+}
+```
+
+```mermaid
+flowchart LR
+    A["1. Write code"] --> B["2. Verify functionality"]
+    B --> C["3. Measure bottleneck with Profiler"]
+    C --> D{"Is it actually slow?"}
+    D -->|Yes| E["4. Apply optimization"]
+    D -->|No| F["Optimization unnecessary"]
+    E --> G["5. Remeasure to confirm effect"]
+
+    style F fill:#d3f9d8,stroke:#51cf66
+    style E fill:#e7f5ff,stroke:#339af0
+```
+
+## Principle 2: Calculate Optimization Cost
+
+Every optimization has trade-offs. Optimization without context adds only cost.
+
+```jsx
+// ✅ React.memo is effective: List items rendered repeatedly
+// Cost savings multiply by item count × render count
+const ListItem = React.memo(({ item, onDelete }) => {
+  return <div onClick={() => onDelete(item.id)}>{item.name}</div>;
+});
+
+// ❌ useCallback is unnecessary: Function not used in props or deps
+function Component() {
+  // Only adds comparison cost, no practical benefit
+  const getLabel = useCallback(() => 'hello', []);
+  return <div>{getLabel()}</div>;
+}
+
+// ✅ Don't memoize if not passed as props or deps
+function Component() {
+  const getLabel = () => 'hello';
+  return <div>{getLabel()}</div>;
+}
+```
+
+| Case | Optimize? | Reason |
+|------|-----------|--------|
+| List item component | Consider React.memo | Savings multiply by item count |
+| Function passed to props/deps | useCallback needed | Reference stability required |
+| Function used only internally | Unnecessary | Only adds comparison cost |
+| Complex calculation (sort, filter) | useMemo needed | Prevents repeated expensive calculation |
+| Simple arithmetic (count * 2) | Unnecessary | Calculation cost < memoization cost |
+
+Apply memoization only where necessary. Always prove with data before applying.
+
+---
+
+# Before Memoization: Structural Optimization
+
+Before optimizing with memoization, we need "structural optimization." When you identify a problem that seems to require memoization, follow this thought process first.
+
+```mermaid
+flowchart LR
+    A["Re-rendering issue occurs"] --> B{"Is state in the right place?"}
+    B -->|No| C["1. Move state down"]
+    B -->|Yes| D{"Can component composition solve it?"}
+    D -->|Yes| E["2. Component composition"]
+    D -->|No| F["3. useCallback / useMemo"]
+    C --> G["Solved"]
+    E --> G
+    F --> G
+```
+
+## 1. Move State Down
+
+Check if some state is set at the wrong scope. State should be isolated to only the components that use it.
+
+```jsx
+// Bad: count state in App, so HeavyComponent also re-renders
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      <HeavyComponent /> {/* Unnecessarily re-renders on count change */}
+    </div>
+  );
+}
+
+// Good: Move count state to component that uses it
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+
+function App() {
+  return (
+    <div>
+      <Counter />
+      <HeavyComponent /> {/* Completely unrelated to Counter re-renders */}
+    </div>
+  );
+}
+```
+
+```mermaid
+flowchart TB
+    subgraph After["After: Move state down"]
+        A2["App (no state)"]
+        A2 --> B2["Counter (has count state)"]
+        B2 --> D2["Button (uses count)"]
+        A2 --> C2["HeavyComponent"]
+        note["count change doesn't affect<br/>HeavyComponent ✅"]
+        style C2 fill:#d3f9d8,stroke:#51cf66
+    end
+
+    subgraph Before["Before: State at top level"]
+        A1["App (has count state)"]
+        A1 --> B1["Button (uses count)"]
+        A1 --> C1["HeavyComponent"]
+        A1 -. "count change causes<br/>unnecessary re-render" .-> C1
+        style C1 fill:#ffe3e3,stroke:#ff6b6b
+    end
+```
+
+Narrowing state scope also narrows the re-render scope. You can prevent unnecessary re-renders without memoization.
+
+## 2. Component Composition
+
+When a wrapper component receives children as a prop, wrapper re-renders don't affect children's reference address, so children automatically bail out.
+
+> [!NOTE] bailout
+>
+> React skips re-rendering. When children are passed as props, their JSX reference address doesn't change even if the parent component re-renders, so bailout occurs.
+
+```jsx
+// Bad: ThemeProvider re-renders, HeavyContent also re-renders
+function ThemeProvider() {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <div className={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Change theme
+      </button>
+      <HeavyContent /> {/* Re-renders unnecessarily when theme changes */}
+    </div>
+  );
+}
+
+// Good: Accept children as prop for composition
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <div className={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Change theme
+      </button>
+      {children} {/* Reference address stays same, automatic bailout */}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <HeavyContent /> {/* ThemeProvider re-renders independently */}
+    </ThemeProvider>
+  );
+}
+```
+
+```mermaid
+flowchart TB
+    subgraph After["After"]
+        A2["App"]
+        A2 -->|"JSX created @100"| H2["HeavyContent (created by App)"]
+        A2 -->|"children prop(@100) passed"| W2["ThemeProvider (has theme state)"]
+        W2 -->|"@100 rendered unchanged"| H2
+        note["theme change → ThemeProvider re-renders<br/>but children @100 stays same<br/>→ automatic bailout ✅"]
+        style H2 fill:#d3f9d8,stroke:#51cf66
+    end
+
+    subgraph Before["Before"]
+        W1["ThemeProvider (has theme state)"]
+        W1 -->|"theme change causes re-render"| H1["HeavyContent"]
+        style H1 fill:#ffe3e3,stroke:#ff6b6b
+    end
+```
+
+Since children JSX is created in App, its reference address stays the same even when ThemeProvider re-renders. React detects this and bails out HeavyContent's re-render.
+
+## 3. Memoization Hooks (useCallback, useMemo)
+
+Use useCallback and useMemo only when above methods don't solve the problem. This applies when you need dependency array stability, using with React.memo, and reference stability in custom hook return values.
+
+---
+
+# Reference Materials
+
+- [The React Deep Dive](https://product.kyobobook.co.kr/detail/S000210725203) (원서)
+- [React Master Class: Part 2 - Mission Complete High Performance Hooks and Practical Architecture](https://www.inflearn.com/course/react-%EB%A7%88%EC%8A%A4%ED%84%B0-%ED%81%B4%EB%9E%98%EC%8A%A4-part-2) (인프런)
