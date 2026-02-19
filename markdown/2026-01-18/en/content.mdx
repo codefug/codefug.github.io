@@ -552,3 +552,148 @@ function Component() {
 Use memoization only where absolutely necessary. Always prove it with data and then apply it.
 
 ---
+
+# Before Memoization: Structural Optimization
+
+Before applying memoization optimization, we need "structural optimization". When you decide that memoization optimization is necessary, please go through the following thought process first to make a judgment.
+
+```mermaid
+flowchart LR
+    A["Re-render Problem Occurs"] --> B{"Is State in the Right Location?"}
+    B -->|No| C["1. Push State Down"]
+    B -->|Yes| D{"Can Component Composition Solve It?"}
+    D -->|Yes| E["2. Component Composition"]
+    D -->|No| F["3. useCallback / useMemo"]
+    C --> G["Resolved"]
+    E --> G
+    F --> G
+```
+
+## 1. Push State Down
+
+Check if some state is incorrectly scoped. State should be isolated to only the component that uses it.
+
+```jsx
+// Bad: count state is in App, causing HeavyComponent to re-render unnecessarily
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      <HeavyComponent /> {/* Re-renders unnecessarily when count changes */}
+    </div>
+  );
+}
+
+// Good: Push state down to the component that uses count
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+
+function App() {
+  return (
+    <div>
+      <Counter />
+      <HeavyComponent /> {/* Completely unrelated to Counter's re-renders */}
+    </div>
+  );
+}
+```
+
+```mermaid
+flowchart TB
+    subgraph After["After: Push State Down"]
+        A2["App (no state)"]
+        A2 --> B2["Counter (holds count state)"]
+        B2 --> D2["Button (uses count)"]
+        A2 --> C2["HeavyComponent"]
+        note["count changes → HeavyComponent
+        unaffected ✅"]
+        style C2 fill:#d3f9d8,stroke:#51cf66
+    end
+
+    subgraph Before["Before: State in Parent"]
+        A1["App (holds count state)"]
+        A1 --> B1["Button (uses count)"]
+        A1 --> C1["HeavyComponent"]
+        A1 -. "count changes →
+        unnecessary re-render occurs" .-> C1
+        style C1 fill:#ffe3e3,stroke:#ff6b6b
+    end
+```
+
+When you narrow the scope of state, the scope of re-rendering narrows as well. You can prevent unnecessary re-renders without memoization.
+
+## 2. Component Composition
+
+When you create a wrapper component that receives children as a prop, even when the wrapper component re-renders, the reference of the children remains the same, causing automatic bailout for child components.
+
+> [!NOTE] bailout
+>
+> When React skips re-rendering. JSX elements passed via the children prop maintain the same reference address even when the parent component re-renders, so bailout occurs.
+
+```jsx
+// Bad: HeavyContent also re-renders when ThemeProvider re-renders
+function ThemeProvider() {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <div className={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Change Theme
+      </button>
+      <HeavyContent /> {/* Re-renders unnecessarily when theme changes */}
+    </div>
+  );
+}
+
+// Good: Accept children as a prop for composition
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <div className={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Change Theme
+      </button>
+      {children} {/* Even if parent re-renders, reference address is same → automatic bailout */}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <HeavyContent /> {/* Unrelated to ThemeProvider re-renders */}
+    </ThemeProvider>
+  );
+}
+```
+
+```mermaid
+flowchart TB
+    subgraph After["After"]
+        A2["App"]
+        A2 -->|"JSX created @100"| H2["HeavyContent (created from App)"]
+        A2 -->|"children prop(@100) passed"| W2["ThemeProvider (theme state)"]
+        W2 -->|"render @100 as-is"| H2
+        note["theme changes → ThemeProvider re-renders
+        but children @100 is same
+        → bailout ✅"]
+        style H2 fill:#d3f9d8,stroke:#51cf66
+    end
+
+    subgraph Before["Before"]
+        W1["ThemeProvider (theme state)"]
+        W1 -->|"theme changes → re-render"| H1["HeavyContent"]
+        style H1 fill:#ffe3e3,stroke:#ff6b6b
+    end
+```
+
+Since HeavyContent is created from App, the reference address of the children JSX doesn't change even if ThemeProvider re-renders. React detects this and bails out HeavyContent's re-render.
+
+## 3. Optimization Hooks (useCallback, useMemo)
+
+If the above methods don't solve the problem, now use useCallback and useMemo. Like the cases covered in this document, dependency array stabilization, using together with React.memo, and maintaining reference stability of custom hook return values fall into this category.
