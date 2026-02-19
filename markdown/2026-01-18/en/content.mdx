@@ -473,3 +473,82 @@ sequenceDiagram
 ```
 
 ---
+
+# Principles of Memoization Application
+
+Once you understand the costs of indiscriminate memoization, let's learn the principles for applying it correctly.
+
+## Premature Optimization is a Trap
+
+Write code first, measure actual bottlenecks with Profiler, then optimize.
+
+```jsx
+// ❌ Optimize prematurely before confirming slowness
+function ItemList({ items, onSelect }) {
+  const filtered = useMemo(() => items.filter(isActive), [items]);
+  const handleClick = useCallback((id) => onSelect(id), [onSelect]);
+
+  return filtered.map((item) => (
+    <Item key={item.id} data={item} onClick={handleClick} />
+  ));
+}
+
+// ✅ Write first, identify bottlenecks with Profiler, then optimize
+function ItemList({ items, onSelect }) {
+  const filtered = items.filter(isActive);
+
+  return filtered.map((item) => (
+    <Item key={item.id} data={item} onClick={(id) => onSelect(id)} />
+  ));
+}
+```
+
+```mermaid
+flowchart LR
+    A["1. Write Code"] --> B["2. Verify Functionality"]
+    B --> C["3. Measure Bottleneck with Profiler"]
+    C --> D{"Actually Slow?"}
+    D -->|Yes| E["4. Apply Optimization"]
+    D -->|No| F["Optimization Not Needed"]
+    E --> G["5. Re-measure to Verify Effect"]
+
+    style F fill:#d3f9d8,stroke:#51cf66
+    style E fill:#e7f5ff,stroke:#339af0
+```
+
+## Calculate the Cost of Optimization
+
+Every optimization has trade-offs. Optimization without context only adds costs.
+
+```jsx
+// ✅ React.memo is effective: list items rendered repeatedly
+// Saves costs equal to the number of items × rendering count
+const ListItem = React.memo(({ item, onDelete }) => {
+  return <div onClick={() => onDelete(item.id)}>{item.name}</div>;
+});
+
+// ❌ useCallback is unnecessary: functions not used in props or dependencies
+function Component() {
+  // Only adds comparison cost, no practical benefit
+  const getLabel = useCallback(() => 'Hello', []);
+  return <div>{getLabel()}</div>;
+}
+
+// ✅ If not passed to props or dependencies, just declare it
+function Component() {
+  const getLabel = () => 'Hello';
+  return <div>{getLabel()}</div>;
+}
+```
+
+| Case | Apply Optimization? | Reason |
+|------|---------------------|--------|
+| List item component | Consider React.memo | Savings accumulate by the number of items |
+| Function passed to deps/props | useCallback needed | Reference stability required in some cases |
+| Simple function used only internally | Not needed | Only adds comparison cost |
+| Complex calculations (sorting, filtering) | useMemo needed | Prevent repeated calculations on each render |
+| Simple arithmetic (count * 2) | Not needed | Calculation cost < memoization cost |
+
+Use memoization only where absolutely necessary. Always prove it with data and then apply it.
+
+---
