@@ -247,6 +247,562 @@ flowchart TB
 
 ---
 
+# useEffect Dependency Array and the Pitfall of Reference Types
+
+React's useEffect executes the callback when the value in the dependency array changes. The problem is that this comparison is performed with `Object.is`.
+
+## Primitive Types Are Safe
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log('count changed:', count);
+  }, [count]);
+
+  return <button onClick={() => setCount(count + 1)}>Increment</button>;
+}
+```
+
+Since `count` is a primitive type (number), the effect is only executed when the value actually changes.
+
+## Reference Types Are Dangerous
+
+```jsx
+function UserProfile() {
+  const [user, setUser] = useState({ name: 'Kim' });
+
+  // New object created on every render
+  const config = { theme: 'dark' };
+
+  useEffect(() => {
+    console.log('config changed');
+  }, [config]); // Executes on every render
+
+  return <div>{user.name}</div>;
+}
+```
+
+`config` is created with a new memory address on each render. Even if the contents are identical, React judges it as "changed".
+
+```mermaid
+sequenceDiagram
+    participant R as React
+    participant C as Component
+    participant E as useEffect
+
+    R->>C: First render
+    C->>C: config = { theme: 'dark' } @100
+    C->>E: Save deps: [@100]
+    E->>E: Execute effect
+
+    R->>C: Second render (state changed)
+    C->>C: config = { theme: 'dark' } @200
+    C->>E: Compare deps: @100 !== @200
+    E->>E: Execute effect again (unnecessary)
+```
+
+## Infinite Re-rendering Case
+
+This is a common pattern in real projects. If you put a function in the dependency array and change state inside the effect, an infinite loop occurs.
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // New function created on every render
+  const inlineSaveDraft = () => {
+    console.log('Search executed:', keyword);
+  };
+
+  useEffect(() => {
+    if (keyword) {
+      inlineSaveDraft();
+      setSearchCount((prev) => prev + 1); // Search count tracking → triggers re-render
+    }
+  }, [inlineSaveDraft, keyword]); // Infinite loop!
+
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="Enter search term" />
+      <div>Search count: {searchCount}</div>
+    </>
+  );
+}
+```
+
+Execution flow:
+1. User types in input → `keyword` state changes
+2. Component re-renders → `inlineSaveDraft` function recreated (@200, new address)
+3. useEffect deps comparison: `inlineSaveDraft @100 !== @200` → execute effect
+4. Execute effect → call `inlineSaveDraft()` → execute `setSearchCount`
+5. `searchCount` change → re-render → `inlineSaveDraft` function recreated again (@300)
+6. useEffect deps comparison: `inlineSaveDraft @200 !== @300` → execute effect again
+7. Repeat 4~6 (infinite loop)
+
+```mermaid
+flowchart LR
+    A["User types in input"] --> B["keyword state changes"]
+    B --> C["Component re-render"]
+    C --> D["inlineSaveDraft function recreated (new address @200)"]
+    D --> E["useEffect deps comparison"]
+    E --> F{"Is inlineSaveDraft address different?<br/>(@100 !== @200)"}
+    F -->|Yes| G["Execute effect: inlineSaveDraft()"]
+    G --> H["Call setSearchCount"]
+    H --> I["searchCount changed → re-render"]
+    I --> J["inlineSaveDraft function recreated again (new address @300)"]
+    J --> K["useEffect deps comparison<br/>(@200 !== @300)"]
+    K --> G
+    F -->|No| L["Skip effect"]
+```
+
+### Memory Address Changes Confirmed with Chrome DevTools
+
+You can verify in Chrome DevTools' Memory tab whether the function actually gets a new memory address on each render.
+
+The screenshot below is the result of comparing Heap Snapshots. You can see that the `inlineSaveDraft` function has different memory addresses in each snapshot.
+
+**Function address in Snapshot 1:**
+![Snapshot 1](/images/2025-01-18/snapshot1.png)
+
+**Newly created functions in Snapshot 2:**
+![Snapshot 2](/images/2025-01-18/snapshot2.png)
+
+**Function at different address in Snapshot 3:**
+![Snapshot 3](/images/2025-01-18/snapshot3.png)
+
+In each snapshot, the `inlineSaveDraft` function has different memory addresses like `@200175`, `@473745`, `@483163`, etc. This is why React judges the function as "changed" on every render.
+
+## Solving with useCallback
+
+Using useCallback allows you to maintain a stable function reference.
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // Stabilize function reference with useCallback
+  // Function is recreated only when keyword changes (independent of searchCount changes)
+  const saveDraft = useCallback(() => {
+    console.log('Search executed:', keyword);
+  }, [keyword]); // Function recreated only when keyword changes
+
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      // Even if searchCount changes, saveDraft address is maintained so effect won't re-execute
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]); // saveDraft depends on keyword, so effect only executes when keyword changes
+
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="Enter search term" />
+      <div>Search count: {searchCount}</div>
+    </>
+  );
+}
+```
+
+#### ❌ Problem Situation: Without useCallback
+
+**Code with problem:**
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // New function created on every render
+  const saveDraft = () => {
+    console.log('Search executed:', keyword);
+  }
+
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+  //...
+```
+
+**Execution flow:**
+
+```jsx
+// Step 1: User types "a" in input
+<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+// → setKeyword('a') called
+// → keyword: '' → 'a'
+
+// Step 2: Component re-render
+function SearchPage() {
+  // Step 3: New function created on every render
+  const saveDraft = () => {
+    console.log('Search executed:', keyword);
+  }; // @100 (new memory address)
+
+  // Step 4: useEffect deps comparison
+  useEffect(() => {
+    if (keyword) {
+      saveDraft(); // Execute
+      setSearchCount((prev) => prev + 1); // searchCount: 0 → 1
+    }
+  }, [saveDraft, keyword]);
+  // Previous deps: [undefined, ''] (first render)
+  // Current deps: [@100, 'a']
+  // @100 !== undefined + 'a' !== '' → execute effect ✅
+}
+
+// Step 5: searchCount changed → re-render occurs
+// searchCount: 0 → 1
+
+// Step 6: Re-render → saveDraft function recreated again
+function SearchPage() {
+  const saveDraft = () => {
+    console.log('Search executed:', keyword);
+  }; // @200 (new memory address, different from @100!)
+
+  // Step 7: useEffect deps comparison
+  useEffect(() => {
+    if (keyword) {
+      saveDraft(); // Execute again
+      setSearchCount((prev) => prev + 1); // searchCount: 1 → 2
+    }
+  }, [saveDraft, keyword]);
+  // Previous deps: [@100, 'a']
+  // Current deps: [@200, 'a']
+  // @100 !== @200 → execute effect again! ⚠️
+}
+
+// Step 8: searchCount changed → re-render again
+// searchCount: 1 → 2
+
+// Step 9: Re-render → saveDraft function recreated again
+// @300 created → execute effect again → searchCount: 2 → 3
+// @400 created → execute effect again → searchCount: 3 → 4
+// ... infinite repetition 🔄
+```
+
+**Core issue:**
+- `keyword` didn't change (`'a'` remains the same)
+- `saveDraft` function keeps getting recreated (only memory address changes: @100 → @200 → @300)
+- React compares memory addresses when comparing deps (`@100 !== @200`)
+- Judges as "changed" every time and executes effect
+- Execute effect → `setSearchCount` → re-render → function recreation → execute effect (infinite loop)
+
+```mermaid
+flowchart LR
+    A1["User types in input"] --> B1["keyword changes"]
+    B1 --> C1["Re-render"]
+    C1 --> D1["saveDraft @100 created"]
+    D1 --> E1["Execute effect (address change detected)"]
+    E1 --> F1["setSearchCount → searchCount=1"]
+    F1 --> G1["Re-render (searchCount changed)"]
+    G1 --> H1["saveDraft @200 created (new address)"]
+    H1 --> I1["Execute effect again (address change detected)"]
+    I1 --> J1["setSearchCount → searchCount=2"]
+    J1 --> K1["Infinite loop!"]
+
+    style K1 fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    style D1 fill:#ffe3e3,stroke:#ff6b6b
+    style H1 fill:#ffe3e3,stroke:#ff6b6b
+```
+
+#### ✅ Solution: Apply useCallback
+
+**Solved code:**
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+  const [searchCount, setSearchCount] = useState(0);
+
+  // ✅ Stabilize function reference with useCallback
+  // Function recreated only when keyword changes (independent of searchCount changes)
+  const saveDraft = useCallback(() => {
+    console.log('Search executed:', keyword);
+  }, [keyword]); // Function recreated only when keyword changes
+
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      // Even if searchCount changes, saveDraft address is maintained so effect won't re-execute
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+}
+```
+
+**Execution flow:**
+
+```jsx
+// Step 1: User types "a" in input
+<input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+// → setKeyword('a') called
+// → keyword: '' → 'a'
+
+// Step 2: Component re-render
+function SearchPage() {
+  // Step 3: Stabilize function reference with useCallback
+  const saveDraft = useCallback(() => {
+    console.log('Search executed:', keyword);
+  }, [keyword]); // Since keyword changed from '' → 'a', create new function
+  // @100 created (depends on keyword='a')
+
+  // Step 4: useEffect deps comparison
+  useEffect(() => {
+    if (keyword) {
+      saveDraft(); // Execute
+      setSearchCount((prev) => prev + 1); // searchCount: 0 → 1
+    }
+  }, [saveDraft, keyword]);
+  // Previous deps: [undefined, '']
+  // Current deps: [@100, 'a']
+  // @100 !== undefined + 'a' !== '' → execute effect ✅
+}
+
+// Step 5: searchCount changed → re-render occurs
+// searchCount: 0 → 1
+
+// Step 6: Re-render but keyword is same, so saveDraft address maintained
+function SearchPage() {
+  const saveDraft = useCallback(() => {
+    console.log('Search executed:', keyword);
+  }, [keyword]); // keyword='a' (no change)
+  // @100 maintained! (since keyword is same, useCallback returns same reference)
+
+  // Step 7: useEffect deps comparison
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+      setSearchCount((prev) => prev + 1);
+    }
+  }, [saveDraft, keyword]);
+  // Previous deps: [@100, 'a']
+  // Current deps: [@100, 'a']
+  // @100 === @100 && 'a' === 'a' → skip effect! ✅
+}
+```
+
+**Core solution:**
+- `useCallback` recreates the function only when `keyword` changes
+- Even if `searchCount` changes, since `keyword` remains the same, `saveDraft` address is maintained (@100)
+- React judges as "no change" when comparing deps `@100 === @100`
+- Effect executes only when `keyword` actually changes
+- Infinite loop solved! ✅
+
+**Comparison summary:**
+
+| Situation | inlineSaveDraft (no memoization) | saveDraft (useCallback) |
+|-----------|----------------------------------|------------------------|
+| keyword changes | @100 → @200 (new function) | @100 → @200 (new function) |
+| searchCount changes | @200 → @300 (new function) ⚠️ | @100 → @100 (same reference) ✅ |
+| effect execution | Executes every time (infinite loop) | Executes only when keyword changes |
+
+```mermaid
+flowchart LR
+    A2["User types in input"] --> B2["keyword changes"]
+    B2 --> C2["Re-render"]
+    C2 --> D2["saveDraft @100 created<br/>(depends on keyword)"]
+    D2 --> E2["Execute effect (address change detected)"]
+    E2 --> F2["setSearchCount → searchCount=1"]
+    F2 --> G2["Re-render (searchCount changed)"]
+    G2 --> H2["saveDraft @100 maintained<br/>(keyword same)"]
+    H2 --> I2["Skip effect (address same)"]
+
+    style H2 fill:#d3f9d8,stroke:#51cf66,color:#000
+    style I2 fill:#d3f9d8,stroke:#51cf66,color:#000
+    style D2 fill:#e7f5ff,stroke:#339af0
+```
+
+## It Gets More Complex with React Query
+
+In real projects, it's often used together with React Query (TanStack Query). In this case, tracking problems becomes much harder.
+
+```jsx
+function SearchPage() {
+  const [keyword, setKeyword] = useState('');
+
+  // Using React Query
+  const { data, refetch, isFetching } = useQuery({
+    queryKey: ['search', keyword],
+    queryFn: () => fetchSearchResults(keyword),
+    enabled: !!keyword,
+  });
+
+  // New function created on every render
+  const saveDraft = () => {
+    console.log('Search executed:', keyword);
+    refetch(); // Fetch data again
+  };
+
+  useEffect(() => {
+    if (keyword) {
+      saveDraft();
+    }
+  }, [saveDraft, keyword]); // Problem occurs!
+
+  return (
+    <>
+      <input value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+      {isFetching && <div>Loading...</div>}
+      <ul>{data?.map((r, i) => <li key={i}>{r}</li>)}</ul>
+    </>
+  );
+}
+```
+
+**Problems:**
+- When the user types in the input, the `keyword` state changes
+- When `keyword` changes and re-renders, the `saveDraft` function is recreated (new address)
+- If `saveDraft` is in useEffect deps, the address change is detected and effect executes
+- Calling `refetch()` inside the effect changes React Query state and triggers re-render
+- Re-rendering recreates `saveDraft` again, causing an infinite loop
+
+**Execution flow:**
+
+```jsx
+// 1. User types 'a' → keyword changes → re-render
+const saveDraft = () => { ... }; // @200 (new memory address)
+useEffect(..., [saveDraft, keyword]); // [@100, ''] → [@200, 'a']
+// @100 !== @200 + 'a' !== '' → execute effect
+
+// 2. Execute effect → call saveDraft() → refetch()
+// refetch() changes React Query state (isFetching, data) → re-render
+
+// 3. Re-render → saveDraft recreated again
+const saveDraft = () => { ... }; // @300
+useEffect(..., [saveDraft, keyword]); // [@200, 'a'] → [@300, 'a']
+// keyword is same but @200 !== @300 → execute effect again
+
+// 4. Execute effect → refetch() → re-render → saveDraft @400 → ... infinite loop 🔄
+```
+
+```mermaid
+flowchart LR
+    A["keyword changed → re-render"] --> B["saveDraft newly created<br/>(@100 → @200)"]
+    B --> C["Execute effect<br/>(@100 !== @200<br/>'a' !== '')"]
+    C --> D["Call refetch()"]
+    D --> E["React Query state changed<br/>→ re-render"]
+    E --> F["saveDraft recreated again<br/>(@200 → @300)"]
+    F --> G["Execute effect again<br/>(@200 !== @300)"]
+    G --> D
+
+    style B fill:#ffe3e3,stroke:#ff6b6b
+    style F fill:#ffe3e3,stroke:#ff6b6b
+    style G fill:#fff3cd,stroke:#ffc107
+```
+
+## Stabilizing Objects with useMemo
+
+If objects or arrays need to go into deps, use useMemo.
+
+```jsx
+function UserDashboard() {
+  const [user, setUser] = useState({ name: 'Kim' });
+
+  // Stabilize object reference with useMemo
+  const config = useMemo(() => ({ theme: 'dark', locale: 'ko' }), []);
+
+  useEffect(() => {
+    applyConfig(config);
+  }, [config]); // Executes only first time
+
+  return <div>{user.name}</div>;
+}
+```
+
+---
+
+# React.memo and Memoization
+
+useCallback and useMemo are needed in another important case: when passing props to child components wrapped with `React.memo`.
+
+## How React.memo Works
+
+`React.memo` skips re-rendering if props haven't changed. However, props comparison is also performed with `Object.is`.
+
+```jsx
+const ExpensiveChild = React.memo(({ onClick, data }) => {
+  console.log('ExpensiveChild rendered');
+  return <button onClick={onClick}>{data.label}</button>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // New function/object created on every render
+  const handleClick = () => console.log('clicked');
+  const data = { label: 'Click me' };
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      {/* ExpensiveChild also re-renders whenever count changes */}
+      <ExpensiveChild onClick={handleClick} data={data} />
+    </>
+  );
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant P as Parent
+    participant M as React.memo
+    participant C as ExpensiveChild
+
+    P->>P: count changed → re-render
+    P->>P: handleClick = () => {} (new address)
+    P->>P: data = { label } (new address)
+    P->>M: pass props
+    M->>M: Object.is(oldProps.onClick, newProps.onClick)
+    M->>M: false (addresses are different)
+    M->>C: execute re-render
+    Note over C: memo has no effect!
+```
+
+## Solving with Memoization
+
+```jsx
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // Stabilize references
+  const handleClick = useCallback(() => console.log('clicked'), []);
+  const data = useMemo(() => ({ label: 'Click me' }), []);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      {/* ExpensiveChild won't re-render even when count changes */}
+      <ExpensiveChild onClick={handleClick} data={data} />
+    </>
+  );
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant P as Parent
+    participant M as React.memo
+    participant C as ExpensiveChild
+
+    P->>P: count changed → re-render
+    P->>P: handleClick (maintains same address)
+    P->>P: data (maintains same address)
+    P->>M: pass props
+    M->>M: Object.is(oldProps.onClick, newProps.onClick)
+    M->>M: true (addresses are the same)
+    Note over M: skip re-render
+    Note over C: not rendered!
+```
+
+---
+
 # ESLint Warning Limitations and Custom Hook Pitfalls
 
 ## The Role of eslint-plugin-react-hooks
