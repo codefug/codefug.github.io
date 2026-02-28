@@ -78,82 +78,157 @@
           "title": "Allra",
           "description": "Allra 선정산 서비스",
           "features": [
-            "Playwright Sharding과 Biome 도입으로 평균 CI 시간 28% 개선, 배포 효율성 향상",
-            "그로스 팀 협업을 통한 사용자 퍼널 개선, 모바일 재방문율 17% 및 신규 가입자 정산 달력 진입률 42% 향상",
-            "구조화된 메타데이터 설계로 검색 정확도 개선 및 관련 내부 개발 가이드 작성",
-            "ISMS 인증을 위한 보안 설계 및 인증 절차 참여"
+            {
+              "purpose": "배포 효율성 개선",
+              "details": [
+                "Dynamic metric과 Playwright Sharding을 활용한 병렬 테스트 처리로 테스트 수 대비 수행 시간 67.7% 감소",
+                "기존 ESLint + Prettier 기반 린트 자동화를 Biome 으로 완전 마이그레이션하여 평균 CI 시간 98% 감소 및 전체 개발 속도 향상"
+              ]
+            },
+            {
+              "purpose": "퍼널 지표 개선",
+              "details": [
+                "커스텀 온보딩 가이드 컴포넌트 개발 및 개인화 문구 개선으로 신규 가입자 정산 달력 진입률 42% 향상, 모바일 재방문율 17% 향상",
+                "구조화된 메타데이터 추가로 검색 효율성 개선 및 사내 문서 작성을 통한 관리 효율화",
+                "페이지별 메타데이터 누락 문제를 발견하고 공통 로직으로 추상화하여 관리 효율화"
+              ]
+            },
+            {
+              "purpose": "성능 개선",
+              "details": [
+                "기존 반응형 이미지 컴포넌트를 개선해서 더 좋은 화질의 이미지로 CLS 0.99 > 0.1 감소 , LCP 1.62 > 0.55 로 감소",
+                "performance 탭을 적극 활용하여 메모이제이션이 필요한 영역을 정확히 구분한 후 기존의 불필요한 깜빡임 현상 해결",
+                "기존 서버 액션으로 통신하던 아키텍처의 문제점을 문서화하여 팀 내 API 아키텍처 표준 작성"
+              ]
+            }
+          ]
+        },
+        "allra-admin": {
+          "title": "Allra-Admin",
+          "description": "Allra 관리자 페이지",
+          "features": [
+            {
+              "purpose": "ISMS 인증을 위한 보안 설계 및 인증 절차 참여",
+              "details": [
+                "사용자 권한에 따른 인가 로직 설계 및 구현",
+                "토큰 처리 로직 설계 및 구현"
+              ]
+            },
+            {
+              "purpose": "UX, DX 개선",
+              "details": [
+                "PHP → Next.js 모노레포 마이그레이션에 중도 합류하여 기존 UI/UX 변화 최소화한 컴포넌트 설계로 사용자 혼선 최소화",
+                "MSW 도입으로 모의 데이터 관리 효율성 향상, 비동기 통신 처리 용이성 향상"
+              ]
+            }
           ]
         },
         "digitalFinance": {
           "title": "Digital Finance",
           "description": "서비스 통합 관리 포털 서비스",
           "features": [
-            "CRA 기반 프로젝트를 Vite로 마이그레이션하여 보안 리스크 제거 및 빌드 속도 향상",
-            "Rollup 최적화를 통해 최대 번들 크기 1200kB → 500kB로 58.3% 감소",
-            "서버 상태와 UI 상태를 분리하여 구조 안정성 및 예측 가능성 향상",
-            "기능 기반 폴더 구조로 전환하고 문서화를 통해 유지보수 효율성 향상",
-            "사내 CSP 정책 대응을 위해 react-quill-new와 커스텀 모듈 react-quill-resize로 에디터 교체 및 이미지 업로드 안정성 확보"
+            {
+              "purpose": "보안 개선",
+              "details": [
+                "CRA 기반 프로젝트를 Vite로 마이그레이션하여 보안 리스크 제거",
+                "사내 CSP 정책 대응을 위해 react-quill-new와 커스텀 모듈 react-quill-resize로 에디터 교체 및 이미지 업로드 안정성 확보"
+              ]
+            },
+            {
+              "purpose": "빌드 속도 개선",
+              "details": [
+                "Rollup 최적화를 통해 최대 번들 크기 1200kB → 500kB로 58.3% 감소"
+              ]
+            },
+            {
+              "purpose": "DX 개선",
+              "details": [
+                "기존 zustand로 응집되어 있던 서버 상태와 UI 상태를 분리하여 구조 안정성 및 예측 가능성 향상",
+                "기능 기반 폴더 구조로 전환하고 문서화를 통해 유지보수 효율성 향상"
+              ]
+            }
           ]
         },
         "documentAi": {
           "title": "Document AI",
           "description": "AI 기반 보고서 분석 솔루션",
           "features": [
-            "Canvas API를 활용한 커스텀 PDF Viewer 구현 및 최적화",
-            "Web Worker, react-window, 코드 스플리팅으로 초기 렌더링 시간 67% 개선 (5401ms → 1780ms)",
-            "CRA 기반 프로젝트를 Vite로 마이그레이션하여 CSP 및 성능 이슈 해결",
-            "Rollup 최적화로 최대 번들 크기 1200kB → 500kB로 58.3% 감소",
-            "멀티 스테이지 빌드와 Standalone 모드 적용으로 Docker 이미지 용량 2.22GB → 195MB로 91.36% 감소",
-            "불필요한 모듈 제거 및 dynamic import로 번들 크기 302kB → 143kB로 73.5% 감소"
+            {
+              "purpose": "렌더링 성능 최적화",
+              "details": [
+                "Canvas API를 활용한 커스텀 PDF Viewer 구현 및 최적화",
+                "Web Worker, react-window, 코드 스플리팅으로 초기 렌더링 시간 67% 감소 (5401ms → 1780ms)",
+                "CRA 기반 프로젝트를 Vite로 마이그레이션하여 CSP 및 성능 이슈 해결"
+              ]
+            },
+            {
+              "purpose": "빌드 속도 개선",
+              "details": [
+                "멀티 스테이지 빌드와 Standalone 모드 적용으로 Docker 이미지 용량 2.22GB → 195MB로 91.36% 감소",
+                "불필요한 모듈 제거 및 dynamic import로 번들 크기 302kB → 143kB로 73.5% 감소"
+              ]
+            }
           ]
         },
         "designSystem": {
           "title": "SamilDevKit Design System",
           "description": "사내 디자인 통일성과 개발 생산성 강화를 위한 디자인 시스템 구축",
           "features": [
-            "clsx, cva 도입을 주도하며 조건부 스타일링 및 클래스 네이밍 일관성 확보",
-            "반복되는 컴포넌트 패턴을 모듈화하여 재사용성 강화",
-            "ESLint, TypeScript 설정 정비 및 문서화로 개발 품질 향상 및 팀 내 코드 일관성 확보",
-            "의존성 업데이트 및 보안 취약점 대응을 통해 프로젝트 안정성 강화"
+            {
+              "purpose": "코드 일관성 확보",
+              "details": [
+                "clsx, cva 도입을 주도하며 조건부 스타일링 및 클래스 네이밍 일관성 확보",
+                "ESLint, TypeScript 설정 정비 및 문서화로 개발 품질 향상 및 팀 내 코드 일관성 확보"
+              ]
+            }
           ]
         },
         "reindeer": {
           "title": "순록의 편지",
           "description": "연말에 본인과 타인에게 음성 및 글 형태로 예약 편지를 작성·전달할 수 있는 서비스",
           "features": [
-            "AbortController를 적용해 요청 중단과 에러 관리를 체계화, 네트워크 안정성과 사용자 경험을 개선",
-            "서버 상태를 관리하는 훅으로 연결하여 개발자 경험 향상",
-            "크롬 브라우저로 전환하는 기능을 구현하여 인앱 브라우저 제약 해결",
-            "react-window를 활용해 List Virtualization 적용, 성능 최적화 및 렌더링 시간 약 80% 감소"
+            {
+              "purpose": "네트워크 안정성 개선",
+              "details": [
+                "AbortController를 적용한 네트워크 요청 공통 훅을 통해 요청 중단과 에러 관리를 체계화, 네트워크 안정성과 사용자 경험을 개선"
+              ]
+            },
+            {
+              "purpose": "크로스 브라우저 지원",
+              "details": [
+                "스크립트 로드 전에 크롬 브라우저로 전환하는 기능을 구현하여 인앱 브라우저 내에서 해결하지 못한 제약 해결"
+              ]
+            },
+            {
+              "purpose": "성능 최적화",
+              "details": [
+                "react-window를 활용해 List Virtualization 적용, 성능 최적화 및 렌더링 시간 약 80% 감소"
+              ]
+            }
           ]
         },
         "kkomKkom": {
           "title": "꼼꼼",
           "description": "팀을 구성하고 일정을 관리하여 꼼꼼이가 되는 서비스, 부트 캠프 최종 프로젝트",
           "features": [
-            "zustand 기반 useOverlay 커스텀 훅을 통한 오버레이 시스템 개발",
-            "서버 액션을 활용하여 refresh token rotation을 위한 fetch 함수 구현",
-            "streaming 방식과 낙관적 업데이트, 무한 스크롤이 결합된 쿼리 관리",
-            "startTransition에 대한 이해, progress bar 구현을 통한 부드러운 상태 전환 UX 구현"
-          ]
-        },
-        "ghepay": {
-          "title": "급페이",
-          "description": "급하게 일손이 필요한 자리에 더 많은 시급을 제공해서 아르바이트생을 구할 수 있는 서비스",
-          "features": [
-            "전역 상태를 걷어내고 서버 쿠키를 활용하여 최근 본 공고 구현",
-            "알림창 무한 스크롤 mock fetching를 위한 MSW 연동",
-            "vercel CLI와 github action을 이용한 vercel organization 무료 자동 배포",
-            "미들웨어와 쿠키를 활용한 계정 분기 처리"
-          ]
-        },
-        "fandomK": {
-          "title": "Fandom-K",
-          "description": "좋아하는 아이돌을 투표하고 후원할 수 있는 서비스, 첫번째 리액트 프로젝트",
-          "features": [
-            "Interception observer API를 활용하여 무한 스크롤 구현",
-            "router 이동시 스크롤을 상단 고정하는 공통 컴포넌트 구현",
-            "Github Action을 이용한 Netlify 자동 배포"
+            {
+              "purpose": "오버레이 시스템 개발",
+              "details": [
+                "toss useOverlay를 참고하여 zustand 기반 useOverlay 커스텀 훅을 통한 오버레이 시스템 개발"
+              ]
+            },
+            {
+              "purpose": "서버 액션 활용",
+              "details": [
+                "서버 액션을 활용하여 refresh token rotation을 위한 fetch 함수 구현"
+              ]
+            },
+            {
+              "purpose": "부드러운 상태 전환 UX 구현",
+              "details": [
+                "startTransition를 통한 progress bar 구현으로 부드러운 상태 전환 UX 구현"
+              ]
+            }
           ]
         }
       }
