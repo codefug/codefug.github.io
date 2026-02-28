@@ -34,7 +34,7 @@ export default function Contact() {
   const t = useTranslations("portfolio.contact");
 
   return (
-    <div className="prose dark:prose-invert mx-auto mt-4">
+    <div className="mx-auto mt-4">
       <HeadComponent className="mb-4">{t("title")}</HeadComponent>
       {CONTACTS.map((contact) => (
         <ContactItem

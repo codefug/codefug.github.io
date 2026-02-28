@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 export default function AboutHeading() {
   return (
-    <div className="mb-8">
+    <div>
       <AboutHeadingContent />
       <AboutHeadingContentMobile />
     </div>
