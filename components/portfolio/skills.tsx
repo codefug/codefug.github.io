@@ -52,7 +52,7 @@ export default function Skills() {
   const t = useTranslations("portfolio.skills");
 
   return (
-    <div className="prose dark:prose-invert mx-auto mt-4 mb-2">
+    <div className="mx-auto mt-4 mb-2">
       <HeadComponent>{t("title")}</HeadComponent>
       <div className="mt-4 flex w-full flex-col gap-8">
         <SkillItem

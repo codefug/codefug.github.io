@@ -25,7 +25,7 @@ export default function StudyGroup() {
   const t = useTranslations("portfolio.studyGroup");
 
   return (
-    <div className="prose dark:prose-invert mx-auto mt-4">
+    <div className="mx-auto mt-4">
       <HeadComponent className="mb-4">{t("title")}</HeadComponent>
       {STUDY_GROUPS.map((studyGroup) => (
         <DescriptionWithDuration
