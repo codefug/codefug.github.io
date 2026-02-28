@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "../ui/badge";
+import type { Feature } from "./types";
 
 // components/ProjectCard.tsx
 type ProjectCardProps = {
@@ -28,7 +29,7 @@ export default function ProjectCard({
   const t = useTranslations(`portfolio.data.projects.${projectKey}`);
   const title = t("title");
   const description = t("description");
-  const features = t.raw("features") as string[];
+  const features = t.raw("features") as Feature[];
 
   return (
     <div className="space-y-4 rounded-2xl border bg-white p-6 shadow-md">
@@ -66,11 +67,18 @@ function ProjectStack({ stack }: { stack: ProjectCardProps["stack"] }) {
   );
 }
 
-function ProjectFeatures({ features }: { features: string[] }) {
+function ProjectFeatures({ features }: { features: Feature[] }) {
   return (
     <ul className="list-disc space-y-1 pl-5 text-gray-700 text-sm">
-      {features.map((feat: string) => (
-        <li key={feat}>{feat}</li>
+      {features.map((feat: Feature) => (
+        <li key={feat.purpose}>
+          <div>{feat.purpose}</div>
+          <ul className="list-disc pl-5">
+            {feat.details.map((detail) => (
+              <li key={detail}>{detail}</li>
+            ))}
+          </ul>
+        </li>
       ))}
     </ul>
   );
