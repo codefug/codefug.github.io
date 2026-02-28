@@ -11,7 +11,7 @@ export function PostHeaderContent({ frontMatter }: Props) {
   const { title, categories, excerpt, header, date } = frontMatter;
 
   return (
-    <header className="mb-8">
+    <header>
       {/* 히어로 이미지 */}
       <div className="relative mb-6 h-[300px] w-full overflow-hidden rounded-xl sm:h-[400px] md:h-[450px]">
         <Image
