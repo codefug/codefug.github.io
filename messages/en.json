@@ -78,82 +78,157 @@
           "title": "Allra",
           "description": "Allra advance payment service",
           "features": [
-            "Reduced average CI time by 28% through Playwright Sharding and Biome adoption, improving deployment efficiency",
-            "Collaborated with growth team to optimize user funnel, achieving 17% increase in mobile revisit rate and 42% increase in payment calendar entry rate for new users",
-            "Enhanced search accuracy through structured metadata design and authored related internal development guides",
-            "Participated in security design and certification process for ISMS certification"
+            {
+              "purpose": "Deployment Efficiency Improvement",
+              "details": [
+                "Reduced test execution time by 67.7% relative to test count through parallel test processing using Dynamic metrics and Playwright Sharding",
+                "Fully migrated existing ESLint + Prettier-based lint automation to Biome, reducing average CI time by 98% and improving overall development speed"
+              ]
+            },
+            {
+              "purpose": "Funnel Metrics Improvement",
+              "details": [
+                "Developed custom onboarding guide component and improved personalized copy, achieving 42% increase in new user payment calendar entry rate and 17% increase in mobile revisit rate",
+                "Improved search efficiency through structured metadata addition and streamlined management through internal documentation",
+                "Identified missing metadata issues per page and abstracted into common logic to streamline management"
+              ]
+            },
+            {
+              "purpose": "Performance Improvement",
+              "details": [
+                "Improved responsive image component with higher quality images, reducing CLS from 0.99 to 0.1 and LCP from 1.62 to 0.55",
+                "Actively used the performance tab to precisely identify areas requiring memoization and resolved unnecessary flickering",
+                "Documented issues with the existing server action-based communication architecture and established team-wide API architecture standards"
+              ]
+            }
+          ]
+        },
+        "allra-admin": {
+          "title": "Allra-Admin",
+          "description": "Allra admin page",
+          "features": [
+            {
+              "purpose": "Security Design and Certification Process for ISMS",
+              "details": [
+                "Designed and implemented authorization logic based on user permissions",
+                "Designed and implemented token handling logic"
+              ]
+            },
+            {
+              "purpose": "UX and DX Improvement",
+              "details": [
+                "Joined mid-migration from PHP to Next.js monorepo and minimized user confusion through component design that preserved existing UI/UX",
+                "Introduced MSW to improve mock data management efficiency and simplify asynchronous communication handling"
+              ]
+            }
           ]
         },
         "digitalFinance": {
           "title": "Digital Finance",
           "description": "Integrated service management portal",
           "features": [
-            "Migrated CRA-based project to Vite, eliminating security risks and improving build speed",
-            "Reduced maximum bundle size from 1200kB to 500kB (58.3% reduction) through Rollup optimization",
-            "Improved structural stability and predictability by separating server state and UI state",
-            "Enhanced maintainability efficiency through feature-based folder structure transition and documentation",
-            "Replaced editor with react-quill-new and custom module react-quill-resize to address internal CSP policy and ensure image upload stability"
+            {
+              "purpose": "Security Improvement",
+              "details": [
+                "Migrated CRA-based project to Vite, eliminating security risks",
+                "Replaced editor with react-quill-new and custom module react-quill-resize to address internal CSP policy and ensure image upload stability"
+              ]
+            },
+            {
+              "purpose": "Build Speed Improvement",
+              "details": [
+                "Reduced maximum bundle size from 1200kB to 500kB (58.3% reduction) through Rollup optimization"
+              ]
+            },
+            {
+              "purpose": "DX Improvement",
+              "details": [
+                "Improved structural stability and predictability by separating server state and UI state that were previously coupled in zustand",
+                "Enhanced maintainability efficiency through feature-based folder structure transition and documentation"
+              ]
+            }
           ]
         },
         "documentAi": {
           "title": "Document AI",
           "description": "AI-based report analysis solution",
           "features": [
-            "Implemented and optimized custom PDF Viewer using Canvas API",
-            "Improved initial rendering time by 67% (5401ms → 1780ms) through Web Worker, react-window, and code splitting",
-            "Migrated CRA-based project to Vite, resolving CSP and performance issues",
-            "Reduced maximum bundle size from 1200kB to 500kB (58.3% reduction) through Rollup optimization",
-            "Reduced Docker image size from 2.22GB to 195MB (91.36% reduction) by applying multi-stage build and Standalone mode",
-            "Reduced bundle size from 302kB to 143kB (73.5% reduction) by removing unnecessary modules and using dynamic import"
+            {
+              "purpose": "Rendering Performance Optimization",
+              "details": [
+                "Implemented and optimized custom PDF Viewer using Canvas API",
+                "Reduced initial rendering time by 67% (5401ms → 1780ms) through Web Worker, react-window, and code splitting",
+                "Migrated CRA-based project to Vite, resolving CSP and performance issues"
+              ]
+            },
+            {
+              "purpose": "Build Speed Improvement",
+              "details": [
+                "Reduced Docker image size from 2.22GB to 195MB (91.36% reduction) by applying multi-stage build and Standalone mode",
+                "Reduced bundle size from 302kB to 143kB (73.5% reduction) by removing unnecessary modules and using dynamic import"
+              ]
+            }
           ]
         },
         "designSystem": {
           "title": "SamilDevKit Design System",
           "description": "Building a design system to strengthen internal design consistency and development productivity",
           "features": [
-            "Led the adoption of clsx and cva to ensure conditional styling and class naming consistency",
-            "Enhanced reusability by modularizing recurring component patterns",
-            "Improved development quality and ensured team code consistency through ESLint, TypeScript configuration refinement and documentation",
-            "Strengthened project stability by updating dependencies and addressing security vulnerabilities"
+            {
+              "purpose": "Code Consistency",
+              "details": [
+                "Led the adoption of clsx and cva to ensure conditional styling and class naming consistency",
+                "Improved development quality and ensured team code consistency through ESLint, TypeScript configuration refinement and documentation"
+              ]
+            }
           ]
         },
         "reindeer": {
           "title": "Reindeer's Letter",
           "description": "A service for writing and sending scheduled letters in voice and text format to yourself and others at year-end",
           "features": [
-            "Improved network stability and user experience by systematizing request cancellation and error management with AbortController",
-            "Enhanced developer experience by connecting server state management hooks",
-            "Resolved in-app browser limitations by implementing Chrome browser switching functionality",
-            "Applied List Virtualization using react-window, optimizing performance and reducing rendering time by approximately 80%"
+            {
+              "purpose": "Network Stability Improvement",
+              "details": [
+                "Systematized request cancellation and error management through a common network request hook using AbortController, improving network stability and user experience"
+              ]
+            },
+            {
+              "purpose": "Cross-Browser Support",
+              "details": [
+                "Resolved in-app browser limitations by implementing Chrome browser switching functionality before script loading"
+              ]
+            },
+            {
+              "purpose": "Performance Optimization",
+              "details": [
+                "Applied List Virtualization using react-window, optimizing performance and reducing rendering time by approximately 80%"
+              ]
+            }
           ]
         },
         "kkomKkom": {
           "title": "KkomKkom",
           "description": "A service for forming teams and managing schedules to become meticulous, bootcamp final project",
           "features": [
-            "Developed overlay system through zustand-based useOverlay custom hook",
-            "Implemented fetch function for refresh token rotation using server actions",
-            "Managed queries combining streaming method, optimistic updates, and infinite scroll",
-            "Understanding startTransition, implemented smooth state transition UX through progress bar implementation"
-          ]
-        },
-        "ghepay": {
-          "title": "Ghepay",
-          "description": "A service for recruiting part-time workers by offering higher wages for urgently needed positions",
-          "features": [
-            "Implemented recently viewed job postings by removing global state and using server cookies",
-            "Integrated MSW for notification infinite scroll mock fetching",
-            "Free automatic deployment to vercel organization using vercel CLI and github actions",
-            "Account branching processing using middleware and cookies"
-          ]
-        },
-        "fandomK": {
-          "title": "Fandom-K",
-          "description": "A service for voting and sponsoring favorite idols, first React project",
-          "features": [
-            "Implemented infinite scroll using Intersection Observer API",
-            "Implemented common component for fixing scroll to top on router navigation",
-            "Automated Netlify deployment using GitHub Actions"
+            {
+              "purpose": "Overlay System Development",
+              "details": [
+                "Developed overlay system through zustand-based useOverlay custom hook, referencing toss useOverlay"
+              ]
+            },
+            {
+              "purpose": "Server Action Implementation",
+              "details": [
+                "Implemented fetch function for refresh token rotation using server actions"
+              ]
+            },
+            {
+              "purpose": "Smooth State Transition UX",
+              "details": [
+                "Implemented smooth state transition UX through progress bar implementation using startTransition"
+              ]
+            }
           ]
         }
       }
