@@ -46,17 +46,19 @@ export default function Education() {
   const t = useTranslations("portfolio.education");
 
   return (
-    <div className="prose dark:prose-invert mx-auto mt-4">
+    <div className="mx-auto mt-4">
       <HeadComponent className="mb-4">{t("title")}</HeadComponent>
-      {EDUCATION.map((edu) => (
-        <DescriptionWithDuration
-          key={edu.titleKey}
-          titleKey={edu.titleKey}
-          duration={edu.duration}
-          descriptionKey={edu.descriptionKey}
-          image={edu.image}
-        />
-      ))}
+      <ul className="flex flex-col gap-4">
+        {EDUCATION.map((edu) => (
+          <DescriptionWithDuration
+            key={edu.titleKey}
+            titleKey={edu.titleKey}
+            duration={edu.duration}
+            descriptionKey={edu.descriptionKey}
+            image={edu.image}
+          />
+        ))}
+      </ul>
     </div>
   );
 }

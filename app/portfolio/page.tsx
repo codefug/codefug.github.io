@@ -47,7 +47,7 @@ export default function Page() {
       <FloatingShapesBackground />
       <div className="relative z-10">
         <AboutHeading />
-        <GrowthJourney className="mt-4" />
+        <GrowthJourney />
         <WorkExperience />
         <FadeInSection delay={0} className="mb-8">
           <Skills />
