@@ -7,12 +7,12 @@ export const NAVIGATION_ITEMS = [
     target: "_blank",
     rel: "noopener noreferrer",
   },
-  {
-    label: "Portfolio",
-    href: PATH.PORTFOLIO,
-    target: "_self",
-    rel: "noopener noreferrer",
-  },
+  // {
+  //   label: "Portfolio",
+  //   href: PATH.PORTFOLIO,
+  //   target: "_self",
+  //   rel: "noopener noreferrer",
+  // },
   {
     label: "Search",
     href: PATH.SEARCH,
