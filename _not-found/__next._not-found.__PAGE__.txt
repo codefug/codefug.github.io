@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[51506,["https://codefug.github.io/_next/static/chunks/684106cc596e6e57.js","https://codefug.github.io/_next/static/chunks/1b3fec3e879ea9c5.js","https://codefug.github.io/_next/static/chunks/6b898cdbc81315e2.js","https://codefug.github.io/_next/static/chunks/06f17baf102bfa20.js","https://codefug.github.io/_next/static/chunks/f7402ece9cb4496c.js","https://codefug.github.io/_next/static/chunks/2b4d6a7c3528f199.js"],""]
+2:I[51506,["https://codefug.github.io/_next/static/chunks/5c7fa283bc817693.js","https://codefug.github.io/_next/static/chunks/6b898cdbc81315e2.js","https://codefug.github.io/_next/static/chunks/34da0996e794247c.js","https://codefug.github.io/_next/static/chunks/06f17baf102bfa20.js","https://codefug.github.io/_next/static/chunks/4b2086c8fbe93979.js"],""]
 3:I[95276,["https://codefug.github.io/_next/static/chunks/221e0744b683f94b.js","https://codefug.github.io/_next/static/chunks/5090c931644d1265.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"-4LMo3NAFZercyZXDmDVs","rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","h2",null,{"children":"Not Found"}],["$","p",null,{"children":"잘못된 페이지에요!"}],["$","$L2",null,{"href":"/","children":"홈으로 돌아가기"}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"PfP6-2z8bl4ozBZLNVL0B","rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","h2",null,{"children":"Not Found"}],["$","p",null,{"children":"잘못된 페이지에요!"}],["$","$L2",null,{"href":"/","children":"홈으로 돌아가기"}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
