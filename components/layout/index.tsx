@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { type ReactNode, useMemo } from "react";
-import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import Footer from "../ui/footer";
 import Header from "../ui/header/header";
@@ -18,17 +17,17 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
 
   // portfolio 페이지에서는 children만 렌더링
-  if (pathname.startsWith(PATH.PORTFOLIO))
-    return (
-      <main
-        id="main-content"
-        className={cn(
-          "flex min-h-screen w-full flex-col transition-[width] duration-200 ease-linear",
-        )}
-      >
-        {children}
-      </main>
-    );
+  // if (pathname.startsWith(PATH.PORTFOLIO))
+  //   return (
+  //     <main
+  //       id="main-content"
+  //       className={cn(
+  //         "flex min-h-screen w-full flex-col transition-[width] duration-200 ease-linear",
+  //       )}
+  //     >
+  //       {children}
+  //     </main>
+  //   );
 
   return (
     <main
