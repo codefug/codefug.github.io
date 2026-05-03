@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "types": ["mdx"],
     "plugins": [
       {
         "name": "next"
@@ -29,8 +30,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.mdx",
     ".next/types/**/*.ts",
-    "app/posts/[id]/page.mdx",
     "scripts/generateMdxMap.mjs",
     "next.config.ts",
     ".next/dev/types/**/*.ts"
