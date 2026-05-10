@@ -1,3 +1,5 @@
-onlyBuiltDependencies:
-  - sharp
-  - unrs-resolver
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+  "@parcel/watcher": true
+  "@swc/core": true
