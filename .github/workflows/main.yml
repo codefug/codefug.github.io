@@ -16,13 +16,12 @@ jobs:
         name: Install pnpm
         with:
           version: latest
-          cache: true
           run_install: false
 
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
