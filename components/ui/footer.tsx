@@ -6,7 +6,7 @@ import Github from "@/assets/icons/GithubIcon";
 
 export default function Footer() {
   return (
-    <footer className="mt-6 border-t bg-background py-6">
+    <footer className="mt-6 border-t bg-background py-6 print:hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="flex items-center justify-center gap-4">

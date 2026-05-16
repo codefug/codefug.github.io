@@ -19,7 +19,7 @@ export function RichText({ children }: { children: string }) {
         typeof p === "string" ? (
           <Fragment key={i}>{p}</Fragment>
         ) : (
-          <strong key={i} className="font-bold">
+          <strong key={i} className="font-bold" style={{ color: "#1F1D81" }}>
             {p.bold}
           </strong>
         ),
