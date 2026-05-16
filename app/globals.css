@@ -183,3 +183,45 @@
   background-size: 200% auto;
   animation: gradient-shift 5s ease infinite;
 }
+
+/* ── Print / PDF ─────────────────────────────────────────── */
+@media print {
+  /* 배경색·투명도 강제 출력 */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 페이지 여백 & A4 크기 */
+  @page {
+    size: A4;
+    margin: 1.8cm 1.5cm;
+  }
+
+  /* Framer Motion 등 JS 애니메이션 고정 */
+  * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* 섹션 내부에서 페이지 분리 방지 */
+  article,
+  section,
+  li {
+    break-inside: avoid;
+  }
+
+  /* 헤딩 직후 페이지 분리 방지 */
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+
+  /* 사이드바 (ShadcnUI aside) 숨김 */
+  aside {
+    display: none !important;
+  }
+}
