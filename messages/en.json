@@ -258,7 +258,7 @@
     "portfolio": "Portfolio",
     "search": "Search",
     "aria": {
-      "resume": "View resume (opens in new tab)",
+      "resume": "Go to resume page",
       "portfolio": "Go to portfolio page",
       "search": "Go to search page"
     }
@@ -315,5 +315,264 @@
     "author": "Seoung Hyun Lee",
     "home": "Home",
     "blog": "Blog"
+  },
+  "resume": {
+    "meta": {
+      "title": "Seoung Hyun Lee Resume",
+      "description": "Resume of Seoung Hyun Lee, Web Frontend Developer."
+    },
+    "name": "이승현",
+    "role": "Web Frontend Developer",
+    "contact": {
+      "email": "Email",
+      "emailValue": "leeseounghyun9917@gmail.com",
+      "phone": "Phone",
+      "phoneValue": "010-9656-6779",
+      "github": "GitHub",
+      "githubValue": "https://github.com/codefug",
+      "blog": "Blog",
+      "blogValue": "https://codefug.github.io"
+    },
+    "aboutMe": {
+      "title": "About Me",
+      "paragraphs": [
+        "[B]I am a developer who constantly thinks about efficiency.[/B] I automate repetitive tasks and simplify complex structures. Unable to end the day without solving problems, my mind continues to [B]asynchronously compute solutions[/B] even after work.",
+        "[B]I believe documentation is a key tool that boosts both my productivity and my team's.[/B] I always record what I learn in personal notes and share them as blog posts when helpful. I'm confident these documents serve as useful guides not only for me, but also for fellow developers facing similar challenges."
+      ]
+    },
+    "workExperience": {
+      "title": "Work Experience",
+      "items": {
+        "allra": {
+          "company": "Allra Fintech",
+          "duration": "2025.10 ~ present",
+          "summary": "Improved developer productivity through [B]test and CI pipeline enhancements[/B], and achieved [B]LCP reduced by 66%, CLS improved by up to 90%[/B] via image optimization and re-render structure improvements. Contributed to a [B]42% increase in settlement calendar entry rate through SEO structure improvements[/B], alongside [B]open source contributions[/B] and browser security vulnerability analysis."
+        },
+        "pwc": {
+          "company": "Samil PwC AC",
+          "duration": "2025.01 ~ 2025.10",
+          "items": [
+            {
+              "title": "\"Digital Finance\" Service Management Portal Development",
+              "detail": "Secured [B]58.3% bundle size reduction[/B] and stable state management via CRA-to-Vite migration and Tanstack Query adoption. Resolved security issues by developing a custom editor module for [B]CSP policy compliance[/B]."
+            },
+            {
+              "title": "\"Document AI\" AI-powered Report Analysis Solution Development",
+              "detail": "Achieved [B]67% initial render time reduction[/B] via custom PDF Viewer with pdf.js and Canvas API, and [B]91.36% image size, 73.5% bundle reduction[/B] via Docker multi-stage builds and dynamic import."
+            },
+            {
+              "title": "\"SamilDevKit\" Design System Development",
+              "detail": "Optimized rendering through CSS/JavaScript role separation and GPU acceleration, and secured styling consistency via [B]clsx-cva adoption[/B]."
+            }
+          ]
+        }
+      }
+    },
+    "projects": {
+      "allra": {
+        "title": "Allra",
+        "subtitle": "Allra Fintech",
+        "duration": "2025.10 ~ present",
+        "description": "Pre-settlement financial service development for e-commerce sellers",
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Zustand",
+          "Tanstack Query"
+        ],
+        "categories": [
+          {
+            "title": "Developer Productivity",
+            "details": [
+              {
+                "text": "Configured dynamic parallel test environment using [B]Dynamic metric[/B] and [B]Playwright Sharding[/B], reducing average test time by [B]67.7%[/B]"
+              },
+              {
+                "text": "Replaced [B]ESLint + Prettier[/B] lint pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
+              },
+              {
+                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [B]open source PR[/B]",
+                "highlight": true
+              }
+            ]
+          },
+          {
+            "title": "Funnel Metric Improvement",
+            "details": [
+              {
+                "text": "Developed custom onboarding guide with personalized messaging by user state, achieving [B]42% improvement[/B] in settlement calendar entry rate and [B]17% improvement[/B] in mobile return visits"
+              },
+              {
+                "text": "Identified missing page metadata, abstracted into shared logic with structured metadata, improving search efficiency and reducing maintenance cost. Documented guidelines to boost team efficiency"
+              }
+            ]
+          },
+          {
+            "title": "Code Quality",
+            "details": [
+              {
+                "text": "Analyzed Chrome CPP source to identify autocomplete ignore cause, resolved with [B]Honeypot decoy field approach to bypass autofill[/B]",
+                "highlight": true
+              },
+              {
+                "text": "Refactored pre-settlement request logic with [B]TypeScript Discriminated Union[/B], enforcing impossible states at type level to prevent runtime errors and improve readability",
+                "highlight": true
+              },
+              {
+                "text": "Refactored bidirectional pre-settlement lookup logic to unidirectional data flow using Context API"
+              },
+              {
+                "text": "Minimized code change scope when adding features intertwined with pre-settlement lookup logic such as early-seller programs"
+              }
+            ]
+          }
+        ]
+      },
+      "digitalFinance": {
+        "title": "Digital Finance",
+        "subtitle": "Samil PwC AC",
+        "duration": "2025.03 ~ 2025.10",
+        "description": "Service management portal development",
+        "stack": [
+          "React(Vite)",
+          "TypeScript",
+          "Tailwind CSS",
+          "Zustand",
+          "Tanstack Query"
+        ],
+        "categories": [
+          {
+            "title": "Vite-based Build System Migration",
+            "details": [
+              {
+                "text": "Improved build speed and developer experience by [B]migrating to Vite[/B] from CRA"
+              },
+              {
+                "text": "Enhanced bundling efficiency with [B]Rollup optimization[/B]"
+              },
+              {
+                "text": "Achieved bundle size [B]1200kB → 500kB (58.3% reduction)[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Server and UI State Separation",
+            "details": [
+              {
+                "text": "Implemented [B]network call optimization and state responsibility separation[/B] via Tanstack Query adoption"
+              },
+              {
+                "text": "Simplified components and improved [B]UX and predictability[/B] by [B]clearly separating server and UI state[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Feature-based Folder Structure",
+            "details": [
+              {
+                "text": "Improved cohesion by [B]transitioning to Folder-by-Feature structure[/B]"
+              },
+              {
+                "text": "[B]Designed a hybrid structure mixing role-based and feature-based approaches[/B]"
+              },
+              {
+                "text": "Improved [B]code consistency and maintenance efficiency through documentation[/B]"
+              }
+            ]
+          }
+        ]
+      },
+      "documentAi": {
+        "title": "Document AI",
+        "subtitle": "Samil PwC AC",
+        "duration": "2025.01 ~ 2025.10",
+        "description": "AI-powered report analysis solution development",
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Zustand",
+          "Tanstack Query"
+        ],
+        "categories": [
+          {
+            "title": "PDF Viewer Development",
+            "details": [
+              {
+                "text": "Built custom [B]PDF Viewer[/B] based on [B]pdf.js and Canvas API[/B]"
+              },
+              {
+                "text": "Async rendering via [B]Web Worker[/B] and virtualization of large documents via [B]react-window[/B] → [B]67% initial render improvement[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Build & Deploy Optimization",
+            "details": [
+              {
+                "text": "[B]Docker image optimization[/B]",
+                "subItems": [
+                  "Achieved [B]2.22GB → 195MB (91.36% reduction)[/B] via [B]standalone mode and build optimization[/B]"
+                ]
+              },
+              {
+                "text": "Bundle [B]302kB → 143kB (73.5% reduction)[/B] via dynamic import"
+              }
+            ]
+          }
+        ]
+      },
+      "samilDevKit": {
+        "title": "SamilDevKit Design System",
+        "subtitle": "Samil PwC AC",
+        "description": "Internal design system development",
+        "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
+        "categories": [
+          {
+            "title": "Code Consistency",
+            "details": [
+              {
+                "text": "[B]Led the adoption of clsx and cva[/B] to secure styling consistency and improve maintenance efficiency"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "knowledgeSharing": {
+      "title": "Knowledge Sharing",
+      "subtitle": "Tech Blog Writing",
+      "posts": [
+        {
+          "title": "Why Use Route Handlers When Server Actions Exist?",
+          "url": "/posts/2026-01-29"
+        },
+        {
+          "title": "Why Use useCallback and useMemo?",
+          "url": "/posts/2026-01-18"
+        },
+        { "title": "Asynchronous Javascript", "url": "/posts/2024-11-10" },
+        {
+          "title": "Toss slash analysis, custom overlay hook with zustand",
+          "url": "/posts/2024-09-14-1"
+        }
+      ]
+    },
+    "education": {
+      "title": "Education",
+      "items": [
+        {
+          "title": "Incheon National University ( English & Computer Engineering Double Major )",
+          "duration": "2017-03 ~ 2024-08",
+          "detail": "GPA: 3.7 / 4.5 (Major: 4.02 / 4.5)"
+        },
+        {
+          "title": "Codeit Sprint FE Bootcamp",
+          "duration": "2024-03 ~ 2024-09",
+          "detail": ""
+        }
+      ]
+    }
   }
 }
