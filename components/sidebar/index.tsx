@@ -70,7 +70,9 @@ export default function AppSidebar({
                       key={item.label}
                       target={item.target}
                       onClick={
-                        item.target === "_blank" ? undefined : toggleSidebar
+                        (item.target as string) === "_blank"
+                          ? undefined
+                          : toggleSidebar
                       }
                     >
                       {t(`navigation.${item.label.toLowerCase()}`)}

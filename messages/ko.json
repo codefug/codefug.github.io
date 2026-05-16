@@ -520,6 +520,7 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
+        "duration": "",
         "description": "내부 디자인 시스템 개발",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [
