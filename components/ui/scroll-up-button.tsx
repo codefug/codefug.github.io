@@ -11,7 +11,7 @@ export function ScrollUpButton() {
     <CircleArrowUp
       width={32}
       height={32}
-      className="fixed right-5 bottom-5 h-8 w-8 cursor-pointer opacity-50 hover:opacity-100"
+      className="fixed right-5 bottom-5 h-8 w-8 cursor-pointer opacity-50 hover:opacity-100 print:hidden"
       onClick={handleScrollUp}
     />
   );

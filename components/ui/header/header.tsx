@@ -25,7 +25,12 @@ export default function Header() {
     [pathName],
   );
   return (
-    <header className={cn(headerVariant({ isShow, isShowVerticalScrollbar }))}>
+    <header
+      className={cn(
+        headerVariant({ isShow, isShowVerticalScrollbar }),
+        "print:hidden",
+      )}
+    >
       <div className="flex items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
           <SideBarToggleButton />
