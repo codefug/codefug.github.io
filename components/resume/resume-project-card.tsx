@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { HighlightBullet } from "./highlight-bullet";
 import { RichText } from "./rich-text";
 
 type DetailItem = { text: string; highlight?: boolean; subItems?: string[] };
@@ -62,39 +61,22 @@ export default function ResumeProjectCard({ projectKey }: Props) {
               <RichText>{cat.title}</RichText>
             </h4>
             <ul className="mt-1 space-y-1 text-gray-700 text-sm dark:text-gray-300 print:text-xs">
-              {cat.details.map((d, i) =>
-                d.highlight ? (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                  <HighlightBullet key={i}>
-                    <RichText>{d.text}</RichText>
-                    {d.subItems && (
-                      <ul className="mt-1 space-y-0.5 pl-4">
-                        {d.subItems.map((s, j) => (
-                          // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                          <li key={j} className="list-[circle]">
-                            <RichText>{s}</RichText>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </HighlightBullet>
-                ) : (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                  <li key={i} className="ml-4 list-disc">
-                    <RichText>{d.text}</RichText>
-                    {d.subItems && (
-                      <ul className="mt-1 space-y-0.5 pl-4">
-                        {d.subItems.map((s, j) => (
-                          // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                          <li key={j} className="list-[circle]">
-                            <RichText>{s}</RichText>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ),
-              )}
+              {cat.details.map((d, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: static content
+                <li key={i} className="ml-4 list-disc">
+                  <RichText>{d.text}</RichText>
+                  {d.subItems && (
+                    <ul className="mt-0.5 space-y-0.5 pl-4">
+                      {d.subItems.map((s, j) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: static content
+                        <li key={j} className="list-[circle]">
+                          <RichText>{s}</RichText>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
             </ul>
           </section>
         ))}
