@@ -18,48 +18,57 @@ export default function ResumeProjectCard({ projectKey }: Props) {
   const duration = t.raw("duration") as string | undefined;
 
   return (
-    <article className="py-4">
-      <header className="flex flex-wrap items-baseline justify-between gap-4">
-        <div>
-          <h3 className="font-bold text-2xl text-gray-900 dark:text-white">
-            {t("title")}
-          </h3>
-          <div className="text-gray-500 text-sm dark:text-gray-400">
+    <article className="py-4 print:py-3">
+      <header className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <h3 className="font-bold text-gray-900 text-xl dark:text-white print:text-lg">
+              {t("title")}
+            </h3>
+            {duration && (
+              <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-gray-500 text-xs dark:bg-gray-800 dark:text-gray-400 print:bg-transparent print:px-0 print:text-gray-500">
+                {duration}
+              </span>
+            )}
+          </div>
+          <div className="mt-0.5 text-gray-500 text-sm dark:text-gray-400 print:text-xs">
             {t("subtitle")}
           </div>
         </div>
-        {duration && (
-          <div className="text-gray-500 text-sm dark:text-gray-400">
-            {duration}
-          </div>
-        )}
       </header>
 
-      <p className="mt-2 text-gray-800 text-sm dark:text-gray-200">
+      <p className="mt-2 text-gray-700 text-sm leading-relaxed dark:text-gray-300 print:text-xs">
         {t("description")}
       </p>
 
-      <div className="mt-2 text-sm">
-        <span className="font-semibold">Tech Stack: </span>
-        <span className="text-gray-700 dark:text-gray-300">
-          {stack.join(", ")}
-        </span>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {stack.map((tech) => (
+          <span
+            key={tech}
+            className="rounded border border-primary/30 bg-primary/5 px-2 py-0.5 font-medium text-primary text-xs dark:border-primary/40 dark:bg-primary/10 print:border-gray-400 print:bg-transparent print:text-gray-600"
+          >
+            {tech}
+          </span>
+        ))}
       </div>
 
-      <div className="mt-4 space-y-4">
+      <div className="mt-3 space-y-3 print:mt-2 print:space-y-2">
         {categories.map((cat) => (
-          <section key={cat.title}>
-            <h4 className="font-bold text-base text-gray-900 dark:text-white">
+          <section
+            key={cat.title}
+            className="border-primary/30 border-l-2 pl-3 print:pl-2"
+          >
+            <h4 className="font-semibold text-gray-800 text-sm dark:text-gray-200 print:text-xs">
               <RichText>{cat.title}</RichText>
             </h4>
-            <ul className="mt-1 space-y-1 pl-5 text-gray-800 text-sm dark:text-gray-200">
+            <ul className="mt-1 space-y-1 text-gray-700 text-sm dark:text-gray-300 print:text-xs">
               {cat.details.map((d, i) =>
                 d.highlight ? (
                   // biome-ignore lint/suspicious/noArrayIndexKey: static content
                   <HighlightBullet key={i}>
                     <RichText>{d.text}</RichText>
                     {d.subItems && (
-                      <ul className="mt-1 space-y-1 pl-5">
+                      <ul className="mt-1 space-y-0.5 pl-4">
                         {d.subItems.map((s, j) => (
                           // biome-ignore lint/suspicious/noArrayIndexKey: static content
                           <li key={j} className="list-[circle]">
@@ -71,10 +80,10 @@ export default function ResumeProjectCard({ projectKey }: Props) {
                   </HighlightBullet>
                 ) : (
                   // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                  <li key={i} className="list-disc">
+                  <li key={i} className="ml-4 list-disc">
                     <RichText>{d.text}</RichText>
                     {d.subItems && (
-                      <ul className="mt-1 space-y-1 pl-5">
+                      <ul className="mt-1 space-y-0.5 pl-4">
                         {d.subItems.map((s, j) => (
                           // biome-ignore lint/suspicious/noArrayIndexKey: static content
                           <li key={j} className="list-[circle]">

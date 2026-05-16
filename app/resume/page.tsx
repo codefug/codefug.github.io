@@ -31,6 +31,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+function Divider() {
+  return (
+    <hr className="my-1 border-gray-200 dark:border-gray-700 print:border-gray-300" />
+  );
+}
+
 export default function Page() {
   return (
     <>
@@ -38,10 +44,17 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 print:max-w-none print:px-0 print:py-0">
         <ResumeHeader />
+        <Divider />
+
         <AboutMe />
+        <Divider />
+
         <ResumeWorkExperience />
+        <Divider />
+
+        {/* 프로젝트 섹션 — 화면: FadeIn 애니, 인쇄: 그대로 표시 */}
         <FadeInSection delay={0}>
           <ResumeProjectCard projectKey="allra" />
         </FadeInSection>
@@ -54,8 +67,11 @@ export default function Page() {
         <FadeInSection delay={0}>
           <ResumeProjectCard projectKey="samilDevKit" />
         </FadeInSection>
+
+        <Divider />
+
         <FadeInSection delay={0}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-2">
             <KnowledgeSharing />
             <ResumeEducation />
           </div>

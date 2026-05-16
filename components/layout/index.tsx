@@ -37,12 +37,16 @@ export default function Layout({ children }: { children: ReactNode }) {
         isNeedShorten ? "w-[calc(100%-var(--sidebar-width))]" : "w-full",
       )}
     >
-      <Header />
+      <div className="print:hidden">
+        <Header />
+      </div>
       <div className="mx-auto w-full max-w-[1400px] flex-1 px-4">
         {children}
       </div>
-      <ScrollUpButton />
-      <Footer />
+      <div className="print:hidden">
+        <ScrollUpButton />
+        <Footer />
+      </div>
     </main>
   );
 }
