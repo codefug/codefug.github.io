@@ -146,12 +146,15 @@ export function createBlogPostStructuredData(
   };
 }
 
-export function createProfilePageStructuredData(locale: Locale = "ko") {
+export function createProfilePageStructuredData(
+  locale: Locale = "ko",
+  path = "/portfolio",
+) {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
-    "@id": `${BASE_URL}/portfolio#profilepage`,
-    url: `${BASE_URL}/portfolio`,
+    "@id": `${BASE_URL}${path}#profilepage`,
+    url: `${BASE_URL}${path}`,
     name: messages[locale].seo.author,
     inLanguage: getHreflangCode(locale),
     mainEntity: {
