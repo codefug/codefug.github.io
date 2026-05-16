@@ -526,6 +526,7 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
+        "duration": "",
         "description": "Internal design system development",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [

@@ -1,17 +1,30 @@
 "use client";
 
-import { Github, Globe, Mail, Phone } from "lucide-react";
+import { Globe, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import GithubIcon from "@/assets/icons/GithubIcon";
+
+type IconProps = { className?: string; size?: number };
+type ContactItem = {
+  Icon: React.ComponentType<IconProps>;
+  label: string;
+  value: string;
+  href?: string;
+};
+
+const GithubIconAdapted = ({ className }: IconProps) => (
+  <GithubIcon className={className} />
+);
 
 export default function ResumeHeader() {
   const t = useTranslations("resume");
-  const contacts = [
+  const contacts: ContactItem[] = [
     { Icon: Mail, label: t("contact.email"), value: t("contact.emailValue") },
     { Icon: Phone, label: t("contact.phone"), value: t("contact.phoneValue") },
     {
-      Icon: Github,
+      Icon: GithubIconAdapted,
       label: t("contact.github"),
       value: t("contact.githubValue"),
       href: t("contact.githubValue"),
@@ -34,7 +47,7 @@ export default function ResumeHeader() {
         <ul className="mt-4 grid grid-cols-1 gap-1 text-sm">
           {contacts.map(({ Icon, label, value, href }) => (
             <li key={label} className="flex items-center gap-2">
-              <Icon size={16} className="shrink-0 text-primary" />
+              <Icon size={16} className="h-4 w-4 shrink-0 text-primary" />
               <span className="w-14 shrink-0 font-semibold">{label}</span>
               {href ? (
                 <Link
