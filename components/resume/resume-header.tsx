@@ -71,7 +71,7 @@ export default function ResumeHeader() {
           {contacts.map(({ Icon, label, value, href }) => (
             <li key={label} className="flex items-center gap-1.5">
               <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
-              <span className="w-12 shrink-0 font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
+              <span className="shrink-0 font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
                 {label}
               </span>
               <Link
