@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { getTranslations } from "next-intl/server";
 import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import AboutMe from "@/components/resume/about-me";
+import Activities from "@/components/resume/activities";
+import ResumeEducation from "@/components/resume/education";
+import KnowledgeSharing from "@/components/resume/knowledge-sharing";
 import ResumeHeader from "@/components/resume/resume-header";
+import ResumeProjectCard from "@/components/resume/resume-project-card";
+import SideProjects from "@/components/resume/side-projects";
 import ResumeSkills from "@/components/resume/skills";
 import WorkExperienceSection, {
   CompanySection,
@@ -16,16 +20,6 @@ import {
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
-
-const ResumeProjectCard = dynamic(
-  () => import("@/components/resume/resume-project-card"),
-);
-const SideProjects = dynamic(() => import("@/components/resume/side-projects"));
-const Activities = dynamic(() => import("@/components/resume/activities"));
-const KnowledgeSharing = dynamic(
-  () => import("@/components/resume/knowledge-sharing"),
-);
-const ResumeEducation = dynamic(() => import("@/components/resume/education"));
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("resume.meta");
