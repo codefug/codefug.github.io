@@ -7,7 +7,7 @@ import { Skeleton } from "../skeleton";
 import Switch from "../switch";
 
 export const HeaderSwitch = memo(function HeaderSwitch() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const t = useTranslations("common");
   const [mounted, setMounted] = useState(false);
 
@@ -20,10 +20,10 @@ export const HeaderSwitch = memo(function HeaderSwitch() {
 
   return (
     <Switch
-      checked={theme === "dark"}
+      checked={resolvedTheme === "dark"}
       aria-label={t("aria.themeToggle")}
       onCheckedChange={() =>
-        theme === "light" ? setTheme("dark") : setTheme("light")
+        resolvedTheme === "dark" ? setTheme("light") : setTheme("dark")
       }
     />
   );
