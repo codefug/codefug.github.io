@@ -339,18 +339,18 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "I enjoy [B]reading library source code and browser internals[/B] directly. From analyzing Chrome CPP to understand autocomplete behavior, to documenting Server Action's structural limits to kick off a team-wide tRPC migration — I tend not to leave uncertain things unverified.",
-        "I see developer productivity as a [B]team-level problem[/B]. I've cut test time 67.7% with Playwright parallelization, reduced CI lint time 98% with Biome, and built a Claude Code hooks-based macOS widget distributed via Homebrew — I enjoy designing the tools themselves."
+        "I find it hard to end the day without resolving an open problem. I keep [B]computing solutions asynchronously[/B] in the background, and won't leave uncertain things unverified.",
+        "I treat [B]documentation and knowledge sharing[/B] as tools for team productivity. I write up what I learn and make sure technical decisions are transparent enough for teammates to follow."
       ]
     },
     "skills": {
       "title": "Skills",
       "items": [
-        "Primarily develops services on [B]Next.js App Router[/B]. Applies Server Components and Server Actions in production, and covers the broader Next.js ecosystem including type-safe API layers with tRPC and [B]Schema.org JSON-LD structured data[/B] design.",
-        "Uses TypeScript as a [B]design tool[/B], not just annotation. Eliminates impossible states at compile time with Discriminated Unions, shares schemas across server/client boundaries with Zod, and regularly reads library source to understand internals.",
-        "Designs test environments from scratch. Built parallel CI with [B]Playwright Dynamic metric and Sharding[/B] ([B]67.7% faster tests[/B]), designed domain-separated MSW handlers for 6+ domains, and replaced ESLint+Prettier with [B]Biome[/B] for [B]98% faster lint[/B].",
-        "Optimizes both build-time and runtime performance. [B]58.3% bundle reduction[/B] via Vite migration, [B]91.36% Docker image reduction[/B] via multi-stage builds, [B]67% render improvement[/B] via Web Worker and virtualization — always validates with numbers.",
-        "Has a strong interest in browser internals and security. Analyzed [B]Chrome CPP source[/B] to understand autocomplete behavior, replaced a CSP-violating editor with a custom module, and contributed to [B]open source[/B] after finding a bug in OpenReplay."
+        "Can design and build SSR and server component-based services with [B]Next.js App Router[/B]. Manages server state with Tanstack Query, builds type-safe API layers with tRPC, and handles SEO infrastructure including [B]Schema.org JSON-LD[/B].",
+        "Uses TypeScript as a [B]design tool beyond type annotation[/B]. Eliminates impossible states at the type level with Discriminated Unions, shares schemas across server/client boundaries with Zod, and reduces runtime errors through the type system.",
+        "Can write [B]Playwright[/B] E2E tests and design CI environments. Has experience configuring parallel execution with Dynamic metric and Sharding, and designing domain-separated API mocking environments with [B]MSW[/B].",
+        "Can optimize performance across bundle, image, and runtime layers. Has hands-on experience with [B]Vite migration[/B], [B]Docker multi-stage builds[/B], Web Worker and virtualization, and dynamic import for code splitting.",
+        "Can handle security work including [B]CSP policy compliance[/B] and middleware auth guard design with iron-session. When behavior is unclear, checks browser or library source directly to identify the root cause."
       ]
     },
     "workExperience": {
@@ -359,12 +359,12 @@
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "Series B fintech startup providing early payment (선정산) services to online marketplace sellers. Improved developer productivity through [B]test and CI pipeline enhancements[/B], alongside SEO improvements, [B]open source contributions[/B], and browser security vulnerability analysis."
+          "summary": "Fintech startup providing early payment (선정산) services to online marketplace sellers. Responsible for frontend development of the customer-facing service and internal admin system, alongside developer environment improvements."
         },
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Led 3 projects, achieving [B]58.3% bundle reduction via CRA → Vite migration[/B], [B]building a custom CSP-compliant editor from scratch[/B], and single-handedly delivering Document AI with a custom PDF Viewer ([B]67% faster initial render[/B]) and Docker optimization ([B]91.36% image size reduction[/B])."
+          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Responsible for frontend development across 3 web services."
         }
       }
     },
