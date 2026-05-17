@@ -3,11 +3,13 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
+import { useViewMode } from "@/hooks/useViewMode";
 import type { Locale } from "@/i18n/config";
 import getCategorySetListWithPostList from "@/util/post";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import PostGallery from ".";
+import { ViewToggle } from "./view-toggle";
 
 export default function PostCategoryGallery({
   frontMatterListByLocale,
@@ -19,13 +21,15 @@ export default function PostCategoryGallery({
   const totalFrontMatterList =
     frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const [value, setValue] = useState("");
+  const { viewMode, toggle } = useViewMode();
+
   const filteredFrontMatterList = useMemo(() => {
     if (value === "") return totalFrontMatterList;
-
     return totalFrontMatterList.filter((v) =>
       v.categories.some((v) => v === value),
     );
   }, [value, totalFrontMatterList]);
+
   const categoryList = useMemo(
     () => getCategorySetListWithPostList({ postList: totalFrontMatterList }),
     [totalFrontMatterList],
@@ -33,16 +37,17 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      <h2 className="mb-2 font-light text-gray-600 text-sm">
-        {t("category.list")}
-      </h2>
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="font-light text-gray-600 text-sm">
+          {t("category.list")}
+        </h2>
+        <ViewToggle viewMode={viewMode} onToggle={toggle} />
+      </div>
       <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
         <CarouselContent>
           <CarouselItem className="basis-auto">
             <button
-              onClick={() => {
-                setValue("");
-              }}
+              onClick={() => setValue("")}
               aria-label={t("aria.allCategorySelect")}
               aria-pressed={value === ""}
               className="cursor-pointer"
@@ -58,9 +63,7 @@ export default function PostCategoryGallery({
           {categoryList.map(({ category, id, total }) => (
             <CarouselItem key={id + category} className="basis-auto">
               <button
-                onClick={() => {
-                  setValue(category);
-                }}
+                onClick={() => setValue(category)}
                 aria-label={t("aria.categorySelect", {
                   category,
                   count: total,
@@ -79,7 +82,7 @@ export default function PostCategoryGallery({
           ))}
         </CarouselContent>
       </Carousel>
-      <PostGallery postInfoList={filteredFrontMatterList} />
+      <PostGallery postInfoList={filteredFrontMatterList} viewMode={viewMode} />
     </div>
   );
 }

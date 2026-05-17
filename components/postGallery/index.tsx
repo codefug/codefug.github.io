@@ -6,22 +6,36 @@ import { useInView } from "react-intersection-observer";
 import type { FrontMatter } from "@/constants/mdx";
 import { POST_ITEM_PER_PAGE } from "@/constants/post";
 import PostCard from "../postCard";
+import PostListItem from "../postCard/post-list-item";
+
+type ViewMode = "grid" | "list";
 
 const PostGallery = memo(function PostGallery({
   postInfoList,
+  viewMode = "grid",
 }: {
   postInfoList: FrontMatter[];
+  viewMode?: ViewMode;
 }) {
   const { filteredFrontMatterList, ref, page } = usePostListRender({
     postInfoList,
   });
+
   return (
     <>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredFrontMatterList.map((postInfo) => (
-          <PostCard key={postInfo.id} {...postInfo} />
-        ))}
-      </div>
+      {viewMode === "grid" ? (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredFrontMatterList.map((postInfo) => (
+            <PostCard key={postInfo.id} {...postInfo} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filteredFrontMatterList.map((postInfo) => (
+            <PostListItem key={postInfo.id} {...postInfo} />
+          ))}
+        </div>
+      )}
       {postInfoList.length / POST_ITEM_PER_PAGE > page && (
         <div ref={ref} key={page} className="w-full">
           <Loader2Icon className="mx-auto mt-4 animate-spin text-primary" />
