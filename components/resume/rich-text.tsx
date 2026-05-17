@@ -1,29 +1,58 @@
 import { Fragment } from "react";
 
-const BOLD_RE = /\[B\](.+?)\[\/B\]/g;
+type Token =
+  | { type: "text"; content: string }
+  | { type: "bold"; content: string }
+  | { type: "link"; url: string; content: string };
 
-export function RichText({ children }: { children: string }) {
-  const parts: (string | { bold: string })[] = [];
+const COMBINED_RE = /\[B\](.+?)\[\/B\]|\[L:([^\]]+)\](.+?)\[\/L\]/g;
+
+function tokenize(text: string): Token[] {
+  const tokens: Token[] = [];
   let lastIndex = 0;
-  for (const match of children.matchAll(BOLD_RE)) {
+  for (const match of text.matchAll(COMBINED_RE)) {
     if (match.index! > lastIndex)
-      parts.push(children.slice(lastIndex, match.index));
-    parts.push({ bold: match[1] });
+      tokens.push({
+        type: "text",
+        content: text.slice(lastIndex, match.index),
+      });
+    if (match[1] !== undefined) {
+      tokens.push({ type: "bold", content: match[1] });
+    } else {
+      tokens.push({ type: "link", url: match[2], content: match[3] });
+    }
     lastIndex = match.index! + match[0].length;
   }
-  if (lastIndex < children.length) parts.push(children.slice(lastIndex));
+  if (lastIndex < text.length)
+    tokens.push({ type: "text", content: text.slice(lastIndex) });
+  return tokens;
+}
 
+export function RichText({ children }: { children: string }) {
   return (
     <>
-      {parts.map((p, i) =>
-        typeof p === "string" ? (
-          <Fragment key={i}>{p}</Fragment>
-        ) : (
-          <strong key={i} className="font-bold" style={{ color: "#1F1D81" }}>
-            {p.bold}
-          </strong>
-        ),
-      )}
+      {tokenize(children).map((token, i) => {
+        if (token.type === "bold")
+          return (
+            <strong key={i} className="font-bold" style={{ color: "#1F1D81" }}>
+              {token.content}
+            </strong>
+          );
+        if (token.type === "link")
+          return (
+            <a
+              key={i}
+              href={token.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted hover:decoration-solid"
+              style={{ color: "#1F1D81" }}
+            >
+              {token.content}
+            </a>
+          );
+        return <Fragment key={i}>{token.content}</Fragment>;
+      })}
     </>
   );
 }

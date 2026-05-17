@@ -339,8 +339,8 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "[B]저는 효율을 위해 고민하는 개발자입니다.[/B] 반복되는 작업은 자동화하고, 복잡한 구조는 단순화합니다. 문제를 해결하지 못한 채 하루를 마무리할 수 없어, 퇴근 후에도 머릿속에서 [B]비동기적으로 해결책을 계산[/B]합니다.",
-        "[B]문서화는 저와 팀의 생산성을 높이는 핵심 도구라고 생각합니다.[/B] 항상 학습한 내용을 개인 노트에 기록하고, 필요에 따라 블로그 포스트로 공유합니다. 이러한 문서는 저뿐만 아니라, 비슷한 상황에 처한 동료 개발자들에게도 유용한 이정표가 될 것이라고 확신합니다."
+        "[B]저는 효율을 위해 고민하는 개발자입니다.[/B] 문제를 해결하지 못한 채 하루를 마무리할 수 없어, 퇴근 후에도 머릿속에서 [B]비동기적으로 해결책을 계산[/B]합니다.",
+        "[B]문서화는 저와 팀의 생산성을 높이는 핵심 도구라고 생각합니다.[/B] 학습한 내용을 블로그 포스트로 공유하여 팀 내 지식 전달에 기여합니다."
       ]
     },
     "workExperience": {
@@ -389,13 +389,13 @@
             "title": "개발 생산성 개선",
             "details": [
               {
-                "text": "[B]Dynamic metric[/B]과 [B]Playwright Sharding[/B]을 활용한 동적으로 확장 가능한 병렬 테스트 환경 구성하여 평균 테스트 시간 [B]67.7% 단축[/B]"
+                "text": "[B]Dynamic metric[/B]과 [B]Playwright Sharding[/B]으로 병렬 테스트 환경 구성, 평균 테스트 시간 [B]67.7% 단축[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]블로그[/L])"
               },
               {
                 "text": "[B]ESLint + Prettier[/B] 기반 린트 파이프라인을 [B]Biome[/B]으로 전면 대체하여 평균 CI 린트 시간 [B]98% 단축[/B]"
               },
               {
-                "text": "[B]Datadog → OpenReplay[/B] 비용 절감 전환 주도. Next.js group route 소스맵 업로드 오류 직접 디버깅 및 CI/CD 파이프라인 구성, 소스코드 분석 중 handleError 누락 등 발견해 [B]오픈소스 기여[/B]",
+                "text": "[B]Datadog → OpenReplay[/B] 비용 절감 전환 주도. Next.js group route 소스맵 업로드 오류 직접 디버깅 및 CI/CD 파이프라인 구성, 소스코드 분석 중 handleError 누락 등 발견해 [L:https://github.com/openreplay/openreplay/issues/4476]오픈소스 기여[/L]",
                 "highlight": true
               }
             ]
@@ -407,7 +407,7 @@
                 "text": "신규 가입자 대상 커스텀 온보딩 가이드 컴포넌트 개발 및 사용자 상태에 따른 개인화 문구 적용하여 정산 달력 서비스 진입률 [B]42% 향상[/B], 모바일 재방문율 [B]17% 향상[/B]"
               },
               {
-                "text": "페이지별 메타데이터 누락 이슈를 발견하고 공통 로직으로 추상화하고 구조화된 메타데이터 적용하여 검색 효율 개선 및 관리 비용 감소. 이후 관련 가이드 문서화를 통해 팀 개발 효율성 향상"
+                "text": "페이지별 메타데이터 공통화 및 구조화 적용으로 검색 효율 개선, 가이드 문서화로 팀 온보딩 효율 향상"
               }
             ]
           },
@@ -423,14 +423,8 @@
                 "highlight": true
               },
               {
-                "text": "빌드 배포 시 [B]Server Action version skew 오류[/B]와 큐 방식 순차 실행 한계를 실험·문서화하여 팀 내 [B]tRPC 마이그레이션 제안 및 시작에 기여[/B]. 마이그레이션 후 tRPC queryKey와 기존 상수의 캐시 키 형태 불일치로 invalidateQueries가 silent하게 실패하던 버그 진단 및 수정",
+                "text": "[B]Server Action version skew 오류[/B]와 큐 방식 한계를 [L:/posts/2026-01-29]실험·문서화[/L]하여 팀 내 [B]tRPC 마이그레이션 제안 및 시작에 기여[/B]. 마이그레이션 후 queryKey-상수 캐시 키 불일치로 invalidateQueries가 silent하게 실패하던 버그 진단·수정",
                 "highlight": true
-              },
-              {
-                "text": "양방향으로 흐르던 선정산 조회 로직을 Context API 기반 단방향 데이터 흐름으로 리팩토링"
-              },
-              {
-                "text": "초기셀러 지원 제도 등 선정산 조회 로직과 엮여 있는 기능 추가 시 관련 코드 수정 범위를 최소화하며 빠른 개발"
               }
             ]
           }
@@ -453,10 +447,8 @@
             "title": "Vite 기반 빌드 시스템 전환",
             "details": [
               {
-                "text": "[B]Vite로 마이그레이션[/B]하여 기존 CRA 대비 빌드 속도 개선 및 개발 경험 향상"
-              },
-              { "text": "[B]Rollup 최적화[/B]로 번들링 효율 향상" },
-              { "text": "번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B] 달성" }
+                "text": "[B]CRA → Vite 마이그레이션[/B]으로 번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B]"
+              }
             ]
           },
           {
@@ -464,21 +456,6 @@
             "details": [
               {
                 "text": "Tanstack Query 도입으로 [B]네트워크 호출 최적화와 상태 책임 분리[/B] 구현"
-              },
-              {
-                "text": "[B]서버 상태와 UI 상태를 명확히 분리[/B]하여 컴포넌트 단순화 및 [B]사용자 경험 및 예측 가능성 향상[/B]"
-              }
-            ]
-          },
-          {
-            "title": "기능 기반 폴더 구조 개편",
-            "details": [
-              {
-                "text": "[B]기능 기반(Folder-by-Feature) 구조로 전환[/B]하여 응집도 향상"
-              },
-              { "text": "[B]역할 기반과 기능 기반을 혼합한 구조로 설계[/B]" },
-              {
-                "text": "[B]문서화를 통해 코드 일관성 및 유지보수 효율성[/B] 향상"
               }
             ]
           }
@@ -488,7 +465,7 @@
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
         "duration": "2025.01 ~ 2025.10",
-        "description": "AI 기반 보고서 분석 솔루션 개발",
+        "description": "AI 기반 보고서 분석 솔루션, 설계부터 배포까지 단독 개발",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -562,9 +539,6 @@
               {
                 "text": "인증·사용자·계약·결제·출금·사이트 관리 등 [B]6개 이상 도메인의 MSW 핸들러를 도메인 분리 구조로 설계[/B]하고 README 포함 전체 모킹 환경 구축",
                 "highlight": true
-              },
-              {
-                "text": "Storybook 연동으로 실제 API 없이 UI 개발·검증 가능한 환경 확보"
               }
             ]
           },
@@ -574,9 +548,6 @@
               {
                 "text": "router 변경을 감지해 mutation으로 서버에 이력을 전송하는 [B]RecordPathnameManager[/B] 위젯 설계 및 구현 — console.log 임시 구현 단계부터 직접 아키텍처 전환",
                 "highlight": true
-              },
-              {
-                "text": "MSW 핸들러 및 테스트 코드(searchParams 파싱·커버리지) 추가로 검증 범위 확보"
               }
             ]
           },
@@ -584,25 +555,16 @@
             "title": "도메인 기능 개발",
             "details": [
               {
-                "text": "관리자 목록·생성·삭제 도메인 액션 전체 설계 및 구현 (Forbidden 페이지, Routes 상수 포함)"
-              },
-              {
-                "text": "SCM OTP 발급 탭 — react-hook-form + zod 폼 검증, API 연동, MSW 핸들러까지 전 단계 개발"
+                "text": "관리자 목록·생성·삭제 도메인 액션 전체 설계 및 구현"
               },
               {
                 "text": "공지사항·사이트 관리 날짜 필드에 [B]KST 타임존 보정[/B] 적용 (서버가 Date를 서울 시간대로 판단하는 사양 파악 후 HotFix)"
-              },
-              {
-                "text": "지급 대기 자금 요청, 초기성장지원제도 지급 내역 페이지 등 지급 관련 기능 개발"
               }
             ]
           },
           {
             "title": "버그 수정",
             "details": [
-              {
-                "text": "server action 에러를 공통 코드로 덮어씌우던 로직을 [B]에러 원본 그대로 전파[/B]하도록 수정해 디버깅 가시성 확보"
-              },
               {
                 "text": "S3 presigned PUT에 포함된 [B]deprecated X-Amz-ACL 헤더 제거[/B]로 업로드 403 오류 해소"
               },
@@ -613,6 +575,22 @@
           }
         ]
       }
+    },
+    "sideProjects": {
+      "title": "Side Projects",
+      "items": [
+        {
+          "title": "Claude Pet",
+          "url": "/posts/2026-05-10",
+          "stack": ["Electron", "React", "TypeScript", "esbuild"],
+          "description": "병렬 실행 중인 Claude Code 세션 상태를 실시간으로 표시하는 macOS 위젯",
+          "details": [
+            "폴링에서 [B]Claude Code hooks[/B] 기반 이벤트 드리븐으로 전환해 권한 요청 즉시 알림",
+            "hook CLI(esbuild 단독 빌드) → HTTP 서버 → IPC 파이프라인 설계로 외부 이벤트를 Renderer에 전달",
+            "[B]contextBridge[/B]로 Main/Renderer 권한 분리"
+          ]
+        }
+      ]
     },
     "knowledgeSharing": {
       "title": "Knowledge Sharing",
