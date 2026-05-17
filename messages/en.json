@@ -339,19 +339,18 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping. When something is unclear, I open the Chrome CPP source or read library internals directly to find out.",
-        "I don't sit on what I find. I write it up, share it with the team, or file an open source issue. When my analysis of Server Action's structural limits led to a team-wide tRPC migration, that's [B]the kind of outcome I find most rewarding[/B] — a personal discovery that becomes a team-level change.",
-        "I'm naturally drawn to improving the development environment. From optimizing CI pipelines to building a Claude Code hooks-based macOS widget and [B]shipping it via Homebrew[/B], when I find friction I tend to fix it."
+        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping, in the middle of the night. When something is unclear, I design an experiment or dig into the source directly.",
+        "I don't sit on what I find. I believe [B]documentation and sharing is the most effective form of communication[/B]. I've written up analyses that changed my team's technical direction, and filed open source issues from findings along the way. A personal discovery becoming a team-level change is the kind of impact I find most rewarding.",
+        "I fix what bothers me — and [B]document it so others don't have to rediscover it[/B]. I don't just solve things privately; I write it down and connect the dots."
       ]
     },
     "skills": {
       "title": "Skills",
       "items": [
-        "Can design and build SSR and server component-based services with [B]Next.js App Router[/B]. Manages server state with Tanstack Query, builds type-safe API layers with tRPC, and handles SEO infrastructure including [B]Schema.org JSON-LD[/B].",
-        "Uses TypeScript as a [B]design tool beyond type annotation[/B]. Eliminates impossible states at the type level with Discriminated Unions, shares schemas across server/client boundaries with Zod, and reduces runtime errors through the type system.",
-        "Can write [B]Playwright[/B] E2E tests and design CI environments. Has experience configuring parallel execution with Dynamic metric and Sharding, and designing domain-separated API mocking environments with [B]MSW[/B].",
-        "Can optimize performance across bundle, image, and runtime layers. Has hands-on experience with [B]Vite migration[/B], [B]Docker multi-stage builds[/B], Web Worker and virtualization, and dynamic import for code splitting.",
-        "Can handle security work including [B]CSP policy compliance[/B] and middleware auth guard design with iron-session. When behavior is unclear, checks browser or library source directly to identify the root cause."
+        "I've designed and built SSR and server component-based services with [B]Next.js App Router[/B]. I use TypeScript as a design tool — eliminating impossible states at the type level with [B]Discriminated Unions[/B], sharing server and client schemas with [B]Zod[/B] to reduce runtime errors. I manage server state with [B]Tanstack Query[/B] and handle SEO infrastructure directly.",
+        "I write [B]Playwright E2E[/B] tests and design CI environments from the ground up. I've built parallel test execution using [B]Dynamic metric and Sharding[/B] to cut test times, and designed domain-separated API mocking environments with [B]MSW[/B]. Improving the lint and build pipeline for developer productivity is something I actively take on.",
+        "I've optimized performance across bundle, image, and runtime layers — [B]CRA-to-Vite migration[/B], [B]Docker multi-stage builds[/B], [B]Web Worker[/B] and react-window virtualization, dynamic import. Each improvement is measurable. I've also handled security work directly, including [B]CSP policy compliance[/B] — which required building a custom editor module to stay within policy.",
+        "When the problem calls for it, I go beyond web frontend. I've built a [B]Turborepo[/B]-based monorepo admin system and shipped a macOS widget via [B]Homebrew[/B] using [B]Electron[/B]. Working across these layers gives me a broader range of problems I can find and solve, and lets me make decisions that aren't constrained by a single technology."
       ]
     },
     "workExperience": {
@@ -365,7 +364,7 @@
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Responsible for frontend development across 3 web services."
+          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Responsible for frontend development across web services and design system."
         }
       }
     },
@@ -373,7 +372,6 @@
       "allra": {
         "title": "Allra",
         "subtitle": "Allra Fintech",
-        "duration": "2025.10 ~ present",
         "description": "Pre-settlement financial service development for e-commerce sellers",
         "stack": [
           "Next.js",
@@ -393,8 +391,21 @@
                 "text": "Replaced [B]ESLint + Prettier[/B] lint pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
               },
               {
-                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]",
-                "highlight": true
+                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]"
+              }
+            ]
+          },
+          {
+            "title": "Code Quality",
+            "details": [
+              {
+                "text": "Analyzed Chrome CPP source to identify autocomplete ignore cause, resolved with [B]Honeypot decoy field approach to bypass autofill[/B]"
+              },
+              {
+                "text": "Refactored pre-settlement request logic with [B]TypeScript Discriminated Union[/B], enforcing impossible states at type level to prevent runtime errors and improve readability"
+              },
+              {
+                "text": "[B]Server Action version skew errors[/B] and queue execution limits [L:/posts/2026-01-29]analyzed and documented[/L], [B]proposing tRPC migration that initiated team-wide adoption[/B]"
               }
             ]
           },
@@ -405,30 +416,12 @@
                 "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B] (Organization, FAQ, Article)"
               }
             ]
-          },
-          {
-            "title": "Code Quality",
-            "details": [
-              {
-                "text": "Analyzed Chrome CPP source to identify autocomplete ignore cause, resolved with [B]Honeypot decoy field approach to bypass autofill[/B]",
-                "highlight": true
-              },
-              {
-                "text": "Refactored pre-settlement request logic with [B]TypeScript Discriminated Union[/B], enforcing impossible states at type level to prevent runtime errors and improve readability",
-                "highlight": true
-              },
-              {
-                "text": "[B]Server Action version skew errors[/B] and queue execution limits [L:/posts/2026-01-29]analyzed and documented[/L], [B]proposing tRPC migration that initiated team-wide adoption[/B]",
-                "highlight": true
-              }
-            ]
           }
         ]
       },
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "duration": "2025.03 ~ 2025.10",
         "description": "Service management portal development",
         "stack": [
           "React(Vite)",
@@ -450,8 +443,7 @@
             "title": "CSP Policy Compliance",
             "details": [
               {
-                "text": "Existing editor incompatible with in-house [B]CSP policy[/B] → migrated to react-quill-new and built a custom image resize module to resolve security violations",
-                "highlight": true
+                "text": "Existing editor incompatible with in-house [B]CSP policy[/B] → migrated to react-quill-new and built a custom image resize module to resolve security violations"
               }
             ]
           }
@@ -460,7 +452,6 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "duration": "2025.01 ~ 2025.10",
         "description": "AI-powered report analysis solution — sole developer from design to deployment",
         "stack": [
           "Next.js",
@@ -497,7 +488,6 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "duration": "",
         "description": "Internal design system development",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [
@@ -508,13 +498,20 @@
                 "text": "Adopted [B]clsx and cva[/B] for type-safe component variant styling"
               }
             ]
+          },
+          {
+            "title": "Component Restructuring",
+            "details": [
+              {
+                "text": "Audited design system components and [B]classified features implementable with CSS-only (no JS)[/B], eliminating unnecessary JS dependencies to reduce bundle size and improve accessibility"
+              }
+            ]
           }
         ]
       },
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "duration": "2025.10 ~ present",
         "description": "Internal admin system development for e-commerce seller management, built on Turborepo monorepo",
         "stack": [
           "Next.js",
@@ -530,17 +527,7 @@
             "title": "MSW-based API Mocking Environment",
             "details": [
               {
-                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)",
-                "highlight": true
-              }
-            ]
-          },
-          {
-            "title": "Auth & Permissions",
-            "details": [
-              {
-                "text": "Implemented middleware auth guard with [B]iron-session[/B] encrypted cookies, route-level access control via menu permission mapping, and client-side [B]AuthGuard[/B] to prevent unauthenticated UI flash",
-                "highlight": true
+                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)"
               }
             ]
           },
@@ -595,6 +582,23 @@
           "url": "/posts/2024-09-14-1"
         }
       ]
+    },
+    "activities": {
+      "title": "Activities",
+      "studyGroups": {
+        "label": "Study Group Leadership",
+        "note": "Founded and led 8 study groups — curriculum design and schedule coordination"
+      },
+      "hackathons": {
+        "items": [
+          {
+            "event": "Teo's Sprint",
+            "project": "Reindeer Letter",
+            "description": "A service for writing and scheduling voice & text letters to yourself or others at year-end",
+            "github": "https://github.com/codefug/reindeer-letter-fe"
+          }
+        ]
+      }
     },
     "education": {
       "title": "Education",
