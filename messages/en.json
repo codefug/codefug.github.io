@@ -339,8 +339,9 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping.",
-        "I don't sit on what I find. I write it up, share it with the team, or file an open source issue."
+        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping. When something is unclear, I open the Chrome CPP source or read library internals directly to find out.",
+        "I don't sit on what I find. I write it up, share it with the team, or file an open source issue. When my analysis of Server Action's structural limits led to a team-wide tRPC migration, that's [B]the kind of outcome I find most rewarding[/B] — a personal discovery that becomes a team-level change.",
+        "I'm naturally drawn to improving the development environment. From optimizing CI pipelines to building a Claude Code hooks-based macOS widget and [B]shipping it via Homebrew[/B], when I find friction I tend to fix it."
       ]
     },
     "skills": {
