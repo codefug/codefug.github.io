@@ -14,9 +14,7 @@ export function PostGroupContent({
   frontMatterList: FrontMatter[];
 }) {
   const frontMatterListArrangedByCategories = useMemo(() => {
-    // 카테고리 조합
     const categoryCombination = new Set();
-    // 결과 리스트
     const resultList: { [key: string]: FrontMatter[] } = {};
     frontMatterList.forEach((post) => {
       const firstCategory = post.categories[0];
@@ -31,27 +29,31 @@ export function PostGroupContent({
   }, [frontMatterList]);
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="py-2">
       {Object.entries(TAG_GROUP_TO_ARRAY_MAP).map(([key, value]) => {
+        const matchedCategories = Object.keys(
+          frontMatterListArrangedByCategories,
+        ).filter((category) =>
+          value.includes(category as (typeof TAG_LIST)[keyof typeof TAG_LIST]),
+        );
+
+        if (matchedCategories.length === 0) return null;
+
         return (
           <section key={key}>
-            <SidebarGroupLabel>{key}</SidebarGroupLabel>
+            <SidebarGroupLabel className="px-3 py-1 font-semibold text-[10px] text-sidebar-foreground/30 uppercase tracking-widest">
+              {key}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
-              {Object.keys(frontMatterListArrangedByCategories)
-                .filter((category) =>
-                  value.includes(
-                    category as (typeof TAG_LIST)[keyof typeof TAG_LIST],
-                  ),
-                )
-                .map((category) => (
-                  <CollapsiblePostList
-                    key={category.toString()}
-                    category={category}
-                    frontMatterList={
-                      frontMatterListArrangedByCategories[category]
-                    }
-                  />
-                ))}
+              {matchedCategories.map((category) => (
+                <CollapsiblePostList
+                  key={category}
+                  category={category}
+                  frontMatterList={
+                    frontMatterListArrangedByCategories[category]
+                  }
+                />
+              ))}
             </SidebarGroupContent>
           </section>
         );
