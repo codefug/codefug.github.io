@@ -34,7 +34,7 @@ export function RichText({ children }: { children: string }) {
       {tokenize(children).map((token, i) => {
         if (token.type === "bold")
           return (
-            <strong key={i} className="font-bold" style={{ color: "#1F1D81" }}>
+            <strong key={i} className="font-bold text-primary">
               {token.content}
             </strong>
           );
@@ -45,8 +45,7 @@ export function RichText({ children }: { children: string }) {
               href={token.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-dotted hover:decoration-solid"
-              style={{ color: "#1F1D81" }}
+              className="text-primary underline decoration-dotted hover:decoration-solid"
             >
               {token.content}
             </a>
