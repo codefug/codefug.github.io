@@ -31,11 +31,17 @@ function buildCodeLines(postCount: number): CodeLine[] {
     {
       indent: true,
       tokens: [
-        { text: "stack", color: "text-sky-500 dark:text-sky-400" },
+        { text: "values", color: "text-sky-500 dark:text-sky-400" },
         { text: ": [", color: "text-foreground" },
-        { text: '"React"', color: "text-emerald-600 dark:text-emerald-400" },
+        {
+          text: '"team-first"',
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
         { text: ", ", color: "text-foreground" },
-        { text: '"Next.js"', color: "text-emerald-600 dark:text-emerald-400" },
+        {
+          text: '"user-driven"',
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
         { text: "],", color: "text-foreground" },
       ],
     },
@@ -216,9 +222,9 @@ function TerminalStatusBar({ postCount }: { postCount: number }) {
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
         <span className="flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          TypeScript
+          collaborative
         </span>
-        <span>UTF-8</span>
+        <span>curious</span>
       </div>
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
         <span>{postCount} posts</span>
