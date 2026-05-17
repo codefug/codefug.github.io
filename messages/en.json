@@ -349,12 +349,12 @@
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "Improved developer productivity through [B]test and CI pipeline enhancements[/B], alongside SEO improvements, [B]open source contributions[/B], and browser security vulnerability analysis."
+          "summary": "Series B fintech startup providing early payment (선정산) services to online marketplace sellers. Improved developer productivity through [B]test and CI pipeline enhancements[/B], alongside SEO improvements, [B]open source contributions[/B], and browser security vulnerability analysis."
         },
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "summary": "Led 3 projects, achieving [B]58.3% bundle reduction via CRA → Vite migration[/B], [B]building a custom CSP-compliant editor from scratch[/B], and single-handedly delivering Document AI with a custom PDF Viewer ([B]67% faster initial render[/B]) and Docker optimization ([B]91.36% image size reduction[/B])."
+          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Led 3 projects, achieving [B]58.3% bundle reduction via CRA → Vite migration[/B], [B]building a custom CSP-compliant editor from scratch[/B], and single-handedly delivering Document AI with a custom PDF Viewer ([B]67% faster initial render[/B]) and Docker optimization ([B]91.36% image size reduction[/B])."
         }
       }
     },
@@ -391,7 +391,7 @@
             "title": "SEO",
             "details": [
               {
-                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B] (Organization, FAQ, Article), and eliminated duplicate API calls for metadata using React cache"
+                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B] (Organization, FAQ, Article)"
               }
             ]
           },
@@ -407,7 +407,7 @@
                 "highlight": true
               },
               {
-                "text": "[L:/posts/2026-01-29]Researched and documented[/L] [B]Server Action version skew errors[/B] and queue execution limits, [B]proposing tRPC migration that initiated team-wide adoption[/B]. After migration, diagnosed and fixed silent invalidateQueries failure from tRPC queryKey vs. legacy QUERY_KEY cache key mismatch",
+                "text": "[B]Server Action version skew errors[/B] and queue execution limits [L:/posts/2026-01-29]analyzed and documented[/L], [B]proposing tRPC migration that initiated team-wide adoption[/B]",
                 "highlight": true
               }
             ]
@@ -519,16 +519,16 @@
             "title": "MSW-based API Mocking Environment",
             "details": [
               {
-                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management) with full README documentation",
+                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)",
                 "highlight": true
               }
             ]
           },
           {
-            "title": "Admin Navigation History Tracking",
+            "title": "Auth & Permissions",
             "details": [
               {
-                "text": "Designed and implemented [B]RecordPathnameManager[/B] widget — detects router changes and sends history via mutation to server, evolving from a console.log stub to a full API-integrated architecture",
+                "text": "Implemented middleware auth guard with [B]iron-session[/B] encrypted cookies, route-level access control via menu permission mapping, and client-side [B]AuthGuard[/B] to prevent unauthenticated UI flash",
                 "highlight": true
               }
             ]
@@ -541,9 +541,6 @@
               },
               {
                 "text": "Removed [B]deprecated X-Amz-ACL header[/B] from S3 presigned PUT requests, resolving upload 403 errors"
-              },
-              {
-                "text": "Fixed [B]infinite re-render[/B] in the auth code expiry handler caused by unnecessary state updates"
               }
             ]
           }
@@ -561,8 +558,7 @@
           "description": "macOS widget showing real-time status of parallel Claude Code sessions (distributed via Homebrew)",
           "details": [
             "Switched from polling to [B]Claude Code hooks[/B]-based event-driven architecture, enabling instant permission-request alerts",
-            "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer",
-            "[B]contextBridge[/B] for Main/Renderer privilege separation"
+            "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer"
           ]
         }
       ]
