@@ -2,7 +2,6 @@ import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
 import { BirthdayBanner } from "@/components/event/birthday-banner";
 import { HeroSection } from "@/components/home/hero-section";
-import { HomeClientContent } from "@/components/home/home-client-content";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -50,11 +49,7 @@ export default async function Home() {
           }
         />
       </section>
-      <div className="mb-14 rounded-lg py-3">
-        <HomeClientContent
-          cardNumber={10}
-          frontMatterListByLocale={frontMatterListByLocale}
-        />
+      <div className="mb-14">
         <PostSwiper
           cardNumber={10}
           frontMatterListByLocale={frontMatterListByLocale}

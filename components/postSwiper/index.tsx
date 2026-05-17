@@ -39,7 +39,7 @@ export default function PostSwiper({
         align: "start",
         loop: true,
       }}
-      className="mx-auto rounded-xl border bg-primary/5 p-4 md:p-6 lg:p-8"
+      className="mx-auto rounded-xl border border-border/60 bg-muted/30 p-4 md:p-5"
     >
       <CarouselContent>
         {filteredPostInfoList.map(
