@@ -391,7 +391,7 @@
             "title": "SEO 개선",
             "details": [
               {
-                "text": "페이지별 메타데이터 공통화 및 구조화 적용으로 검색 효율 개선, 가이드 문서화로 팀 온보딩 효율 향상"
+                "text": "전 페이지 OG/Twitter 메타데이터 공통 유틸화, [B]Schema.org JSON-LD 구조화 데이터[/B] 도입(Organization·FAQ·Article), React cache로 메타데이터 API 중복 호출 제거"
               }
             ]
           },
@@ -436,14 +436,6 @@
             ]
           },
           {
-            "title": "서버 상태와 UI 상태 분리",
-            "details": [
-              {
-                "text": "Tanstack Query 도입으로 [B]네트워크 호출 최적화와 상태 책임 분리[/B] 구현"
-              }
-            ]
-          },
-          {
             "title": "CSP 정책 대응",
             "details": [
               {
@@ -471,10 +463,7 @@
             "title": "PDF Viewer 기능 개발",
             "details": [
               {
-                "text": "[B]pdf.js와 Canvas API[/B] 기반 커스텀 [B]PDF Viewer[/B] 구현"
-              },
-              {
-                "text": "[B]Web Worker[/B]를 활용한 렌더링 비동기 처리, [B]react-window[/B]로 대용량 문서 가상화 → [B]초기 렌더링 시간 67% 개선[/B]"
+                "text": "[B]Web Worker + react-window 가상화[/B] 기반 커스텀 PDF Viewer 구현 → [B]초기 렌더링 시간 67% 개선[/B]"
               }
             ]
           },
@@ -505,7 +494,7 @@
             "title": "코드 일관성 개선",
             "details": [
               {
-                "text": "[B]clsx, cva 도입을 주도[/B]하여 스타일링 일관성 확보 및 유지보수 효율성 향상"
+                "text": "[B]clsx, cva 도입[/B]으로 컴포넌트 변형 스타일을 타입 안전하게 관리"
               }
             ]
           }
@@ -545,19 +534,11 @@
             ]
           },
           {
-            "title": "도메인 기능 개발",
-            "details": [
-              {
-                "text": "관리자 목록·생성·삭제 도메인 액션 전체 설계 및 구현"
-              },
-              {
-                "text": "공지사항·사이트 관리 날짜 필드에 [B]KST 타임존 보정[/B] 적용 (서버가 Date를 서울 시간대로 판단하는 사양 파악 후 HotFix)"
-              }
-            ]
-          },
-          {
             "title": "버그 수정",
             "details": [
+              {
+                "text": "공지사항·사이트 관리 날짜 필드에 [B]KST 타임존 보정[/B] 적용 (서버가 Date를 서울 시간대로 판단하는 사양 파악 후 HotFix)"
+              },
               {
                 "text": "S3 presigned PUT에 포함된 [B]deprecated X-Amz-ACL 헤더 제거[/B]로 업로드 403 오류 해소"
               },

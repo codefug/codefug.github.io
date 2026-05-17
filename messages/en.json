@@ -391,7 +391,7 @@
             "title": "SEO",
             "details": [
               {
-                "text": "Consolidated page metadata into shared logic with structured metadata, improving search efficiency; documented guidelines to improve team onboarding"
+                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B] (Organization, FAQ, Article), and eliminated duplicate API calls for metadata using React cache"
               }
             ]
           },
@@ -436,14 +436,6 @@
             ]
           },
           {
-            "title": "Server and UI State Separation",
-            "details": [
-              {
-                "text": "Implemented [B]network call optimization and state responsibility separation[/B] via Tanstack Query adoption"
-              }
-            ]
-          },
-          {
             "title": "CSP Policy Compliance",
             "details": [
               {
@@ -471,10 +463,7 @@
             "title": "PDF Viewer Development",
             "details": [
               {
-                "text": "Built custom [B]PDF Viewer[/B] based on [B]pdf.js and Canvas API[/B]"
-              },
-              {
-                "text": "Async rendering via [B]Web Worker[/B] and virtualization of large documents via [B]react-window[/B] → [B]67% initial render improvement[/B]"
+                "text": "Built custom PDF Viewer with [B]Web Worker + react-window virtualization[/B] → [B]67% initial render improvement[/B]"
               }
             ]
           },
@@ -505,7 +494,7 @@
             "title": "Code Consistency",
             "details": [
               {
-                "text": "[B]Led the adoption of clsx and cva[/B] to secure styling consistency and improve maintenance efficiency"
+                "text": "Adopted [B]clsx and cva[/B] for type-safe component variant styling"
               }
             ]
           }
@@ -545,19 +534,11 @@
             ]
           },
           {
-            "title": "Domain Feature Development",
-            "details": [
-              {
-                "text": "Designed and implemented full admin CRUD domain actions (list, create, delete)"
-              },
-              {
-                "text": "Applied [B]KST timezone correction[/B] to notice and site management date fields after identifying the server's Seoul timezone assumption (hotfix)"
-              }
-            ]
-          },
-          {
             "title": "Bug Fixes",
             "details": [
+              {
+                "text": "Applied [B]KST timezone correction[/B] to notice and site management date fields after identifying the server's Seoul timezone assumption (hotfix)"
+              },
               {
                 "text": "Removed [B]deprecated X-Amz-ACL header[/B] from S3 presigned PUT requests, resolving upload 403 errors"
               },
