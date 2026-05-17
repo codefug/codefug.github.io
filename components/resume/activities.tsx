@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
@@ -46,12 +48,8 @@ function HackathonListItem({ item }: { item: HackathonItem }) {
   );
 }
 
-export default async function Activities({
-  className,
-}: {
-  className?: string;
-}) {
-  const t = await getTranslations("resume.activities");
+export default function Activities({ className }: { className?: string }) {
+  const t = useTranslations("resume.activities");
   const studyGroups = t.raw("studyGroups") as StudyGroups;
   const hackathons = t.raw("hackathons.items") as HackathonItem[];
 
