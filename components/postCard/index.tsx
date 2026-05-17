@@ -21,15 +21,14 @@ export default function PostCard({
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
 
   return (
-    // SSG로 렌더링된 포스트 링크는 CSR로 이동시킬 수 없다. ( HTML을 받아야 한다. )
     <a
       href={linkHref}
       aria-label={t("postRead", { title })}
       rel="bookmark"
       title={title}
     >
-      <Card className="group relative h-[450px] cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-xl dark:bg-gray-800 dark:hover:bg-gray-700">
-        <div className="relative h-52 w-full overflow-hidden rounded-t-md">
+      <Card className="group relative h-[450px] cursor-pointer overflow-hidden bg-card transition-all duration-300 hover:shadow-lg hover:ring-1 hover:ring-primary/20">
+        <div className="relative h-52 w-full overflow-hidden">
           <Image
             priority={false}
             src={header.teaser}
@@ -39,27 +38,25 @@ export default function PostCard({
             placeholder="blur"
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
             className={cn(
-              "h-52 w-full object-cover object-center transition-transform duration-300 group-hover:scale-105",
+              "h-52 w-full object-cover object-center transition-transform duration-500 group-hover:scale-105",
             )}
           />
         </div>
-        <div className="p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              {categories.map((category) => (
-                <Badge key={category + id} variant="outline">
-                  {category}
-                </Badge>
-              ))}
-            </div>
+        <div className="flex h-[calc(100%-13rem)] flex-col p-5">
+          <div className="mb-2.5 flex flex-wrap gap-1">
+            {categories.map((category) => (
+              <Badge key={category + id} variant="outline">
+                {category}
+              </Badge>
+            ))}
           </div>
-          <h2 className="mb-2 line-clamp-2 font-bold text-lg">{title}</h2>
-          <p className="line-clamp-3 min-h-[60px] text-gray-600 text-sm dark:text-gray-400">
+          <h2 className="mb-2 line-clamp-2 font-bold text-lg leading-snug">
+            {title}
+          </h2>
+          <p className="line-clamp-3 flex-1 text-muted-foreground text-sm">
             {excerpt}
           </p>
-        </div>
-        <div className="absolute right-0 bottom-0 left-0 flex justify-end px-5 pb-5">
-          <time className="text-gray-500 text-sm">{date}</time>
+          <time className="mt-3 text-muted-foreground/60 text-xs">{date}</time>
         </div>
       </Card>
     </a>

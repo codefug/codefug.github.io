@@ -24,9 +24,9 @@ export default function PostListItem({
       aria-label={t("postRead", { title })}
       rel="bookmark"
       title={title}
-      className="group flex gap-4 rounded-xl border border-border bg-background p-4 transition-all duration-200 hover:bg-muted/50 hover:shadow-md sm:gap-5"
+      className="group flex gap-4 rounded-xl border border-border bg-background p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm sm:gap-5"
     >
-      <div className="relative h-20 w-24 flex-shrink-0 overflow-hidden rounded-md sm:h-24 sm:w-32">
+      <div className="relative h-20 w-24 flex-shrink-0 overflow-hidden rounded-lg sm:h-24 sm:w-32">
         <Image
           priority={false}
           src={header.teaser}
@@ -55,7 +55,7 @@ export default function PostListItem({
             {excerpt}
           </p>
         </div>
-        <time className="mt-2 text-muted-foreground text-xs">{date}</time>
+        <time className="mt-2 text-muted-foreground/60 text-xs">{date}</time>
       </div>
     </a>
   );
