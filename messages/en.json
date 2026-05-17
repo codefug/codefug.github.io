@@ -423,6 +423,10 @@
                 "highlight": true
               },
               {
+                "text": "[B]Migrated Server Action-based API calls to tRPC[/B]. Analyzed and documented Server Action's sequential queue execution problem through experiments, then transitioned to tRPC architecture enabling parallel data fetching",
+                "highlight": true
+              },
+              {
                 "text": "Refactored bidirectional pre-settlement lookup logic to unidirectional data flow using Context API"
               },
               {
@@ -542,6 +546,60 @@
             ]
           }
         ]
+      },
+      "allraAdmin": {
+        "title": "Allra Admin",
+        "subtitle": "Allra Fintech",
+        "duration": "2025.10 ~ present",
+        "description": "Internal admin system development for e-commerce seller management, built on Turborepo monorepo",
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Turborepo",
+          "MSW",
+          "Playwright",
+          "Storybook"
+        ],
+        "categories": [
+          {
+            "title": "Registry Pattern-based Modal Architecture",
+            "details": [
+              {
+                "text": "[B]Eliminated repetitive useState boilerplate[/B] per modal with a centralized registry pattern, establishing a consistent modal invocation structure via `openModal({ key, data })`",
+                "highlight": true
+              },
+              {
+                "text": "[B]Provided a factory function in the shared UI package[/B] so each admin app can independently configure its own modal registry"
+              }
+            ]
+          },
+          {
+            "title": "MSW · Storybook Development/Test Environment",
+            "details": [
+              {
+                "text": "[B]Built MSW-based API mocking environment[/B] for backend-independent UI development and Playwright E2E test integration"
+              },
+              {
+                "text": "[B]Upgraded Storybook to v10[/B] and improved story file structure to modernize component documentation"
+              }
+            ]
+          },
+          {
+            "title": "Admin Feature Development",
+            "details": [
+              {
+                "text": "Developed multiple admin features including admin management, Excel download reason input, and SMS/email OTP notification management"
+              },
+              {
+                "text": "Unified date filter components via [B]DateRangeFilterSwitcher integration[/B] and DatePicker UX/performance improvements"
+              },
+              {
+                "text": "Introduced [B]useSearchParamsWithPageReset[/B] hook to resolve setter reference instability when syncing URL state"
+              }
+            ]
+          }
+        ]
       }
     },
     "knowledgeSharing": {
@@ -556,7 +614,10 @@
           "title": "Why Use useCallback and useMemo?",
           "url": "/posts/2026-01-18"
         },
-        { "title": "Asynchronous Javascript", "url": "/posts/2024-11-10" },
+        {
+          "title": "The React Ecosystem Is Bigger Than You Think — Electron",
+          "url": "/posts/2026-05-10"
+        },
         {
           "title": "Toss slash analysis, custom overlay hook with zustand",
           "url": "/posts/2024-09-14-1"

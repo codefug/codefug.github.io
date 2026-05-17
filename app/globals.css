@@ -195,7 +195,7 @@
   /* 페이지 여백 & A4 크기 */
   @page {
     size: A4;
-    margin: 1.8cm 1.5cm;
+    margin: 2.2cm 1.5cm 1.8cm;
   }
 
   /* Framer Motion 등 JS 애니메이션 고정 */
@@ -208,7 +208,6 @@
 
   /* 섹션 내부에서 페이지 분리 방지 */
   article,
-  section,
   li {
     break-inside: avoid;
   }

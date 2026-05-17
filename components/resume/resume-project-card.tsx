@@ -7,7 +7,12 @@ type DetailItem = { text: string; highlight?: boolean; subItems?: string[] };
 type Category = { title: string; details: DetailItem[] };
 
 interface Props {
-  projectKey: "allra" | "digitalFinance" | "documentAi" | "samilDevKit";
+  projectKey:
+    | "allra"
+    | "digitalFinance"
+    | "documentAi"
+    | "samilDevKit"
+    | "allraAdmin";
 }
 
 export default function ResumeProjectCard({ projectKey }: Props) {

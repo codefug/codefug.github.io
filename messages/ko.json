@@ -423,6 +423,10 @@
                 "highlight": true
               },
               {
+                "text": "[B]Server Action 기반 API 호출을 tRPC로 마이그레이션[/B]. Server Action의 큐 방식 순차 실행 문제를 실험으로 분석·문서화하고, 병렬 호출이 가능한 tRPC 아키텍처로 전환하여 데이터 페칭 병렬 처리 구조 확보",
+                "highlight": true
+              },
+              {
                 "text": "양방향으로 흐르던 선정산 조회 로직을 Context API 기반 단방향 데이터 흐름으로 리팩토링"
               },
               {
@@ -536,6 +540,60 @@
             ]
           }
         ]
+      },
+      "allraAdmin": {
+        "title": "Allra Admin",
+        "subtitle": "Allra Fintech",
+        "duration": "2025.10 ~ present",
+        "description": "이커머스 셀러 관리를 위한 Turborepo 기반 모노레포 어드민 시스템 개발",
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Turborepo",
+          "MSW",
+          "Playwright",
+          "Storybook"
+        ],
+        "categories": [
+          {
+            "title": "레지스트리 패턴 기반 모달 아키텍처 설계",
+            "details": [
+              {
+                "text": "모달마다 반복되던 [B]useState 보일러플레이트를 중앙 레지스트리 패턴으로 제거[/B], `openModal({ key, data })` 한 줄로 일관된 모달 호출 구조 확립",
+                "highlight": true
+              },
+              {
+                "text": "[B]공통 UI 패키지에 팩토리 함수를 제공[/B]하여 각 어드민 앱이 독립적인 모달 레지스트리를 구성할 수 있도록 설계"
+              }
+            ]
+          },
+          {
+            "title": "MSW · Storybook 기반 개발/테스트 환경 구축",
+            "details": [
+              {
+                "text": "[B]MSW 기반 API 모킹 환경 구축[/B]으로 백엔드 독립적인 UI 개발 환경 확보 및 Playwright E2E 테스트 연동"
+              },
+              {
+                "text": "[B]Storybook 10 업그레이드[/B] 및 스토리 파일 구조 개선으로 컴포넌트 문서화 환경 현대화"
+              }
+            ]
+          },
+          {
+            "title": "어드민 기능 개발",
+            "details": [
+              {
+                "text": "관리자 관리, Excel 다운로드 사유 입력, SMS/이메일 OTP 알림 관리 등 다수의 어드민 기능 개발"
+              },
+              {
+                "text": "[B]DateRangeFilterSwitcher 통합[/B] 및 DatePicker UX·성능 개선으로 날짜 필터 컴포넌트 통일"
+              },
+              {
+                "text": "[B]useSearchParamsWithPageReset[/B] 훅 도입으로 URL 상태 연동 시 setter 참조 불안정 문제 해결"
+              }
+            ]
+          }
+        ]
       }
     },
     "knowledgeSharing": {
@@ -550,7 +608,10 @@
           "title": "useCallback, useMemo는 왜 쓸까?",
           "url": "/posts/2026-01-18"
         },
-        { "title": "Asynchronous Javascript", "url": "/posts/2024-11-10" },
+        {
+          "title": "React 생태계는 생각보다 넓다 — Electron",
+          "url": "/posts/2026-05-10"
+        },
         {
           "title": "toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현",
           "url": "/posts/2024-09-14-1"
