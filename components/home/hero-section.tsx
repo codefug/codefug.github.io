@@ -1,5 +1,6 @@
 "use client";
 
+import { useSidebar } from "@/components/ui/sidebar";
 import { HeroIdentity } from "./hero-identity";
 import { HeroTerminal } from "./hero-terminal";
 
@@ -8,8 +9,24 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ postCount }: HeroSectionProps) {
+  const { state, isMobile } = useSidebar();
+  const sidebarOpen = state === "expanded" && !isMobile;
+
+  const fullWidthStyle = sidebarOpen
+    ? {
+        width: "calc(100vw - var(--sidebar-width))",
+        marginLeft: "calc(50% - 50vw + var(--sidebar-width) / 2)",
+      }
+    : {
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+      };
+
   return (
-    <section className="relative -mx-4 min-h-[85vh] overflow-hidden">
+    <section
+      className="relative min-h-[85vh] overflow-hidden transition-[width,margin] duration-200 ease-linear"
+      style={fullWidthStyle}
+    >
       <HeroBackground />
       <div className="relative z-10 grid min-h-[85vh] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16">
         <HeroIdentity postCount={postCount} />
