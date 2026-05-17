@@ -1,3 +1,3 @@
 :HL["https://codefug.github.io/_next/static/chunks/13._vxcrrq5.h.css","style"]
-:HL["https://codefug.github.io/_next/static/chunks/0z8diu3zp6b-m.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"BpvYtBr4WsoftV1gBZJeC"}
+:HL["https://codefug.github.io/_next/static/chunks/0y18sz-az5wvo.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"Cwnhchw_hXtYq598-frW_"}
