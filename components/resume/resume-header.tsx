@@ -1,7 +1,6 @@
 "use client";
 
 import { Globe, Mail, Phone } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
@@ -88,17 +87,13 @@ export default function ResumeHeader() {
       </div>
 
       {/* 프로필 사진 */}
-      <div className="relative h-32 w-24 shrink-0 overflow-hidden rounded print:h-28 print:w-20">
-        <Image
-          src="/images/profile/image.png"
-          alt="이승현 프로필"
-          fill
-          sizes="96px"
-          quality={95}
-          priority
-          className="object-cover object-top"
-        />
-      </div>
+      <img
+        src="/images/profile/image.png"
+        alt="이승현 프로필"
+        loading="eager"
+        fetchPriority="high"
+        className="h-32 w-24 shrink-0 overflow-hidden rounded object-cover object-top print:h-28 print:w-20"
+      />
     </header>
   );
 }

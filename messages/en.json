@@ -349,25 +349,12 @@
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "Improved developer productivity through [B]test and CI pipeline enhancements[/B], and achieved [B]LCP reduced by 66%, CLS improved by up to 90%[/B] via image optimization and re-render structure improvements. Contributed to a [B]42% increase in settlement calendar entry rate through SEO structure improvements[/B], alongside [B]open source contributions[/B] and browser security vulnerability analysis."
+          "summary": "Improved developer productivity through [B]test and CI pipeline enhancements[/B], alongside SEO improvements, [B]open source contributions[/B], and browser security vulnerability analysis."
         },
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "items": [
-            {
-              "title": "\"Digital Finance\" Service Management Portal Development",
-              "detail": "Secured [B]58.3% bundle size reduction[/B] and stable state management via CRA-to-Vite migration and Tanstack Query adoption. Resolved security issues by developing a custom editor module for [B]CSP policy compliance[/B]."
-            },
-            {
-              "title": "\"Document AI\" AI-powered Report Analysis Solution Development",
-              "detail": "Achieved [B]67% initial render time reduction[/B] via custom PDF Viewer with pdf.js and Canvas API, and [B]91.36% image size, 73.5% bundle reduction[/B] via Docker multi-stage builds and dynamic import."
-            },
-            {
-              "title": "\"SamilDevKit\" Design System Development",
-              "detail": "Optimized rendering through CSS/JavaScript role separation and GPU acceleration, and secured styling consistency via [B]clsx-cva adoption[/B]."
-            }
-          ]
+          "summary": "Led 3 projects, achieving [B]58.3% bundle reduction via CRA → Vite migration[/B], [B]building a custom CSP-compliant editor from scratch[/B], and single-handedly delivering Document AI with a custom PDF Viewer ([B]67% faster initial render[/B]) and Docker optimization ([B]91.36% image size reduction[/B])."
         }
       }
     },
@@ -401,11 +388,8 @@
             ]
           },
           {
-            "title": "Funnel Metric Improvement",
+            "title": "SEO",
             "details": [
-              {
-                "text": "Developed custom onboarding guide with personalized messaging by user state, achieving [B]42% improvement[/B] in settlement calendar entry rate and [B]17% improvement[/B] in mobile return visits"
-              },
               {
                 "text": "Consolidated page metadata into shared logic with structured metadata, improving search efficiency; documented guidelines to improve team onboarding"
               }
@@ -456,6 +440,15 @@
             "details": [
               {
                 "text": "Implemented [B]network call optimization and state responsibility separation[/B] via Tanstack Query adoption"
+              }
+            ]
+          },
+          {
+            "title": "CSP Policy Compliance",
+            "details": [
+              {
+                "text": "Existing editor incompatible with in-house [B]CSP policy[/B] → migrated to react-quill-new and built a custom image resize module to resolve security violations",
+                "highlight": true
               }
             ]
           }
@@ -582,8 +575,9 @@
         {
           "title": "Claude Pet",
           "url": "/posts/2026-05-10",
+          "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
-          "description": "macOS widget showing real-time status of parallel Claude Code sessions",
+          "description": "macOS widget showing real-time status of parallel Claude Code sessions (distributed via Homebrew)",
           "details": [
             "Switched from polling to [B]Claude Code hooks[/B]-based event-driven architecture, enabling instant permission-request alerts",
             "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer",
