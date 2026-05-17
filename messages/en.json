@@ -339,8 +339,8 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "I find it hard to end the day without resolving an open problem. I keep [B]computing solutions asynchronously[/B] in the background, and won't leave uncertain things unverified.",
-        "I treat [B]documentation and knowledge sharing[/B] as tools for team productivity. I write up what I learn and make sure technical decisions are transparent enough for teammates to follow."
+        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping.",
+        "I don't sit on what I find. I write it up, share it with the team, or file an open source issue."
       ]
     },
     "skills": {
