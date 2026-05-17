@@ -339,8 +339,18 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "[B]저는 효율을 위해 고민하는 개발자입니다.[/B] 문제를 해결하지 못한 채 하루를 마무리할 수 없어, 퇴근 후에도 머릿속에서 [B]비동기적으로 해결책을 계산[/B]합니다.",
-        "[B]문서화는 저와 팀의 생산성을 높이는 핵심 도구라고 생각합니다.[/B] 학습한 내용을 블로그 포스트로 공유하여 팀 내 지식 전달에 기여합니다."
+        "라이브러리 소스와 [B]브라우저 내부 동작을 직접 읽는 것[/B]을 즐깁니다. Chrome CPP 코드를 분석해 autocomplete 원인을 파악하고, Server Action의 구조적 한계를 문서화해 팀 내 tRPC 마이그레이션의 시작점을 만든 것처럼, 불확실한 부분을 그냥 넘기지 않는 편입니다.",
+        "개발 생산성을 [B]팀 차원의 문제[/B]로 봅니다. Playwright 병렬화로 테스트 시간을 67.7% 단축하고, Biome 전환으로 CI 린트를 98% 줄였으며, Claude Code hooks 기반 macOS 위젯을 직접 만들어 Homebrew로 배포하는 등 도구를 설계하는 것 자체를 즐깁니다."
+      ]
+    },
+    "skills": {
+      "title": "Skills",
+      "items": [
+        "[B]Next.js App Router[/B] 기반 서비스를 주로 개발합니다. Server Components와 Server Actions를 실무에 적용하고, tRPC를 통한 타입 안전 API 레이어와 [B]Schema.org JSON-LD 구조화 데이터[/B] 설계 등 Next.js 생태계를 폭넓게 다룹니다.",
+        "TypeScript를 [B]설계 도구[/B]로 씁니다. Discriminated Union으로 불가능한 상태를 컴파일 타임에 제거하고, Zod로 서버·클라이언트 경계를 스키마로 공유합니다. 외부 라이브러리 소스를 직접 읽으며 내부 동작을 이해하는 편입니다.",
+        "테스트 환경을 처음부터 설계합니다. [B]Playwright Dynamic metric·Sharding[/B]으로 병렬 CI를 구성해 테스트 시간 [B]67.7% 단축[/B], MSW를 6개 이상 도메인 분리 구조로 설계, [B]Biome[/B] 전환으로 린트 시간 [B]98% 단축[/B] 등 CI 파이프라인 전반을 개선합니다.",
+        "빌드와 런타임 양쪽의 성능을 최적화합니다. Vite 마이그레이션으로 번들 [B]58.3% 감소[/B], Docker 멀티 스테이지로 이미지 [B]91.36% 감소[/B], Web Worker·가상화로 렌더링 [B]67% 개선[/B] 등 수치로 검증하는 것을 중요하게 생각합니다.",
+        "브라우저 내부와 보안에 관심이 많습니다. [B]Chrome CPP 소스[/B]를 분석해 autocomplete 메커니즘을 파악하고, CSP 위반 에디터를 커스텀 모듈로 직접 대체했으며, OpenReplay 소스 분석 중 발견한 버그로 [B]오픈소스에 기여[/B]했습니다."
       ]
     },
     "workExperience": {
