@@ -281,4 +281,4 @@
 :HL["https://codefug.github.io/_next/static/media/fc189dbdff0da7e2-s.p.0if_wzl8qf5m2.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["https://codefug.github.io/_next/static/media/fd71cc597dd5e241-s.p.0zkv_stpf6v~n.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["https://codefug.github.io/_next/static/media/fe380c7602f2888c-s.p.0-ara9qxxi49d.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"posts","param":null,"prefetchHints":0,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-06-14","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"kvCkpEjCyI3y991E4oabA"}
+0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"posts","param":null,"prefetchHints":0,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-06-14","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"6-X3Lr4FH__IG4m1lCHJF"}
