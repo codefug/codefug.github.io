@@ -1,16 +1,17 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Edu = { title: string; duration: string; detail: string };
 
-export default function ResumeEducation() {
+export default function ResumeEducation({ className }: { className?: string }) {
   const t = useTranslations("resume.education");
   const items = t.raw("items") as Edu[];
 
   return (
-    <section className="py-4">
+    <section className={cn("py-4", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       <ul className="mt-3 space-y-2 text-sm">
         {items.map((e) => (
