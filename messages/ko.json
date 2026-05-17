@@ -423,7 +423,7 @@
                 "highlight": true
               },
               {
-                "text": "[B]Server Action 기반 API 호출을 tRPC로 마이그레이션[/B]. Server Action의 큐 방식 순차 실행 문제를 실험으로 분석·문서화하고, 병렬 호출이 가능한 tRPC 아키텍처로 전환하여 데이터 페칭 병렬 처리 구조 확보",
+                "text": "빌드 배포 시 [B]Server Action version skew 오류[/B]와 큐 방식 순차 실행 한계를 실험·문서화하여 팀 내 [B]tRPC 마이그레이션 제안 및 시작에 기여[/B]. 마이그레이션 후 tRPC queryKey와 기존 상수의 캐시 키 형태 불일치로 invalidateQueries가 silent하게 실패하던 버그 진단 및 수정",
                 "highlight": true
               },
               {
@@ -557,39 +557,57 @@
         ],
         "categories": [
           {
-            "title": "레지스트리 패턴 기반 모달 아키텍처 설계",
+            "title": "MSW 기반 API 모킹 환경 구축",
             "details": [
               {
-                "text": "모달마다 반복되던 [B]useState 보일러플레이트를 중앙 레지스트리 패턴으로 제거[/B], `openModal({ key, data })` 한 줄로 일관된 모달 호출 구조 확립",
+                "text": "인증·사용자·계약·결제·출금·사이트 관리 등 [B]6개 이상 도메인의 MSW 핸들러를 도메인 분리 구조로 설계[/B]하고 README 포함 전체 모킹 환경 구축",
                 "highlight": true
               },
               {
-                "text": "[B]공통 UI 패키지에 팩토리 함수를 제공[/B]하여 각 어드민 앱이 독립적인 모달 레지스트리를 구성할 수 있도록 설계"
+                "text": "Storybook 연동으로 실제 API 없이 UI 개발·검증 가능한 환경 확보"
               }
             ]
           },
           {
-            "title": "MSW · Storybook 기반 개발/테스트 환경 구축",
+            "title": "어드민 이동 이력 기록 시스템",
             "details": [
               {
-                "text": "[B]MSW 기반 API 모킹 환경 구축[/B]으로 백엔드 독립적인 UI 개발 환경 확보 및 Playwright E2E 테스트 연동"
+                "text": "router 변경을 감지해 mutation으로 서버에 이력을 전송하는 [B]RecordPathnameManager[/B] 위젯 설계 및 구현 — console.log 임시 구현 단계부터 직접 아키텍처 전환",
+                "highlight": true
               },
               {
-                "text": "[B]Storybook 10 업그레이드[/B] 및 스토리 파일 구조 개선으로 컴포넌트 문서화 환경 현대화"
+                "text": "MSW 핸들러 및 테스트 코드(searchParams 파싱·커버리지) 추가로 검증 범위 확보"
               }
             ]
           },
           {
-            "title": "어드민 기능 개발",
+            "title": "도메인 기능 개발",
             "details": [
               {
-                "text": "관리자 관리, Excel 다운로드 사유 입력, SMS/이메일 OTP 알림 관리 등 다수의 어드민 기능 개발"
+                "text": "관리자 목록·생성·삭제 도메인 액션 전체 설계 및 구현 (Forbidden 페이지, Routes 상수 포함)"
               },
               {
-                "text": "[B]DateRangeFilterSwitcher 통합[/B] 및 DatePicker UX·성능 개선으로 날짜 필터 컴포넌트 통일"
+                "text": "SCM OTP 발급 탭 — react-hook-form + zod 폼 검증, API 연동, MSW 핸들러까지 전 단계 개발"
               },
               {
-                "text": "[B]useSearchParamsWithPageReset[/B] 훅 도입으로 URL 상태 연동 시 setter 참조 불안정 문제 해결"
+                "text": "공지사항·사이트 관리 날짜 필드에 [B]KST 타임존 보정[/B] 적용 (서버가 Date를 서울 시간대로 판단하는 사양 파악 후 HotFix)"
+              },
+              {
+                "text": "지급 대기 자금 요청, 초기성장지원제도 지급 내역 페이지 등 지급 관련 기능 개발"
+              }
+            ]
+          },
+          {
+            "title": "버그 수정",
+            "details": [
+              {
+                "text": "server action 에러를 공통 코드로 덮어씌우던 로직을 [B]에러 원본 그대로 전파[/B]하도록 수정해 디버깅 가시성 확보"
+              },
+              {
+                "text": "S3 presigned PUT에 포함된 [B]deprecated X-Amz-ACL 헤더 제거[/B]로 업로드 403 오류 해소"
+              },
+              {
+                "text": "인증 코드 만료 핸들러에서 불필요한 상태 변경이 유발하던 [B]무한 리렌더링 수정[/B]"
               }
             ]
           }

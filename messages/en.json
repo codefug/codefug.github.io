@@ -423,7 +423,7 @@
                 "highlight": true
               },
               {
-                "text": "[B]Migrated Server Action-based API calls to tRPC[/B]. Analyzed and documented Server Action's sequential queue execution problem through experiments, then transitioned to tRPC architecture enabling parallel data fetching",
+                "text": "Analyzed and documented [B]Server Action version skew errors on build deploys[/B] and sequential queue execution limits, [B]proposing tRPC migration that initiated the team-wide adoption[/B]. After migration, diagnosed and fixed a silent invalidateQueries failure caused by a mismatch between tRPC queryKey and legacy QUERY_KEY cache key format",
                 "highlight": true
               },
               {
@@ -563,39 +563,57 @@
         ],
         "categories": [
           {
-            "title": "Registry Pattern-based Modal Architecture",
+            "title": "MSW-based API Mocking Environment",
             "details": [
               {
-                "text": "[B]Eliminated repetitive useState boilerplate[/B] per modal with a centralized registry pattern, establishing a consistent modal invocation structure via `openModal({ key, data })`",
+                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management) with full README documentation",
                 "highlight": true
               },
               {
-                "text": "[B]Provided a factory function in the shared UI package[/B] so each admin app can independently configure its own modal registry"
+                "text": "Enabled backend-independent UI development and verification via Storybook integration"
               }
             ]
           },
           {
-            "title": "MSW · Storybook Development/Test Environment",
+            "title": "Admin Navigation History Tracking",
             "details": [
               {
-                "text": "[B]Built MSW-based API mocking environment[/B] for backend-independent UI development and Playwright E2E test integration"
+                "text": "Designed and implemented [B]RecordPathnameManager[/B] widget — detects router changes and sends history via mutation to server, evolving from a console.log stub to a full API-integrated architecture",
+                "highlight": true
               },
               {
-                "text": "[B]Upgraded Storybook to v10[/B] and improved story file structure to modernize component documentation"
+                "text": "Added MSW handlers and test code (searchParams parsing, coverage) for verification"
               }
             ]
           },
           {
-            "title": "Admin Feature Development",
+            "title": "Domain Feature Development",
             "details": [
               {
-                "text": "Developed multiple admin features including admin management, Excel download reason input, and SMS/email OTP notification management"
+                "text": "Designed and implemented full admin CRUD domain actions (list, create, delete) including Forbidden page and Routes constants"
               },
               {
-                "text": "Unified date filter components via [B]DateRangeFilterSwitcher integration[/B] and DatePicker UX/performance improvements"
+                "text": "SCM OTP issuance tab — end-to-end development including react-hook-form + zod validation, API integration, and MSW handlers"
               },
               {
-                "text": "Introduced [B]useSearchParamsWithPageReset[/B] hook to resolve setter reference instability when syncing URL state"
+                "text": "Applied [B]KST timezone correction[/B] to notice and site management date fields after identifying the server's Seoul timezone assumption (hotfix)"
+              },
+              {
+                "text": "Developed payment-related features: pending payment fund request, early-growth support disbursement history page"
+              }
+            ]
+          },
+          {
+            "title": "Bug Fixes",
+            "details": [
+              {
+                "text": "Fixed server action error swallowing — replaced common error code wrapping with [B]direct error propagation[/B] to restore debugging visibility"
+              },
+              {
+                "text": "Removed [B]deprecated X-Amz-ACL header[/B] from S3 presigned PUT requests, resolving upload 403 errors"
+              },
+              {
+                "text": "Fixed [B]infinite re-render[/B] in the auth code expiry handler caused by unnecessary state updates"
               }
             ]
           }
