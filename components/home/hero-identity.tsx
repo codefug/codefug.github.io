@@ -8,12 +8,10 @@ interface HeroIdentityProps {
 
 const TRAIT_TAGS = [
   "team-first",
-  "clear communicator",
-  "root-cause thinker",
-  "user-impact driven",
-  "open to critique",
-  "practical curiosity",
   "detail-oriented",
+  "user-driven",
+  "curious",
+  "open-minded",
 ];
 
 const BLOG_STATS = (postCount: number) => [
