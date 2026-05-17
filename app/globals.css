@@ -5,11 +5,6 @@
 @source inline("text-{blue,green,yellow,orange,red,purple,gray}-500");
 @source inline("border-{blue,green,yellow,orange,red,purple,gray}-500 border-blue-200");
 
-@layer utilities {
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-}
 
 @layer base {
   :root {
@@ -195,7 +190,7 @@
   /* 페이지 여백 & A4 크기 */
   @page {
     size: A4;
-    margin: 2.2cm 1.5cm 1.8cm;
+    margin: 2.5cm 2cm 2.5cm;
   }
 
   /* Framer Motion 등 JS 애니메이션 고정 */
