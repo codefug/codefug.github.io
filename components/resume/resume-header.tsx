@@ -57,7 +57,15 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-4">
+    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-2">
+      {/* 프로필 사진 */}
+      <img
+        src="/images/profile/image.jpg"
+        alt="이승현 프로필"
+        loading="eager"
+        fetchPriority="high"
+        className="size-32 shrink-0 overflow-hidden rounded object-cover object-top"
+      />
       <div className="min-w-0 flex-1">
         <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-3xl text-gray-900 dark:text-white print:text-2xl">
           <span>{t("name")}</span>
@@ -85,15 +93,6 @@ export default function ResumeHeader() {
           ))}
         </ul>
       </div>
-
-      {/* 프로필 사진 */}
-      <img
-        src="/images/profile/image.png"
-        alt="이승현 프로필"
-        loading="eager"
-        fetchPriority="high"
-        className="h-32 w-24 shrink-0 overflow-hidden rounded object-cover object-top print:h-28 print:w-20"
-      />
     </header>
   );
 }
