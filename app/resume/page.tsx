@@ -6,7 +6,9 @@ import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import AboutMe from "@/components/resume/about-me";
 import ResumeHeader from "@/components/resume/resume-header";
 import ResumeSkills from "@/components/resume/skills";
-import ResumeWorkExperience from "@/components/resume/work-experience";
+import WorkExperienceSection, {
+  CompanySection,
+} from "@/components/resume/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
@@ -19,6 +21,7 @@ const ResumeProjectCard = dynamic(
   () => import("@/components/resume/resume-project-card"),
 );
 const SideProjects = dynamic(() => import("@/components/resume/side-projects"));
+const Activities = dynamic(() => import("@/components/resume/activities"));
 const KnowledgeSharing = dynamic(
   () => import("@/components/resume/knowledge-sharing"),
 );
@@ -34,9 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 function Divider() {
-  return (
-    <hr className="my-1 border-gray-200 dark:border-gray-700 print:border-gray-300" />
-  );
+  return <hr className="my-1 border-gray-200 dark:border-gray-700" />;
 }
 
 export default function Page() {
@@ -56,30 +57,39 @@ export default function Page() {
         <ResumeSkills />
         <Divider />
 
-        <ResumeWorkExperience />
-        <Divider />
+        <WorkExperienceSection>
+          <CompanySection companyKey="allra">
+            <FadeInSection delay={0}>
+              <ResumeProjectCard projectKey="allra" />
+            </FadeInSection>
+            <FadeInSection delay={0} className="print:break-before-page">
+              <ResumeProjectCard projectKey="allraAdmin" />
+            </FadeInSection>
+          </CompanySection>
 
-        {/* 프로젝트 섹션 — 화면: FadeIn 애니, 인쇄: 그대로 표시 */}
-        <FadeInSection delay={0}>
-          <ResumeProjectCard projectKey="allra" />
-        </FadeInSection>
-        <FadeInSection delay={0}>
-          <ResumeProjectCard projectKey="allraAdmin" />
-        </FadeInSection>
-        <FadeInSection delay={0}>
-          <ResumeProjectCard projectKey="digitalFinance" />
-        </FadeInSection>
-        <FadeInSection delay={0}>
-          <ResumeProjectCard projectKey="documentAi" />
-        </FadeInSection>
-        <FadeInSection delay={0}>
-          <ResumeProjectCard projectKey="samilDevKit" />
-        </FadeInSection>
+          <CompanySection companyKey="pwc" className="mt-8 print:mt-8">
+            <FadeInSection delay={0}>
+              <ResumeProjectCard projectKey="digitalFinance" />
+            </FadeInSection>
+            <FadeInSection delay={0}>
+              <ResumeProjectCard projectKey="documentAi" />
+            </FadeInSection>
+            <FadeInSection delay={0}>
+              <ResumeProjectCard projectKey="samilDevKit" />
+            </FadeInSection>
+          </CompanySection>
+        </WorkExperienceSection>
 
-        <Divider />
+        <hr className="my-1 border-gray-200 dark:border-gray-700 print:hidden" />
 
-        <FadeInSection delay={0}>
+        <FadeInSection delay={0} className="print:break-before-page">
           <SideProjects />
+        </FadeInSection>
+
+        <Divider />
+
+        <FadeInSection delay={0}>
+          <Activities />
         </FadeInSection>
 
         <Divider />
