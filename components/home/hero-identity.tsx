@@ -6,13 +6,13 @@ interface HeroIdentityProps {
   postCount: number;
 }
 
-const TECH_TAGS = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "JavaScript",
-  "Frontend",
-  "Web",
+const TRAIT_TAGS = [
+  "team-first",
+  "clear communicator",
+  "root-cause thinker",
+  "user-impact driven",
+  "open to critique",
+  "practical curiosity",
 ];
 
 const BLOG_STATS = (postCount: number) => [
@@ -27,7 +27,7 @@ export function HeroIdentity({ postCount }: HeroIdentityProps) {
       <DevBlogLabel />
       <BlogTitle />
       <BlogStats postCount={postCount} />
-      <TechTagList />
+      <TraitTagList />
     </div>
   );
 }
@@ -86,7 +86,7 @@ function BlogStats({ postCount }: { postCount: number }) {
   );
 }
 
-function TechTagList() {
+function TraitTagList() {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -94,7 +94,7 @@ function TechTagList() {
       transition={{ delay: 0.5, duration: 0.6 }}
       className="flex flex-wrap gap-2"
     >
-      {TECH_TAGS.map((tag, i) => (
+      {TRAIT_TAGS.map((tag, i) => (
         <motion.span
           key={tag}
           initial={{ opacity: 0, scale: 0.85 }}
