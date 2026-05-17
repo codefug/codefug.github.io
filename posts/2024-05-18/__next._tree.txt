@@ -1,5 +1,5 @@
 :HL["https://codefug.github.io/_next/static/chunks/13._vxcrrq5.h.css","style"]
-:HL["https://codefug.github.io/_next/static/chunks/184vtalzzup9~.css","style"]
+:HL["https://codefug.github.io/_next/static/chunks/0oq0omoe1zl3x.css","style"]
 :HL["https://codefug.github.io/_next/static/chunks/10-6c.a379k7p.css","style"]
 :HL["https://codefug.github.io/_next/static/media/00cd3fb1b0c5022c-s.p.005mq64688j1-.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["https://codefug.github.io/_next/static/media/00ea066bfd17fac4-s.p.0tnny58bmy6t_.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
@@ -281,4 +281,4 @@
 :HL["https://codefug.github.io/_next/static/media/fc189dbdff0da7e2-s.p.0if_wzl8qf5m2.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["https://codefug.github.io/_next/static/media/fd71cc597dd5e241-s.p.0zkv_stpf6v~n.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["https://codefug.github.io/_next/static/media/fe380c7602f2888c-s.p.0-ara9qxxi49d.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"posts","param":null,"prefetchHints":0,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-05-18","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"6-X3Lr4FH__IG4m1lCHJF"}
+0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"posts","param":null,"prefetchHints":0,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-05-18","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"fbRYBhwWKz4zt7dKFmwON"}
