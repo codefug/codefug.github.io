@@ -17,8 +17,8 @@ const metaMessages = koMessages.meta;
 
 const gothicA1 = Gothic_A1({
   variable: "--gothic-a1",
-  weight: "500",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin", "korean"],
   display: "block",
 });
 
