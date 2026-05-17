@@ -48,10 +48,6 @@ function CompanyEntry({
 
 export default function ResumeWorkExperience() {
   const t = useTranslations("resume.workExperience");
-  const pwcItems = t.raw("items.pwc.items") as {
-    title: string;
-    detail: string;
-  }[];
 
   return (
     <section className="py-4 print:py-2">
@@ -74,18 +70,9 @@ export default function ResumeWorkExperience() {
         logoSrc="/images/logos/pwc-logo.svg"
         logoAlt="Samil PwC AC"
       >
-        <ul className="space-y-1.5">
-          {pwcItems.map((it) => (
-            <li key={it.title}>
-              <div className="font-semibold text-gray-800 dark:text-gray-200">
-                <RichText>{it.title}</RichText>
-              </div>
-              <div className="pl-3 text-gray-600 dark:text-gray-400">
-                <RichText>{it.detail}</RichText>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <p>
+          <RichText>{t("items.pwc.summary")}</RichText>
+        </p>
       </CompanyEntry>
     </section>
   );

@@ -349,25 +349,12 @@
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "[B]테스트 및 CI 파이프라인 개선[/B]으로 개발 생산성을 높이고, 이미지 최적화와 리렌더링 구조 개선으로 [B]LCP 66% 단축, CLS 최대 90% 개선[/B]을 달성했습니다. 신규 가입자 대상 온보딩 가이드 개발과 [B]SEO 구조 개선으로 정산달력 서비스 진입률 42% 향상[/B]에 기여하고, [B]오픈소스 기여[/B]와 브라우저 보안 취약점 분석 및 해결책을 병행했습니다."
+          "summary": "[B]테스트 및 CI 파이프라인 개선[/B]으로 개발 생산성을 높이고, SEO 개선과 [B]오픈소스 기여[/B], 브라우저 보안 취약점 분석·해결을 병행했습니다."
         },
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "items": [
-            {
-              "title": "서비스 통합 관리 포털 \"Digital Finance\" 개발",
-              "detail": "CRA에서 Vite 마이그레이션 및 Tanstack Query 도입으로 [B]번들 크기 58.3% 감소[/B]와 안정적인 상태 관리 구조를 확보했습니다. [B]CSP 정책 대응[/B]을 위한 커스텀 에디터 모듈을 직접 개발하여 보안 이슈를 해결했습니다."
-            },
-            {
-              "title": "AI 기반 보고서 분석 솔루션 \"Document AI\" 개발",
-              "detail": "pdf.js와 Canvas API 기반 커스텀 PDF Viewer 구현으로 [B]초기 렌더링 시간 67% 감소[/B], Docker 멀티 스테이지 빌드와 dynamic import로 [B]이미지 용량 91.36%, 번들 73.5% 감소[/B]를 달성했습니다."
-            },
-            {
-              "title": "디자인 시스템 \"SamilDevKit\" 개발",
-              "detail": "CSS와 JavaScript 역할 분리 및 GPU 가속 활용으로 렌더링을 최적화하고, [B]clsx-cva 도입으로 스타일링 일관성을 확보[/B]했습니다."
-            }
-          ]
+          "summary": "3개 프로젝트를 담당하며 [B]CRA → Vite 마이그레이션으로 번들 58.3% 감소[/B], [B]CSP 정책 대응 커스텀 에디터 직접 개발[/B], Document AI 단독 개발로 커스텀 PDF Viewer 구현([B]초기 렌더링 67% 단축[/B])과 Docker 최적화([B]이미지 용량 91.36% 감소[/B])를 달성했습니다."
         }
       }
     },
@@ -401,11 +388,8 @@
             ]
           },
           {
-            "title": "퍼널 지표 개선",
+            "title": "SEO 개선",
             "details": [
-              {
-                "text": "신규 가입자 대상 커스텀 온보딩 가이드 컴포넌트 개발 및 사용자 상태에 따른 개인화 문구 적용하여 정산 달력 서비스 진입률 [B]42% 향상[/B], 모바일 재방문율 [B]17% 향상[/B]"
-              },
               {
                 "text": "페이지별 메타데이터 공통화 및 구조화 적용으로 검색 효율 개선, 가이드 문서화로 팀 온보딩 효율 향상"
               }
@@ -456,6 +440,15 @@
             "details": [
               {
                 "text": "Tanstack Query 도입으로 [B]네트워크 호출 최적화와 상태 책임 분리[/B] 구현"
+              }
+            ]
+          },
+          {
+            "title": "CSP 정책 대응",
+            "details": [
+              {
+                "text": "사내 [B]CSP 정책[/B] 위반으로 기존 에디터 사용 불가 → react-quill-new 전환 및 이미지 리사이즈 [B]커스텀 모듈 직접 개발[/B]로 보안 이슈 해결",
+                "highlight": true
               }
             ]
           }
@@ -582,8 +575,9 @@
         {
           "title": "Claude Pet",
           "url": "/posts/2026-05-10",
+          "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
-          "description": "병렬 실행 중인 Claude Code 세션 상태를 실시간으로 표시하는 macOS 위젯",
+          "description": "병렬 실행 중인 Claude Code 세션 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
           "details": [
             "폴링에서 [B]Claude Code hooks[/B] 기반 이벤트 드리븐으로 전환해 권한 요청 즉시 알림",
             "hook CLI(esbuild 단독 빌드) → HTTP 서버 → IPC 파이프라인 설계로 외부 이벤트를 Renderer에 전달",

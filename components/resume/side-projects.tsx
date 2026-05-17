@@ -9,6 +9,7 @@ import { RichText } from "./rich-text";
 type SideProjectItem = {
   title: string;
   url: string;
+  github?: string;
   stack: string[];
   description: string;
   details: string[];
@@ -24,13 +25,25 @@ export default function SideProjects() {
       <div className="mt-3 space-y-4 print:mt-2 print:space-y-3">
         {items.map((item) => (
           <article key={item.title}>
-            <Link
-              href={item.url}
-              className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
-            >
-              {item.title}
-              <ExternalLink size={13} />
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href={item.url}
+                className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+              >
+                {item.title}
+                <ExternalLink size={13} />
+              </Link>
+              {item.github && (
+                <a
+                  href={item.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 text-xs hover:text-primary hover:underline print:text-gray-500"
+                >
+                  GitHub
+                </a>
+              )}
+            </div>
             <p className="mt-1 text-gray-600 text-sm dark:text-gray-400 print:text-xs">
               {item.description}
             </p>
