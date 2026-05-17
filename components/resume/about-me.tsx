@@ -1,12 +1,10 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
 
-export default function AboutMe({ className }: { className?: string }) {
-  const t = useTranslations("resume.aboutMe");
+export default async function AboutMe({ className }: { className?: string }) {
+  const t = await getTranslations("resume.aboutMe");
   const paragraphs = t.raw("paragraphs") as string[];
 
   return (
