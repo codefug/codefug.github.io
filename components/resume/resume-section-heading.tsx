@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 export function ResumeSectionHeading({ children }: { children: ReactNode }) {
   return (
-    <h2 className="relative my-0 inline-block font-bold text-2xl text-gray-900 dark:text-white">
+    <h2 className="relative my-0 inline-block font-bold text-2xl text-gray-900 dark:text-white print:text-xl">
       <span className="relative z-10">{children}</span>
       <span
         aria-hidden

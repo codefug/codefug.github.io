@@ -339,8 +339,8 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "[B]I am a developer who constantly thinks about efficiency.[/B] I automate repetitive tasks and simplify complex structures. Unable to end the day without solving problems, my mind continues to [B]asynchronously compute solutions[/B] even after work.",
-        "[B]I believe documentation is a key tool that boosts both my productivity and my team's.[/B] I always record what I learn in personal notes and share them as blog posts when helpful. I'm confident these documents serve as useful guides not only for me, but also for fellow developers facing similar challenges."
+        "[B]I am a developer who constantly thinks about efficiency.[/B] Unable to end the day without solving problems, my mind continues to [B]asynchronously compute solutions[/B] even after work.",
+        "[B]I believe documentation is a key tool that boosts both my productivity and my team's.[/B] I share what I learn as blog posts to contribute to knowledge transfer within the team."
       ]
     },
     "workExperience": {
@@ -389,13 +389,13 @@
             "title": "Developer Productivity",
             "details": [
               {
-                "text": "Configured dynamic parallel test environment using [B]Dynamic metric[/B] and [B]Playwright Sharding[/B], reducing average test time by [B]67.7%[/B]"
+                "text": "Configured parallel test environment with [B]Dynamic metric[/B] and [B]Playwright Sharding[/B], reducing average test time by [B]67.7%[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
               },
               {
                 "text": "Replaced [B]ESLint + Prettier[/B] lint pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
               },
               {
-                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [B]open source PR[/B]",
+                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]",
                 "highlight": true
               }
             ]
@@ -407,7 +407,7 @@
                 "text": "Developed custom onboarding guide with personalized messaging by user state, achieving [B]42% improvement[/B] in settlement calendar entry rate and [B]17% improvement[/B] in mobile return visits"
               },
               {
-                "text": "Identified missing page metadata, abstracted into shared logic with structured metadata, improving search efficiency and reducing maintenance cost. Documented guidelines to boost team efficiency"
+                "text": "Consolidated page metadata into shared logic with structured metadata, improving search efficiency; documented guidelines to improve team onboarding"
               }
             ]
           },
@@ -423,14 +423,8 @@
                 "highlight": true
               },
               {
-                "text": "Analyzed and documented [B]Server Action version skew errors on build deploys[/B] and sequential queue execution limits, [B]proposing tRPC migration that initiated the team-wide adoption[/B]. After migration, diagnosed and fixed a silent invalidateQueries failure caused by a mismatch between tRPC queryKey and legacy QUERY_KEY cache key format",
+                "text": "[L:/posts/2026-01-29]Researched and documented[/L] [B]Server Action version skew errors[/B] and queue execution limits, [B]proposing tRPC migration that initiated team-wide adoption[/B]. After migration, diagnosed and fixed silent invalidateQueries failure from tRPC queryKey vs. legacy QUERY_KEY cache key mismatch",
                 "highlight": true
-              },
-              {
-                "text": "Refactored bidirectional pre-settlement lookup logic to unidirectional data flow using Context API"
-              },
-              {
-                "text": "Minimized code change scope when adding features intertwined with pre-settlement lookup logic such as early-seller programs"
               }
             ]
           }
@@ -453,13 +447,7 @@
             "title": "Vite-based Build System Migration",
             "details": [
               {
-                "text": "Improved build speed and developer experience by [B]migrating to Vite[/B] from CRA"
-              },
-              {
-                "text": "Enhanced bundling efficiency with [B]Rollup optimization[/B]"
-              },
-              {
-                "text": "Achieved bundle size [B]1200kB → 500kB (58.3% reduction)[/B]"
+                "text": "[B]CRA → Vite migration[/B], bundle size [B]1200kB → 500kB (58.3% reduction)[/B]"
               }
             ]
           },
@@ -468,23 +456,6 @@
             "details": [
               {
                 "text": "Implemented [B]network call optimization and state responsibility separation[/B] via Tanstack Query adoption"
-              },
-              {
-                "text": "Simplified components and improved [B]UX and predictability[/B] by [B]clearly separating server and UI state[/B]"
-              }
-            ]
-          },
-          {
-            "title": "Feature-based Folder Structure",
-            "details": [
-              {
-                "text": "Improved cohesion by [B]transitioning to Folder-by-Feature structure[/B]"
-              },
-              {
-                "text": "[B]Designed a hybrid structure mixing role-based and feature-based approaches[/B]"
-              },
-              {
-                "text": "Improved [B]code consistency and maintenance efficiency through documentation[/B]"
               }
             ]
           }
@@ -494,7 +465,7 @@
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
         "duration": "2025.01 ~ 2025.10",
-        "description": "AI-powered report analysis solution development",
+        "description": "AI-powered report analysis solution — sole developer from design to deployment",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -568,9 +539,6 @@
               {
                 "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management) with full README documentation",
                 "highlight": true
-              },
-              {
-                "text": "Enabled backend-independent UI development and verification via Storybook integration"
               }
             ]
           },
@@ -580,9 +548,6 @@
               {
                 "text": "Designed and implemented [B]RecordPathnameManager[/B] widget — detects router changes and sends history via mutation to server, evolving from a console.log stub to a full API-integrated architecture",
                 "highlight": true
-              },
-              {
-                "text": "Added MSW handlers and test code (searchParams parsing, coverage) for verification"
               }
             ]
           },
@@ -590,25 +555,16 @@
             "title": "Domain Feature Development",
             "details": [
               {
-                "text": "Designed and implemented full admin CRUD domain actions (list, create, delete) including Forbidden page and Routes constants"
-              },
-              {
-                "text": "SCM OTP issuance tab — end-to-end development including react-hook-form + zod validation, API integration, and MSW handlers"
+                "text": "Designed and implemented full admin CRUD domain actions (list, create, delete)"
               },
               {
                 "text": "Applied [B]KST timezone correction[/B] to notice and site management date fields after identifying the server's Seoul timezone assumption (hotfix)"
-              },
-              {
-                "text": "Developed payment-related features: pending payment fund request, early-growth support disbursement history page"
               }
             ]
           },
           {
             "title": "Bug Fixes",
             "details": [
-              {
-                "text": "Fixed server action error swallowing — replaced common error code wrapping with [B]direct error propagation[/B] to restore debugging visibility"
-              },
               {
                 "text": "Removed [B]deprecated X-Amz-ACL header[/B] from S3 presigned PUT requests, resolving upload 403 errors"
               },
@@ -619,6 +575,22 @@
           }
         ]
       }
+    },
+    "sideProjects": {
+      "title": "Side Projects",
+      "items": [
+        {
+          "title": "Claude Pet",
+          "url": "/posts/2026-05-10",
+          "stack": ["Electron", "React", "TypeScript", "esbuild"],
+          "description": "macOS widget showing real-time status of parallel Claude Code sessions",
+          "details": [
+            "Switched from polling to [B]Claude Code hooks[/B]-based event-driven architecture, enabling instant permission-request alerts",
+            "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer",
+            "[B]contextBridge[/B] for Main/Renderer privilege separation"
+          ]
+        }
+      ]
     },
     "knowledgeSharing": {
       "title": "Knowledge Sharing",
