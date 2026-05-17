@@ -9,7 +9,9 @@ export function SidebarAnchorButton({
   return (
     <Link
       className={cn(
-        `rounded-md px-2 text-gray-400 hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black group-hover:dark:text-white hover:dark:text-white`,
+        "rounded-md px-3 py-1.5 text-sidebar-foreground/70 text-sm transition-colors",
+        "hover:bg-primary/10 hover:text-primary",
+        "dark:hover:bg-primary/20 dark:hover:text-sidebar-foreground",
         className,
       )}
       {...props}
