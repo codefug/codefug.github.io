@@ -9,12 +9,9 @@ interface HeroSectionProps {
 
 export function HeroSection({ postCount }: HeroSectionProps) {
   return (
-    <section
-      className="relative min-h-[85vh] w-screen overflow-hidden"
-      style={{ marginLeft: "calc(50% - 50vw)" }}
-    >
+    <section className="relative -mx-4 min-h-[85vh] overflow-hidden">
       <HeroBackground />
-      <div className="relative z-10 mx-auto grid min-h-[85vh] w-full max-w-[1400px] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16">
+      <div className="relative z-10 grid min-h-[85vh] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16">
         <HeroIdentity postCount={postCount} />
         <HeroTerminal postCount={postCount} />
       </div>
