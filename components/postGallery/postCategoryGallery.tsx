@@ -43,7 +43,7 @@ export default function PostCategoryGallery({
         </h2>
         <ViewToggle viewMode={viewMode} onToggle={toggle} />
       </div>
-      <Carousel className="mb-4 opacity-50 transition-all hover:opacity-100">
+      <Carousel className="mb-4">
         <CarouselContent>
           <CarouselItem className="basis-auto">
             <button
