@@ -1,7 +1,7 @@
 "use client";
 
 import { cva } from "class-variance-authority";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -16,7 +16,7 @@ const menuBarVariant = cva(
   {
     variants: {
       isActive: {
-        true: "border-primary font-medium text-primary opacity-100 dark:text-white text-foreground/90",
+        true: "border-primary font-medium text-primary opacity-100",
         false:
           "border-transparent text-muted-foreground hover:text-foreground/90",
       },
@@ -60,32 +60,41 @@ export default function MenuBar() {
   return (
     <>
       <button
-        className="fixed top-1/2 right-0"
+        className={cn(
+          "fixed top-1/2 right-0 flex h-12 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-l-lg border border-r-0 bg-card text-muted-foreground shadow-md transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
+          isShow && "pointer-events-none opacity-0",
+        )}
         onClick={handleShowMenuList}
         aria-label={t("aria.tableOfContents.open")}
         aria-expanded={isShow}
         aria-controls="table-of-contents"
       >
-        <ChevronLeft className="h-6 w-6 text-muted-foreground lg:size-8" />
+        <ChevronLeft className="h-4 w-4" />
       </button>
+
       <div
         ref={menuListRef}
         className={cn(
-          "fixed top-[68px] right-0 hidden w-[300px]",
-          isShow && "block",
+          "fixed top-[68px] right-0 w-[280px] transition-all duration-200 print:hidden",
+          isShow
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none translate-x-full opacity-0",
         )}
       >
-        <div className="rounded-lg border bg-card p-4 shadow-sm">
-          <button
-            onClick={handleHideMenuList}
-            aria-label={t("aria.tableOfContents.close")}
-            className="absolute top-4 right-4"
-          >
-            <X className="h-5 w-5 cursor-pointer text-muted-foreground" />
-          </button>
-          <h4 className="mt-0 mb-3 font-medium text-foreground text-sm">
-            {t("tableOfContents")}
-          </h4>
+        <div className="rounded-l-xl border border-r-0 bg-card p-4 shadow-lg">
+          <div className="mb-3 flex items-center justify-between">
+            <h4 className="font-medium text-foreground text-sm">
+              {t("tableOfContents")}
+            </h4>
+            <button
+              type="button"
+              onClick={handleHideMenuList}
+              aria-label={t("aria.tableOfContents.close")}
+              className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
           <nav
             className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2"
             aria-label={t("aria.tableOfContents.navigation")}
@@ -118,7 +127,6 @@ function useFindAllHeadings() {
   const isMounted = usePostContentStore((state) => state.isMounted);
 
   useEffect(() => {
-    // PostContent가 마운트되지 않았으면 headings를 가져오지 않음
     if (!isMounted) {
       return;
     }
