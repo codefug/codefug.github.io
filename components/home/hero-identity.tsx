@@ -13,6 +13,7 @@ const TRAIT_TAGS = [
   "user-impact driven",
   "open to critique",
   "practical curiosity",
+  "detail-oriented",
 ];
 
 const BLOG_STATS = (postCount: number) => [
