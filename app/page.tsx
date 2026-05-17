@@ -1,6 +1,7 @@
 import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
 import { BirthdayBanner } from "@/components/event/birthday-banner";
+import { HeroSection } from "@/components/home/hero-section";
 import { HomeClientContent } from "@/components/home/home-client-content";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
@@ -34,6 +35,11 @@ export default async function Home() {
         )}
       />
       {showBirthdayBanner && <BirthdayBanner />}
+      <section className="mb-10">
+        <HeroSection
+          postCount={frontMatterListByLocale[defaultLocale].length}
+        />
+      </section>
       <section className="mb-2">
         <BlockHeader
           title={
