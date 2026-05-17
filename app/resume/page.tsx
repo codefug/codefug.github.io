@@ -17,6 +17,7 @@ import { defaultLocale } from "@/i18n/config";
 const ResumeProjectCard = dynamic(
   () => import("@/components/resume/resume-project-card"),
 );
+const SideProjects = dynamic(() => import("@/components/resume/side-projects"));
 const KnowledgeSharing = dynamic(
   () => import("@/components/resume/knowledge-sharing"),
 );
@@ -69,6 +70,12 @@ export default function Page() {
         </FadeInSection>
         <FadeInSection delay={0}>
           <ResumeProjectCard projectKey="samilDevKit" />
+        </FadeInSection>
+
+        <Divider />
+
+        <FadeInSection delay={0}>
+          <SideProjects />
         </FadeInSection>
 
         <Divider />
