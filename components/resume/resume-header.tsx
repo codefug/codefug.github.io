@@ -19,6 +19,25 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
   <LinkedInIcon className={className} />
 );
 
+function ContactListItem({ Icon, label, value, href }: ContactItem) {
+  return (
+    <li className="flex items-center gap-1.5">
+      <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
+      <span className="shrink-0 font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
+        {label}
+      </span>
+      <Link
+        href={href}
+        className="min-w-0 truncate text-gray-800 hover:text-primary hover:underline dark:text-gray-300 print:text-gray-700 print:no-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {value}
+      </Link>
+    </li>
+  );
+}
+
 export default async function ResumeHeader() {
   const t = await getTranslations("resume");
   const contacts: ContactItem[] = [
@@ -56,7 +75,6 @@ export default async function ResumeHeader() {
 
   return (
     <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-2">
-      {/* 프로필 사진 */}
       <img
         src="/images/profile/image.jpg"
         alt="이승현 프로필"
@@ -71,23 +89,9 @@ export default async function ResumeHeader() {
             {t("role")}
           </span>
         </h1>
-        {/* 2열 그리드로 연락처 compact 배치 */}
         <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0.5 text-sm sm:grid-cols-2 print:mt-2 print:grid-cols-2 print:text-xs">
-          {contacts.map(({ Icon, label, value, href }) => (
-            <li key={label} className="flex items-center gap-1.5">
-              <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
-              <span className="shrink-0 font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
-                {label}
-              </span>
-              <Link
-                href={href}
-                className="min-w-0 truncate text-gray-800 hover:text-primary hover:underline dark:text-gray-300 print:text-gray-700 print:no-underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {value}
-              </Link>
-            </li>
+          {contacts.map((contact) => (
+            <ContactListItem key={contact.label} {...contact} />
           ))}
         </ul>
       </div>
