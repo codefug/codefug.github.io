@@ -1,8 +1,6 @@
-"use client";
-
 import { Globe, Mail, Phone } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
 
@@ -21,8 +19,8 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
   <LinkedInIcon className={className} />
 );
 
-export default function ResumeHeader() {
-  const t = useTranslations("resume");
+export default async function ResumeHeader() {
+  const t = await getTranslations("resume");
   const contacts: ContactItem[] = [
     {
       Icon: Mail,

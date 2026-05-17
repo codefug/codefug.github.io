@@ -1,13 +1,15 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Edu = { title: string; duration: string; detail: string };
 
-export default function ResumeEducation({ className }: { className?: string }) {
-  const t = useTranslations("resume.education");
+export default async function ResumeEducation({
+  className,
+}: {
+  className?: string;
+}) {
+  const t = await getTranslations("resume.education");
   const items = t.raw("items") as Edu[];
 
   return (

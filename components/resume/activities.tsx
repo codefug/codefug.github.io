@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
@@ -12,8 +10,12 @@ type HackathonItem = {
   github: string;
 };
 
-export default function Activities({ className }: { className?: string }) {
-  const t = useTranslations("resume.activities");
+export default async function Activities({
+  className,
+}: {
+  className?: string;
+}) {
+  const t = await getTranslations("resume.activities");
   const studyGroups = t.raw("studyGroups") as StudyGroups;
   const hackathons = t.raw("hackathons.items") as HackathonItem[];
 
