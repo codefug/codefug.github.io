@@ -1,17 +1,19 @@
+"use client";
+
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Post = { title: string; url: string };
 
-export default async function KnowledgeSharing({
+export default function KnowledgeSharing({
   className,
 }: {
   className?: string;
 }) {
-  const t = await getTranslations("resume.knowledgeSharing");
+  const t = useTranslations("resume.knowledgeSharing");
   const posts = t.raw("posts") as Post[];
 
   return (

@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
@@ -50,11 +52,8 @@ function ProjectCategory({ category }: { category: Category }) {
   );
 }
 
-export default async function ResumeProjectCard({
-  projectKey,
-  className,
-}: Props) {
-  const t = await getTranslations(`resume.projects.${projectKey}`);
+export default function ResumeProjectCard({ projectKey, className }: Props) {
+  const t = useTranslations(`resume.projects.${projectKey}`);
   const stack = t.raw("stack") as string[];
   const categories = t.raw("categories") as Category[];
 

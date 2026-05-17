@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
@@ -11,7 +13,7 @@ const COMPANY_LOGOS: Record<CompanyKey, { src: string; alt: string }> = {
   pwc: { src: "/images/logos/pwc-logo.svg", alt: "Samil PwC AC" },
 };
 
-export async function CompanySection({
+export function CompanySection({
   companyKey,
   className,
   children,
@@ -20,7 +22,7 @@ export async function CompanySection({
   className?: string;
   children: React.ReactNode;
 }) {
-  const t = await getTranslations("resume.workExperience");
+  const t = useTranslations("resume.workExperience");
   const logo = COMPANY_LOGOS[companyKey];
 
   return (
@@ -57,14 +59,14 @@ export async function CompanySection({
   );
 }
 
-export default async function WorkExperienceSection({
+export default function WorkExperienceSection({
   children,
   className,
 }: {
   children: React.ReactNode;
   className?: string;
 }) {
-  const t = await getTranslations("resume.workExperience");
+  const t = useTranslations("resume.workExperience");
   return (
     <section className={cn("py-4 print:py-1", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
