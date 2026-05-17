@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
 
@@ -15,12 +16,12 @@ type SideProjectItem = {
   details: string[];
 };
 
-export default function SideProjects() {
+export default function SideProjects({ className }: { className?: string }) {
   const t = useTranslations("resume.sideProjects");
   const items = t.raw("items") as SideProjectItem[];
 
   return (
-    <section className="py-4 print:py-3">
+    <section className={cn("py-4 print:py-3", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       <div className="mt-3 space-y-4 print:mt-2 print:space-y-3">
         {items.map((item) => (
