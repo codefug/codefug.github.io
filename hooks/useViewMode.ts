@@ -6,7 +6,7 @@ type ViewMode = "grid" | "list";
 const STORAGE_KEY = "post-view-mode";
 
 export function useViewMode() {
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY) as ViewMode | null;
