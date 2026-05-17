@@ -44,7 +44,7 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl px-4 py-8 print:max-w-none print:px-0 print:py-0">
+      <div className="mx-auto max-w-4xl px-4 py-8 print:max-w-none print:px-0 print:pt-4 print:pb-0">
         <ResumeHeader />
         <Divider />
 
@@ -57,6 +57,9 @@ export default function Page() {
         {/* 프로젝트 섹션 — 화면: FadeIn 애니, 인쇄: 그대로 표시 */}
         <FadeInSection delay={0}>
           <ResumeProjectCard projectKey="allra" />
+        </FadeInSection>
+        <FadeInSection delay={0}>
+          <ResumeProjectCard projectKey="allraAdmin" />
         </FadeInSection>
         <FadeInSection delay={0}>
           <ResumeProjectCard projectKey="digitalFinance" />
