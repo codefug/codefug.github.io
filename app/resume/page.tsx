@@ -5,6 +5,7 @@ import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import AboutMe from "@/components/resume/about-me";
 import ResumeHeader from "@/components/resume/resume-header";
+import ResumeSkills from "@/components/resume/skills";
 import ResumeWorkExperience from "@/components/resume/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
@@ -50,6 +51,9 @@ export default function Page() {
         <Divider />
 
         <AboutMe />
+        <Divider />
+
+        <ResumeSkills />
         <Divider />
 
         <ResumeWorkExperience />

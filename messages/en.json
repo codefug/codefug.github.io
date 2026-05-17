@@ -339,8 +339,18 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "[B]I am a developer who constantly thinks about efficiency.[/B] Unable to end the day without solving problems, my mind continues to [B]asynchronously compute solutions[/B] even after work.",
-        "[B]I believe documentation is a key tool that boosts both my productivity and my team's.[/B] I share what I learn as blog posts to contribute to knowledge transfer within the team."
+        "I enjoy [B]reading library source code and browser internals[/B] directly. From analyzing Chrome CPP to understand autocomplete behavior, to documenting Server Action's structural limits to kick off a team-wide tRPC migration — I tend not to leave uncertain things unverified.",
+        "I see developer productivity as a [B]team-level problem[/B]. I've cut test time 67.7% with Playwright parallelization, reduced CI lint time 98% with Biome, and built a Claude Code hooks-based macOS widget distributed via Homebrew — I enjoy designing the tools themselves."
+      ]
+    },
+    "skills": {
+      "title": "Skills",
+      "items": [
+        "Primarily develops services on [B]Next.js App Router[/B]. Applies Server Components and Server Actions in production, and covers the broader Next.js ecosystem including type-safe API layers with tRPC and [B]Schema.org JSON-LD structured data[/B] design.",
+        "Uses TypeScript as a [B]design tool[/B], not just annotation. Eliminates impossible states at compile time with Discriminated Unions, shares schemas across server/client boundaries with Zod, and regularly reads library source to understand internals.",
+        "Designs test environments from scratch. Built parallel CI with [B]Playwright Dynamic metric and Sharding[/B] ([B]67.7% faster tests[/B]), designed domain-separated MSW handlers for 6+ domains, and replaced ESLint+Prettier with [B]Biome[/B] for [B]98% faster lint[/B].",
+        "Optimizes both build-time and runtime performance. [B]58.3% bundle reduction[/B] via Vite migration, [B]91.36% Docker image reduction[/B] via multi-stage builds, [B]67% render improvement[/B] via Web Worker and virtualization — always validates with numbers.",
+        "Has a strong interest in browser internals and security. Analyzed [B]Chrome CPP source[/B] to understand autocomplete behavior, replaced a CSP-violating editor with a custom module, and contributed to [B]open source[/B] after finding a bug in OpenReplay."
       ]
     },
     "workExperience": {
