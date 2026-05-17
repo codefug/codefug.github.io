@@ -24,23 +24,23 @@ export function CollapsiblePostList({
 }) {
   return (
     <Collapsible className="group/collapsible">
-      <SidebarGroup>
+      <SidebarGroup className="py-0">
         <SidebarGroupLabel
-          className="flex justify-center font-bold text-gray-400 text-sm hover:bg-accent hover:text-black hover:underline hover:drop-shadow-lg group-hover:text-black group-hover:dark:text-white hover:dark:text-white"
+          className="flex cursor-pointer select-none items-center justify-between rounded-md px-3 py-2 font-medium text-[11px] text-sidebar-foreground/50 uppercase tracking-wider transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
           asChild
         >
           <CollapsibleTrigger>
             {category}
-            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
           </CollapsibleTrigger>
         </SidebarGroupLabel>
         <CollapsibleContent>
-          <SidebarGroupContent className="mt-1 flex flex-col gap-1">
+          <SidebarGroupContent className="mt-0.5 flex flex-col gap-0.5 pb-2">
             {frontMatterList.map((frontMatter) => (
               <SidebarAnchorButton
                 href={`${PATH.POSTS}/${frontMatter.id}`}
                 key={frontMatter.id}
-                className="w-full text-center"
+                className="block w-full truncate pl-3 text-left text-xs"
               >
                 {frontMatter.title}
               </SidebarAnchorButton>
