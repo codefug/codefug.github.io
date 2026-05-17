@@ -39,10 +39,34 @@ function buildCodeLines(postCount: number): CodeLine[] {
         },
         { text: ", ", color: "text-foreground" },
         {
-          text: '"user-driven"',
+          text: '"detail-oriented"',
           color: "text-emerald-600 dark:text-emerald-400",
         },
         { text: "],", color: "text-foreground" },
+      ],
+    },
+    {
+      indent: true,
+      tokens: [
+        { text: "approach", color: "text-sky-500 dark:text-sky-400" },
+        { text: ": ", color: "text-foreground" },
+        {
+          text: '"root-cause first"',
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
+        { text: ",", color: "text-foreground" },
+      ],
+    },
+    {
+      indent: true,
+      tokens: [
+        { text: "style", color: "text-sky-500 dark:text-sky-400" },
+        { text: ": ", color: "text-foreground" },
+        {
+          text: '"clear communicator"',
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
+        { text: ",", color: "text-foreground" },
       ],
     },
     {
