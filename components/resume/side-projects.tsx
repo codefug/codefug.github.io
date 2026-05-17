@@ -1,6 +1,8 @@
+"use client";
+
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
@@ -61,12 +63,8 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
   );
 }
 
-export default async function SideProjects({
-  className,
-}: {
-  className?: string;
-}) {
-  const t = await getTranslations("resume.sideProjects");
+export default function SideProjects({ className }: { className?: string }) {
+  const t = useTranslations("resume.sideProjects");
   const items = t.raw("items") as SideProjectItem[];
 
   return (

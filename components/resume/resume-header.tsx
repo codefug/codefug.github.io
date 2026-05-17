@@ -1,6 +1,8 @@
+"use client";
+
 import { Globe, Mail, Phone } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
 
@@ -38,8 +40,8 @@ function ContactListItem({ Icon, label, value, href }: ContactItem) {
   );
 }
 
-export default async function ResumeHeader() {
-  const t = await getTranslations("resume");
+export default function ResumeHeader() {
+  const t = useTranslations("resume");
   const contacts: ContactItem[] = [
     {
       Icon: Mail,
