@@ -35,7 +35,7 @@ export default function OverlayModal({
       >
         <button
           type="button"
-          className="absolute top-2 right-2 z-10"
+          className="absolute top-2 right-2 z-10 cursor-pointer"
           onClick={onClose}
           aria-label="닫기"
         >
