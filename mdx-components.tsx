@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
 import { createElement, type ReactNode } from "react";
 import Callout from "./components/mdx/callout";
+import CodeOverlay from "./components/mdx/code-overlay";
+import ImageOverlay from "./components/mdx/image-overlay";
 import Mermaid from "./components/mdx/mermaid";
 import { getHeaderHltr } from "./constants/header-hltr";
 import processCallout from "./util/callout";
@@ -61,7 +63,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         }
       }
 
-      return createElement("pre", props);
+      return <CodeOverlay {...props} />;
     },
     table: (props) => (
       <div className="my-6 w-full overflow-x-auto">
@@ -69,20 +71,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </div>
     ),
     // a: CustomLink,
-    // img: (props) => {
-    //   const { src } = props;
-    //   const url = src.startsWith("public") ? src.slice(6) : src;
-    //   return (
-    //     <Image
-    //       sizes="900px"
-    //       style={{ width: "50%", height: "auto" }}
-    //       width={0}
-    //       height={0}
-    //       {...(props as ImageProps)}
-    //       src={url}
-    //     />
-    //   );
-    // },
+    img: (props) => <ImageOverlay {...props} />,
     ...components,
   };
 }
