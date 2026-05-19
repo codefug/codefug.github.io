@@ -68,7 +68,7 @@ export function createBlogPostStructuredData(
   const blogUrl = `${BASE_URL}/posts/${data.id}`;
   const imageUrl = data.thumbnailImageUrl
     ? `${BASE_URL}${data.thumbnailImageUrl}`
-    : `${BASE_URL}/images/main-logo.png`;
+    : `${BASE_URL}/images/me.jpg`;
 
   return {
     "@context": "https://schema.org",
@@ -96,7 +96,7 @@ export function createBlogPostStructuredData(
           url: BASE_URL,
           logo: {
             "@type": "ImageObject",
-            url: `${BASE_URL}/images/main-logo.png`,
+            url: `${BASE_URL}/images/me.jpg`,
             width: "512",
             height: "512",
           },
@@ -166,7 +166,7 @@ export function createProfilePageStructuredData(
       url: BASE_URL,
       image: {
         "@type": "ImageObject" as const,
-        url: `${BASE_URL}/images/main-logo.png`,
+        url: `${BASE_URL}/images/me.jpg`,
         width: "512",
         height: "512",
       },
@@ -247,7 +247,7 @@ export function createBlogItemListStructuredData(
         itemListElement: posts.slice(0, 10).map((post, index) => {
           const imageUrl = post.header?.teaser
             ? `${BASE_URL}${post.header.teaser}`
-            : `${BASE_URL}/images/main-logo.png`;
+            : `${BASE_URL}/images/me.jpg`;
 
           return {
             "@type": "ListItem" as const,
