@@ -34,12 +34,12 @@ function buildCodeLines(postCount: number): CodeLine[] {
         { text: "values", color: "text-sky-500 dark:text-sky-400" },
         { text: ": [", color: "text-foreground" },
         {
-          text: '"team-first"',
+          text: '"root-cause first"',
           color: "text-emerald-600 dark:text-emerald-400",
         },
         { text: ", ", color: "text-foreground" },
         {
-          text: '"detail-oriented"',
+          text: '"find → fix → share"',
           color: "text-emerald-600 dark:text-emerald-400",
         },
         { text: "],", color: "text-foreground" },
@@ -51,7 +51,7 @@ function buildCodeLines(postCount: number): CodeLine[] {
         { text: "approach", color: "text-sky-500 dark:text-sky-400" },
         { text: ": ", color: "text-foreground" },
         {
-          text: '"root-cause first"',
+          text: '"find, fix, document"',
           color: "text-emerald-600 dark:text-emerald-400",
         },
         { text: ",", color: "text-foreground" },
@@ -60,10 +60,10 @@ function buildCodeLines(postCount: number): CodeLine[] {
     {
       indent: true,
       tokens: [
-        { text: "style", color: "text-sky-500 dark:text-sky-400" },
+        { text: "impact", color: "text-sky-500 dark:text-sky-400" },
         { text: ": ", color: "text-foreground" },
         {
-          text: '"clear communicator"',
+          text: '"individual → team"',
           color: "text-emerald-600 dark:text-emerald-400",
         },
         { text: ",", color: "text-foreground" },
@@ -241,8 +241,8 @@ function TerminalStatusBar({ postCount }: { postCount: number }) {
       className="flex items-center justify-between border-border/30 border-t bg-indigo-500/5 px-5 py-2.5"
     >
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
-        <span>collaborative</span>
-        <span>curious</span>
+        <span>team-first</span>
+        <span>ships knowledge</span>
       </div>
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
         <span>{postCount} posts</span>

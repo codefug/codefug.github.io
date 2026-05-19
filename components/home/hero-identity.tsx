@@ -7,11 +7,11 @@ interface HeroIdentityProps {
 }
 
 const TRAIT_TAGS = [
+  "root-cause first",
+  "find → fix → share",
   "team-first",
-  "detail-oriented",
-  "user-driven",
-  "curious",
-  "open-minded",
+  "builds what's missing",
+  "data-driven",
 ];
 
 const BLOG_STATS = (postCount: number) => [
