@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/main-logo.png",
+        url: "/images/me.jpg",
         alt: "Codefug Blog",
       },
     ],
