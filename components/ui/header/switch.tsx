@@ -1,10 +1,9 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Skeleton } from "../skeleton";
-import Switch from "../switch";
 
 function useThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -26,13 +25,16 @@ export const HeaderSwitch = memo(function HeaderSwitch() {
   }, []);
 
   if (!mounted)
-    return <Skeleton className="h-7 w-16 rounded-full bg-gray-400" />;
+    return <div className="h-5 w-5 animate-pulse rounded bg-muted" />;
 
   return (
-    <Switch
-      checked={isDark}
+    <button
+      type="button"
+      onClick={toggle}
       aria-label={t("aria.themeToggle")}
-      onCheckedChange={toggle}
-    />
+      className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+    >
+      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+    </button>
   );
 });
