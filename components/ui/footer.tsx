@@ -1,5 +1,6 @@
 "use client";
 
+import { Rss } from "lucide-react";
 import Link from "next/link";
 import Email from "@/assets/icons/EmailIcon";
 import Github from "@/assets/icons/GithubIcon";
@@ -26,6 +27,15 @@ export default function Footer() {
             className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
           >
             <Github width={18} height={18} fill="currentColor" />
+          </Link>
+          <Link
+            href="/rss.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RSS 피드"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+          >
+            <Rss width={18} height={18} />
           </Link>
         </div>
         <p className="text-muted-foreground/60 text-xs">
