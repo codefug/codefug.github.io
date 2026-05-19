@@ -39,7 +39,7 @@ function DevBlogLabel() {
       transition={{ duration: 0.5 }}
       className="mb-4 flex items-center gap-2"
     >
-      <span className="h-px w-8 bg-violet-400/60" />
+      <span className="h-px w-8 bg-indigo-400/60" />
       <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
         dev blog
       </span>
@@ -60,7 +60,7 @@ function BlogTitle() {
       className="mb-5 font-black text-5xl tracking-tight lg:text-6xl xl:text-7xl"
     >
       code
-      <span className="bg-linear-to-r from-violet-500 to-blue-500 bg-clip-text text-transparent">
+      <span className="bg-linear-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent">
         fug
       </span>
     </motion.h1>
