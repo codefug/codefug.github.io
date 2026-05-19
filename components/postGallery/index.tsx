@@ -17,21 +17,19 @@ const PostGallery = memo(function PostGallery({
   postInfoList: FrontMatter[];
   viewMode?: ViewMode;
 }) {
-  const { filteredFrontMatterList, ref, page } = usePostListRender({
-    postInfoList,
-  });
+  const { paginatedList, ref, page } = usePostListRender({ postInfoList });
 
   return (
     <>
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredFrontMatterList.map((postInfo) => (
+          {paginatedList.map((postInfo) => (
             <PostCard key={postInfo.id} {...postInfo} />
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {filteredFrontMatterList.map((postInfo) => (
+          {paginatedList.map((postInfo) => (
             <PostListItem key={postInfo.id} {...postInfo} />
           ))}
         </div>
@@ -47,13 +45,15 @@ const PostGallery = memo(function PostGallery({
 
 export default PostGallery;
 
+function useLoadMoreTrigger() {
+  return useInView({ rootMargin: "300px 0px", threshold: 0 });
+}
+
 function usePostListRender({ postInfoList }: { postInfoList: FrontMatter[] }) {
   const [page, setPage] = useState(1);
-  const { ref, inView } = useInView({
-    rootMargin: "300px 0px",
-    threshold: 0,
-  });
-  const filteredFrontMatterList = useMemo(
+  const { ref, inView } = useLoadMoreTrigger();
+
+  const paginatedList = useMemo(
     () => postInfoList.slice(0, page * POST_ITEM_PER_PAGE),
     [page, postInfoList],
   );
@@ -66,9 +66,5 @@ function usePostListRender({ postInfoList }: { postInfoList: FrontMatter[] }) {
     if (inView) setPage((p) => p + 1);
   }, [inView]);
 
-  return {
-    page,
-    ref,
-    filteredFrontMatterList,
-  };
+  return { page, ref, paginatedList };
 }
