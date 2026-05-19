@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import PostCategorySwiper from "@/components/postSwiper/postCategorySwiper";
 import type { FrontMatter } from "@/constants/mdx";
 import type { Locale } from "@/i18n/config";
-import getCategorySetListWithPostList from "@/util/post";
+import buildCategoryStats from "@/util/post";
 
 export function HomeClientContent({
   frontMatterListByLocale,
@@ -23,7 +23,7 @@ export function HomeClientContent({
     [totalFrontMatterList, cardNumber],
   );
   const categoryList = useMemo(
-    () => getCategorySetListWithPostList({ postList: filteredPostInfoList }),
+    () => buildCategoryStats({ postList: filteredPostInfoList }),
     [filteredPostInfoList],
   );
 

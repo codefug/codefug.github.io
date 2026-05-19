@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { useViewMode } from "@/hooks/useViewMode";
 import type { Locale } from "@/i18n/config";
-import getCategorySetListWithPostList from "@/util/post";
+import buildCategoryStats from "@/util/post";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import PostGallery from ".";
@@ -31,7 +31,7 @@ export default function PostCategoryGallery({
   }, [value, totalFrontMatterList]);
 
   const categoryList = useMemo(
-    () => getCategorySetListWithPostList({ postList: totalFrontMatterList }),
+    () => buildCategoryStats({ postList: totalFrontMatterList }),
     [totalFrontMatterList],
   );
 

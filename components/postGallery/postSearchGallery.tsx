@@ -2,11 +2,29 @@
 
 import { SearchX } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import BlockHeader from "../ui/block-header";
 import { Input } from "../ui/input";
 import PostGallery from ".";
+
+function compileSearchRegex(query: string): RegExp {
+  try {
+    return new RegExp(query, "i");
+  } catch {
+    return /(?:)/;
+  }
+}
+
+function filterPostsByQuery(
+  posts: FrontMatter[],
+  query: string,
+  regex: RegExp,
+): FrontMatter[] {
+  if (!query.trim()) return [];
+  return posts.filter((post) => regex.test(post.title));
+}
 
 export default function PostSearchGallery({
   totalFrontMatterList,
@@ -15,30 +33,16 @@ export default function PostSearchGallery({
 }) {
   const t = useTranslations("search");
   const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  const regexValue = useMemo(() => {
-    try {
-      return new RegExp(debouncedQuery, "i");
-    } catch {
-      return /(?:)/;
-    }
-  }, [debouncedQuery]);
+  const regexValue = useMemo(
+    () => compileSearchRegex(debouncedQuery),
+    [debouncedQuery],
+  );
 
   const filteredFrontMatterList = useMemo(
-    () =>
-      totalFrontMatterList.filter((v) => {
-        if (!debouncedQuery.trim()) return false;
-        return regexValue.test(v.title);
-      }),
+    () => filterPostsByQuery(totalFrontMatterList, debouncedQuery, regexValue),
     [debouncedQuery, totalFrontMatterList, regexValue],
   );
 
