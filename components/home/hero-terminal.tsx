@@ -13,7 +13,7 @@ function buildCodeLines(postCount: number): CodeLine[] {
   return [
     {
       tokens: [
-        { text: "const", color: "text-violet-500 dark:text-violet-400" },
+        { text: "const", color: "text-indigo-500 dark:text-indigo-400" },
         { text: " blog", color: "text-foreground" },
         { text: " =", color: "text-blue-500 dark:text-blue-400" },
         { text: " {", color: "text-foreground" },
@@ -91,10 +91,7 @@ function buildCodeLines(postCount: number): CodeLine[] {
       ],
     },
     {
-      tokens: [
-        { text: "}", color: "text-foreground" },
-        { text: " // 🚀", color: "text-muted-foreground/50 text-xs" },
-      ],
+      tokens: [{ text: "}", color: "text-foreground" }],
     },
   ];
 }
@@ -241,13 +238,10 @@ function TerminalStatusBar({ postCount }: { postCount: number }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.3, duration: 0.4 }}
-      className="flex items-center justify-between border-border/30 border-t bg-violet-500/5 px-5 py-2.5"
+      className="flex items-center justify-between border-border/30 border-t bg-indigo-500/5 px-5 py-2.5"
     >
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
-        <span className="flex items-center gap-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          collaborative
-        </span>
+        <span>collaborative</span>
         <span>curious</span>
       </div>
       <div className="flex items-center gap-3 text-muted-foreground/60 text-xs">
