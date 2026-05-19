@@ -1,8 +1,7 @@
 "use client";
 
-import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,7 +10,6 @@ import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
-import { useSidebar } from "../sidebar";
 import { LanguageSelector } from "./language-selector";
 import { HeaderSwitch } from "./switch";
 import headerVariant from "./variant";
@@ -37,18 +35,15 @@ export default function Header() {
           <Link
             href={PATH.HOME}
             passHref
-            className="flex shrink-0 items-center gap-2 hover:opacity-95 hover:drop-shadow-lg"
+            className="flex shrink-0 items-center transition-opacity hover:opacity-75"
+            aria-label={t("logo")}
           >
-            <Image
-              src="/images/main-logo.png"
-              alt={t("logo")}
-              height={28}
-              width={28}
-              sizes="28px"
-            />
-            <div className="hidden whitespace-nowrap font-bold text-black text-lg md:block dark:text-white">
-              Codefug Blog
-            </div>
+            <span className="font-black text-lg tracking-tight">
+              <span className="text-foreground">code</span>
+              <span className="bg-linear-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
+                fug
+              </span>
+            </span>
           </Link>
         </section>
         <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
@@ -75,7 +70,7 @@ const HeaderNavigation = memo(function HeaderNavigation() {
           key={item.label}
           passHref
           className={cn(
-            `text-gray-600 hover:text-black hover:underline hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white`,
+            "text-muted-foreground transition-colors hover:text-foreground",
             pathName === item.href && "text-black dark:text-white",
           )}
           aria-label={t(
@@ -95,18 +90,9 @@ const HeaderNavigation = memo(function HeaderNavigation() {
 });
 
 const SideBarToggleButton = memo(function SideBarToggleButton() {
-  const { isMobile, state } = useSidebar();
-  const isNeedCloseButton = useMemo(
-    () => state === "expanded" && !isMobile,
-    [state, isMobile],
-  );
   return (
     <SidebarButton>
-      {isNeedCloseButton ? (
-        <PanelLeftClose size={20} />
-      ) : (
-        <PanelLeftOpen size={20} />
-      )}
+      <Menu size={20} />
     </SidebarButton>
   );
 });

@@ -1,11 +1,9 @@
 "use client";
 
-import { Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memo, useLayoutEffect, useState, useTransition } from "react";
 import { type Locale, locales } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "../skeleton";
 
 function persistLocale(locale: Locale): void {
   document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
@@ -27,21 +25,18 @@ export const LanguageSelector = memo(function LanguageSelector() {
     startTransition(() => window.location.reload());
   };
 
-  // locale이 로드되기 전까지 스켈레톤 표시
   if (!isMounted) {
-    return (
-      <div className="relative">
-        <div className="flex items-center gap-1">
-          <Globe className="h-5 w-5 text-gray-400" />
-          <Skeleton className="hidden h-5 w-12 md:block" />
-        </div>
-      </div>
-    );
+    return <div className="h-5 w-8 animate-pulse rounded bg-muted" />;
   }
 
   const LOCALE_LABELS: Record<Locale, string> = {
     ko: t("ko"),
     en: t("en"),
+  };
+
+  const LOCALE_CODES: Record<Locale, string> = {
+    ko: "KO",
+    en: "EN",
   };
 
   const currentLocaleTyped = currentLocale as Locale;
@@ -51,13 +46,10 @@ export const LanguageSelector = memo(function LanguageSelector() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 text-gray-600 hover:text-black hover:drop-shadow-lg dark:text-gray-300 dark:hover:text-white"
+        className="font-medium text-muted-foreground text-sm transition-colors hover:cursor-pointer hover:text-foreground"
         aria-label={t("select")}
       >
-        <Globe className="h-5 w-5" />
-        <span className="hidden md:inline">
-          {LOCALE_LABELS[currentLocaleTyped]}
-        </span>
+        {LOCALE_CODES[currentLocaleTyped]}
       </button>
 
       {isOpen && (
@@ -71,7 +63,7 @@ export const LanguageSelector = memo(function LanguageSelector() {
             }}
             aria-label={t("close")}
           />
-          <div className="absolute top-full right-0 z-50 mt-2 w-32 rounded-lg border bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          <div className="absolute top-full right-0 z-50 mt-2 w-24 overflow-hidden rounded-lg border border-border bg-background shadow-md">
             {locales.map((locale) => (
               <button
                 key={locale}
@@ -81,9 +73,10 @@ export const LanguageSelector = memo(function LanguageSelector() {
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "block w-full px-4 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 dark:hover:bg-gray-700",
+                  "block w-full px-3 py-2 text-left text-sm transition-colors hover:bg-accent",
                   currentLocaleTyped === locale &&
-                    "bg-gray-100 font-semibold dark:bg-gray-700",
+                    "font-semibold text-foreground",
+                  currentLocaleTyped !== locale && "text-muted-foreground",
                 )}
               >
                 {LOCALE_LABELS[locale]}
