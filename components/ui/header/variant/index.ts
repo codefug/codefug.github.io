@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 const headerVariant = cva(
-  "sticky left-0 right-0 top-0 z-30 transform bg-background transition-transform duration-300",
+  "sticky left-0 right-0 top-0 z-30 transform bg-background/80 backdrop-blur-md border-b border-border/50 transition-transform duration-300",
   {
     variants: {
       isShow: {
