@@ -5,25 +5,14 @@ import Mermaid from "./components/mdx/mermaid";
 import { getHeaderHltr } from "./constants/header-hltr";
 import processCallout from "./util/callout";
 
-function getHeadingIndexWithCloser() {
-  let headingIndex = -1;
-  return function callBack() {
-    headingIndex += 1;
-    return headingIndex;
-  };
-}
-
 function CustomHeading({
   props,
   level,
-  headingIndex,
 }: {
-  props: { children: { props: { children: ReactNode } } };
+  props: { id?: string; children: ReactNode };
   level: number;
-  headingIndex: () => number;
 }) {
   return createElement(`h${level}`, {
-    id: headingIndex(),
     className: getHeaderHltr(level),
     ...props,
   });
@@ -31,38 +20,13 @@ function CustomHeading({
 
 // eslint-disable-next-line
 export function useMDXComponents(components: MDXComponents): MDXComponents {
-  const getHeadingIndex = getHeadingIndexWithCloser();
   return {
-    h1: (props) => {
-      return (
-        <CustomHeading props={props} level={1} headingIndex={getHeadingIndex} />
-      );
-    },
-    h2: (props) => {
-      return (
-        <CustomHeading props={props} level={2} headingIndex={getHeadingIndex} />
-      );
-    },
-    h3: (props) => {
-      return (
-        <CustomHeading props={props} level={3} headingIndex={getHeadingIndex} />
-      );
-    },
-    h4: (props) => {
-      return (
-        <CustomHeading props={props} level={4} headingIndex={getHeadingIndex} />
-      );
-    },
-    h5: (props) => {
-      return (
-        <CustomHeading props={props} level={5} headingIndex={getHeadingIndex} />
-      );
-    },
-    h6: (props) => {
-      return (
-        <CustomHeading props={props} level={6} headingIndex={getHeadingIndex} />
-      );
-    },
+    h1: (props) => <CustomHeading props={props} level={1} />,
+    h2: (props) => <CustomHeading props={props} level={2} />,
+    h3: (props) => <CustomHeading props={props} level={3} />,
+    h4: (props) => <CustomHeading props={props} level={4} />,
+    h5: (props) => <CustomHeading props={props} level={5} />,
+    h6: (props) => <CustomHeading props={props} level={6} />,
     blockquote: (props) => {
       const { children } = props;
       const { type, title, content } = processCallout(children);
