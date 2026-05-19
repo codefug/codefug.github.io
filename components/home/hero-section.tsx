@@ -59,7 +59,7 @@ function HeroBackground() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-1/3 left-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-violet-400/15 blur-[100px] dark:bg-violet-500/10"
+        className="pointer-events-none absolute top-1/3 left-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-indigo-400/15 blur-[100px] dark:bg-indigo-500/10"
         aria-hidden="true"
       />
       <div
