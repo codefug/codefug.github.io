@@ -8,33 +8,35 @@ import { TAG_GROUP_TO_ARRAY_MAP, type TAG_LIST } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
+function groupPostsByFirstCategory(
+  posts: FrontMatter[],
+): Record<string, FrontMatter[]> {
+  return posts.reduce<Record<string, FrontMatter[]>>((acc, post) => {
+    const category = post.categories[0];
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(post);
+    return acc;
+  }, {});
+}
+
 export function PostGroupContent({
   frontMatterList,
 }: {
   frontMatterList: FrontMatter[];
 }) {
-  const frontMatterListArrangedByCategories = useMemo(() => {
-    const categoryCombination = new Set();
-    const resultList: { [key: string]: FrontMatter[] } = {};
-    frontMatterList.forEach((post) => {
-      const firstCategory = post.categories[0];
-      if (!categoryCombination.has(firstCategory)) {
-        categoryCombination.add(firstCategory);
-        resultList[firstCategory] = [];
-      }
-      resultList[firstCategory].push(post);
-    });
-
-    return resultList;
-  }, [frontMatterList]);
+  const postsByCategory = useMemo(
+    () => groupPostsByFirstCategory(frontMatterList),
+    [frontMatterList],
+  );
 
   return (
     <SidebarGroup className="py-2">
       {Object.entries(TAG_GROUP_TO_ARRAY_MAP).map(([key, value]) => {
-        const matchedCategories = Object.keys(
-          frontMatterListArrangedByCategories,
-        ).filter((category) =>
-          value.includes(category as (typeof TAG_LIST)[keyof typeof TAG_LIST]),
+        const matchedCategories = Object.keys(postsByCategory).filter(
+          (category) =>
+            value.includes(
+              category as (typeof TAG_LIST)[keyof typeof TAG_LIST],
+            ),
         );
 
         if (matchedCategories.length === 0) return null;
@@ -49,9 +51,7 @@ export function PostGroupContent({
                 <CollapsiblePostList
                   key={category}
                   category={category}
-                  frontMatterList={
-                    frontMatterListArrangedByCategories[category]
-                  }
+                  frontMatterList={postsByCategory[category]}
                 />
               ))}
             </SidebarGroupContent>

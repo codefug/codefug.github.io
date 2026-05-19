@@ -20,16 +20,21 @@ export const TAG_GROUP_TO_ARRAY_MAP: {
   Book: [TAG_LIST.REACTDEEPDIVE],
 };
 
-export const TAG_VALUE_TO_GROUP_MAP: {
+type TagValueToGroupMap = {
   [key in (typeof TAG_LIST)[keyof typeof TAG_LIST]]: string;
-} = Object.entries(TAG_GROUP_TO_ARRAY_MAP).reduce(
-  (acc, [key, array]) => {
+};
+
+function buildTagValueToGroupMap(
+  groupMap: typeof TAG_GROUP_TO_ARRAY_MAP,
+): TagValueToGroupMap {
+  return Object.entries(groupMap).reduce((acc, [key, array]) => {
     array.forEach((value) => {
       acc[value] = key;
     });
     return acc;
-  },
-  {} as {
-    [key in (typeof TAG_LIST)[keyof typeof TAG_LIST]]: string;
-  },
+  }, {} as TagValueToGroupMap);
+}
+
+export const TAG_VALUE_TO_GROUP_MAP = buildTagValueToGroupMap(
+  TAG_GROUP_TO_ARRAY_MAP,
 );

@@ -11,6 +11,8 @@ import useOutsideClick from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils";
 import { usePostContentStore } from "@/store/use-post-content-store";
 
+type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
+
 const menuBarVariant = cva(
   "block py-1.5 text-sm transition-all duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
   {
@@ -35,6 +37,37 @@ const menuBarVariant = cva(
     },
   },
 );
+
+function queryProseHeadings(): Element[] {
+  return Array.from(
+    document
+      .querySelector(".prose")
+      ?.querySelectorAll("h1, h2, h3, h4, h5, h6") || [],
+  );
+}
+
+function parseHeadingsFromProse(): HeadingData[] {
+  const [, ...contentHeadings] = queryProseHeadings(); // skip first h1 (post title)
+  return contentHeadings
+    .filter((el) => el.id)
+    .map((el) => ({
+      text: el.textContent || "",
+      level: parseInt(el.tagName[1], 10) as HeadingData["level"],
+      id: el.id,
+    }));
+}
+
+function useFindAllHeadings(): HeadingData[] {
+  const [headings, setHeadings] = useState<HeadingData[]>([]);
+  const isMounted = usePostContentStore((state) => state.isMounted);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    setHeadings(parseHeadingsFromProse());
+  }, [isMounted]);
+
+  return headings;
+}
 
 export default function MenuBar() {
   const menuListRef = useRef<HTMLDivElement>(null);
@@ -118,33 +151,4 @@ export default function MenuBar() {
       </div>
     </>
   );
-}
-
-function useFindAllHeadings() {
-  const [headings, setHeadings] = useState<
-    { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }[]
-  >([]);
-  const isMounted = usePostContentStore((state) => state.isMounted);
-
-  useEffect(() => {
-    if (!isMounted) {
-      return;
-    }
-
-    const headings =
-      document
-        .querySelector(".prose")
-        ?.querySelectorAll("h1, h2, h3, h4, h5, h6") || [];
-    const headingArray = Array.from(headings)
-      .splice(1)
-      .map((heading) => {
-        const level = parseInt(heading.tagName[1], 10) as 1 | 2 | 3 | 4 | 5 | 6;
-        const text = heading.textContent || "";
-        const id = heading.id || "-1";
-        return { text, level, id };
-      });
-    setHeadings(headingArray);
-  }, [isMounted]);
-
-  return headings;
 }
