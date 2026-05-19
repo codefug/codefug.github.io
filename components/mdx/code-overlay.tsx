@@ -20,7 +20,7 @@ export default function CodeOverlay({ children, className }: CodeOverlayProps) {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="absolute top-2 right-2 rounded bg-black/30 p-1 opacity-0 transition-opacity hover:bg-black/60 group-hover:opacity-100 dark:bg-white/10 dark:hover:bg-white/30"
+          className="absolute top-2 right-2 cursor-pointer rounded bg-black/30 p-1 opacity-0 transition-opacity hover:bg-black/60 group-hover:opacity-100 dark:bg-white/10 dark:hover:bg-white/30"
           aria-label="Click to view larger code block"
         >
           <Maximize2 className="size-4 text-white" />
