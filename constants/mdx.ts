@@ -18,4 +18,5 @@ export type ParsedFrontMatter = {
     teaser: string;
   };
   id: string;
+  readingTime?: number;
 };
