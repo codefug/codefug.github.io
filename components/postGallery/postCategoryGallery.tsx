@@ -53,7 +53,7 @@ export default function PostCategoryGallery({
               className="cursor-pointer"
             >
               <Badge
-                className="h-8 text-sm dark:text-white"
+                className="h-8 text-sm"
                 variant={value === "" ? "default" : "outline"}
               >
                 {t("category.all")}({totalFrontMatterList.length})
@@ -72,7 +72,7 @@ export default function PostCategoryGallery({
                 className="cursor-pointer"
               >
                 <Badge
-                  className="h-8 text-sm dark:text-white"
+                  className="h-8 text-sm"
                   variant={category === value ? "default" : "outline"}
                 >
                   {category}({total})
