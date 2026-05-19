@@ -84,6 +84,14 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 5.9% 90%;
     --sidebar-ring: 243 75% 60%;
+    --quote-blue: 217.89deg 40% 16%;
+    --quote-green: 144deg 35% 15%;
+    --quote-sky-blue: 198.46deg 45% 16%;
+    --quote-yellow: 55.94deg 40% 16%;
+    --quote-orange: 34.62deg 40% 16%;
+    --quote-red: 338.4deg 35% 15%;
+    --quote-purple: 256.67deg 35% 16%;
+    --quote-gray: 0deg 0% 15%;
   }
 }
 
