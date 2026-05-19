@@ -3,21 +3,27 @@
 import { useCallback, useEffect, useState } from "react";
 
 type ViewMode = "grid" | "list";
-const STORAGE_KEY = "post-view-mode";
+
+const viewModeStorage = {
+  get(): ViewMode {
+    const stored = sessionStorage.getItem("post-view-mode") as ViewMode | null;
+    return stored === "grid" || stored === "list" ? stored : "list";
+  },
+  set(mode: ViewMode): void {
+    sessionStorage.setItem("post-view-mode", mode);
+  },
+};
 
 export function useViewMode() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   useEffect(() => {
-    const stored = sessionStorage.getItem(STORAGE_KEY) as ViewMode | null;
-    if (stored === "grid" || stored === "list") {
-      setViewMode(stored);
-    }
+    setViewMode(viewModeStorage.get());
   }, []);
 
   const toggle = useCallback((mode: ViewMode) => {
     setViewMode(mode);
-    sessionStorage.setItem(STORAGE_KEY, mode);
+    viewModeStorage.set(mode);
   }, []);
 
   return { viewMode, toggle };

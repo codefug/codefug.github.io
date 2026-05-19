@@ -7,6 +7,10 @@ import { type Locale, locales } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../skeleton";
 
+function persistLocale(locale: Locale): void {
+  document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
+}
+
 export const LanguageSelector = memo(function LanguageSelector() {
   const currentLocale = useLocale();
   const t = useTranslations("common.language");
@@ -19,11 +23,8 @@ export const LanguageSelector = memo(function LanguageSelector() {
   }, []);
 
   const handleLocaleChange = (newLocale: Locale) => {
-    // Set cookie and reload
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
-    startTransition(() => {
-      window.location.reload();
-    });
+    persistLocale(newLocale);
+    startTransition(() => window.location.reload());
   };
 
   // locale이 로드되기 전까지 스켈레톤 표시
