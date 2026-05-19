@@ -1,14 +1,15 @@
 import { readdirSync, readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import grayMatter from "gray-matter";
 import { cache } from "react";
-import type { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter, ParsedFrontMatter } from "@/constants/mdx";
 import { defaultLocale, type Locale, locales } from "@/i18n/config";
+import { getReadingTime } from "@/util/reading-time";
 
 const postsDirectory = join(process.cwd(), "markdown");
 
 const getFrontMatterList = (locale: Locale = defaultLocale) => {
-  // 함수 내부에서 파일 시스템 작업 수행 (서버 사이드에서만 실행)
   const folderNames = readdirSync(postsDirectory);
   return folderNames
     .map((folderName) => {
@@ -26,21 +27,13 @@ const getFrontMatterList = (locale: Locale = defaultLocale) => {
         ...(matterResult.data as Omit<FrontMatter, "id">),
       };
     })
-    .reverse(); // 최신순으로 정렬
+    .reverse();
 };
 
-/**
- * 모든 locale의 frontmatter를 가져오는 함수
- * 클라이언트에서 locale에 따라 필터링할 수 있도록 모든 locale의 데이터를 반환
- * React.cache로 메모이제이션하여 동일한 요청에서 중복 실행 방지
- */
 export const getFrontMatterListForAllLocales = cache(
   (): Record<Locale, FrontMatter[]> => {
     const folderNames = readdirSync(postsDirectory);
-    const result: Record<Locale, FrontMatter[]> = {
-      ko: [],
-      en: [],
-    };
+    const result: Record<Locale, FrontMatter[]> = { ko: [], en: [] };
 
     for (const locale of locales) {
       result[locale] = folderNames
@@ -54,22 +47,69 @@ export const getFrontMatterListForAllLocales = cache(
           try {
             const fileContents = readFileSync(fullPath, "utf8");
             const matterResult = grayMatter(fileContents);
-
             return {
               id: folderName,
               ...(matterResult.data as Omit<FrontMatter, "id">),
             };
           } catch {
-            // 파일이 없으면 스킵
             return null;
           }
         })
         .filter((item): item is FrontMatter => item !== null)
-        .reverse(); // 최신순으로 정렬
+        .reverse();
     }
 
     return result;
   },
 );
+
+export async function getPostFrontMattersByIdForAllLocales(
+  id: string,
+): Promise<Record<Locale, ParsedFrontMatter>> {
+  const frontMatters = {} as Record<Locale, ParsedFrontMatter>;
+
+  for (const locale of locales) {
+    const frontMatterPath = join(postsDirectory, id, locale, "frontmatter.mdx");
+    const contentPath = join(postsDirectory, id, locale, "content.mdx");
+    try {
+      const [frontMatterFile, contentFile] = await Promise.all([
+        readFile(frontMatterPath, "utf8"),
+        readFile(contentPath, "utf8"),
+      ]);
+      const { data } = grayMatter(frontMatterFile);
+      const { content } = grayMatter(contentFile);
+      frontMatters[locale] = {
+        ...(data as ParsedFrontMatter),
+        readingTime: getReadingTime(content, locale),
+      };
+    } catch {
+      // skip missing locales
+    }
+  }
+
+  return frontMatters;
+}
+
+function scoreByCategories(
+  post: FrontMatter,
+  targetCategories: string[],
+): number {
+  return post.categories.filter((c) => targetCategories.includes(c)).length;
+}
+
+export function getRelatedPosts(
+  currentId: string,
+  categories: string[],
+  count = 3,
+): FrontMatter[] {
+  const allPosts = getFrontMatterListForAllLocales()[defaultLocale];
+  return allPosts
+    .filter((post) => post.id !== currentId)
+    .map((post) => ({ post, score: scoreByCategories(post, categories) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, count)
+    .map(({ post }) => post);
+}
 
 export default getFrontMatterList;
