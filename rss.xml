@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CodeFug Blog</title>
+    <link>https://codefug.github.io</link>
+    <description>개발자 코드퍼그의 기술 블로그</description>
+    <language>ko</language>
+    <atom:link href="https://codefug.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title><![CDATA[React 생태계는 생각보다 넓다 — Electron]]></title>
+      <link>https://codefug.github.io/posts/2026-05-10/</link>
+      <guid>https://codefug.github.io/posts/2026-05-10/</guid>
+      <description><![CDATA[Claude Code가 터미널 UI를 React Ink로 만들었다는 걸 알고 React 생태계를 탐구하게 됐습니다. Electron 데스크탑 앱을 직접 만들며 Main/Renderer 구조, IPC 통신, Claude Code hook 연동을 알아봅니다.]]></description>
+      <pubDate>Sun, 10 May 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Server Action이 있는데 Route Handler는 왜 쓸까]]></title>
+      <link>https://codefug.github.io/posts/2026-01-29/</link>
+      <guid>https://codefug.github.io/posts/2026-01-29/</guid>
+      <description><![CDATA[Next.js의 Server Action과 Route Handler의 차이를 알아보고, 각각을 언제 사용해야 하는지 알아봅니다.]]></description>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[useCallback, useMemo는 왜 쓸까]]></title>
+      <link>https://codefug.github.io/posts/2026-01-18/</link>
+      <guid>https://codefug.github.io/posts/2026-01-18/</guid>
+      <description><![CDATA[원시형과 참조형의 메모리 구조부터 useEffect 의존성 배열 함정, ESLint 경고의 한계, 메모이제이션 설계 원칙까지. useCallback과 useMemo를 언제 왜 써야 하는지 근본부터 이해합니다.]]></description>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[자바스크립트에서 비동기 통신은 뭘까]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10/</guid>
+      <description><![CDATA[microtask queue, macrotask queue, call stack, web api와 관련된 비동기 동작 방식, 비동기 관련 역사와 비동기 코드의 다양한 활용법들을 알아보자.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(꼼꼼 프로젝트) streaming 방식의 tanstack query]]></title>
+      <link>https://codefug.github.io/posts/2024-09-14-4/</link>
+      <guid>https://codefug.github.io/posts/2024-09-14-4/</guid>
+      <description><![CDATA[infinite scroll, optimistic update 그리고 streaming 방식이 결합된 쿼리 처리 ( useSuspenseQuery, useSuspenseInfiniteQuery )]]></description>
+      <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현]]></title>
+      <link>https://codefug.github.io/posts/2024-09-14-3/</link>
+      <guid>https://codefug.github.io/posts/2024-09-14-3/</guid>
+      <description><![CDATA[서버 액션을 활용한 refresh token rotation, 커링 함수를 이용한 리팩토링]]></description>
+      <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민]]></title>
+      <link>https://codefug.github.io/posts/2024-09-14-2/</link>
+      <guid>https://codefug.github.io/posts/2024-09-14-2/</guid>
+      <description><![CDATA[progress bar 로직 연구하기(startTransition), next-nprogress-bar]]></description>
+      <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(꼼꼼 프로젝트) toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현]]></title>
+      <link>https://codefug.github.io/posts/2024-09-14-1/</link>
+      <guid>https://codefug.github.io/posts/2024-09-14-1/</guid>
+      <description><![CDATA[stacking context, compound pattern, 전역 상태를 활용한다는 것의 의미, 토스 개발자 실력 흡수하기]]></description>
+      <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(꼼꼼 프로젝트) 공통 버튼 컴포넌트의 종류를 쉽게 관리하고 누구나 쉽게 확인할 수 있게 하는 방법]]></title>
+      <link>https://codefug.github.io/posts/2024-09-11/</link>
+      <guid>https://codefug.github.io/posts/2024-09-11/</guid>
+      <description><![CDATA[tailwind로 조건부 처리를 간편하게 하는 방법, 비개발자도 스타일을 쉽게 확인할 수 있도록 storybook 연동]]></description>
+      <pubDate>Wed, 11 Sep 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(급페이 프로젝트) 개발환경에만 집중하기 위한 여정]]></title>
+      <link>https://codefug.github.io/posts/2024-07-22-2/</link>
+      <guid>https://codefug.github.io/posts/2024-07-22-2/</guid>
+      <description><![CDATA[접근 제한을 위한 미들웨어 처리, vercel CLI을 이용한 organization 무료 자동 배포, 프리뷰]]></description>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(급페이 프로젝트) 알림창 무한 스크롤을 위한 여정 (mock fetching을 위한 MSW 도입기)]]></title>
+      <link>https://codefug.github.io/posts/2024-07-22-1/</link>
+      <guid>https://codefug.github.io/posts/2024-07-22-1/</guid>
+      <description><![CDATA[msw를 활용해서 프론트엔드 개발이 다 되어있지 않은 상태에서도 무한 스크롤 구현을 확인할 수 있게 되었습니다.]]></description>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[(급페이 프로젝트) 카드 렌더링을 최적화하여 UX를 향상시키기 위한 머나먼 여정]]></title>
+      <link>https://codefug.github.io/posts/2024-07-21/</link>
+      <guid>https://codefug.github.io/posts/2024-07-21/</guid>
+      <description><![CDATA[server component 설계를 이용한 suspense 적극 활용, 이를 위해서 next cookie를 사용하면서 겪은 문제들을 적은 글입니다.]]></description>
+      <pubDate>Sun, 21 Jul 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[React Testing]]></title>
+      <link>https://codefug.github.io/posts/2024-06-18/</link>
+      <guid>https://codefug.github.io/posts/2024-06-18/</guid>
+      <description><![CDATA[React Testing Library, Vitest, Jest]]></description>
+      <pubDate>Tue, 18 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[로그인 구현 (zustand, zod + react-hook-form, RTR)]]></title>
+      <link>https://codefug.github.io/posts/2024-06-17/</link>
+      <guid>https://codefug.github.io/posts/2024-06-17/</guid>
+      <description><![CDATA[zustand를 이용한 로그인 상태 전역 관리, zod를 이용한 간단한 스키마 전개, react-hook-form을 이용한 간단한 validation, axios를 이용한 간단한 api 요청 처리]]></description>
+      <pubDate>Mon, 17 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Dev tool]]></title>
+      <link>https://codefug.github.io/posts/2024-06-15/</link>
+      <guid>https://codefug.github.io/posts/2024-06-15/</guid>
+      <description><![CDATA[리액트 과거, 현재, 미래]]></description>
+      <pubDate>Sat, 15 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[마이그레이션 중 발생한 Vite 환경 변수 처리]]></title>
+      <link>https://codefug.github.io/posts/2024-06-14/</link>
+      <guid>https://codefug.github.io/posts/2024-06-14/</guid>
+      <description><![CDATA[Vite_ENV]]></description>
+      <pubDate>Fri, 14 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[React Debugging]]></title>
+      <link>https://codefug.github.io/posts/2024-06-10/</link>
+      <guid>https://codefug.github.io/posts/2024-06-10/</guid>
+      <description><![CDATA[react-dev-tools 정리, 실습]]></description>
+      <pubDate>Mon, 10 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[자잘한 Next.js 트러블 슈팅들]]></title>
+      <link>https://codefug.github.io/posts/2024-06-08/</link>
+      <guid>https://codefug.github.io/posts/2024-06-08/</guid>
+      <description><![CDATA[react-responsive를 사용하지 못하는 상황, dotenv 사용시 문제 발생]]></description>
+      <pubDate>Sat, 08 Jun 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Next는 왜 쓸까]]></title>
+      <link>https://codefug.github.io/posts/2024-05-31/</link>
+      <guid>https://codefug.github.io/posts/2024-05-31/</guid>
+      <description><![CDATA[CSR SSG SSR]]></description>
+      <pubDate>Fri, 31 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[리액트는 왜 쓸까]]></title>
+      <link>https://codefug.github.io/posts/2024-05-23/</link>
+      <guid>https://codefug.github.io/posts/2024-05-23/</guid>
+      <description><![CDATA[리액트 과거, 현재, 미래]]></description>
+      <pubDate>Thu, 23 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[TS는 왜 쓸까 (위대한 TS)]]></title>
+      <link>https://codefug.github.io/posts/2024-05-22/</link>
+      <guid>https://codefug.github.io/posts/2024-05-22/</guid>
+      <description><![CDATA[JS를 완벽하게 하기 위한 여정]]></description>
+      <pubDate>Wed, 22 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Fandom-k 프로젝트 회고3]]></title>
+      <link>https://codefug.github.io/posts/2024-05-20/</link>
+      <guid>https://codefug.github.io/posts/2024-05-20/</guid>
+      <description><![CDATA[Github Actions, 최종 결과]]></description>
+      <pubDate>Mon, 20 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Fandom-k 프로젝트 회고2]]></title>
+      <link>https://codefug.github.io/posts/2024-05-19/</link>
+      <guid>https://codefug.github.io/posts/2024-05-19/</guid>
+      <description><![CDATA[fetch, scroll to Top, infinite scroll 라이브러리 제거]]></description>
+      <pubDate>Sun, 19 May 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Fandom-k 프로젝트 회고1]]></title>
+      <link>https://codefug.github.io/posts/2024-05-18/</link>
+      <guid>https://codefug.github.io/posts/2024-05-18/</guid>
+      <description><![CDATA[팀 프로젝트 세팅, infinite scroll, skeleton]]></description>
+      <pubDate>Sat, 18 May 2024 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
