@@ -32,7 +32,7 @@ export const HeaderSwitch = memo(function HeaderSwitch() {
       type="button"
       onClick={toggle}
       aria-label={t("aria.themeToggle")}
-      className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:cursor-pointer hover:bg-accent hover:text-foreground"
     >
       {isDark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
