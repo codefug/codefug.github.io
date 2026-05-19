@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, Search } from "lucide-react";
-import { motion, useScroll, useSpring } from "motion/react";
+import { motion, useMotionValue, useScroll, useSpring } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -99,7 +99,14 @@ const SideBarToggleButton = memo(function SideBarToggleButton() {
 
 const HorizontalScrollbar = memo(function VerticalScrollbar() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
+  const progress = useMotionValue(0);
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (v) => progress.set(v));
+    return () => unsubscribe();
+  }, [scrollYProgress, progress]);
+
+  const scaleX = useSpring(progress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
