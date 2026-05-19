@@ -1,7 +1,7 @@
-import { Flame, Notebook } from "lucide-react";
 import type { Metadata } from "next";
 import { BirthdayBanner } from "@/components/event/birthday-banner";
 import { HeroSection } from "@/components/home/hero-section";
+import { HomeSectionTitle } from "@/components/home/home-section-title";
 import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
 import PostSwiper from "@/components/postSwiper";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -13,7 +13,6 @@ import BlockHeader from "@/components/ui/block-header";
 import { defaultLocale } from "@/i18n/config";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import { shouldShowBirthdayBanner } from "@/util/birthday";
-import { HomeSectionTitle } from "../components/home/home-section-title";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -41,12 +40,7 @@ export default async function Home() {
       </section>
       <section className="mb-2">
         <BlockHeader
-          title={
-            <HomeSectionTitle
-              translationKey="recentPosts"
-              icon={<Flame className="text-red-500" />}
-            />
-          }
+          title={<HomeSectionTitle translationKey="recentPosts" />}
         />
       </section>
       <div className="mb-14">
@@ -56,14 +50,7 @@ export default async function Home() {
         />
       </div>
       <div>
-        <BlockHeader
-          title={
-            <HomeSectionTitle
-              translationKey="allPosts"
-              icon={<Notebook className="text-green-400" />}
-            />
-          }
-        >
+        <BlockHeader title={<HomeSectionTitle translationKey="allPosts" />}>
           <PostCategoryGallery
             frontMatterListByLocale={frontMatterListByLocale}
           />
