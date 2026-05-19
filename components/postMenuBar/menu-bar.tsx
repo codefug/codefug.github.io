@@ -1,7 +1,7 @@
 "use client";
 
 import { cva } from "class-variance-authority";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { List, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -14,26 +14,26 @@ import { usePostContentStore } from "@/store/use-post-content-store";
 type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
 
 const menuBarVariant = cva(
-  "block py-1.5 text-sm transition-all duration-200 ease-in-out border-l-2 hover:border-primary/70 no-underline",
+  "block py-1.5 text-sm transition-all duration-150 ease-in-out border-l-2 no-underline rounded-r-md",
   {
     variants: {
       isActive: {
-        true: "border-primary font-medium text-primary opacity-100",
+        true: "border-primary font-medium text-primary bg-primary/5",
         false:
-          "border-transparent text-muted-foreground hover:text-foreground/90",
+          "border-transparent text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-muted/60",
       },
       level: {
-        1: "pl-4",
-        2: "pl-8",
-        3: "pl-12",
-        4: "pl-16",
-        5: "pl-20",
-        6: "pl-24",
+        1: "pl-3",
+        2: "pl-3",
+        3: "pl-6",
+        4: "pl-9",
+        5: "pl-12",
+        6: "pl-14",
       },
     },
     defaultVariants: {
       isActive: false,
-      level: 1,
+      level: 2,
     },
   },
 );
@@ -78,13 +78,8 @@ export default function MenuBar() {
   const headings = useFindAllHeadings();
   const { activeId } = useHighlightTOC();
 
-  const handleShowMenuList = useCallback(() => {
-    setIsShow(true);
-  }, []);
-
-  const handleHideMenuList = useCallback(() => {
-    setIsShow(false);
-  }, []);
+  const handleShowMenuList = useCallback(() => setIsShow(true), []);
+  const handleHideMenuList = useCallback(() => setIsShow(false), []);
 
   useOutsideClick(menuListRef, handleHideMenuList);
 
@@ -92,9 +87,10 @@ export default function MenuBar() {
 
   return (
     <>
+      {/* 토글 버튼 */}
       <button
         className={cn(
-          "fixed top-1/2 right-0 flex h-12 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-l-lg border border-r-0 bg-card text-muted-foreground shadow-md transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
+          "fixed top-1/2 right-0 flex h-16 w-9 -translate-y-1/2 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-l-xl border border-r-0 border-l-2 border-l-primary/60 bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
           isShow && "pointer-events-none opacity-0",
         )}
         onClick={handleShowMenuList}
@@ -102,34 +98,41 @@ export default function MenuBar() {
         aria-expanded={isShow}
         aria-controls="table-of-contents"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <List className="h-4 w-4" />
       </button>
 
+      {/* TOC 패널 */}
       <div
         ref={menuListRef}
         className={cn(
-          "fixed top-[68px] right-0 w-[280px] transition-all duration-200 print:hidden",
+          "fixed top-[68px] right-0 w-[300px] transition-all duration-200 print:hidden",
           isShow
             ? "translate-x-0 opacity-100"
             : "pointer-events-none translate-x-full opacity-0",
         )}
       >
-        <div className="rounded-l-xl border border-r-0 bg-card p-4 shadow-lg">
-          <div className="mb-3 flex items-center justify-between">
-            <h4 className="font-medium text-foreground text-sm">
-              {t("tableOfContents")}
-            </h4>
+        <div className="rounded-l-2xl border border-r-0 bg-card/95 shadow-xl backdrop-blur-sm">
+          {/* 헤더 */}
+          <div className="flex items-center justify-between border-border/50 border-b px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="h-3.5 w-1 rounded-full bg-primary" />
+              <h4 className="font-semibold text-foreground text-sm">
+                {t("tableOfContents")}
+              </h4>
+            </div>
             <button
               type="button"
               onClick={handleHideMenuList}
               aria-label={t("aria.tableOfContents.close")}
               className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
-              <ChevronRight className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
+
+          {/* 목록 */}
           <nav
-            className="h-[calc(100vh-164px)] space-y-0.5 overflow-auto pr-2"
+            className="h-[calc(100vh-164px)] overflow-auto px-3 py-3"
             aria-label={t("aria.tableOfContents.navigation")}
             id="table-of-contents"
           >
