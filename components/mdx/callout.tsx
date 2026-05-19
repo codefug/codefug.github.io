@@ -28,19 +28,23 @@ export default function Callout({
     <blockquote
       className={cn(
         QUOTE_STYLE({ type: type ? CALL_OUT_TYPE_COLOR[type] : "gray" }),
-        "rounded-xl border-y border-y-gray-400 border-r border-r-gray-400 border-opacity-30 p-4 not-italic",
+        "rounded-r-md p-4 not-italic",
       )}
     >
       <div
         className={cn(
           QUOTE_TITLE_STYLE({ type: type && CALL_OUT_TYPE_COLOR[type] }),
-          "flex items-center gap-1 font-bold text-lg md:text-2xl",
+          "mb-1.5 flex items-center gap-2 font-semibold text-base md:text-lg",
         )}
       >
-        {type !== null && CALL_OUT_TYPE_ICON[type]}
-        <div>{title}</div>
+        {type !== null && (
+          <span className="shrink-0 [&_svg]:size-5">
+            {CALL_OUT_TYPE_ICON[type]}
+          </span>
+        )}
+        <span>{title}</span>
       </div>
-      <section className="font-semibold text-black text-sm md:text-base">
+      <section className="text-sm md:text-base">
         {content.map((child) => child)}
       </section>
     </blockquote>
