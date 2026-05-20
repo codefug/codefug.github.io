@@ -90,7 +90,7 @@ export default function MenuBar() {
       {/* 토글 버튼 */}
       <button
         className={cn(
-          "fixed top-1/2 right-0 flex h-16 w-9 -translate-y-1/2 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-l-xl border border-r-0 border-l-2 border-l-primary/60 bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
+          "fixed top-1/2 right-0 z-10 flex h-16 w-9 -translate-y-1/2 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-l-xl border border-r-0 border-l-2 border-l-primary/60 bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
           isShow && "pointer-events-none opacity-0",
         )}
         onClick={handleShowMenuList}
@@ -105,7 +105,7 @@ export default function MenuBar() {
       <div
         ref={menuListRef}
         className={cn(
-          "fixed top-[68px] right-0 w-[300px] transition-all duration-200 print:hidden",
+          "fixed top-[68px] right-0 z-10 w-[300px] transition-all duration-200 print:hidden",
           isShow
             ? "translate-x-0 opacity-100"
             : "pointer-events-none translate-x-full opacity-0",
