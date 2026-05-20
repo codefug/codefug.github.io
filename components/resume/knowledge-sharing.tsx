@@ -17,12 +17,12 @@ export default function KnowledgeSharing({
   const posts = t.raw("posts") as Post[];
 
   return (
-    <section className={cn("py-4", className)}>
+    <section className={cn("py-4 print:py-2", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <h4 className="mt-3 font-semibold text-gray-700 text-sm dark:text-gray-300">
+      <h4 className="mt-3 font-semibold text-gray-700 text-sm dark:text-gray-300 print:mt-2 print:text-xs">
         {t("subtitle")}
       </h4>
-      <ul className="mt-2 space-y-1 text-sm">
+      <ul className="mt-2 space-y-1 text-sm print:text-xs">
         {posts.map((p) => (
           <li key={p.title}>
             <Link

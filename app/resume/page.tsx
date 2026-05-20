@@ -19,6 +19,7 @@ import {
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
+import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("resume.meta");
@@ -29,8 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-function Divider() {
-  return <hr className="my-1 border-gray-200 dark:border-gray-700" />;
+function Divider({ className }: { className?: string }) {
+  return (
+    <hr
+      className={cn(
+        "my-1 border-gray-200 dark:border-gray-700 print:my-2",
+        className,
+      )}
+    />
+  );
 }
 
 export default function Page() {
@@ -40,7 +48,7 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl px-4 py-8 print:max-w-none print:px-0 print:pt-4 print:pb-0">
+      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-0 print:pt-6 print:pb-0">
         <ResumeHeader />
         <Divider />
 
@@ -52,12 +60,15 @@ export default function Page() {
             <FadeInSection delay={0}>
               <ResumeProjectCard projectKey="allra" />
             </FadeInSection>
-            <FadeInSection delay={0} className="print:break-before-page">
-              <ResumeProjectCard projectKey="allraAdmin" />
+            <FadeInSection delay={0}>
+              <ResumeProjectCard
+                projectKey="allraAdmin"
+                className="print:break-before-page"
+              />
             </FadeInSection>
           </CompanySection>
 
-          <CompanySection companyKey="pwc" className="mt-8 print:mt-8">
+          <CompanySection companyKey="pwc" className="mt-8">
             <FadeInSection delay={0}>
               <ResumeProjectCard projectKey="digitalFinance" />
             </FadeInSection>
@@ -70,7 +81,7 @@ export default function Page() {
           </CompanySection>
         </WorkExperienceSection>
 
-        <hr className="my-1 border-gray-200 dark:border-gray-700 print:hidden" />
+        <Divider className="print:hidden" />
 
         <FadeInSection delay={0} className="print:break-before-page">
           <SideProjects />

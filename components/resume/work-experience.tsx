@@ -28,7 +28,7 @@ export function CompanySection({
   return (
     <article
       className={cn(
-        "mt-4 border-primary/30 border-l-2 pl-4 print:mt-5 print:border-l-0 print:pl-0",
+        "mt-4 border-primary/30 border-l-2 pl-4 print:mt-2 print:border-l-0 print:pl-0",
         className,
       )}
     >
@@ -68,7 +68,7 @@ export default function WorkExperienceSection({
 }) {
   const t = useTranslations("resume.workExperience");
   return (
-    <section className={cn("py-4 print:py-1", className)}>
+    <section className={cn("py-4 print:py-2", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       {children}
     </section>
