@@ -341,7 +341,9 @@
       "paragraphs": [
         "문제가 완전히 해소될 때까지 머릿속에서 [B]비동기적으로 해결책을 계산합니다[/B]. 퇴근 후에도, 자다가도 답을 찾습니다. 불명확한 부분이 있으면 직접 실험을 설계하거나 소스코드를 열어 확인합니다.",
         "발견한 것을 혼자 갖고 있지 않습니다. [B]문서화와 공유가 가장 효과적인 커뮤니케이션[/B]이라 생각합니다. 분석한 내용을 정리해 팀의 기술 방향을 바꾼 적도, 오픈소스에 기여한 적도 있습니다. 개인의 발견이 팀 전체의 변화로 이어질 때 가장 큰 보람을 느낍니다.",
-        "불편함을 발견하면 직접 해결하고, [B]과정을 문서로 남겨 팀이 같은 문제를 다시 겪지 않게 합니다[/B]. 혼자 끝내지 않고 기록하고 연결합니다."
+        "불편함을 발견하면 직접 해결하고, [B]과정을 문서로 남겨 팀이 같은 문제를 다시 겪지 않게 합니다[/B]. 혼자 끝내지 않고 기록하고 연결합니다.",
+        "의견이 충돌할 때 [B]먼저 내가 틀릴 수 있다고 가정합니다[/B]. 같은 목적을 향하고 있다면 상대의 주장엔 반드시 근거가 있다고 생각하기 때문입니다. 분석하고, 상대 관점에서 다시 보고, 그 위에서 대화합니다.",
+        "[B]시간과 품질 사이의 트레이드오프를 항상 의식합니다[/B]. 무조건 좋은 코드가 아니라 서비스 상황에 맞는 좋은 코드를 고민합니다."
       ]
     },
     "workExperience": {
@@ -376,13 +378,13 @@
             "title": "개발 생산성 개선",
             "details": [
               {
-                "text": "[B]Dynamic metric[/B]과 [B]Playwright Sharding[/B]으로 병렬 테스트 환경 구성, 평균 테스트 시간 [B]67.7% 단축[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]블로그[/L])"
+                "text": "모바일 등 새로운 테스트 환경 추가 시 테스트 수가 선형 증가하는 구조\n\t[B]Dynamic metric + Playwright Sharding[/B]으로 병렬 실행 환경 구성해 평균 테스트 시간 [B]67.7% 단축[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]블로그[/L])"
               },
               {
-                "text": "[B]ESLint + Prettier[/B] 기반 린트 파이프라인을 [B]Biome[/B]으로 전면 대체하여 평균 CI 린트 시간 [B]98% 단축[/B]"
+                "text": "ESLint·Prettier가 각각 AST를 순회해 CI 린트에 매번 2분 소요\n\t[B]Biome[/B]으로 전환해 평균 CI 린트 시간 [B]98% 단축[/B]"
               },
               {
-                "text": "[B]Datadog → OpenReplay[/B] 비용 절감 전환 주도. 소스맵 업로드를 포함한 CI/CD 파이프라인 구성, 운영 중 OpenReplay 자체 소스코드 내부 오류를 발견해서 [L:https://github.com/openreplay/openreplay/issues/4476]오픈소스 기여[/L]"
+                "text": "Datadog 과금 정책 변경으로 모니터링 툴 교체 불가피\n\t데브옵스팀과 협업해 [B]OpenReplay 점진적 도입[/B] 주도. CI/CD 소스맵 업로드 파이프라인 구성 중 OpenReplay 자체 버그 발견, [L:https://github.com/openreplay/openreplay/issues/4476]오픈소스 기여[/L]"
               }
             ]
           },
@@ -390,13 +392,13 @@
             "title": "코드 개선",
             "details": [
               {
-                "text": "선정산 조회 로직 사용성 개선을 위해 Chrome CPP 소스코드 직접 분석으로 autocomplete 무시 원인 파악, [B]Honeypot 미끼 필드 방식으로 자동 채우기 우회 해결[/B]"
+                "text": "선정산 조회 페이지에 로그인 폼이 다수 공존하는 구조, 크롬 자동 채우기가 관련 없는 모든 폼을 오염시키는 문제\n\tChrome CPP 소스 직접 분석으로 원인 파악 후 [B]Honeypot 미끼 필드 방식으로 우회 해결[/B]"
               },
               {
-                "text": "선정산 신청 로직을 [B]TypeScript Discriminated Union[/B]으로 전면 리팩토링, 불가능한 상태를 타입 레벨에서 강제해 런타임 에러 방지 및 가독성 향상"
+                "text": "자식 컴포넌트들이 각자 [B]useEffect[/B]로 상태를 변경하던 구조, 정책 누적으로 분기 난립\n\tProvider에서 모든 계산을 담당하고 [B]Discriminated Union[/B]으로 상태를 전달, 자식은 렌더링만 담당하도록 분리. 단위 테스트 485줄 작성으로 안정성 확보"
               },
               {
-                "text": "[B]Server Action version skew 오류[/B]와 큐 방식 한계를 [L:/posts/2026-01-29]분석·문서화[/L]하여 팀 내 [B]tRPC 마이그레이션 제안 및 시작에 기여[/B]"
+                "text": "Server Action 기반 아키텍처로 페이지 로딩 저하·빌드 오류 반복 발생\n\t직접 분석해 [B]순차 호출 한계를 문서화[/B] 후 팀 공유 ([L:/posts/2026-01-29]블로그[/L]), [B]tRPC 마이그레이션 제안 및 팀 도입 주도[/B]"
               }
             ]
           },
@@ -404,7 +406,10 @@
             "title": "SEO 개선",
             "details": [
               {
-                "text": "전 페이지 OG/Twitter 메타데이터 공통 유틸화, [B]Schema.org JSON-LD 구조화 데이터[/B] 도입"
+                "text": "깊은 복사 버그로 페이지별 메타데이터 override가 전혀 동작하지 않는 문제 발견\n\t원인 추적 후 수정하고, 전 페이지 OG/Twitter 메타데이터를 [B]공통 유틸로 통합[/B]해 재발 방지"
+              },
+              {
+                "text": "마케팅팀과 협업해 SEO 품질 강화\n\t[B]Schema.org JSON-LD 구조화 데이터[/B] 도입으로 검색엔진 크롤링 품질 향상"
               }
             ]
           }
@@ -426,7 +431,7 @@
             "title": "Vite 기반 빌드 시스템 전환",
             "details": [
               {
-                "text": "[B]CRA → Vite 마이그레이션[/B]으로 번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B]"
+                "text": "CRA deprecated로 보안 업데이트 중단, 사내 보안 정책상 사용 불가 판정\n\t[B]CRA → Vite 마이그레이션[/B]으로 보안 리스크 해소, 번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B]"
               }
             ]
           },
@@ -434,7 +439,7 @@
             "title": "CSP 정책 대응",
             "details": [
               {
-                "text": "사내 [B]CSP 정책[/B] 위반으로 기존 에디터 사용 불가 → react-quill-new 전환 및 이미지 리사이즈 [B]커스텀 모듈 직접 개발[/B]로 보안 이슈 해결"
+                "text": "사내 [B]CSP 정책[/B] 위반으로 기존 에디터 사용 불가\n\treact-quill-new 전환 및 이미지 리사이즈 [B]커스텀 모듈 직접 개발[/B]로 보안 이슈 해결"
               }
             ]
           }
@@ -456,7 +461,7 @@
             "title": "PDF Viewer 기능 개발",
             "details": [
               {
-                "text": "[B]Web Worker + react-window 가상화[/B] 기반 커스텀 PDF Viewer 구현 → [B]초기 렌더링 시간 67% 개선[/B]"
+                "text": "서비스 메인 기능으로 여러 PDF를 자유롭고 세밀하게 제어해야 하는 기획 요구사항\n\tPDF.js 기반 커스텀 Viewer를 직접 구현하고 [B]Web Worker + react-window 가상화[/B]로 [B]초기 렌더링 시간 67% 개선[/B]"
               }
             ]
           },
@@ -464,13 +469,10 @@
             "title": "빌드·배포 최적화 및 성능 개선",
             "details": [
               {
-                "text": "[B]Docker 이미지 최적화[/B]",
-                "subItems": [
-                  "[B]Standalone 모드와 이미지 빌드 최적화[/B]로 [B]2.22GB → 195MB (91.36% 감소)[/B] 달성"
-                ]
+                "text": "고객사 온프레미스 설치 환경에서 2.22GB 이미지 배포가 병목\n\t[B]Standalone 모드 + 멀티스테이지 빌드[/B]로 [B]2.22GB → 195MB (91.36% 감소)[/B]"
               },
               {
-                "text": "dynamic import로 번들 [B]302kB → 143kB (73.5% 감소)[/B]"
+                "text": "코드 스플리팅 부재로 초기 로딩 속도 저하\n\tdynamic import 도입으로 번들 [B]302kB → 143kB (73.5% 감소)[/B]"
               }
             ]
           }
@@ -486,7 +488,7 @@
             "title": "코드 일관성 개선",
             "details": [
               {
-                "text": "[B]clsx, cva 도입[/B]으로 컴포넌트 변형 스타일을 타입 안전하게 관리"
+                "text": "초기 디자인 시스템이라 구조 기반이 중요\n\t[B]clsx, cva[/B]로 조건부 스타일과 컴포넌트 변형을 타입 안전하게 관리하는 패턴 정착"
               }
             ]
           },
@@ -494,7 +496,7 @@
             "title": "컴포넌트 구조 개선",
             "details": [
               {
-                "text": "디자인 시스템 컴포넌트를 분석하여 [B]JS 없이 CSS만으로 구현 가능한 기능을 분류·분리[/B], 불필요한 JS 의존을 제거해 번들 경량화 및 접근성 향상"
+                "text": "애니메이션·전환 요소를 JS 상태 기반으로 구현 시 reflow 발생\n\t컴포넌트를 분석해 [B]CSS transform/transition만으로 처리 가능한 기능을 분류·분리[/B], reflow 없는 60fps 애니메이션 확보 후 팀 내 공유"
               }
             ]
           }
@@ -515,10 +517,21 @@
         ],
         "categories": [
           {
+            "title": "ISMS 인증 보안 요건 구현",
+            "details": [
+              {
+                "text": "ISMS 요건인 비밀번호 변경 강제 흐름을 위해 [B]Next.js middleware에서 라우트 가드[/B] 적용"
+              },
+              {
+                "text": "ISMS 요건인 유휴 시간 자동 로그아웃 구현 — [B]미활동 감지 후 카운트다운 경고, 멀티탭 동기화[/B]까지 처리"
+              }
+            ]
+          },
+          {
             "title": "MSW 기반 API 모킹 환경 구축",
             "details": [
               {
-                "text": "인증·사용자·계약·결제·출금·사이트 관리 등 [B]6개 이상 도메인의 MSW 핸들러를 도메인 분리 구조로 설계[/B] 및 전체 모킹 환경 구축"
+                "text": "금융 어드민 특성상 API 오작동이 실 데이터에 직접 영향\n\tMSW 도입을 직접 제안하고 주도, 인증·사용자·계약·결제·출금·사이트 관리 등 [B]6개 이상 도메인 핸들러를 도메인 분리 구조로 설계[/B]"
               }
             ]
           }
@@ -533,10 +546,10 @@
           "url": "/posts/2026-05-10",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
-          "description": "병렬 실행 중인 Claude Code 세션 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
+          "description": "병렬 Claude Code 세션의 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
           "details": [
-            "폴링에서 [B]Claude Code hooks[/B] 기반 이벤트 드리븐으로 전환해 권한 요청 즉시 알림",
-            "hook CLI(esbuild 단독 빌드) → HTTP 서버 → IPC 파이프라인 설계로 외부 이벤트를 Renderer에 전달"
+            "다중 세션 운영 시 권한 요청으로 세션이 멈춰도 알 수 없는 문제\n\t폴링 대신 [B]Claude Code hooks[/B] 기반 이벤트 드리븐으로 즉시 알림 실현",
+            "hook CLI(esbuild 단독 빌드) → HTTP 서버 → IPC 파이프라인으로 외부 이벤트를 Renderer에 전달"
           ]
         }
       ]
