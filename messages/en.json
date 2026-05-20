@@ -341,7 +341,9 @@
       "paragraphs": [
         "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping, in the middle of the night. When something is unclear, I design an experiment or dig into the source directly.",
         "I don't sit on what I find. I believe [B]documentation and sharing is the most effective form of communication[/B]. I've written up analyses that changed my team's technical direction, and filed open source issues from findings along the way. A personal discovery becoming a team-level change is the kind of impact I find most rewarding.",
-        "I fix what bothers me — and [B]document it so others don't have to rediscover it[/B]. I don't just solve things privately; I write it down and connect the dots."
+        "I fix what bothers me — and [B]document it so others don't have to rediscover it[/B]. I don't just solve things privately; I write it down and connect the dots.",
+        "When opinions clash, [B]I start by assuming I might be wrong[/B]. If we're aiming at the same goal, the other person's argument always has a reason behind it. I analyze, look at it from their perspective, and then talk.",
+        "I'm always [B]conscious of the tradeoff between time and quality[/B]. I don't chase perfect code — I chase the right code for where the product is."
       ]
     },
     "workExperience": {
@@ -376,13 +378,13 @@
             "title": "Developer Productivity",
             "details": [
               {
-                "text": "Configured parallel test environment with [B]Dynamic metric[/B] and [B]Playwright Sharding[/B], reducing average test time by [B]67.7%[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
+                "text": "Adding mobile and other environments meant test count would scale linearly\n\tset up parallel execution with [B]Dynamic metric + Playwright Sharding[/B], reducing average test time by [B]67.7%[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
               },
               {
-                "text": "Replaced [B]ESLint + Prettier[/B] lint pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
+                "text": "ESLint and Prettier each traverse the AST separately, costing ~2 min per CI lint run\n\treplaced the entire pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
               },
               {
-                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Configured CI/CD pipeline including sourcemap upload, and discovered an internal bug in OpenReplay's own source code during production, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]"
+                "text": "Datadog pricing change made the monitoring tool unsustainable\n\tled [B]gradual OpenReplay migration[/B] in collaboration with the DevOps team. While configuring the CI/CD sourcemap upload pipeline, discovered and reported a bug in OpenReplay's own codebase via [L:https://github.com/openreplay/openreplay/issues/4476]open source contribution[/L]"
               }
             ]
           },
@@ -390,13 +392,13 @@
             "title": "Code Quality",
             "details": [
               {
-                "text": "Analyzed Chrome CPP source to identify autocomplete ignore cause, resolved with [B]Honeypot decoy field approach to bypass autofill[/B]"
+                "text": "Pre-settlement page has multiple login-style forms coexisting, Chrome autofill was polluting all of them\n\tTraced the root cause through Chrome CPP source, resolved with a [B]Honeypot decoy field to suppress autofill[/B]"
               },
               {
-                "text": "Refactored pre-settlement request logic with [B]TypeScript Discriminated Union[/B], enforcing impossible states at type level to prevent runtime errors and improve readability"
+                "text": "Child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Wrote 485 lines of unit tests to validate the logic"
               },
               {
-                "text": "[B]Server Action version skew errors[/B] and queue execution limits [L:/posts/2026-01-29]analyzed and documented[/L], [B]proposing tRPC migration that initiated team-wide adoption[/B]"
+                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tdug into the root cause, [B]documented the sequential execution constraint[/B], shared with the team ([L:/posts/2026-01-29]blog[/L]), [B]proposed and led tRPC migration[/B]"
               }
             ]
           },
@@ -404,7 +406,10 @@
             "title": "SEO",
             "details": [
               {
-                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B]"
+                "text": "Discovered a deep-copy bug that was silently preventing per-page metadata overrides\n\ttraced the root cause, fixed it, and unified all page OG/Twitter metadata into [B]shared utils[/B] to prevent recurrence"
+              },
+              {
+                "text": "Collaborated with the marketing team on SEO quality improvements\n\tintroduced [B]Schema.org JSON-LD structured data[/B] to enhance search engine crawling quality"
               }
             ]
           }
@@ -426,7 +431,7 @@
             "title": "Vite-based Build System Migration",
             "details": [
               {
-                "text": "[B]CRA → Vite migration[/B], bundle size [B]1200kB → 500kB (58.3% reduction)[/B]"
+                "text": "CRA deprecated and no longer receiving security updates, flagged under internal security policy\n\t[B]CRA → Vite migration[/B] resolved the risk and reduced bundle size [B]1200kB → 500kB (58.3%)[/B]"
               }
             ]
           },
@@ -434,7 +439,7 @@
             "title": "CSP Policy Compliance",
             "details": [
               {
-                "text": "Existing editor incompatible with in-house [B]CSP policy[/B] → migrated to react-quill-new and built a custom image resize module to resolve security violations"
+                "text": "Existing editor incompatible with in-house [B]CSP policy[/B]\n\tmigrated to react-quill-new and built a custom image resize module to resolve security violations"
               }
             ]
           }
@@ -456,7 +461,7 @@
             "title": "PDF Viewer Development",
             "details": [
               {
-                "text": "Built custom PDF Viewer with [B]Web Worker + react-window virtualization[/B] → [B]67% initial render improvement[/B]"
+                "text": "Core feature required fine-grained control over multiple PDFs beyond what off-the-shelf libraries offered\n\tbuilt a custom Viewer on top of PDF.js, then applied [B]Web Worker + react-window virtualization[/B] for a [B]67% initial render improvement[/B]"
               }
             ]
           },
@@ -464,13 +469,10 @@
             "title": "Build & Deploy Optimization",
             "details": [
               {
-                "text": "[B]Docker image optimization[/B]",
-                "subItems": [
-                  "Achieved [B]2.22GB → 195MB (91.36% reduction)[/B] via [B]standalone mode and build optimization[/B]"
-                ]
+                "text": "On-premises deployment to client sites made 2.22GB image size a bottleneck\n\t[B]standalone mode + multi-stage build[/B] reduced image to [B]195MB (91.36% reduction)[/B]"
               },
               {
-                "text": "Bundle [B]302kB → 143kB (73.5% reduction)[/B] via dynamic import"
+                "text": "No code splitting meant the full bundle loaded upfront, slowing initial load\n\tintroduced dynamic import, reducing bundle [B]302kB → 143kB (73.5% reduction)[/B]"
               }
             ]
           }
@@ -486,7 +488,7 @@
             "title": "Code Consistency",
             "details": [
               {
-                "text": "Adopted [B]clsx and cva[/B] for type-safe component variant styling"
+                "text": "Early-stage design system required a strong structural foundation\n\testablished [B]clsx and cva[/B] as the team pattern for type-safe conditional styling and component variants"
               }
             ]
           },
@@ -494,7 +496,7 @@
             "title": "Component Restructuring",
             "details": [
               {
-                "text": "Audited design system components and [B]classified features implementable with CSS-only (no JS)[/B], eliminating unnecessary JS dependencies to reduce bundle size and improve accessibility"
+                "text": "Animation and transition elements driven by JS state caused unnecessary reflows\n\taudited all components and [B]separated CSS transform/transition-only interactions from JS[/B], achieving 60fps animations without reflow, then shared findings with the team"
               }
             ]
           }
@@ -515,10 +517,21 @@
         ],
         "categories": [
           {
+            "title": "ISMS Security Requirements",
+            "details": [
+              {
+                "text": "Applied [B]route guard in Next.js middleware[/B] to enforce the ISMS-required forced password change flow"
+              },
+              {
+                "text": "Implemented ISMS-required idle session timeout — [B]inactivity detection with countdown warning and cross-tab sync[/B]"
+              }
+            ]
+          },
+          {
             "title": "MSW-based API Mocking Environment",
             "details": [
               {
-                "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)"
+                "text": "Finance admin errors hit real data directly\n\tproposed and led MSW adoption, designing [B]domain-separated handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)"
               }
             ]
           }
@@ -535,7 +548,7 @@
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "macOS widget showing real-time status of parallel Claude Code sessions (distributed via Homebrew)",
           "details": [
-            "Switched from polling to [B]Claude Code hooks[/B]-based event-driven architecture, enabling instant permission-request alerts",
+            "Running multiple sessions in parallel meant a stalled permission request could silently block a session\n\treplaced polling with [B]Claude Code hooks[/B]-based event-driven architecture for instant alerts",
             "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer"
           ]
         }
