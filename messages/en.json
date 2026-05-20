@@ -413,7 +413,7 @@
             "title": "SEO",
             "details": [
               {
-                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B] (Organization, FAQ, Article)"
+                "text": "Unified all page OG/Twitter metadata into shared utils, introduced [B]Schema.org JSON-LD structured data[/B]"
               }
             ]
           }
@@ -528,17 +528,6 @@
             "details": [
               {
                 "text": "[B]Designed domain-separated MSW handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)"
-              }
-            ]
-          },
-          {
-            "title": "Bug Fixes",
-            "details": [
-              {
-                "text": "Applied [B]KST timezone correction[/B] to notice and site management date fields after identifying the server's Seoul timezone assumption (hotfix)"
-              },
-              {
-                "text": "Removed [B]deprecated X-Amz-ACL header[/B] from S3 presigned PUT requests, resolving upload 403 errors"
               }
             ]
           }
