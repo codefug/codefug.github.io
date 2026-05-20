@@ -9,7 +9,6 @@ import KnowledgeSharing from "@/components/resume/knowledge-sharing";
 import ResumeHeader from "@/components/resume/resume-header";
 import ResumeProjectCard from "@/components/resume/resume-project-card";
 import SideProjects from "@/components/resume/side-projects";
-import ResumeSkills from "@/components/resume/skills";
 import WorkExperienceSection, {
   CompanySection,
 } from "@/components/resume/work-experience";
@@ -46,9 +45,6 @@ export default function Page() {
         <Divider />
 
         <AboutMe />
-        <Divider />
-
-        <ResumeSkills />
         <Divider />
 
         <WorkExperienceSection>
