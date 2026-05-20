@@ -36,12 +36,11 @@ export const metadata: Metadata = {
     description: metaMessages.openGraph.description,
     url: "https://codefug.github.io",
     type: "website",
-    images: [
-      {
-        url: "/images/me.jpg",
-        alt: "Codefug Blog",
-      },
-    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: metaMessages.openGraph.title,
+    description: metaMessages.openGraph.description,
   },
 };
 
