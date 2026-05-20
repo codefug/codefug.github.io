@@ -76,7 +76,7 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-2">
+    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-4">
       <img
         src="/images/profile/image.jpg"
         alt="이승현 프로필"
@@ -87,7 +87,7 @@ export default function ResumeHeader() {
       <div className="min-w-0 flex-1">
         <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-3xl text-gray-900 dark:text-white print:text-2xl">
           <span>{t("name")}</span>
-          <span className="font-medium text-lg text-primary print:text-base">
+          <span className="font-medium text-lg text-primary print:text-lg">
             {t("role")}
           </span>
         </h1>

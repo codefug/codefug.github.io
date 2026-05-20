@@ -39,7 +39,7 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
 function ProjectCategory({ category }: { category: Category }) {
   return (
     <section className="border-primary/30 border-l-2 pl-3 print:pl-2 print:leading-snug">
-      <h4 className="font-semibold text-gray-800 text-sm dark:text-gray-200 print:text-[13px]">
+      <h4 className="font-semibold text-gray-800 text-sm dark:text-gray-200 print:text-xs">
         <RichText>{category.title}</RichText>
       </h4>
       <ul className="mt-0.5 space-y-0.5 text-gray-700 text-sm dark:text-gray-300 print:text-xs print:leading-snug">
@@ -74,7 +74,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         {t("description")}
       </p>
 
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="mt-2 flex flex-wrap gap-1.5 print:mt-1 print:gap-1">
         {stack.map((tech) => (
           <span
             key={tech}
@@ -85,7 +85,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         ))}
       </div>
 
-      <div className="mt-3 space-y-5 print:mt-2 print:space-y-5">
+      <div className="mt-3 space-y-5 print:mt-2 print:space-y-3">
         {categories.map((cat) => (
           <ProjectCategory key={cat.title} category={cat} />
         ))}

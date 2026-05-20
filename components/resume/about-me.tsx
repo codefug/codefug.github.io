@@ -10,9 +10,9 @@ export default function AboutMe({ className }: { className?: string }) {
   const paragraphs = t.raw("paragraphs") as string[];
 
   return (
-    <section className={cn("py-4 print:py-1", className)}>
+    <section className={cn("py-4 print:py-2", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <div className="mt-3 space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:mt-1.5 print:space-y-1.5 print:text-xs print:leading-snug">
+      <div className="mt-3 space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:mt-2 print:space-y-2 print:text-xs print:leading-snug">
         {paragraphs.map((p, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content
           <p key={i}>

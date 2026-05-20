@@ -18,7 +18,7 @@ function StudyGroupItem({ item }: { item: StudyGroups }) {
       <span className="font-semibold text-gray-800 dark:text-gray-200">
         {item.label}
       </span>
-      <p className="text-gray-600 text-xs dark:text-gray-400 print:text-[11px]">
+      <p className="text-gray-600 text-xs dark:text-gray-400 print:text-xs">
         {item.note}
       </p>
     </li>
@@ -41,7 +41,7 @@ function HackathonListItem({ item }: { item: HackathonItem }) {
           {item.event}
         </span>
       </div>
-      <p className="text-gray-600 text-xs dark:text-gray-400 print:text-[11px]">
+      <p className="text-gray-600 text-xs dark:text-gray-400 print:text-xs">
         {item.description}
       </p>
     </li>
@@ -54,9 +54,9 @@ export default function Activities({ className }: { className?: string }) {
   const hackathons = t.raw("hackathons.items") as HackathonItem[];
 
   return (
-    <section className={cn("py-4 print:py-3", className)}>
+    <section className={cn("py-4 print:py-2", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <ul className="mt-3 space-y-3 text-sm">
+      <ul className="mt-3 space-y-3 text-sm print:mt-2 print:space-y-3">
         <StudyGroupItem item={studyGroups} />
         {hackathons.map((h) => (
           <HackathonListItem key={h.project} item={h} />

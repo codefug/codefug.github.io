@@ -28,10 +28,10 @@ function tokenize(text: string): Token[] {
   return tokens;
 }
 
-export function RichText({ children }: { children: string }) {
+function RichTokens({ line }: { line: string }) {
   return (
     <>
-      {tokenize(children).map((token, i) => {
+      {tokenize(line).map((token, i) => {
         if (token.type === "bold")
           return (
             <strong key={i} className="font-bold text-primary">
@@ -45,12 +45,45 @@ export function RichText({ children }: { children: string }) {
               href={token.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline decoration-dotted hover:decoration-solid"
+              className="text-primary underline decoration-dotted hover:decoration-solid print:text-gray-700 print:no-underline"
             >
               {token.content}
+              <span
+                aria-hidden
+                className="hidden print:inline print:text-[10px] print:text-gray-500"
+              >
+                {" "}
+                ({token.url})
+              </span>
             </a>
           );
         return <Fragment key={i}>{token.content}</Fragment>;
+      })}
+    </>
+  );
+}
+
+export function RichText({ children }: { children: string }) {
+  const lines = children.split("\n");
+  return (
+    <>
+      {lines.map((line, lineIndex) => {
+        const isIndented = line.startsWith("\t");
+        const content = isIndented ? line.slice(1) : line;
+        if (isIndented)
+          return (
+            <ul key={lineIndex} className="mt-0.5 pl-4">
+              <li className="ml-4 list-disc">
+                <RichTokens line={content} />
+              </li>
+            </ul>
+          );
+        return (
+          <Fragment key={lineIndex}>
+            {lineIndex > 0 && <br />}
+            <RichTokens line={content} />
+          </Fragment>
+        );
       })}
     </>
   );
