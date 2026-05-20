@@ -344,15 +344,6 @@
         "I fix what bothers me — and [B]document it so others don't have to rediscover it[/B]. I don't just solve things privately; I write it down and connect the dots."
       ]
     },
-    "skills": {
-      "title": "Skills",
-      "items": [
-        "I've designed and built SSR and server component-based services with [B]Next.js App Router[/B]. I use TypeScript as a design tool — eliminating impossible states at the type level with [B]Discriminated Unions[/B], sharing server and client schemas with [B]Zod[/B] to reduce runtime errors. I manage server state with [B]Tanstack Query[/B] and handle SEO infrastructure directly.",
-        "I write [B]Playwright E2E[/B] tests and design CI environments from the ground up. I've built parallel test execution using [B]Dynamic metric and Sharding[/B] to cut test times, and designed domain-separated API mocking environments with [B]MSW[/B]. Improving the lint and build pipeline for developer productivity is something I actively take on.",
-        "I've optimized performance across bundle, image, and runtime layers — [B]CRA-to-Vite migration[/B], [B]Docker multi-stage builds[/B], [B]Web Worker[/B] and react-window virtualization, dynamic import. Each improvement is measurable. I've also handled security work directly, including [B]CSP policy compliance[/B] — which required building a custom editor module to stay within policy.",
-        "When the problem calls for it, I go beyond web frontend. I've built a [B]Turborepo[/B]-based monorepo admin system and shipped a macOS widget via [B]Homebrew[/B] using [B]Electron[/B]. Working across these layers gives me a broader range of problems I can find and solve, and lets me make decisions that aren't constrained by a single technology."
-      ]
-    },
     "workExperience": {
       "title": "Work Experience",
       "items": {
@@ -391,7 +382,7 @@
                 "text": "Replaced [B]ESLint + Prettier[/B] lint pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
               },
               {
-                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Debugged Next.js group route sourcemap upload errors, configured CI/CD pipeline, and discovered missing handleError during source analysis, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]"
+                "text": "Led [B]Datadog → OpenReplay[/B] cost-saving migration. Configured CI/CD pipeline including sourcemap upload, and discovered an internal bug in OpenReplay's own source code during production, contributing via [L:https://github.com/openreplay/openreplay/issues/4476]open source PR[/L]"
               }
             ]
           },
