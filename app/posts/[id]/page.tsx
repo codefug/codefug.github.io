@@ -51,7 +51,7 @@ export default async function Page({
   });
 
   return (
-    <section>
+    <section className="mx-auto w-full max-w-350 px-4">
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
       <PostHeaderClient frontMatters={frontMatters} />

@@ -23,9 +23,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       )}
     >
       <Header />
-      <div className="mx-auto w-full max-w-[1400px] flex-1 px-4">
-        {children}
-      </div>
+      <div className="flex-1">{children}</div>
       <ScrollUpButton />
       <Footer />
     </main>
