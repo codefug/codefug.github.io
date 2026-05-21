@@ -13,5 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   const totalFrontMatterList = getFrontMatterList();
 
-  return <PostSearchGallery totalFrontMatterList={totalFrontMatterList} />;
+  return (
+    <div className="mx-auto w-full max-w-350 px-4">
+      <PostSearchGallery totalFrontMatterList={totalFrontMatterList} />
+    </div>
+  );
 }

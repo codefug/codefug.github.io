@@ -33,28 +33,30 @@ export default async function Home() {
         )}
       />
       {showBirthdayBanner && <BirthdayBanner />}
-      <section className="-mx-4 my-10 lg:mt-0">
+      <section className="my-10 lg:mt-0">
         <HeroSection
           postCount={frontMatterListByLocale[defaultLocale].length}
         />
       </section>
-      <section className="mb-2">
-        <BlockHeader
-          title={<HomeSectionTitle translationKey="recentPosts" />}
-        />
-      </section>
-      <div className="mb-14">
-        <PostSwiper
-          cardNumber={10}
-          frontMatterListByLocale={frontMatterListByLocale}
-        />
-      </div>
-      <div>
-        <BlockHeader title={<HomeSectionTitle translationKey="allPosts" />}>
-          <PostCategoryGallery
+      <div className="mx-auto w-full max-w-350 px-4">
+        <section className="mb-2">
+          <BlockHeader
+            title={<HomeSectionTitle translationKey="recentPosts" />}
+          />
+        </section>
+        <div className="mb-14">
+          <PostSwiper
+            cardNumber={10}
             frontMatterListByLocale={frontMatterListByLocale}
           />
-        </BlockHeader>
+        </div>
+        <div>
+          <BlockHeader title={<HomeSectionTitle translationKey="allPosts" />}>
+            <PostCategoryGallery
+              frontMatterListByLocale={frontMatterListByLocale}
+            />
+          </BlockHeader>
+        </div>
       </div>
     </div>
   );
