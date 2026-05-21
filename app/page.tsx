@@ -33,7 +33,7 @@ export default async function Home() {
         )}
       />
       {showBirthdayBanner && <BirthdayBanner />}
-      <section className="my-10 lg:mt-0">
+      <section className="-mx-4 my-10 lg:mt-0">
         <HeroSection
           postCount={frontMatterListByLocale[defaultLocale].length}
         />
