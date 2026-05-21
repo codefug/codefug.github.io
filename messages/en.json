@@ -398,7 +398,7 @@
                 "text": "Child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Wrote 485 lines of unit tests to validate the logic"
               },
               {
-                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tdug into the root cause, [B]documented the sequential execution constraint[/B], shared with the team ([L:/posts/2026-01-29]blog[/L]), [B]proposed and led tRPC migration[/B]"
+                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tdug into the root cause, [B]documented the sequential execution constraint[/B], shared with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L]), [B]proposed and led tRPC migration[/B]"
               }
             ]
           },
@@ -543,7 +543,7 @@
       "items": [
         {
           "title": "Claude Pet",
-          "url": "/posts/2026-05-10",
+          "url": "https://codefug.github.io/posts/2026-05-10",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "macOS widget showing real-time status of parallel Claude Code sessions (distributed via Homebrew)",
@@ -560,19 +560,19 @@
       "posts": [
         {
           "title": "Why Use Route Handlers When Server Actions Exist?",
-          "url": "/posts/2026-01-29"
+          "url": "https://codefug.github.io/posts/2026-01-29"
         },
         {
           "title": "Why Use useCallback and useMemo?",
-          "url": "/posts/2026-01-18"
+          "url": "https://codefug.github.io/posts/2026-01-18"
         },
         {
           "title": "The React Ecosystem Is Bigger Than You Think — Electron",
-          "url": "/posts/2026-05-10"
+          "url": "https://codefug.github.io/posts/2026-05-10"
         },
         {
           "title": "Toss slash analysis, custom overlay hook with zustand",
-          "url": "/posts/2024-09-14-1"
+          "url": "https://codefug.github.io/posts/2024-09-14-1"
         }
       ]
     },
