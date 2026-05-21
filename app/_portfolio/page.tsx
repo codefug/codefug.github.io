@@ -45,7 +45,7 @@ export default function Page() {
       <SidebarOff />
       <StructuredData jsonLd={createProfilePageStructuredData(defaultLocale)} />
       <FloatingShapesBackground />
-      <div className="relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-350 px-4">
         <AboutHeading />
         <GrowthJourney />
         <WorkExperience />
