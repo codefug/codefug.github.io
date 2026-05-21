@@ -398,7 +398,7 @@
                 "text": "자식 컴포넌트들이 각자 [B]useEffect[/B]로 상태를 변경하던 구조, 정책 누적으로 분기 난립\n\tProvider에서 모든 계산을 담당하고 [B]Discriminated Union[/B]으로 상태를 전달, 자식은 렌더링만 담당하도록 분리. 단위 테스트 485줄 작성으로 안정성 확보"
               },
               {
-                "text": "Server Action 기반 아키텍처로 페이지 로딩 저하·빌드 오류 반복 발생\n\t직접 분석해 [B]순차 호출 한계를 문서화[/B] 후 팀 공유 ([L:/posts/2026-01-29]블로그[/L]), [B]tRPC 마이그레이션 제안 및 팀 도입 주도[/B]"
+                "text": "Server Action 기반 아키텍처로 페이지 로딩 저하·빌드 오류 반복 발생\n\t직접 분석해 [B]순차 호출 한계를 문서화[/B] 후 팀 공유 ([L:https://codefug.github.io/posts/2026-01-29]블로그[/L]), [B]tRPC 마이그레이션 제안 및 팀 도입 주도[/B]"
               }
             ]
           },
@@ -543,7 +543,7 @@
       "items": [
         {
           "title": "Claude Pet",
-          "url": "/posts/2026-05-10",
+          "url": "https://codefug.github.io/posts/2026-05-10",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "병렬 Claude Code 세션의 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
@@ -560,19 +560,23 @@
       "posts": [
         {
           "title": "Server Action이 있는데 Route Handler는 왜 쓸까?",
-          "url": "/posts/2026-01-29"
+          "url": "https://codefug.github.io/posts/2026-01-29"
         },
         {
           "title": "useCallback, useMemo는 왜 쓸까?",
-          "url": "/posts/2026-01-18"
+          "url": "https://codefug.github.io/posts/2026-01-18"
         },
         {
           "title": "React 생태계는 생각보다 넓다 — Electron",
-          "url": "/posts/2026-05-10"
+          "url": "https://codefug.github.io/posts/2026-05-10"
         },
         {
           "title": "toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현",
-          "url": "/posts/2024-09-14-1"
+          "url": "https://codefug.github.io/posts/2024-09-14-1"
+        },
+        {
+          "title": "자바스크립트에서 비동기 통신은 뭘까",
+          "url": "https://codefug.github.io/posts/2024-11-10/"
         }
       ]
     },
