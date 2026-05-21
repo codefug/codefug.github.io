@@ -1,7 +1,3 @@
-"use client";
-
-import { useMemo } from "react";
-import { useSidebar } from "@/components/ui/sidebar";
 import { HeroIdentity } from "./hero-identity";
 import { HeroTerminal } from "./hero-terminal";
 
@@ -9,32 +5,9 @@ interface HeroSectionProps {
   postCount: number;
 }
 
-function useFullWidthStyle() {
-  const { state, isMobile } = useSidebar();
-  const sidebarOpen = state === "expanded" && !isMobile;
-  return useMemo(
-    () =>
-      sidebarOpen
-        ? {
-            width: "calc(100vw - var(--sidebar-width))",
-            marginLeft: "calc(50% - 50vw + var(--sidebar-width) / 2)",
-          }
-        : {
-            width: "100vw",
-            marginLeft: "calc(50% - 50vw)",
-          },
-    [sidebarOpen],
-  );
-}
-
 export function HeroSection({ postCount }: HeroSectionProps) {
-  const fullWidthStyle = useFullWidthStyle();
-
   return (
-    <section
-      className="relative min-h-[85vh] overflow-hidden transition-[width,margin] duration-200 ease-linear"
-      style={fullWidthStyle}
-    >
+    <section className="relative min-h-[85vh] overflow-hidden transition-[width,margin] duration-200 ease-linear">
       <HeroBackground />
       <div className="relative z-10 flex min-h-[85vh] items-center px-4">
         <div className="mx-auto grid w-full max-w-[1368px] grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">

@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
-import { join } from "path";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 const MARKDOWN_DIR = join(process.cwd(), "markdown");
 const LIB_DIR = join(process.cwd(), "lib");
