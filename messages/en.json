@@ -351,7 +351,7 @@
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "Fintech startup providing early payment (선정산) services to online marketplace sellers. Responsible for frontend development of the customer-facing service and internal admin system, alongside developer environment improvements."
+          "summary": "Fintech startup providing early payment (선정산) services to online marketplace sellers. Responsible for frontend development of the customer-facing service and internal admin system, alongside developer environment improvements; [B]proposed and led the team's tRPC migration[/B] after documenting Server Action limitations."
         },
         "pwc": {
           "company": "Samil PwC AC",
