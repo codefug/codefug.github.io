@@ -341,7 +341,6 @@
       "paragraphs": [
         "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping, in the middle of the night. When something is unclear, I design an experiment or dig into the source directly.",
         "I don't sit on what I find. I believe [B]documentation and sharing is the most effective form of communication[/B]. I've written up analyses that changed my team's technical direction, and filed open source issues from findings along the way. A personal discovery becoming a team-level change is the kind of impact I find most rewarding.",
-        "I fix what bothers me — and [B]document it so others don't have to rediscover it[/B]. I don't just solve things privately; I write it down and connect the dots.",
         "When opinions clash, [B]I start by assuming I might be wrong[/B]. If we're aiming at the same goal, the other person's argument always has a reason behind it. I analyze, look at it from their perspective, and then talk.",
         "I'm always [B]conscious of the tradeoff between time and quality[/B]. I don't chase perfect code — I chase the right code for where the product is."
       ]
