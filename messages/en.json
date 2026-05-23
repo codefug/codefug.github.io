@@ -591,17 +591,7 @@
       "title": "Activities",
       "studyGroups": {
         "label": "Study Group Leadership",
-        "note": "Founded and led 8 study groups — curriculum design and schedule coordination"
-      },
-      "hackathons": {
-        "items": [
-          {
-            "event": "Teo's Sprint",
-            "project": "Reindeer Letter",
-            "description": "A service for writing and scheduling voice & text letters to yourself or others at year-end",
-            "github": "https://github.com/codefug/reindeer-letter-fe"
-          }
-        ]
+        "note": "Founded and led [B]8 study groups[/B] — Frontend Performance Optimization, AWS, Elegant TypeScript, React Design Patterns, Modern React Deep Dive, Core JavaScript, CS Study, Coding Test — running curriculum design and scheduling"
       }
     },
     "education": {
