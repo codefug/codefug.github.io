@@ -1,8 +1,4 @@
-"use client";
-
-import { motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { cn } from "@/lib/utils";
 
 interface FadeInSectionProps {
   children: React.ReactNode;
@@ -11,47 +7,25 @@ interface FadeInSectionProps {
   className?: string;
 }
 
-// Use the `direct` prop to determine the direction of the animation
-const initStyleBasedOnDirection = {
-  up: { y: 50 },
-  down: { y: -50 },
-  left: { x: 50 },
-  right: { x: -50 },
-};
+const directionClass = {
+  up: "fade-in-up",
+  down: "fade-in-down",
+  left: "fade-in-left",
+  right: "fade-in-right",
+} as const;
 
 export const FadeInSection = ({
   children,
   delay = 0,
-  direct,
+  direct = "up",
   className,
 }: FadeInSectionProps) => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
-  const [forceVisible, setForceVisible] = useState(false);
-
-  // IntersectionObserver가 어떤 이유로든 트리거되지 않은 채로 멈춰버린 경우
-  // (뒤로가기 후 재마운트 누락, 브라우저 캐시 복원 등) 짧은 fallback 타이머로
-  // 콘텐츠가 영영 숨겨지지 않도록 보장
-  useEffect(() => {
-    const timer = window.setTimeout(() => setForceVisible(true), 600);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const animationDirection = useMemo(
-    () => initStyleBasedOnDirection[direct || "up"],
-    [direct],
-  );
-
-  const visible = inView || forceVisible;
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, ...animationDirection }}
-      animate={visible ? { opacity: 1, x: 0, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut", delay }}
-      className={className}
+    <div
+      className={cn(directionClass[direct], className)}
+      style={delay > 0 ? { animationDelay: `${delay}s` } : undefined}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
