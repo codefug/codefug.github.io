@@ -550,6 +550,18 @@
             "Running multiple sessions in parallel meant a stalled permission request could silently block a session\n\treplaced polling with [B]Claude Code hooks[/B]-based event-driven architecture for instant alerts",
             "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer"
           ]
+        },
+        {
+          "title": "Reindeer Letter",
+          "url": "https://github.com/codefug/reindeer-letter-fe",
+          "github": "https://github.com/codefug/reindeer-letter-fe",
+          "stack": ["Next.js", "TypeScript", "Tanstack Query", "MSW", "GTM/GA"],
+          "description": "Service for scheduling voice & text letters to yourself or others at year-end (Teo's Sprint hackathon)",
+          "details": [
+            "Initial bundle of 1.299MB was dragging mobile LCP\n\tapplied dynamic import + WebP conversion, reducing bundle [B]1.299MB → 0.899MB (30%)[/B]",
+            "Letter feed required infinite scroll with instant write-back\n\tcombined [B]useInfiniteQuery + Optimistic Updates + react-window virtualization[/B] for snappier perceived response",
+            "Voice-letter downloads needed progress indication\n\tbuilt chunked download progress UI on top of [B]ReadableStream[/B]"
+          ]
         }
       ]
     },
