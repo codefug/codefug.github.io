@@ -212,8 +212,8 @@
   /* 본문 기본 폰트·자간 압축 */
   html,
   body {
-    font-size: 10.5px;
-    line-height: 1.35;
+    font-size: 11.5px;
+    line-height: 1.4;
   }
 
   /* 섹션 내부에서 페이지 분리 방지 */
