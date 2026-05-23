@@ -16,6 +16,7 @@ import {
   createAlternateLinks,
   createProfilePageStructuredData,
 } from "@/components/seo/utils";
+import { FadeIn } from "@/components/ui/fade-in";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
@@ -40,9 +41,6 @@ function Divider({ className }: { className?: string }) {
   );
 }
 
-const fadeIn =
-  "animate-in fade-in slide-in-from-bottom-12 duration-700 ease-out fill-mode-both print:animate-none";
-
 export default function Page() {
   return (
     <>
@@ -59,41 +57,45 @@ export default function Page() {
 
         <WorkExperienceSection>
           <CompanySection companyKey="allra">
-            <ResumeProjectCard projectKey="allra" className={fadeIn} />
-            <ResumeProjectCard
-              projectKey="allraAdmin"
-              className={cn(fadeIn, "print:break-before-page print:pt-6")}
-            />
+            <FadeIn>
+              <ResumeProjectCard projectKey="allra" />
+            </FadeIn>
+            <FadeIn className="print:break-before-page print:pt-6">
+              <ResumeProjectCard projectKey="allraAdmin" />
+            </FadeIn>
           </CompanySection>
 
           <CompanySection companyKey="pwc" className="mt-8">
-            <ResumeProjectCard projectKey="digitalFinance" className={fadeIn} />
-            <ResumeProjectCard projectKey="documentAi" className={fadeIn} />
-            <ResumeProjectCard projectKey="samilDevKit" className={fadeIn} />
+            <FadeIn>
+              <ResumeProjectCard projectKey="digitalFinance" />
+            </FadeIn>
+            <FadeIn>
+              <ResumeProjectCard projectKey="documentAi" />
+            </FadeIn>
+            <FadeIn>
+              <ResumeProjectCard projectKey="samilDevKit" />
+            </FadeIn>
           </CompanySection>
         </WorkExperienceSection>
 
         <Divider className="print:hidden" />
 
-        <SideProjects
-          className={cn(fadeIn, "print:break-before-page print:pt-6")}
-        />
+        <FadeIn className="print:break-before-page print:pt-6">
+          <SideProjects />
+        </FadeIn>
 
         <Divider />
 
-        <Activities className={fadeIn} />
+        <FadeIn>
+          <Activities />
+        </FadeIn>
 
         <Divider />
 
-        <div
-          className={cn(
-            fadeIn,
-            "grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-2",
-          )}
-        >
+        <FadeIn className="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-2">
           <KnowledgeSharing />
           <ResumeEducation />
-        </div>
+        </FadeIn>
       </div>
     </>
   );
