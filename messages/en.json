@@ -480,7 +480,7 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "Internal design system development",
+        "description": "Component and token-based design system used across PwC products, published via Storybook",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [
           {
@@ -504,7 +504,7 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "Internal admin system development for e-commerce seller management, built on Turborepo monorepo",
+        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library of 67+ components",
         "stack": [
           "Next.js",
           "TypeScript",
