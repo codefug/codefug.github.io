@@ -198,7 +198,7 @@
   /* 페이지 여백 & A4 크기 */
   @page {
     size: A4;
-    margin: 1.6cm 2.3cm;
+    margin: 2.2cm 2.3cm;
   }
 
   /* Framer Motion 등 JS 애니메이션 고정 */
@@ -212,8 +212,8 @@
   /* 본문 기본 폰트·자간 압축 */
   html,
   body {
-    font-size: 13.5px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.6;
   }
 
   /* 섹션 내부에서 페이지 분리 방지 */
