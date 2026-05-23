@@ -550,6 +550,18 @@
             "다중 세션 운영 시 권한 요청으로 세션이 멈춰도 알 수 없는 문제\n\t폴링 대신 [B]Claude Code hooks[/B] 기반 이벤트 드리븐으로 즉시 알림 실현",
             "hook CLI(esbuild 단독 빌드) → HTTP 서버 → IPC 파이프라인으로 외부 이벤트를 Renderer에 전달"
           ]
+        },
+        {
+          "title": "순록의 편지",
+          "url": "https://github.com/codefug/reindeer-letter-fe",
+          "github": "https://github.com/codefug/reindeer-letter-fe",
+          "stack": ["Next.js", "TypeScript", "Tanstack Query", "MSW", "GTM/GA"],
+          "description": "연말에 본인과 타인에게 음성·텍스트 예약 편지를 보내는 서비스 (테오의 스프린트 해커톤)",
+          "details": [
+            "초기 번들 1.299MB로 모바일 LCP 저하\n\tdynamic import + WebP 변환으로 [B]1.299MB → 0.899MB (30% 감소)[/B]",
+            "편지 목록의 무한 스크롤·즉시 반영 요구사항\n\t[B]useInfiniteQuery + Optimistic Update + react-window 가상화[/B]로 체감 응답 속도 개선",
+            "음성 편지 다운로드 중 진행률 표시 필요\n\t[B]ReadableStream[/B] 기반 청크 처리로 다운로드 progress UI 구현"
+          ]
         }
       ]
     },
