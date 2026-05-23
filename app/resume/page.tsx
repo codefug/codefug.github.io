@@ -48,7 +48,7 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-10 print:pt-8 print:pb-8">
+      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-10 print:pt-6 print:pb-8">
         <ResumeHeader />
         <Divider />
 
@@ -63,7 +63,7 @@ export default function Page() {
             <FadeInSection delay={0}>
               <ResumeProjectCard
                 projectKey="allraAdmin"
-                className="print:break-before-page print:pt-8"
+                className="print:break-before-page print:pt-6"
               />
             </FadeInSection>
           </CompanySection>
@@ -83,7 +83,7 @@ export default function Page() {
 
         <Divider className="print:hidden" />
 
-        <FadeInSection delay={0} className="print:break-before-page print:pt-8">
+        <FadeInSection delay={0} className="print:break-before-page print:pt-6">
           <SideProjects />
         </FadeInSection>
 
