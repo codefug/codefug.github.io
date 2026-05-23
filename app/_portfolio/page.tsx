@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import { getTranslations } from "next-intl/server";
 import GrowthJourney from "@/components/growth-journey";
 import AboutHeading from "@/components/portfolio/about-heading";
-import { FadeInSection } from "@/components/portfolio/fadeInSection";
 import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
 import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import WorkExperience from "@/components/portfolio/work-experience";
@@ -49,24 +48,24 @@ export default function Page() {
         <AboutHeading />
         <GrowthJourney />
         <WorkExperience />
-        <FadeInSection delay={0} className="mb-8">
+        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
           <Skills />
-        </FadeInSection>
-        <FadeInSection delay={0} className="mb-8">
+        </div>
+        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
           <Projects />
-        </FadeInSection>
-        <FadeInSection delay={0} className="mb-0">
+        </div>
+        <div className="fade-in slide-in-from-bottom-12 animate-in fill-mode-both duration-700 ease-out">
           <SideProjects />
-        </FadeInSection>
-        <FadeInSection delay={0} className="mb-0">
+        </div>
+        <div className="fade-in slide-in-from-bottom-12 animate-in fill-mode-both duration-700 ease-out">
           <Education />
-        </FadeInSection>
-        <FadeInSection delay={0} className="mb-2">
+        </div>
+        <div className="fade-in slide-in-from-bottom-12 mb-2 animate-in fill-mode-both duration-700 ease-out">
           <StudyGroup />
-        </FadeInSection>
-        <FadeInSection delay={0} className="mb-8">
+        </div>
+        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
           <Contact />
-        </FadeInSection>
+        </div>
       </div>
     </>
   );
