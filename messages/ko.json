@@ -560,7 +560,7 @@
           "details": [
             "초기 번들 1.299MB로 모바일 LCP 저하\n\tdynamic import + WebP 변환으로 [B]1.299MB → 0.899MB (30% 감소)[/B]",
             "편지 목록의 무한 스크롤·즉시 반영 요구사항\n\t[B]useInfiniteQuery + Optimistic Update + react-window 가상화[/B]로 체감 응답 속도 개선",
-            "음성 편지 다운로드 중 진행률 표시 필요\n\t[B]ReadableStream[/B] 기반 청크 처리로 다운로드 progress UI 구현"
+            "iOS Safari/카카오톡 인앱 브라우저에서 wav 음성 미재생 + 외부 링크 제약 발생\n\t[B]audio/mp4로 포맷 변환[/B] + 인앱 브라우저 감지 후 외부 크롬으로 강제 이동시키는 우회 로직으로 해결"
           ]
         }
       ]
