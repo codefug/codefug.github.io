@@ -48,7 +48,7 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-10 print:pt-6 print:pb-8">
+      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-10 print:pt-12 print:pb-8">
         <ResumeHeader />
         <Divider />
 
