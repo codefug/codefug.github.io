@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface FadeInSectionProps {
@@ -26,17 +26,28 @@ export const FadeInSection = ({
   className,
 }: FadeInSectionProps) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [restoredFromBfcache, setRestoredFromBfcache] = useState(false);
+
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) setRestoredFromBfcache(true);
+    };
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
   const animationDirection = useMemo(
     () => initStyleBasedOnDirection[direct || "up"],
     [direct],
   );
 
+  const visible = inView || restoredFromBfcache;
+
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, ...animationDirection }}
-      animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
+      animate={visible ? { opacity: 1, x: 0, y: 0 } : {}}
       transition={{ duration: 0.8, ease: "easeOut", delay }}
       className={className}
     >
