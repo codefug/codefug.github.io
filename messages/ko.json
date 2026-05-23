@@ -504,7 +504,7 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "4개 어드민 앱(allra·cargo·ctn·bnpl)을 통합한 Turborepo 모노레포, 67+ 공용 컴포넌트 라이브러리 운영",
+        "description": "4개 어드민 앱(allra·cargo·ctn·bnpl)을 통합한 Turborepo 모노레포, 공용 컴포넌트 라이브러리 운영",
         "stack": [
           "Next.js",
           "TypeScript",

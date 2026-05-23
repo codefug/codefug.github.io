@@ -504,7 +504,7 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library of 67+ components",
+        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library",
         "stack": [
           "Next.js",
           "TypeScript",
