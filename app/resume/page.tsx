@@ -61,14 +61,14 @@ export default function Page() {
               <ResumeProjectCard projectKey="allra" />
             </FadeInSection>
             <FadeInSection delay={0}>
-              <ResumeProjectCard projectKey="allraAdmin" />
+              <ResumeProjectCard
+                projectKey="allraAdmin"
+                className="print:break-before-page"
+              />
             </FadeInSection>
           </CompanySection>
 
-          <CompanySection
-            companyKey="pwc"
-            className="mt-8 print:break-before-page"
-          >
+          <CompanySection companyKey="pwc" className="mt-8">
             <FadeInSection delay={0}>
               <ResumeProjectCard projectKey="digitalFinance" />
             </FadeInSection>
