@@ -23,8 +23,8 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
 
 function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
-    <li className="flex items-center gap-1.5">
-      <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
+    <li className="flex items-center gap-1.5 print:gap-2">
+      <Icon className="h-3.5 w-3.5 shrink-0 text-primary print:h-4 print:w-4" />
       <span className="shrink-0 font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
         {label}
       </span>
@@ -76,22 +76,22 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-4">
+    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-2 print:gap-8 print:pb-6">
       <img
         src="/images/profile/image.jpg"
         alt="이승현 프로필"
         loading="eager"
         fetchPriority="high"
-        className="size-32 shrink-0 overflow-hidden rounded object-cover object-top"
+        className="size-32 shrink-0 overflow-hidden rounded object-cover object-top print:size-40"
       />
       <div className="min-w-0 flex-1">
-        <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-3xl text-gray-900 dark:text-white print:text-2xl">
+        <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-3xl text-gray-900 dark:text-white print:gap-3 print:text-4xl">
           <span>{t("name")}</span>
-          <span className="font-medium text-lg text-primary print:text-lg">
+          <span className="font-medium text-lg text-primary print:text-2xl">
             {t("role")}
           </span>
         </h1>
-        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0.5 text-sm sm:grid-cols-2 print:mt-2 print:grid-cols-2 print:text-xs">
+        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0.5 text-sm sm:grid-cols-2 print:mt-4 print:grid-cols-2 print:gap-x-8 print:gap-y-1.5 print:text-sm">
           {contacts.map((contact) => (
             <ContactListItem key={contact.label} {...contact} />
           ))}
