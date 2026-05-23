@@ -574,20 +574,12 @@
           "url": "https://codefug.github.io/posts/2026-01-29"
         },
         {
-          "title": "useCallback, useMemo는 왜 쓸까?",
-          "url": "https://codefug.github.io/posts/2026-01-18"
-        },
-        {
           "title": "React 생태계는 생각보다 넓다 — Electron",
           "url": "https://codefug.github.io/posts/2026-05-10"
         },
         {
           "title": "toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현",
           "url": "https://codefug.github.io/posts/2024-09-14-1"
-        },
-        {
-          "title": "자바스크립트에서 비동기 통신은 뭘까",
-          "url": "https://codefug.github.io/posts/2024-11-10/"
         }
       ]
     },
