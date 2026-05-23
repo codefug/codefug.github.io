@@ -26,14 +26,14 @@ export const FadeInSection = ({
   className,
 }: FadeInSectionProps) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
-  const [restoredFromBfcache, setRestoredFromBfcache] = useState(false);
+  const [forceVisible, setForceVisible] = useState(false);
 
+  // IntersectionObserver가 어떤 이유로든 트리거되지 않은 채로 멈춰버린 경우
+  // (뒤로가기 후 재마운트 누락, 브라우저 캐시 복원 등) 짧은 fallback 타이머로
+  // 콘텐츠가 영영 숨겨지지 않도록 보장
   useEffect(() => {
-    const handlePageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) setRestoredFromBfcache(true);
-    };
-    window.addEventListener("pageshow", handlePageShow);
-    return () => window.removeEventListener("pageshow", handlePageShow);
+    const timer = window.setTimeout(() => setForceVisible(true), 600);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const animationDirection = useMemo(
@@ -41,7 +41,7 @@ export const FadeInSection = ({
     [direct],
   );
 
-  const visible = inView || restoredFromBfcache;
+  const visible = inView || forceVisible;
 
   return (
     <motion.div
