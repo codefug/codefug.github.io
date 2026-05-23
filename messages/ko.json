@@ -595,17 +595,7 @@
       "title": "Activities",
       "studyGroups": {
         "label": "스터디 그룹 운영",
-        "note": "8개 스터디를 직접 개설, 커리큘럼 설계 및 일정 조율 담당"
-      },
-      "hackathons": {
-        "items": [
-          {
-            "event": "테오의 스프린트",
-            "project": "순록의 편지",
-            "description": "연말에 본인과 타인에게 음성 및 글 형태로 예약 편지를 작성·전달할 수 있는 서비스",
-            "github": "https://github.com/codefug/reindeer-letter-fe"
-          }
-        ]
+        "note": "프론트엔드 성능 최적화, AWS, TypeScript 우아하게 쓰기, React 디자인 패턴, 모던 React 딥다이브, 코어 자바스크립트, CS, 코딩테스트 등 [B]8개 스터디 직접 개설[/B] 및 커리큘럼·일정 운영"
       }
     },
     "education": {
