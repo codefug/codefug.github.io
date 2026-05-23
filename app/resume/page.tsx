@@ -63,7 +63,7 @@ export default function Page() {
             <FadeInSection delay={0}>
               <ResumeProjectCard
                 projectKey="allraAdmin"
-                className="print:break-before-page"
+                className="print:break-before-page print:pt-8"
               />
             </FadeInSection>
           </CompanySection>
@@ -83,7 +83,7 @@ export default function Page() {
 
         <Divider className="print:hidden" />
 
-        <FadeInSection delay={0} className="print:break-before-page">
+        <FadeInSection delay={0} className="print:break-before-page print:pt-8">
           <SideProjects />
         </FadeInSection>
 
