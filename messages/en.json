@@ -560,7 +560,7 @@
           "details": [
             "Initial bundle of 1.299MB was dragging mobile LCP\n\tapplied dynamic import + WebP conversion, reducing bundle [B]1.299MB → 0.899MB (30%)[/B]",
             "Letter feed required infinite scroll with instant write-back\n\tcombined [B]useInfiniteQuery + Optimistic Updates + react-window virtualization[/B] for snappier perceived response",
-            "Voice-letter downloads needed progress indication\n\tbuilt chunked download progress UI on top of [B]ReadableStream[/B]"
+            "iOS Safari couldn't play wav audio and KakaoTalk's in-app browser blocked external links\n\tconverted audio to [B]audio/mp4[/B] and added an in-app browser detector that force-redirects users to external Chrome"
           ]
         }
       ]
