@@ -394,7 +394,7 @@
                 "text": "Pre-settlement page has multiple login-style forms coexisting, Chrome autofill was polluting all of them\n\tTraced the root cause through Chrome CPP source, resolved with a [B]Honeypot decoy field to suppress autofill[/B]"
               },
               {
-                "text": "Child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Wrote 485 lines of unit tests to validate the logic"
+                "text": "In the pre-settlement flow, child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Backed the refactor with unit tests for stability"
               },
               {
                 "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tdug into the root cause, [B]documented the sequential execution constraint[/B], shared with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L]), [B]proposed and led tRPC migration[/B]"
