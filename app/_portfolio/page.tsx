@@ -11,6 +11,7 @@ import {
   createAlternateLinks,
   createProfilePageStructuredData,
 } from "@/components/seo/utils";
+import { FadeIn } from "@/components/ui/fade-in";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 
@@ -48,24 +49,24 @@ export default function Page() {
         <AboutHeading />
         <GrowthJourney />
         <WorkExperience />
-        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
+        <FadeIn className="mb-8">
           <Skills />
-        </div>
-        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
+        </FadeIn>
+        <FadeIn className="mb-8">
           <Projects />
-        </div>
-        <div className="fade-in slide-in-from-bottom-12 animate-in fill-mode-both duration-700 ease-out">
+        </FadeIn>
+        <FadeIn>
           <SideProjects />
-        </div>
-        <div className="fade-in slide-in-from-bottom-12 animate-in fill-mode-both duration-700 ease-out">
+        </FadeIn>
+        <FadeIn>
           <Education />
-        </div>
-        <div className="fade-in slide-in-from-bottom-12 mb-2 animate-in fill-mode-both duration-700 ease-out">
+        </FadeIn>
+        <FadeIn className="mb-2">
           <StudyGroup />
-        </div>
-        <div className="fade-in slide-in-from-bottom-12 mb-8 animate-in fill-mode-both duration-700 ease-out">
+        </FadeIn>
+        <FadeIn className="mb-8">
           <Contact />
-        </div>
+        </FadeIn>
       </div>
     </>
   );
