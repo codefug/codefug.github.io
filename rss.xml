@@ -8,6 +8,13 @@
     <atom:link href="https://codefug.github.io/rss.xml" rel="self" type="application/rss+xml"/>
     
     <item>
+      <title><![CDATA[useSearchParams는 왜 Suspense가 필요할까]]></title>
+      <link>https://codefug.github.io/posts/2026-05-27/</link>
+      <guid>https://codefug.github.io/posts/2026-05-27/</guid>
+      <description><![CDATA[전역 Suspense로 감싸면 경고는 사라지지만, 페이지의 정적 마크업까지 placeholder로 대체됩니다. Next.js 소스코드를 따라가 BailoutToCSRError가 CLIENT_RENDERED 경계로 어떻게 흐르는지 살펴봅니다.]]></description>
+      <pubDate>Wed, 27 May 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title><![CDATA[React 생태계는 생각보다 넓다 — Electron]]></title>
       <link>https://codefug.github.io/posts/2026-05-10/</link>
       <guid>https://codefug.github.io/posts/2026-05-10/</guid>
