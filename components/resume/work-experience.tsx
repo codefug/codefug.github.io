@@ -16,22 +16,15 @@ const COMPANY_LOGOS: Record<CompanyKey, { src: string; alt: string }> = {
 export function CompanySection({
   companyKey,
   className,
-  children,
 }: {
   companyKey: CompanyKey;
   className?: string;
-  children: React.ReactNode;
 }) {
   const t = useTranslations("resume.workExperience");
   const logo = COMPANY_LOGOS[companyKey];
 
   return (
-    <article
-      className={cn(
-        "mt-4 border-primary/30 border-l-2 pl-4 print:mt-2 print:border-l-0 print:pl-0",
-        className,
-      )}
-    >
+    <article>
       <header className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded">
@@ -54,7 +47,6 @@ export function CompanySection({
       <p className="mt-2 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:mt-1 print:text-xs print:leading-snug">
         <RichText>{t(`items.${companyKey}.summary`)}</RichText>
       </p>
-      {children}
     </article>
   );
 }
@@ -70,7 +62,9 @@ export default function WorkExperienceSection({
   return (
     <section className={cn("py-4 print:py-2", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      {children}
+      <div className="mt-4 space-y-4 print:mt-2 print:space-y-3">
+        {children}
+      </div>
     </section>
   );
 }
