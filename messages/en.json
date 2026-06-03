@@ -345,22 +345,32 @@
         "I'm always [B]conscious of the tradeoff between time and quality[/B]. I don't chase perfect code — I chase the right code for where the product is."
       ]
     },
+    "skills": {
+      "title": "Skills",
+      "items": [
+        "[B]Next.js[/B]\nI understand precisely why Next.js is used and how Server Components work. Beyond the server/client component boundary, I also understand where static generation gives way to CSR, so I choose rendering strategies deliberately with the tradeoffs in mind.",
+        "[B]React[/B]\nI favor designs that minimize side effects and know exactly when useEffect is genuinely needed. I model state through derivation and computation so it flows in one direction, keeping mutation responsibility in one place. I'm sensitive to unnecessary re-renders and flickering, with deep experience tracing such issues to their root cause.",
+        "[B]TypeScript[/B]\nI treat it not as a wrapper over JavaScript but as a tool for structuring code. I avoid any and aim for code whose runtime behavior is surfaced at compile time, favoring designs that make invalid states unrepresentable through tools like discriminated unions.",
+        "[B]JavaScript[/B]\nI have a precise grasp of the V8 engine's event loop and async behavior. I lean on the language's own strengths — closures, higher-order functions — to write predictable, maintainable code."
+      ]
+    },
     "workExperience": {
       "title": "Work Experience",
       "items": {
         "allra": {
           "company": "Allra Fintech",
           "duration": "2025.10 ~ present",
-          "summary": "Fintech startup providing early payment (선정산) services to online marketplace sellers. Responsible for frontend development of the customer-facing service and internal admin system, alongside developer environment improvements; [B]proposed and led the team's tRPC migration[/B] after documenting Server Action limitations."
+          "summary": "Fintech startup providing services to facilitate capital flow for small business online sellers. Responsible for frontend development of the core pre-settlement service and internal admin system. Worked across cross-functional teams to keep the service stable while tackling the challenging problems that come with a growing fintech product."
         },
         "pwc": {
           "company": "Samil PwC AC",
           "duration": "2025.01 ~ 2025.10",
-          "summary": "Tech subsidiary of Samil PwC (Big4), handling digital transformation of accounting and consulting workflows. Responsible for frontend development across web services and design system."
+          "summary": "Subsidiary of Samil PwC, responsible for frontend development and design system construction for web services used within and outside the firm. In the characteristically closed development environment of the accounting domain, worked to build an efficient and stable setup, and as an early engineering team, gained end-to-end experience taking services from initial development through to production."
         }
       }
     },
     "projects": {
+      "title": "Projects",
       "allra": {
         "title": "Allra",
         "subtitle": "Allra Fintech",
@@ -369,21 +379,31 @@
           "Next.js",
           "TypeScript",
           "Tailwind CSS",
+          "shadcn/ui",
           "Zustand",
-          "Tanstack Query"
+          "Tanstack Query",
+          "tRPC",
+          "Zod",
+          "MSW",
+          "Playwright",
+          "Vitest",
+          "Storybook"
         ],
         "categories": [
           {
             "title": "Developer Productivity",
             "details": [
               {
-                "text": "Adding mobile and other environments meant test count would scale linearly\n\tset up parallel execution with [B]Dynamic metric + Playwright Sharding[/B], reducing average test time by [B]67.7%[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
+                "text": "A complex multi-step contract flow (documents, external verification, e-signature) was hard to verify with manual QA\n\tdesigned Playwright E2E in [B]three layers — specs/flows/sequences[/B] for readability and maintainability, sharing fixtures with [B]Storybook[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
               },
               {
-                "text": "ESLint and Prettier each traverse the AST separately, costing ~2 min per CI lint run\n\treplaced the entire pipeline with [B]Biome[/B], reducing average CI lint time by [B]98%[/B]"
+                "text": "Test and environment growth made CI time scale linearly\n\toptimized with [B]Dynamic Shard (shards generated in proportion to test count) and a single shared build artifact[/B], [B]holding CI time flat even as tests tripled[/B]"
               },
               {
-                "text": "Datadog pricing change made the monitoring tool unsustainable\n\tled [B]gradual OpenReplay migration[/B] in collaboration with the DevOps team. While configuring the CI/CD sourcemap upload pipeline, discovered and reported a bug in OpenReplay's own codebase via [L:https://github.com/openreplay/openreplay/issues/4476]open source contribution[/L]"
+                "text": "E2E verified flows but couldn't catch visual breakage\n\textended [B]visual regression testing (VRT)[/B] on top of the E2E structure; after analyzing false positives from OS/rendering differences, [B]chose to run it as a local review tool rather than a CI gate[/B]"
+              },
+              {
+                "text": "Datadog pricing change made the monitoring tool unsustainable\n\tled [B]gradual OpenReplay migration[/B] with the DevOps team, building the CI/CD sourcemap upload pipeline myself, [B]cutting monitoring costs by ~₩5M/month[/B]"
               }
             ]
           },
@@ -397,7 +417,7 @@
                 "text": "In the pre-settlement flow, child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Backed the refactor with unit tests for stability"
               },
               {
-                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tdug into the root cause, [B]documented the sequential execution constraint[/B], shared with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L]), [B]proposed and led tRPC migration[/B]"
+                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tanalyzed the server-side call layer, [B]documented the sequential execution constraint[/B], shared with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L]), [B]designed a tRPC-based type-safe API layer and drove the migration across the whole team[/B]"
               }
             ]
           },
@@ -504,33 +524,26 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library",
+        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library, including ISMS certification compliance",
         "stack": [
           "Next.js",
           "TypeScript",
           "Tailwind CSS",
+          "shadcn/ui",
           "Turborepo",
+          "Tanstack Query",
+          "Zod",
           "MSW",
           "Playwright",
+          "Vitest",
           "Storybook"
         ],
         "categories": [
           {
-            "title": "ISMS Security Requirements",
-            "details": [
-              {
-                "text": "Applied [B]route guard in Next.js middleware[/B] to enforce the ISMS-required forced password change flow"
-              },
-              {
-                "text": "Implemented ISMS-required idle session timeout — [B]inactivity detection with countdown warning and cross-tab sync[/B]"
-              }
-            ]
-          },
-          {
             "title": "MSW-based API Mocking Environment",
             "details": [
               {
-                "text": "Finance admin errors hit real data directly\n\tproposed and led MSW adoption, designing [B]domain-separated handlers for 6+ domains[/B] (auth, user, contract, payment, withdrawal, site management)"
+                "text": "Finance admin errors hit real data directly\n\t[B]proposed and led MSW adoption[/B], building the full API mocking environment with domain-separated handlers"
               }
             ]
           }
@@ -549,18 +562,6 @@
           "details": [
             "Running multiple sessions in parallel meant a stalled permission request could silently block a session\n\treplaced polling with [B]Claude Code hooks[/B]-based event-driven architecture for instant alerts",
             "Designed hook CLI (esbuild standalone build) → HTTP server → IPC pipeline to deliver external events to the Renderer"
-          ]
-        },
-        {
-          "title": "Reindeer Letter",
-          "url": "https://github.com/codefug/reindeer-letter-fe",
-          "github": "https://github.com/codefug/reindeer-letter-fe",
-          "stack": ["Next.js", "TypeScript", "Tanstack Query", "MSW", "GTM/GA"],
-          "description": "Service for scheduling voice & text letters to yourself or others at year-end (Teo's Sprint hackathon)",
-          "details": [
-            "Initial bundle of 1.299MB was dragging mobile LCP\n\tapplied dynamic import + WebP conversion, reducing bundle [B]1.299MB → 0.899MB (30%)[/B]",
-            "Letter feed required infinite scroll with instant write-back\n\tcombined [B]useInfiniteQuery + Optimistic Updates + react-window virtualization[/B] for snappier perceived response",
-            "iOS Safari couldn't play wav audio and KakaoTalk's in-app browser blocked external links\n\tconverted audio to [B]audio/mp4[/B] and added an in-app browser detector that force-redirects users to external Chrome"
           ]
         }
       ]
@@ -582,8 +583,25 @@
           "url": "https://codefug.github.io/posts/2026-05-27"
         },
         {
+          "title": "What is asynchronous communication in JavaScript?",
+          "url": "https://codefug.github.io/posts/2024-11-10"
+        },
+        {
           "title": "Toss slash analysis, custom overlay hook with zustand",
           "url": "https://codefug.github.io/posts/2024-09-14-1"
+        }
+      ]
+    },
+    "openSource": {
+      "title": "Open Source",
+      "items": [
+        {
+          "title": "OpenReplay",
+          "url": "https://github.com/openreplay/openreplay/issues/4476"
+        },
+        {
+          "title": "Next.js",
+          "url": "https://github.com/vercel/next.js/issues/92601"
         }
       ]
     },

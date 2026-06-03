@@ -5,6 +5,7 @@ import AboutMe from "@/components/resume/about-me";
 import Activities from "@/components/resume/activities";
 import ResumeEducation from "@/components/resume/education";
 import KnowledgeSharing from "@/components/resume/knowledge-sharing";
+import OpenSource from "@/components/resume/open-source";
 import ResumeHeader from "@/components/resume/resume-header";
 import ResumeProjectCard from "@/components/resume/resume-project-card";
 import SideProjects from "@/components/resume/side-projects";
@@ -19,7 +20,6 @@ import {
 import { FadeIn } from "@/components/ui/fade-in";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
-import { cn } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("resume.meta");
@@ -30,17 +30,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-function Divider({ className }: { className?: string }) {
-  return (
-    <hr
-      className={cn(
-        "my-1 border-gray-200 dark:border-gray-700 print:my-2",
-        className,
-      )}
-    />
-  );
-}
-
 export default function Page() {
   return (
     <>
@@ -48,49 +37,51 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:px-8 print:pt-10 print:pb-6">
+      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:p-0">
         <ResumeHeader />
-        <Divider />
 
         <AboutMe />
-        <Divider />
 
         <WorkExperienceSection>
-          <CompanySection companyKey="allra">
-            <FadeIn>
-              <ResumeProjectCard projectKey="allra" />
-            </FadeIn>
-            <FadeIn className="print:break-before-page print:pt-4">
-              <ResumeProjectCard projectKey="allraAdmin" />
-            </FadeIn>
-          </CompanySection>
+          <div>
+            <CompanySection companyKey="allra" />
+            <div className="mt-2 space-y-2 print:mt-1">
+              <FadeIn>
+                <ResumeProjectCard projectKey="allra" />
+              </FadeIn>
+              <FadeIn>
+                <ResumeProjectCard projectKey="allraAdmin" />
+              </FadeIn>
+            </div>
+          </div>
 
-          <CompanySection companyKey="pwc" className="mt-8">
-            <FadeIn>
-              <ResumeProjectCard projectKey="digitalFinance" />
-            </FadeIn>
-            <FadeIn>
-              <ResumeProjectCard projectKey="documentAi" />
-            </FadeIn>
-            <FadeIn>
-              <ResumeProjectCard projectKey="samilDevKit" />
-            </FadeIn>
-          </CompanySection>
+          <div>
+            <CompanySection companyKey="pwc" />
+            <div className="mt-2 space-y-2 print:mt-1">
+              <FadeIn>
+                <ResumeProjectCard projectKey="digitalFinance" />
+              </FadeIn>
+              <FadeIn>
+                <ResumeProjectCard projectKey="documentAi" />
+              </FadeIn>
+              <FadeIn>
+                <ResumeProjectCard projectKey="samilDevKit" />
+              </FadeIn>
+            </div>
+          </div>
         </WorkExperienceSection>
 
-        <Divider className="print:hidden" />
-
-        <FadeIn className="print:break-before-page print:pt-4">
+        <FadeIn>
           <SideProjects />
         </FadeIn>
-
-        <Divider />
 
         <FadeIn>
           <Activities />
         </FadeIn>
 
-        <Divider />
+        <FadeIn>
+          <OpenSource />
+        </FadeIn>
 
         <FadeIn className="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-2">
           <KnowledgeSharing />

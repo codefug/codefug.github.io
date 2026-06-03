@@ -76,22 +76,22 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="mb-1 flex items-start justify-between gap-6 pb-5 print:mb-0 print:pb-4">
+    <header className="mb-1 flex flex-col items-center gap-4 pb-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6 print:mb-0 print:flex-row print:items-start print:justify-between print:gap-6 print:pb-4">
       <img
         src="/images/profile/image.jpg"
         alt="이승현 프로필"
         loading="eager"
         fetchPriority="high"
-        className="size-32 shrink-0 overflow-hidden rounded object-cover object-top"
+        className="size-28 shrink-0 overflow-hidden rounded object-cover object-top"
       />
-      <div className="min-w-0 flex-1">
-        <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-3xl text-gray-900 dark:text-white print:text-2xl">
+      <div className="flex min-w-0 flex-1 flex-col justify-between sm:h-28 print:h-28">
+        <h1 className="flex flex-wrap items-baseline justify-center gap-2 font-bold text-3xl text-gray-900 sm:justify-start dark:text-white print:text-2xl">
           <span>{t("name")}</span>
           <span className="font-medium text-lg text-primary print:text-lg">
             {t("role")}
           </span>
         </h1>
-        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0.5 text-sm sm:grid-cols-2 print:mt-2 print:grid-cols-2 print:text-xs">
+        <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-0.5 text-sm sm:grid-cols-2 print:mt-0 print:grid-cols-2 print:text-xs">
           {contacts.map((contact) => (
             <ContactListItem key={contact.label} {...contact} />
           ))}
