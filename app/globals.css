@@ -188,17 +188,18 @@
 }
 
 /* ── Print / PDF ─────────────────────────────────────────── */
+
+/* @page는 @media 밖 최상위에 있어야 브라우저가 인식함 */
+@page {
+  size: A4;
+  margin: 23px;
+}
+
 @media print {
   /* 배경색·투명도 강제 출력 */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-  }
-
-  /* 페이지 여백 & A4 크기 */
-  @page {
-    size: A4;
-    margin: 2.2cm 2.3cm;
   }
 
   /* Framer Motion 등 JS 애니메이션 고정 */
@@ -216,8 +217,7 @@
     line-height: 1.6;
   }
 
-  /* 섹션 내부에서 페이지 분리 방지 */
-  article,
+  /* 작은 단위(목록 항목)는 페이지 경계에서 쪼개지지 않도록 — 큰 카드(article)는 흐르도록 허용 */
   li {
     break-inside: avoid;
   }
