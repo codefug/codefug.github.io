@@ -65,7 +65,7 @@ export function useSearchParams(): ReadonlyURLSearchParams {
 }
 ```
 
-`SearchParamsContext` is a React Context that the router injects with the current URL's parsed query parameters. In the browser, `useSearchParams` is just synchronous code that reads from that context — there's no async behavior involved.
+`SearchParamsContext` is a React Context that the router injects with the current URL's parsed query parameters. In the browser, `useSearchParams` is just synchronous code that reads from that context.
 
 The interesting bit is the `useDynamicSearchParams` call above it. Let's see what that function does at prerender time.
 
@@ -343,11 +343,11 @@ If you wrap only the component that uses `useSearchParams` tightly in Suspense, 
 
 # Conclusion
 
-The reason `useSearchParams` demands a Suspense isn't because of async data — it's because the `BailoutToCSRError` thrown during prerender needs a boundary to be caught by. And that boundary is exactly the scope that gets deferred to CSR.
+The reason `useSearchParams` demands a Suspense isn't because of async data like in browser circumstance — it's because it throws `BailoutToCSRError` during prerender and needs a boundary to catch the error. And that boundary is exactly the scope that will be deferred to CSR.
 
 What's interesting here is that Suspense's original meaning is reused as-is. Suspense was originally a temporary boundary expressing "can't paint this yet, but the real content is coming soon." From prerender's point of view, `useSearchParams` is the same kind of situation: "can't paint this at build time, but the client will paint it soon." The "can't paint this yet" concept that data fetching used was simply repurposed to mark the scope of what gets deferred to CSR.
 
-To wrap up: when using `useSearchParams`, the location of the Suspense isn't just a formality. There must be a Suspense above the component, and that Suspense should wrap as narrowly as possible. Treat it as the act of explicitly choosing the CSR scope — that's how you preserve as much of the static-generation benefit as possible.
+To wrap up: when using `useSearchParams`, treat it as the act of explicitly choosing the CSR scope. That's how you preserve as much of the static-generation benefit as possible. The components that use `useSearchParams` must be wrapped in a Suspense, and that Suspense should be as narrow as possible.
 
 Thanks for reading.
 
