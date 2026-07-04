@@ -34,7 +34,7 @@ function RichTokens({ line }: { line: string }) {
       {tokenize(line).map((token, i) => {
         if (token.type === "bold")
           return (
-            <strong key={i} className="font-bold text-primary">
+            <strong key={i} className="font-bold text-gray-900 dark:text-white">
               {token.content}
             </strong>
           );
