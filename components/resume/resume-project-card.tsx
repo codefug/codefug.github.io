@@ -26,7 +26,7 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
         <ul className="mt-0.5 space-y-0.5 pl-4">
           {detail.subItems.map((s, j) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: static content
-            <li key={j} className="list-[circle]">
+            <li key={j} className="ml-4 list-disc">
               <RichText>{s}</RichText>
             </li>
           ))}
@@ -36,18 +36,24 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
   );
 }
 
+function DetailList({ details }: { details: DetailItem[] }) {
+  return (
+    <ul className="mt-0.5 space-y-0.5 text-gray-700 text-sm dark:text-gray-300 print:text-xs print:leading-snug">
+      {details.map((d, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static content
+        <ProjectCategoryDetail key={i} detail={d} />
+      ))}
+    </ul>
+  );
+}
+
 function ProjectCategory({ category }: { category: Category }) {
   return (
     <section className="border-primary/30 border-l-2 pl-3 print:pl-2 print:leading-snug">
       <h4 className="font-semibold text-gray-800 text-sm dark:text-gray-200 print:text-xs">
         <RichText>{category.title}</RichText>
       </h4>
-      <ul className="mt-0.5 space-y-0.5 text-gray-700 text-sm dark:text-gray-300 print:text-xs print:leading-snug">
-        {category.details.map((d, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static content
-          <ProjectCategoryDetail key={i} detail={d} />
-        ))}
-      </ul>
+      <DetailList details={category.details} />
     </section>
   );
 }

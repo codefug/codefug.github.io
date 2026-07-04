@@ -326,8 +326,6 @@
     "contact": {
       "email": "Email",
       "emailValue": "leeseounghyun9917@gmail.com",
-      "phone": "Phone",
-      "phoneValue": "010-9656-6779",
       "github": "GitHub",
       "githubValue": "https://github.com/codefug",
       "linkedin": "LinkedIn",
@@ -341,17 +339,7 @@
       "paragraphs": [
         "문제가 완전히 해소될 때까지 머릿속에서 [B]비동기적으로 해결책을 계산합니다[/B]. 퇴근 후에도, 자다가도 답을 찾습니다. 불명확한 부분이 있으면 직접 실험을 설계하거나 소스코드를 열어 확인합니다.",
         "발견한 것을 혼자 갖고 있지 않습니다. [B]문서화와 공유가 가장 효과적인 커뮤니케이션[/B]이라 생각합니다. 분석한 내용을 정리해 팀의 기술 방향을 바꾼 적도, 오픈소스에 기여한 적도 있습니다. 개인의 발견이 팀 전체의 변화로 이어질 때 가장 큰 보람을 느낍니다.",
-        "의견이 충돌할 때 [B]먼저 제가 틀릴 수 있다고 가정합니다[/B]. 같은 목적을 향하고 있다면 상대의 주장엔 반드시 근거가 있다고 생각하기 때문입니다. 분석하고, 상대 관점에서 다시 보고, 그 위에서 대화합니다.",
-        "[B]시간과 품질 사이의 트레이드오프를 항상 의식합니다[/B]. 무조건 좋은 코드가 아니라 서비스 상황에 맞는 좋은 코드를 고민합니다."
-      ]
-    },
-    "skills": {
-      "title": "Skills",
-      "items": [
-        "[B]Next.js[/B]\n왜 Next.js를 쓰는지, 서버 컴포넌트가 어떻게 동작하는지 정확히 이해합니다. 서버·클라이언트 컴포넌트의 경계는 물론, 정적 생성에서 CSR로 넘어가는 경계까지 이해해 트레이드오프를 고려한 렌더링 전략을 의도적으로 선택합니다.",
-        "[B]React[/B]\n사이드 이펙트를 최소화하는 설계를 지향하며, useEffect가 정말 필요한 지점을 정확히 구분합니다. 상태는 파생·계산으로 풀어 단방향으로 흐르게 설계하고 변경 책임을 한곳에 모읍니다. 불필요한 리렌더링과 깜빡임에 민감하게 반응하고, 그 원인을 끝까지 추적해 해결한 경험이 많습니다.",
-        "[B]TypeScript[/B]\nJavaScript를 감싸는 기술이 아니라 개발을 구조화하는 도구로 사용합니다. any를 지양하고 런타임 동작이 컴파일 타임에 최대한 드러나는 코드를 지향하며, Discriminated Union 등으로 잘못된 상태를 타입 차원에서 표현 불가능하게 만드는 설계를 선호합니다.",
-        "[B]JavaScript[/B]\nV8 엔진의 이벤트 루프와 비동기 동작을 정확히 이해합니다. 클로저·고차 함수 등 언어 본연의 특성을 살려 예측 가능하고 유지보수가 쉬운 코드를 작성합니다."
+        "[B]시간과 품질 사이의 트레이드오프를 항상 의식합니다[/B]. 기술적으로 좋은 코드가 무조건 좋은 코드가 아니라 서비스 상황에 맞는 코드가 좋은 코드라고 생각합니다."
       ]
     },
     "workExperience": {
@@ -374,7 +362,7 @@
       "allra": {
         "title": "Allra",
         "subtitle": "Allra Fintech",
-        "description": "이커머스 셀러들을 위한 선정산 금융 서비스 개발",
+        "description": "이커머스 셀러들을 위한 선정산 금융 서비스, nextjs 기반 서비스로 마이그레이션이 완료된 직후 합류하여 마이그레이션에서 누락되거나 잘못된 로직들을 수정하고 더 나은 운영 안정성을 갖추기 위한 개발을 진행하였습니다. ISMS 인증 대응, 모니터링 구조 개선 등등 실제 애플리케이션 운영에서 만날 수 있는 문제들을 주도적으로 해결하는 경험을 할 수 있었습니다.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -391,33 +379,41 @@
         ],
         "categories": [
           {
-            "title": "개발 생산성 개선",
+            "title": "테스트 자동화·CI",
             "details": [
               {
-                "text": "복잡한 다단계 계약 플로우(서류·외부 인증·전자 서명)를 수동 QA로 검증하기 어려운 구조\n\tPlaywright E2E를 [B]specs/flows/sequences 3계층[/B]으로 설계해 가독성·유지보수성 확보, fixture를 [B]Storybook과 공유[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]블로그[/L])"
+                "text": "테스트·실행 환경(모바일 등) 증가로 CI 시간이 선형 증가\n\t테스트 수에 따라 shard를 동적으로 분배하는 [B]Dynamic Shard CI 아키텍처를 설계[/B], 실패 시 분산된 shard 리포트를 단일 HTML 리포트로 병합 ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]블로그[/L])",
+                "subItems": [
+                  "[B]순수 CI 시간 약 30% 단축[/B], 테스트 3배 증가에도 동일 속도 유지"
+                ]
               },
               {
-                "text": "테스트·실행 환경 증가로 CI 시간이 선형 증가\n\t테스트 수에 비례해 shard를 동적 생성하는 [B]Dynamic Shard + 단일 빌드 artifact 공유[/B]로 최적화, [B]테스트 3배 증가에도 동일 CI 속도 유지[/B]"
-              },
-              {
-                "text": "플로우는 통과해도 화면이 깨지는 경우는 잡지 못하는 한계\n\tE2E 구조 위에 [B]VRT(시각적 회귀 테스트) 확장[/B], OS·렌더링 차이로 인한 거짓 양성을 분석해 [B]CI 게이트 대신 로컬 검토 도구로 운영[/B] 결정"
-              },
-              {
-                "text": "Datadog 과금 정책 변경으로 모니터링 툴 교체 불가피\n\t데브옵스팀과 협업해 [B]OpenReplay 점진적 도입[/B] 주도(CI/CD 소스맵 업로드 파이프라인 직접 구성), [B]월 약 500만원 모니터링 비용 절감[/B]"
+                "text": "새로운 버전이 추가될 때 발생하는 UI의 미세한 변화를 자동으로 감지하기 위해\n\tE2E 구조 위에 [B]VRT(시각적 회귀 테스트) 도입[/B]",
+                "subItems": [
+                  "OS·렌더링 환경 차이로 인한 불안정성을 분석해 [B]CI 게이트 대신 로컬 검토 도구로 운영[/B] 결정"
+                ]
               }
             ]
           },
           {
-            "title": "코드 개선",
+            "title": "상태 계산을 Provider 단일 구조로 통합",
             "details": [
               {
-                "text": "선정산 조회 페이지에 로그인 폼이 다수 공존하는 구조, 크롬 자동 채우기가 관련 없는 모든 폼을 오염시키는 문제\n\tChrome CPP 소스 직접 분석으로 원인 파악 후 [B]Honeypot 미끼 필드 방식으로 우회 해결[/B]"
-              },
+                "text": "선정산 신청 폼에서 자식 컴포넌트들이 각자 [B]useEffect[/B]로 수수료·한도·지원금을 계산하던 구조, 정책 누적으로 분기 난립\n\tProvider가 모든 계산을 담당하고 상태를 [B]6종 Discriminated Union[/B]으로 전달해 자식은 렌더링만 담당하도록 분리",
+                "subItems": [
+                  "계산 로직을 순수 함수로 추출하고 [B]80여 개 단위 테스트[/B]로 안정성 확보"
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Server Action 기반 아키텍처를 tRPC로 전면 마이그레이션",
+            "details": [
               {
-                "text": "선정산 로직에서 자식 컴포넌트들이 각자 [B]useEffect[/B]로 상태를 변경하던 구조, 정책 누적으로 분기 난립\n\tProvider에서 모든 계산을 담당하고 [B]Discriminated Union[/B]으로 상태를 전달, 자식은 렌더링만 담당하도록 분리. 단위 테스트 작성으로 안정성 확보"
-              },
-              {
-                "text": "Server Action 기반 아키텍처로 페이지 로딩 저하·빌드 오류 반복 발생\n\t서버사이드 호출 레이어를 분석해 [B]순차 호출 한계를 문서화[/B] 후 팀 공유 ([L:https://codefug.github.io/posts/2026-01-29]블로그[/L]), [B]tRPC 기반 타입세이프 API 레이어를 설계해 마이그레이션을 주도하고 팀 전체에 적용[/B]"
+                "text": "Server Action 기반 아키텍처의 순차 호출 한계와 [B]version skew[/B]로 페이지 로딩 저하·빌드 오류 반복 발생\n\t[B]tRPC 기반 타입세이프 API 레이어를 설계해 전체 도메인 마이그레이션을 주도[/B]",
+                "subItems": [
+                  "네트워크 호출 레이어를 분석해 [B]순차 호출 한계를 문서화[/B] 후 팀 공유 ([L:https://codefug.github.io/posts/2026-01-29]블로그[/L])"
+                ]
               }
             ]
           },
@@ -437,7 +433,7 @@
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "description": "서비스 통합 관리 포털 서비스 개발",
+        "description": "서비스 통합 관리 포털 서비스 개발, 아직 개발 중이던 기존 프로젝트의 문제점 해결을 위한 리팩토링, 구조 개선을 위한 서버 상태 관리 레이어 추가, 사내 보안 테스트 통과 후 프로덕션 배포까지 프론트엔드 개발 전체를 담당하였다.",
         "stack": [
           "React(Vite)",
           "TypeScript",
@@ -447,18 +443,30 @@
         ],
         "categories": [
           {
-            "title": "Vite 기반 빌드 시스템 전환",
+            "title": "CRA에서 Vite로 빌드 시스템 전환",
             "details": [
               {
-                "text": "CRA deprecated로 보안 업데이트 중단, 사내 보안 정책상 사용 불가 판정\n\t[B]CRA → Vite 마이그레이션[/B]으로 보안 리스크 해소, 번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B]"
+                "text": "CRA deprecated로 보안 업데이트 중단, 사내 보안 정책상 사용 불가 판정\n\t[B]CRA → Vite 마이그레이션[/B]으로 보안 리스크 해소",
+                "subItems": ["번들 크기 [B]1200kB → 500kB (58.3% 감소)[/B]"]
               }
             ]
           },
           {
-            "title": "CSP 정책 대응",
+            "title": "CSP 정책 대응 에디터 교체",
             "details": [
               {
                 "text": "사내 [B]CSP 정책[/B] 위반으로 기존 에디터 사용 불가\n\treact-quill-new 전환 및 이미지 리사이즈 [B]커스텀 모듈 직접 개발[/B]로 보안 이슈 해결"
+              }
+            ]
+          },
+          {
+            "title": "Zustand 단일 구조에 Tanstack Query 서버 상태 레이어 추가",
+            "details": [
+              {
+                "text": "Zustand 단일 스토어로 서버·클라이언트 상태를 함께 관리해 캐싱·동기화를 수동으로 처리, 중복 요청과 stale 데이터로 화면 정합성이 깨지는 문제 발생\n\t[B]Tanstack Query를 도입해 서버 상태를 분리[/B]하고 캐싱·재요청·동기화를 선언적으로 관리, Zustand는 순수 클라이언트 상태만 담당하도록 역할을 분리",
+                "subItems": [
+                  "중복 API 호출과 stale 데이터를 제거해 [B]운영 안정성 확보[/B]"
+                ]
               }
             ]
           }
@@ -467,7 +475,7 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "description": "AI 기반 보고서 분석 솔루션, 설계부터 배포까지 단독 개발",
+        "description": "AI 기반 보고서 분석 솔루션, 설계부터 배포까지 프론트엔드 개발 전체를 담당하였다.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -477,21 +485,29 @@
         ],
         "categories": [
           {
-            "title": "PDF Viewer 기능 개발",
+            "title": "PDF.js 기반 커스텀 Viewer 구현·가상화",
             "details": [
               {
-                "text": "서비스 메인 기능으로 여러 PDF를 자유롭고 세밀하게 제어해야 하는 기획 요구사항\n\tPDF.js 기반 커스텀 Viewer를 직접 구현하고 [B]Web Worker + react-window 가상화[/B]로 [B]초기 렌더링 시간 67% 개선[/B]"
+                "text": "서비스 메인 기능으로 여러 PDF를 자유롭고 세밀하게 제어해야 하는 기획 요구사항\n\tPDF.js 기반 커스텀 Viewer를 직접 구현하고 [B]Web Worker + react-window 가상화[/B] 적용",
+                "subItems": ["[B]초기 렌더링 5401ms → 1780ms (67% 단축)[/B]"]
               }
             ]
           },
           {
-            "title": "빌드·배포 최적화 및 성능 개선",
+            "title": "Docker 이미지 용량 최적화",
             "details": [
               {
-                "text": "고객사 온프레미스 설치 환경에서 2.22GB 이미지 배포가 병목\n\t[B]Standalone 모드 + 멀티스테이지 빌드[/B]로 [B]2.22GB → 195MB (91.36% 감소)[/B]"
-              },
+                "text": "고객사 온프레미스 설치 환경에서 2.22GB 이미지 배포가 병목\n\t[B]Standalone 모드 + 멀티스테이지 빌드[/B] 적용",
+                "subItems": ["[B]2.22GB → 195MB (91.36% 감소)[/B]"]
+              }
+            ]
+          },
+          {
+            "title": "dynamic import 코드 스플리팅 도입",
+            "details": [
               {
-                "text": "코드 스플리팅 부재로 초기 로딩 속도 저하\n\tdynamic import 도입으로 번들 [B]302kB → 143kB (73.5% 감소)[/B]"
+                "text": "코드 스플리팅 부재로 초기 로딩 속도 저하\n\tdynamic import 도입",
+                "subItems": ["번들 [B]302kB → 143kB (73.5% 감소)[/B]"]
               }
             ]
           }
@@ -500,22 +516,23 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "사내 PwC 제품 전반에서 사용되는 컴포넌트·토큰 기반 디자인 시스템 개발 (Storybook 배포)",
+        "description": "사내 PwC 제품 전반에서 사용되는 컴포넌트·토큰 기반 디자인 시스템 개발, 프론트엔드팀 전체와 협업하여 v1 배포를 성공적으로 이끌었다.",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [
           {
-            "title": "코드 일관성 개선",
+            "title": "clsx·cva 기반 타입세이프 스타일링 정착",
             "details": [
               {
-                "text": "초기 디자인 시스템이라 구조 기반이 중요\n\t[B]clsx, cva[/B]로 조건부 스타일과 컴포넌트 변형을 타입 안전하게 관리하는 패턴 정착"
+                "text": "초기 디자인 시스템에 견고한 구조적 기반이 필요\n\t[B]clsx·cva[/B]를 타입세이프 조건부 스타일링·컴포넌트 variant 패턴으로 팀에 정착"
               }
             ]
           },
           {
-            "title": "컴포넌트 구조 개선",
+            "title": "JS 상태 애니메이션을 CSS transform 기반으로 전환",
             "details": [
               {
-                "text": "애니메이션·전환 요소를 JS 상태 기반으로 구현 시 reflow 발생\n\t컴포넌트를 분석해 [B]CSS transform/transition만으로 처리 가능한 기능을 분류·분리[/B], reflow 없는 60fps 애니메이션 확보 후 팀 내 공유"
+                "text": "애니메이션·전환 요소를 JS 상태 기반으로 구현 시 reflow 발생\n\t컴포넌트를 분석해 [B]CSS transform/transition만으로 처리 가능한 기능을 분류·분리[/B]",
+                "subItems": ["reflow 없는 60fps 애니메이션 확보 후 팀 내 공유"]
               }
             ]
           }
@@ -524,7 +541,7 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "4개 어드민 앱(allra·cargo·ctn·bnpl)을 통합한 Turborepo 모노레포, 공용 컴포넌트 라이브러리 운영, ISMS 인증 대응 포함",
+        "description": "여러 개의 프로젝트에서 동시에 쓰는 모노레포 내부 올라 선정산 서비스의 어드민, 기존 php 기반의 v1 서비스를 마이그레이션하고 ISMS 인증을 위한 인증 레이어를 구축하였다.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -539,6 +556,17 @@
           "Storybook"
         ],
         "categories": [
+          {
+            "title": "ISMS 대응 세션 처리 설계",
+            "details": [
+              {
+                "text": "금융 어드민은 ISMS 요건상 안전한 세션·토큰 관리가 필수\n\t세션 관리와 토큰 자동 재발급 레이어를 설계해 인증 로직을 기능 코드에서 분리"
+              },
+              {
+                "text": "일정 시간 미조작 시 자동 로그아웃이 필요\n\t유휴 시간 기반 자동 로그아웃을 구현해 다중 탭 환경에서도 세션 만료가 일관되게 동작하도록 처리"
+              }
+            ]
+          },
           {
             "title": "MSW 기반 API 모킹 환경 구축",
             "details": [
@@ -593,7 +621,7 @@
       ]
     },
     "openSource": {
-      "title": "Open Source",
+      "title": "Open Source Contributions",
       "items": [
         {
           "title": "OpenReplay",
