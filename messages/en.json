@@ -326,8 +326,6 @@
     "contact": {
       "email": "Email",
       "emailValue": "leeseounghyun9917@gmail.com",
-      "phone": "Phone",
-      "phoneValue": "",
       "github": "GitHub",
       "githubValue": "https://github.com/codefug",
       "linkedin": "LinkedIn",
@@ -341,17 +339,7 @@
       "paragraphs": [
         "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping, in the middle of the night. When something is unclear, I design an experiment or dig into the source directly.",
         "I don't sit on what I find. I believe [B]documentation and sharing is the most effective form of communication[/B]. I've written up analyses that changed my team's technical direction, and filed open source issues from findings along the way. A personal discovery becoming a team-level change is the kind of impact I find most rewarding.",
-        "When opinions clash, [B]I start by assuming I might be wrong[/B]. If we're aiming at the same goal, the other person's argument always has a reason behind it. I analyze, look at it from their perspective, and then talk.",
         "I'm always [B]conscious of the tradeoff between time and quality[/B]. I don't chase perfect code — I chase the right code for where the product is."
-      ]
-    },
-    "skills": {
-      "title": "Skills",
-      "items": [
-        "[B]Next.js[/B]\nI understand precisely why Next.js is used and how Server Components work. Beyond the server/client component boundary, I also understand where static generation gives way to CSR, so I choose rendering strategies deliberately with the tradeoffs in mind.",
-        "[B]React[/B]\nI favor designs that minimize side effects and know exactly when useEffect is genuinely needed. I model state through derivation and computation so it flows in one direction, keeping mutation responsibility in one place. I'm sensitive to unnecessary re-renders and flickering, with deep experience tracing such issues to their root cause.",
-        "[B]TypeScript[/B]\nI treat it not as a wrapper over JavaScript but as a tool for structuring code. I avoid any and aim for code whose runtime behavior is surfaced at compile time, favoring designs that make invalid states unrepresentable through tools like discriminated unions.",
-        "[B]JavaScript[/B]\nI have a precise grasp of the V8 engine's event loop and async behavior. I lean on the language's own strengths — closures, higher-order functions — to write predictable, maintainable code."
       ]
     },
     "workExperience": {
@@ -391,38 +379,46 @@
         ],
         "categories": [
           {
-            "title": "Developer Productivity",
+            "title": "Test Automation & CI",
             "details": [
               {
-                "text": "A complex multi-step contract flow (documents, external verification, e-signature) was hard to verify with manual QA\n\tdesigned Playwright E2E in [B]three layers — specs/flows/sequences[/B] for readability and maintainability, sharing fixtures with [B]Storybook[/B] ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])"
+                "text": "Test and environment (incl. mobile) growth made CI time scale linearly\n\tdesigned a [B]Dynamic Shard CI architecture[/B] that distributes shards by test count, merging the scattered per-shard reports into a single HTML report on failure ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])",
+                "subItems": [
+                  "[B]cut pure CI time by ~30%[/B], holding it flat even as tests tripled"
+                ]
               },
               {
-                "text": "Test and environment growth made CI time scale linearly\n\toptimized with [B]Dynamic Shard (shards generated in proportion to test count) and a single shared build artifact[/B], [B]holding CI time flat even as tests tripled[/B]"
-              },
-              {
-                "text": "E2E verified flows but couldn't catch visual breakage\n\textended [B]visual regression testing (VRT)[/B] on top of the E2E structure; after analyzing false positives from OS/rendering differences, [B]chose to run it as a local review tool rather than a CI gate[/B]"
-              },
-              {
-                "text": "Datadog pricing change made the monitoring tool unsustainable\n\tled [B]gradual OpenReplay migration[/B] with the DevOps team, building the CI/CD sourcemap upload pipeline myself, [B]cutting monitoring costs by ~₩5M/month[/B]"
+                "text": "Subtle UI shifts introduced by new releases were hard to catch by eye\n\tintroduced [B]visual regression testing (VRT)[/B] on top of the E2E structure to detect them automatically",
+                "subItems": [
+                  "analyzed instability from OS/rendering environment differences and [B]chose to run it as a local review tool rather than a CI gate[/B]"
+                ]
               }
             ]
           },
           {
-            "title": "Code Quality",
+            "title": "Consolidated state calculation into a single Provider",
             "details": [
               {
-                "text": "Pre-settlement page has multiple login-style forms coexisting, Chrome autofill was polluting all of them\n\tTraced the root cause through Chrome CPP source, resolved with a [B]Honeypot decoy field to suppress autofill[/B]"
-              },
-              {
-                "text": "In the pre-settlement flow, child components were each mutating state via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]Discriminated Union[/B], leaving children to render only. Backed the refactor with unit tests for stability"
-              },
-              {
-                "text": "Server Action-based architecture caused slow page loads and repeated build failures\n\tanalyzed the server-side call layer, [B]documented the sequential execution constraint[/B], shared with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L]), [B]designed a tRPC-based type-safe API layer and drove the migration across the whole team[/B]"
+                "text": "In the pre-settlement application form, child components each computed fees, limits, and subsidies via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]6-variant Discriminated Union[/B] so children only render",
+                "subItems": [
+                  "extracted the logic into pure functions backed by [B]80+ unit tests[/B]"
+                ]
               }
             ]
           },
           {
-            "title": "SEO",
+            "title": "Full migration from Server Actions to a tRPC architecture",
+            "details": [
+              {
+                "text": "Server Action-based architecture suffered from sequential-call limits and [B]version skew[/B] (old client bundle vs. new server on deploy), causing slow page loads and repeated build failures\n\t[B]designed a tRPC-based type-safe API layer and drove the migration across all domains[/B]",
+                "subItems": [
+                  "analyzed and [B]documented the sequential-execution constraint[/B], sharing it with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L])"
+                ]
+              }
+            ]
+          },
+          {
+            "title": "SEO Improvements",
             "details": [
               {
                 "text": "Discovered a deep-copy bug that was silently preventing per-page metadata overrides\n\ttraced the root cause, fixed it, and unified all page OG/Twitter metadata into [B]shared utils[/B] to prevent recurrence"
@@ -437,7 +433,7 @@
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "description": "Service management portal development",
+        "description": "Service management portal — owned the entire frontend: refactoring an in-progress legacy project to fix its issues, adding a server-state layer for structural improvement, and shipping to production after passing internal security review.",
         "stack": [
           "React(Vite)",
           "TypeScript",
@@ -447,18 +443,32 @@
         ],
         "categories": [
           {
-            "title": "Vite-based Build System Migration",
+            "title": "Migrated the build system from CRA to Vite",
             "details": [
               {
-                "text": "CRA deprecated and no longer receiving security updates, flagged under internal security policy\n\t[B]CRA → Vite migration[/B] resolved the risk and reduced bundle size [B]1200kB → 500kB (58.3%)[/B]"
+                "text": "CRA deprecated and no longer receiving security updates, flagged under internal security policy\n\t[B]CRA → Vite migration[/B] resolved the risk",
+                "subItems": [
+                  "reduced bundle size [B]1200kB → 500kB (58.3%)[/B]"
+                ]
               }
             ]
           },
           {
-            "title": "CSP Policy Compliance",
+            "title": "Replaced the editor for CSP policy compliance",
             "details": [
               {
                 "text": "Existing editor incompatible with in-house [B]CSP policy[/B]\n\tmigrated to react-quill-new and built a custom image resize module to resolve security violations"
+              }
+            ]
+          },
+          {
+            "title": "Added a Tanstack Query server-state layer to a Zustand-only store",
+            "details": [
+              {
+                "text": "A single Zustand store held both server and client state, handling caching and sync manually — duplicate requests and stale data broke screen consistency\n\t[B]introduced Tanstack Query to separate server state[/B], managing caching, refetching, and sync declaratively while Zustand handled only pure client state",
+                "subItems": [
+                  "eliminated duplicate API calls and stale data, [B]hardening operational stability[/B]"
+                ]
               }
             ]
           }
@@ -467,7 +477,7 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "description": "AI-powered report analysis solution — sole developer from design to deployment",
+        "description": "AI-powered report analysis solution — owned the entire frontend from design to deployment.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -477,21 +487,29 @@
         ],
         "categories": [
           {
-            "title": "PDF Viewer Development",
+            "title": "Built a custom PDF.js Viewer with virtualization",
             "details": [
               {
-                "text": "Core feature required fine-grained control over multiple PDFs beyond what off-the-shelf libraries offered\n\tbuilt a custom Viewer on top of PDF.js, then applied [B]Web Worker + react-window virtualization[/B] for a [B]67% initial render improvement[/B]"
+                "text": "Core feature required fine-grained control over multiple PDFs beyond what off-the-shelf libraries offered\n\tbuilt a custom Viewer on top of PDF.js with [B]Web Worker + react-window virtualization[/B]",
+                "subItems": ["[B]initial render 5401ms → 1780ms (67%)[/B]"]
               }
             ]
           },
           {
-            "title": "Build & Deploy Optimization",
+            "title": "Optimized Docker image size",
             "details": [
               {
-                "text": "On-premises deployment to client sites made 2.22GB image size a bottleneck\n\t[B]standalone mode + multi-stage build[/B] reduced image to [B]195MB (91.36% reduction)[/B]"
-              },
+                "text": "On-premises deployment to client sites made 2.22GB image size a bottleneck\n\t[B]standalone mode + multi-stage build[/B]",
+                "subItems": ["[B]2.22GB → 195MB (91.36% reduction)[/B]"]
+              }
+            ]
+          },
+          {
+            "title": "Introduced code splitting via dynamic import",
+            "details": [
               {
-                "text": "No code splitting meant the full bundle loaded upfront, slowing initial load\n\tintroduced dynamic import, reducing bundle [B]302kB → 143kB (73.5% reduction)[/B]"
+                "text": "No code splitting meant the full bundle loaded upfront, slowing initial load\n\tintroduced dynamic import",
+                "subItems": ["bundle [B]302kB → 143kB (73.5% reduction)[/B]"]
               }
             ]
           }
@@ -500,11 +518,11 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "Component and token-based design system used across PwC products, published via Storybook",
+        "description": "Component and token-based design system used across PwC products — collaborated with the entire frontend team to successfully lead the v1 release.",
         "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
         "categories": [
           {
-            "title": "Code Consistency",
+            "title": "Established type-safe styling with clsx & cva",
             "details": [
               {
                 "text": "Early-stage design system required a strong structural foundation\n\testablished [B]clsx and cva[/B] as the team pattern for type-safe conditional styling and component variants"
@@ -512,10 +530,13 @@
             ]
           },
           {
-            "title": "Component Restructuring",
+            "title": "Moved JS-state animations to CSS transforms",
             "details": [
               {
-                "text": "Animation and transition elements driven by JS state caused unnecessary reflows\n\taudited all components and [B]separated CSS transform/transition-only interactions from JS[/B], achieving 60fps animations without reflow, then shared findings with the team"
+                "text": "Animation and transition elements driven by JS state caused unnecessary reflows\n\taudited all components and [B]separated CSS transform/transition-only interactions from JS[/B]",
+                "subItems": [
+                  "achieved 60fps animations without reflow, then shared findings with the team"
+                ]
               }
             ]
           }
@@ -524,7 +545,7 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "Turborepo monorepo unifying 4 admin apps (allra, cargo, ctn, bnpl) with a shared component library, including ISMS certification compliance",
+        "description": "Admin for the Allra pre-settlement service within a shared monorepo used across multiple projects — migrated the legacy PHP-based v1 service and built the authentication layer for ISMS certification.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -540,7 +561,18 @@
         ],
         "categories": [
           {
-            "title": "MSW-based API Mocking Environment",
+            "title": "Designed session handling for ISMS",
+            "details": [
+              {
+                "text": "A finance admin requires secure session and token management under ISMS\n\tdesigned [B]iron-session[/B]-based session management and an automatic token-reissue layer, separating auth logic from feature code"
+              },
+              {
+                "text": "Inactivity requires an automatic logout\n\tbuilt idle-based auto-logout so session expiry behaves consistently even in multi-tab sessions"
+              }
+            ]
+          },
+          {
+            "title": "Built an MSW-based API mocking environment",
             "details": [
               {
                 "text": "Finance admin errors hit real data directly\n\t[B]proposed and led MSW adoption[/B], building the full API mocking environment with domain-separated handlers"
@@ -593,7 +625,7 @@
       ]
     },
     "openSource": {
-      "title": "Open Source",
+      "title": "Open Source Contributions",
       "items": [
         {
           "title": "OpenReplay",
