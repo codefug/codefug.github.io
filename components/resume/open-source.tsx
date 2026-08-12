@@ -3,7 +3,6 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Contribution = { title: string; url: string };
@@ -13,7 +12,7 @@ export default function OpenSource({ className }: { className?: string }) {
   const items = t.raw("items") as Contribution[];
 
   return (
-    <section className={cn("py-4 print:py-2", className)}>
+    <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       <ul className="mt-3 space-y-1 text-sm print:mt-2 print:text-xs">
         {items.map((item) => (

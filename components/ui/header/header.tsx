@@ -22,6 +22,7 @@ export default function Header() {
     () => pathName.includes(PATH.POSTS),
     [pathName],
   );
+  const isResume = useMemo(() => pathName.includes(PATH.RESUME), [pathName]);
   return (
     <header
       className={cn(
@@ -31,7 +32,7 @@ export default function Header() {
     >
       <div className="flex items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
-          <SideBarToggleButton />
+          {!isResume && <SideBarToggleButton />}
           <Link
             href={PATH.HOME}
             passHref
@@ -47,9 +48,9 @@ export default function Header() {
           </Link>
         </section>
         <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
-          <HeaderNavigation />
+          {!isResume && <HeaderNavigation />}
           <LanguageSelector />
-          <HeaderSwitch />
+          {!isResume && <HeaderSwitch />}
         </section>
       </div>
       {isShowVerticalScrollbar && <HorizontalScrollbar />}

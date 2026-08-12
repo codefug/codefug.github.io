@@ -337,9 +337,7 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "I keep [B]computing solutions asynchronously[/B] until a problem is fully resolved — after work, while sleeping, in the middle of the night. When something is unclear, I design an experiment or dig into the source directly.",
-        "I don't sit on what I find. I believe [B]documentation and sharing is the most effective form of communication[/B]. I've written up analyses that changed my team's technical direction, and filed open source issues from findings along the way. A personal discovery becoming a team-level change is the kind of impact I find most rewarding.",
-        "I'm always [B]conscious of the tradeoff between time and quality[/B]. I don't chase perfect code — I chase the right code for where the product is."
+        "A frontend developer in my second year working with React and TypeScript, building financial services and internal operations tools.\nI aim for structures that let both users and teammates reach a decision easily."
       ]
     },
     "workExperience": {
@@ -347,13 +345,23 @@
       "items": {
         "allra": {
           "company": "Allra Fintech",
-          "duration": "2025.10 ~ present",
-          "summary": "Fintech startup providing services to facilitate capital flow for small business online sellers. Responsible for frontend development of the core pre-settlement service and internal admin system. Worked across cross-functional teams to keep the service stable while tackling the challenging problems that come with a growing fintech product."
+          "duration": "2025.10 - NOW",
+          "summary": "A fintech startup running [B]an early-settlement service[/B] that pays online sellers ahead of their platform payout cycle. ₩7T disbursed across 45,000 merchants.",
+          "team": {
+            "name": "Allra Dev Team",
+            "duration": "2025.10 - NOW",
+            "summary": "Owned [B]frontend development[/B] for Allra, the early-settlement web service, and Allra Admin, the internal operations tool. Contributed the frontend side of the requirements behind the [L:https://allra.co.kr/blogs/265]first ISMS certification in the early-settlement industry[/L], focusing on security and operational stability."
+          }
         },
         "pwc": {
           "company": "Samil PwC AC",
-          "duration": "2025.01 ~ 2025.10",
-          "summary": "Subsidiary of Samil PwC, responsible for frontend development and design system construction for web services used within and outside the firm. In the characteristically closed development environment of the accounting domain, worked to build an efficient and stable setup, and as an early engineering team, gained end-to-end experience taking services from initial development through to production."
+          "duration": "2025.01 - 2025.10",
+          "summary": "[B]Samil PwC Acceleration Center[/B], a [B]wholly owned subsidiary[/B] of Samil PwC established in 2023, building web services used inside and outside the firm.",
+          "team": {
+            "name": "Digital Team",
+            "duration": "2025.01 - 2025.10",
+            "summary": "Owned [B]initial frontend development[/B] for Digital Finance, a unified portal for in-house services, Document AI, an AI document analysis solution, and SamilDevKit, the in-house design system — covering design through release and operation."
+          }
         }
       }
     },
@@ -362,69 +370,78 @@
       "allra": {
         "title": "Allra",
         "subtitle": "Allra Fintech",
-        "description": "Pre-settlement financial service development for e-commerce sellers",
+        "description": "An [B]early-settlement financial service[/B] that lets e-commerce sellers receive revenue ahead of their payout date. I joined just as the Next.js migration finished, and took on correcting logic that had been dropped or mistranslated in the move while hardening the service for production.\nBecause the product moves real money, [B]ISMS certification was the largest undertaking[/B]. I redesigned session and token handling to meet its requirements and closed the paths where credentials were leaking into logs and browser autofill. Alongside that, I traced production failures beyond the frontend to their real causes and improved the deployment and testing environment so the whole team could verify changes faster and more safely.",
         "stack": [
           "Next.js",
           "TypeScript",
-          "Tailwind CSS",
-          "shadcn/ui",
-          "Zustand",
-          "Tanstack Query",
           "tRPC",
-          "Zod",
-          "MSW",
-          "Playwright",
-          "Vitest",
-          "Storybook"
+          "Tanstack Query",
+          "Zustand",
+          "Playwright"
         ],
         "categories": [
           {
-            "title": "Test Automation & CI",
+            "title": "ISMS certification — redesigned authentication and session architecture",
             "details": [
               {
-                "text": "Test and environment (incl. mobile) growth made CI time scale linearly\n\tdesigned a [B]Dynamic Shard CI architecture[/B] that distributes shards by test count, merging the scattered per-shard reports into a single HTML report on failure ([L:https://team.allrafintech.co.kr/frontend-playwright-e2e-test-ci-optimization-d94b082509d8]blog[/L])",
-                "subItems": [
-                  "[B]cut pure CI time by ~30%[/B], holding it flat even as tests tripled"
-                ]
+                "text": "Moved session handling from a client that [B]computed token expiry itself and refreshed preemptively[/B] to one that [B]reissues in reaction to backend 401s[/B] — consolidating the source of expiry truth on the server and eliminating client/server disagreement about when a session ended (406 files)"
               },
               {
-                "text": "Subtle UI shifts introduced by new releases were hard to catch by eye\n\tintroduced [B]visual regression testing (VRT)[/B] on top of the E2E structure to detect them automatically",
-                "subItems": [
-                  "analyzed instability from OS/rendering environment differences and [B]chose to run it as a local review tool rather than a CI gate[/B]"
-                ]
-              }
-            ]
-          },
-          {
-            "title": "Consolidated state calculation into a single Provider",
-            "details": [
-              {
-                "text": "In the pre-settlement application form, child components each computed fees, limits, and subsidies via [B]useEffect[/B], and accumulated business rules made the branching unmanageable\n\tmoved all calculation into a Provider and delivered state as a [B]6-variant Discriminated Union[/B] so children only render",
-                "subItems": [
-                  "extracted the logic into pure functions backed by [B]80+ unit tests[/B]"
-                ]
-              }
-            ]
-          },
-          {
-            "title": "Full migration from Server Actions to a tRPC architecture",
-            "details": [
-              {
-                "text": "Server Action-based architecture suffered from sequential-call limits and [B]version skew[/B] (old client bundle vs. new server on deploy), causing slow page loads and repeated build failures\n\t[B]designed a tRPC-based type-safe API layer and drove the migration across all domains[/B]",
-                "subItems": [
-                  "analyzed and [B]documented the sequential-execution constraint[/B], sharing it with the team ([L:https://codefug.github.io/posts/2026-01-29]blog[/L])"
-                ]
-              }
-            ]
-          },
-          {
-            "title": "SEO Improvements",
-            "details": [
-              {
-                "text": "Discovered a deep-copy bug that was silently preventing per-page metadata overrides\n\ttraced the root cause, fixed it, and unified all page OG/Twitter metadata into [B]shared utils[/B] to prevent recurrence"
+                "text": "[B]Centralized auth-gated queries behind a shared hook[/B], [B]eliminating the wasted network calls[/B] fired by off-screen components before authentication and rejected on arrival"
               },
               {
-                "text": "Collaborated with the marketing team on SEO quality improvements\n\tintroduced [B]Schema.org JSON-LD structured data[/B] to enhance search engine crawling quality"
+                "text": "Removed [B]three misclassification paths[/B] where an outage looked like a logout and a 5xx looked like a 404, and closed a path where cached pages [B]bypassed auth gating[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Closed credential exposure paths",
+            "details": [
+              {
+                "text": "Found and closed a debugging log that [B]serialized entire request headers and response bodies[/B], leaving auth tokens and cookies in production logs (tracing logs kept)"
+              },
+              {
+                "text": "On the form where sellers [B]look up revenue using their marketplace account credentials[/B], browser autofill was [B]pulling saved credentials in and exposing them[/B]; after confirming the standard attributes were ineffective, solved it by [B]preventing the form from being recognized as a login form[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Modeled settlement application state and consolidated duplicated implementations",
+            "details": [
+              {
+                "text": "On the form where sellers enter how much to draw forward per marketplace, defined each row's state as a [B]6-member discriminated union[/B] (loading, fetch-failed, ineligible, invalid input, empty, submittable), [B]pinning the cases the UI must handle into the type system[/B]"
+              },
+              {
+                "text": "Each child component computed [B]available limit, settlement fee, and early-seller subsidy[/B] in its own useEffect, accumulating branches with every policy addition — moved computation into a Provider so children only render"
+              },
+              {
+                "text": "Because [B]subsidy depletes sequentially across marketplaces[/B], one row's input changes another row's fee — resolved with a [B]two-pass calculation pipeline[/B]: the first pass determines each row's state, the second deducts subsidy [B]in fee-rate order[/B] across submittable rows only, making the calculation order explicit"
+              },
+              {
+                "text": "[B]Extracted the fee, limit, and subsidy logic into pure functions[/B] guarded by [B]80+ unit tests[/B], so changes to settlement policy surface regressions in tests first"
+              },
+              {
+                "text": "Attaching the [B]business registration, ID, and bankbook documents sellers submit for a settlement contract was implemented separately in four flows[/B], losing confirmation results — unified into [B]a shared state machine[/B], stopping the [B]15 upload requests per second[/B] the duplicate hook produced"
+              },
+              {
+                "text": "Condition-triggered overlays [B]stacked on each other and buried required modals[/B] — unified behind a coordinator where each declares only its intent to appear and [B]priority decides the single active one[/B]"
+              }
+            ]
+          },
+          {
+            "title": "Improved testing and deployment environment",
+            "details": [
+              {
+                "text": "To verify complex financial flows, structured E2E tests into [B]three layers — Spec (user behavior), Flow (implementation), and Sequence (shared preconditions)[/B] — with API mocking and fixtures reproducing edge cases automatically ([L:https://allrafintech.co.kr/blog/137]company engineering blog[/L])"
+              },
+              {
+                "text": "CI time scaled linearly as tests and environments grew — improved it with a [B]CI architecture that generates and distributes shards in proportion to test count[/B], [B]cutting pure CI time ~30%[/B] and holding it flat even as tests tripled"
+              },
+              {
+                "text": "[B]Automated the repetitive test-writing work with an AI skill[/B] and consolidated the supporting docs into a single source so the team works the same way"
+              },
+              {
+                "text": "After leaving Vercel to cut costs, designers and PMs had to [B]run Storybook locally[/B] to review UI — [B]proposed and built per-branch preview deployments[/B] so they could [B]review from a URL alone[/B]"
               }
             ]
           }
@@ -433,42 +450,20 @@
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "description": "Service management portal — owned the entire frontend: refactoring an in-progress legacy project to fix its issues, adding a server-state layer for structural improvement, and shipping to production after passing internal security review.",
-        "stack": [
-          "React(Vite)",
-          "TypeScript",
-          "Tailwind CSS",
-          "Zustand",
-          "Tanstack Query"
-        ],
+        "description": "A [B]unified portal[/B] for managing the various services used inside Samil. I joined a project already underway, owned the frontend, and saw it through to production.\nIn the accounting domain, [B]clearing internal security review was a precondition for shipping[/B]. Replacing a build tool that had stopped receiving security updates and an editor that violated policy was the core work, and I added a server-state layer that replaced caching and synchronization previously handled by hand.",
+        "stack": ["React", "Vite", "TypeScript", "Tanstack Query"],
         "categories": [
           {
-            "title": "Migrated the build system from CRA to Vite",
+            "title": "Build system migration and structural cleanup",
             "details": [
               {
-                "text": "CRA deprecated and no longer receiving security updates, flagged under internal security policy\n\t[B]CRA → Vite migration[/B] resolved the risk",
-                "subItems": [
-                  "reduced bundle size [B]1200kB → 500kB (58.3%)[/B]"
-                ]
-              }
-            ]
-          },
-          {
-            "title": "Replaced the editor for CSP policy compliance",
-            "details": [
+                "text": "Migrated the build system to [B]Vite[/B] after CRA was deprecated and ruled out by internal security policy, cutting bundle size [B]1200kB → 500kB (58.3%)[/B]"
+              },
               {
-                "text": "Existing editor incompatible with in-house [B]CSP policy[/B]\n\tmigrated to react-quill-new and built a custom image resize module to resolve security violations"
-              }
-            ]
-          },
-          {
-            "title": "Added a Tanstack Query server-state layer to a Zustand-only store",
-            "details": [
+                "text": "Replaced an editor that violated the internal [B]CSP policy[/B] with react-quill-new, [B]building a custom image-resize module[/B] to close the gap"
+              },
               {
-                "text": "A single Zustand store held both server and client state, handling caching and sync manually — duplicate requests and stale data broke screen consistency\n\t[B]introduced Tanstack Query to separate server state[/B], managing caching, refetching, and sync declaratively while Zustand handled only pure client state",
-                "subItems": [
-                  "eliminated duplicate API calls and stale data, [B]hardening operational stability[/B]"
-                ]
+                "text": "[B]Introduced Tanstack Query to split server state[/B] out of a Zustand store that held both, fixing screen inconsistencies caused by duplicate requests and stale data"
               }
             ]
           }
@@ -477,39 +472,20 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "description": "AI-powered report analysis solution — owned the entire frontend from design to deployment.",
-        "stack": [
-          "Next.js",
-          "TypeScript",
-          "Tailwind CSS",
-          "Zustand",
-          "Tanstack Query"
-        ],
+        "description": "A [B]document analysis solution[/B] where AI analyzes reports. I owned the frontend end to end, from design through deployment.\nDisplaying and finely controlling many PDFs at once was the core feature, so I [B]built the viewer myself[/B] and solved the slowdown that came with document count through virtualization and parallel processing. Since the product was installed directly into client on-premises environments, reducing deployment size mattered just as much.",
+        "stack": ["Next.js", "TypeScript", "PDF.js", "Docker"],
         "categories": [
           {
-            "title": "Built a custom PDF.js Viewer with virtualization",
+            "title": "Rendering performance and deployment optimization",
             "details": [
               {
-                "text": "Core feature required fine-grained control over multiple PDFs beyond what off-the-shelf libraries offered\n\tbuilt a custom Viewer on top of PDF.js with [B]Web Worker + react-window virtualization[/B]",
-                "subItems": ["[B]initial render 5401ms → 1780ms (67%)[/B]"]
-              }
-            ]
-          },
-          {
-            "title": "Optimized Docker image size",
-            "details": [
+                "text": "Built a [B]custom PDF.js Viewer[/B] to meet the core requirement of fine-grained control over multiple PDFs, applying [B]Web Worker + react-window virtualization[/B] to cut initial render [B]5401ms → 1780ms (67%)[/B]"
+              },
               {
-                "text": "On-premises deployment to client sites made 2.22GB image size a bottleneck\n\t[B]standalone mode + multi-stage build[/B]",
-                "subItems": ["[B]2.22GB → 195MB (91.36% reduction)[/B]"]
-              }
-            ]
-          },
-          {
-            "title": "Introduced code splitting via dynamic import",
-            "details": [
+                "text": "On-premises installation at client sites made the 2.22GB image a deployment bottleneck — applied [B]standalone mode + multi-stage build[/B] for [B]2.22GB → 195MB (91.36%)[/B]"
+              },
               {
-                "text": "No code splitting meant the full bundle loaded upfront, slowing initial load\n\tintroduced dynamic import",
-                "subItems": ["bundle [B]302kB → 143kB (73.5% reduction)[/B]"]
+                "text": "Introduced dynamic-import code splitting, cutting the bundle [B]302kB → 143kB (73.5%)[/B]"
               }
             ]
           }
@@ -518,25 +494,28 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "Component and token-based design system used across PwC products — collaborated with the entire frontend team to successfully lead the v1 release.",
-        "stack": ["Next.js", "TypeScript", "Tailwind CSS", "Storybook"],
+        "description": "A [B]component- and token-based design system[/B] used across PwC products in-house, released as v1 together with the whole frontend team.\nAt that early stage the structural foundation mattered most. I established a type-safe styling pattern built on clsx and cva, and moved JS-state-driven animations to CSS transforms for reflow-free 60fps.",
+        "stack": ["Next.js", "TypeScript", "Storybook"],
         "categories": [
           {
-            "title": "Established type-safe styling with clsx & cva",
+            "title": "Establishing code consistency in an early design system",
             "details": [
               {
-                "text": "Early-stage design system required a strong structural foundation\n\testablished [B]clsx and cva[/B] as the team pattern for type-safe conditional styling and component variants"
+                "text": "At such an early stage, [B]agreeing on how the team would write things[/B] mattered more than adding components. I drove the adoption of clsx and cva to unify conditional styling and class naming, settling a type-safe styling pattern across the team."
+              },
+              {
+                "text": "For components that render the same UI over different fields and data, I [B]used generics so type inference adapts[/B] to each case, letting each product consume them without redeclaring types."
+              },
+              {
+                "text": "Reorganized and documented the ESLint and TypeScript setup so new contributors could produce consistent results without asking about conventions."
               }
             ]
           },
           {
-            "title": "Moved JS-state animations to CSS transforms",
+            "title": "Rethinking how animation was handled",
             "details": [
               {
-                "text": "Animation and transition elements driven by JS state caused unnecessary reflows\n\taudited all components and [B]separated CSS transform/transition-only interactions from JS[/B]",
-                "subItems": [
-                  "achieved 60fps animations without reflow, then shared findings with the team"
-                ]
+                "text": "Found that animations driven by JS state were causing unnecessary reflows, audited the components, and [B]separated out everything expressible with CSS transform and transition alone[/B] — reaching reflow-free 60fps and sharing that baseline with the team."
               }
             ]
           }
@@ -545,37 +524,34 @@
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "Admin for the Allra pre-settlement service within a shared monorepo used across multiple projects — migrated the legacy PHP-based v1 service and built the authentication layer for ISMS certification.",
+        "description": "The [B]internal admin[/B] used to operate the settlement service, living in a monorepo shared by several projects. I migrated the legacy PHP v1 to Next.js and [B]built the authentication and audit layer required for ISMS certification[/B].\nIn a financial admin a misbehaving API reaches real data immediately, so a safe way to verify work mattered as much as the features themselves. I proposed and built a mocking environment that reproduces every scenario without depending on the live API.",
         "stack": [
           "Next.js",
           "TypeScript",
-          "Tailwind CSS",
-          "shadcn/ui",
           "Turborepo",
           "Tanstack Query",
-          "Zod",
-          "MSW",
-          "Playwright",
-          "Vitest",
-          "Storybook"
+          "Playwright"
         ],
         "categories": [
           {
-            "title": "Designed session handling for ISMS",
+            "title": "Incremental migration of an admin already in daily use",
             "details": [
               {
-                "text": "A finance admin requires secure session and token management under ISMS\n\tdesigned [B]iron-session[/B]-based session management and an automatic token-reissue layer, separating auth logic from feature code"
+                "text": "Joined midway through the migration of the PHP-based v1 into a Next.js monorepo. Because operators depended on the tool every day, I [B]designed components to keep the existing UI and UX largely unchanged[/B] while the stack moved underneath, so no one had to relearn their workflow."
               },
               {
-                "text": "Inactivity requires an automatic logout\n\tbuilt idle-based auto-logout so session expiry behaves consistently even in multi-tab sessions"
+                "text": "Living in a monorepo shared by several projects meant deciding what deserved to be shared. I weighed [B]whether each piece was genuinely used across services, and whether extracting it would hurt readability[/B] before settling the boundary of the shared layer."
               }
             ]
           },
           {
-            "title": "Built an MSW-based API mocking environment",
+            "title": "Verifying without touching real data",
             "details": [
               {
-                "text": "Finance admin errors hit real data directly\n\t[B]proposed and led MSW adoption[/B], building the full API mocking environment with domain-separated handlers"
+                "text": "Calling the real API made failure and edge conditions hard to produce on demand. A mocking layer that lets responses be shaped freely allowed us to [B]reproduce errors, latency, and insufficient-permission paths[/B] alongside the happy path — organized so the team uses it the same way."
+              },
+              {
+                "text": "Designed and implemented [B]role-based authorization and token handling[/B] against ISMS requirements, together with an audit layer that keeps access traceable."
               }
             ]
           }
@@ -637,13 +613,6 @@
         }
       ]
     },
-    "activities": {
-      "title": "Activities",
-      "studyGroups": {
-        "label": "Study Group Leadership",
-        "note": "Founded and led [B]8 study groups[/B] — Frontend Performance Optimization, AWS, Elegant TypeScript, React Design Patterns, Modern React Deep Dive, Core JavaScript, CS Study, Coding Test — running curriculum design and scheduling"
-      }
-    },
     "education": {
       "title": "Education",
       "items": [
@@ -655,6 +624,21 @@
         {
           "title": "Codeit Sprint FE Bootcamp",
           "duration": "2024-03 ~ 2024-09",
+          "detail": ""
+        }
+      ]
+    },
+    "certification": {
+      "title": "Certification",
+      "items": [
+        {
+          "title": "AWS Certified Cloud Practitioner (CLF)",
+          "duration": "2026-08 ~ 2029-08",
+          "detail": ""
+        },
+        {
+          "title": "OPIc IH (Intermediate High)",
+          "duration": "2023-07-15 ~ 2025-07-14",
           "detail": ""
         }
       ]

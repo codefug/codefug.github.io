@@ -9,7 +9,7 @@ import { RichText } from "./rich-text";
 
 type SideProjectItem = {
   title: string;
-  url: string;
+  url?: string;
   github?: string;
   stack: string[];
   description: string;
@@ -20,13 +20,19 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
   return (
     <article>
       <div className="flex items-center gap-3">
-        <Link
-          href={item.url}
-          className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
-        >
-          {item.title}
-          <ExternalLink size={13} />
-        </Link>
+        {item.url ? (
+          <Link
+            href={item.url}
+            className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+          >
+            {item.title}
+            <ExternalLink size={13} />
+          </Link>
+        ) : (
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {item.title}
+          </span>
+        )}
         {item.github && (
           <a
             href={item.github}
@@ -39,18 +45,11 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
         )}
       </div>
       <p className="mt-1 text-gray-600 text-sm dark:text-gray-400 print:text-xs">
-        {item.description}
+        <RichText>{item.description}</RichText>
       </p>
-      <div className="mt-1.5 flex flex-wrap gap-1">
-        {item.stack.map((tech) => (
-          <span
-            key={tech}
-            className="rounded border border-primary/30 bg-primary/5 px-2 py-0.5 font-medium text-primary text-xs dark:border-primary/40 dark:bg-primary/10 print:border-gray-400 print:bg-transparent print:text-gray-600"
-          >
-            {tech}
-          </span>
-        ))}
-      </div>
+      <p className="mt-1.5 text-gray-400 text-xs dark:text-gray-500 print:text-gray-500">
+        {item.stack.join(", ")}
+      </p>
       <ul className="mt-2 space-y-1 text-gray-700 text-sm dark:text-gray-300 print:mt-1 print:text-xs">
         {item.details.map((d, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content

@@ -3,27 +3,31 @@
 import { useTranslations } from "next-intl";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
-type Edu = { title: string; duration: string; detail: string };
+type Certificate = { title: string; duration: string; detail: string };
 
-export default function ResumeEducation({ className }: { className?: string }) {
-  const t = useTranslations("resume.education");
-  const items = t.raw("items") as Edu[];
+export default function ResumeCertification({
+  className,
+}: {
+  className?: string;
+}) {
+  const t = useTranslations("resume.certification");
+  const items = t.raw("items") as Certificate[];
 
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       <ul className="mt-3 space-y-2 text-sm print:mt-2 print:space-y-2">
-        {items.map((e) => (
-          <li key={e.title}>
+        {items.map((c) => (
+          <li key={c.title}>
             <div className="font-semibold text-gray-900 dark:text-white print:text-xs">
-              {e.title}
+              {c.title}
             </div>
             <div className="text-gray-500 dark:text-gray-400 print:text-xs">
-              {e.duration}
+              {c.duration}
             </div>
-            {e.detail && (
+            {c.detail && (
               <div className="text-gray-700 dark:text-gray-300 print:text-xs">
-                {e.detail}
+                {c.detail}
               </div>
             )}
           </li>

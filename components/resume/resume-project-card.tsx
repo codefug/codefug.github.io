@@ -61,41 +61,39 @@ function ProjectCategory({ category }: { category: Category }) {
 export default function ResumeProjectCard({ projectKey, className }: Props) {
   const t = useTranslations(`resume.projects.${projectKey}`);
   const stack = t.raw("stack") as string[];
-  const categories = t.raw("categories") as Category[];
+  const categories = t.has("categories")
+    ? (t.raw("categories") as Category[])
+    : [];
 
   return (
     <article className={cn("py-4 print:py-2", className)}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-gray-900 text-xl dark:text-white print:text-xl">
+          <h3 className="flex items-center gap-2 font-bold text-base text-gray-900 dark:text-white print:text-sm">
+            <span
+              aria-hidden
+              className="h-4 w-0.5 shrink-0 bg-gray-900 dark:bg-white print:bg-black"
+            />
             {t("title")}
           </h3>
-          <div className="mt-0.5 text-gray-500 text-sm dark:text-gray-400 print:text-xs">
-            {t("subtitle")}
-          </div>
         </div>
       </header>
 
       <p className="mt-2 text-gray-700 text-sm leading-relaxed dark:text-gray-300 print:text-xs">
-        {t("description")}
+        <RichText>{t("description")}</RichText>
       </p>
 
-      <div className="mt-2 flex flex-wrap gap-1.5 print:mt-1 print:gap-1">
-        {stack.map((tech) => (
-          <span
-            key={tech}
-            className="rounded border border-primary/30 bg-primary/5 px-2 py-0.5 font-medium text-primary text-xs dark:border-primary/40 dark:bg-primary/10 print:border-gray-400 print:bg-transparent print:text-gray-600"
-          >
-            {tech}
-          </span>
-        ))}
-      </div>
+      <p className="mt-1.5 mb-4 text-gray-400 text-xs dark:text-gray-500 print:mt-1 print:text-gray-500">
+        {stack.join(", ")}
+      </p>
 
-      <div className="mt-3 space-y-5 print:mt-2 print:space-y-3">
-        {categories.map((cat) => (
-          <ProjectCategory key={cat.title} category={cat} />
-        ))}
-      </div>
+      {categories.length > 0 && (
+        <div className="mt-3 space-y-5 print:mt-2 print:space-y-3">
+          {categories.map((cat) => (
+            <ProjectCategory key={cat.title} category={cat} />
+          ))}
+        </div>
+      )}
     </article>
   );
 }

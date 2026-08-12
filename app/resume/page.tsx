@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SidebarOff } from "@/components/portfolio/sidebar-off";
-import AboutMe from "@/components/resume/about-me";
-import Activities from "@/components/resume/activities";
+import ResumeCertification from "@/components/resume/certification";
 import ResumeEducation from "@/components/resume/education";
 import KnowledgeSharing from "@/components/resume/knowledge-sharing";
 import OpenSource from "@/components/resume/open-source";
@@ -11,13 +10,13 @@ import ResumeProjectCard from "@/components/resume/resume-project-card";
 import SideProjects from "@/components/resume/side-projects";
 import WorkExperienceSection, {
   CompanySection,
+  TeamSection,
 } from "@/components/resume/work-experience";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
   createProfilePageStructuredData,
 } from "@/components/seo/utils";
-import { FadeIn } from "@/components/ui/fade-in";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 
@@ -37,56 +36,40 @@ export default function Page() {
       <StructuredData
         jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
       />
-      <div className="mx-auto max-w-4xl break-keep px-4 py-8 print:max-w-none print:p-0">
+      <div className="mx-auto max-w-4xl space-y-10 break-keep px-4 py-8 print:max-w-none print:space-y-6 print:p-0">
         <ResumeHeader />
-
-        <AboutMe />
 
         <WorkExperienceSection>
           <div>
             <CompanySection companyKey="allra" />
-            <div className="mt-2 space-y-2 print:mt-1">
-              <FadeIn>
-                <ResumeProjectCard projectKey="allra" />
-              </FadeIn>
-              <FadeIn>
-                <ResumeProjectCard projectKey="allraAdmin" />
-              </FadeIn>
-            </div>
+            <TeamSection companyKey="allra">
+              <ResumeProjectCard projectKey="allra" />
+              <ResumeProjectCard
+                projectKey="allraAdmin"
+                className="print:break-before-page"
+              />
+            </TeamSection>
           </div>
 
           <div>
             <CompanySection companyKey="pwc" />
-            <div className="mt-2 space-y-2 print:mt-1">
-              <FadeIn>
-                <ResumeProjectCard projectKey="digitalFinance" />
-              </FadeIn>
-              <FadeIn>
-                <ResumeProjectCard projectKey="documentAi" />
-              </FadeIn>
-              <FadeIn>
-                <ResumeProjectCard projectKey="samilDevKit" />
-              </FadeIn>
-            </div>
+            <TeamSection companyKey="pwc">
+              <ResumeProjectCard projectKey="digitalFinance" />
+              <ResumeProjectCard projectKey="documentAi" />
+              <ResumeProjectCard projectKey="samilDevKit" />
+            </TeamSection>
           </div>
         </WorkExperienceSection>
 
-        <FadeIn>
-          <SideProjects />
-        </FadeIn>
+        <SideProjects className="print:break-before-page" />
 
-        <FadeIn>
-          <Activities />
-        </FadeIn>
+        <OpenSource />
 
-        <FadeIn>
-          <OpenSource />
-        </FadeIn>
+        <KnowledgeSharing />
 
-        <FadeIn className="grid grid-cols-1 gap-6 md:grid-cols-2 print:grid-cols-2">
-          <KnowledgeSharing />
-          <ResumeEducation />
-        </FadeIn>
+        <ResumeEducation />
+
+        <ResumeCertification />
       </div>
     </>
   );
