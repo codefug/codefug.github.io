@@ -1,17 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
 
 type CompanyKey = "allra" | "pwc";
-
-const COMPANY_LOGOS: Record<CompanyKey, { src: string; alt: string }> = {
-  allra: { src: "/images/logos/allra-logo.webp", alt: "Allra Fintech" },
-  pwc: { src: "/images/logos/pwc-logo.svg", alt: "Samil PwC AC" },
-};
 
 export function CompanySection({
   companyKey,
@@ -21,26 +13,14 @@ export function CompanySection({
   className?: string;
 }) {
   const t = useTranslations("resume.workExperience");
-  const logo = COMPANY_LOGOS[companyKey];
 
   return (
-    <article>
-      <header className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded">
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              fill
-              className="object-contain"
-              sizes="36px"
-            />
-          </div>
-          <h3 className="font-bold text-gray-900 text-lg dark:text-white print:text-lg">
-            {t(`items.${companyKey}.company`)}
-          </h3>
-        </div>
-        <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-gray-500 text-xs dark:bg-gray-800 dark:text-gray-400 print:bg-transparent print:px-0 print:text-gray-500">
+    <article className={className}>
+      <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h3 className="font-extrabold text-2xl text-gray-900 dark:text-white print:text-lg">
+          {t(`items.${companyKey}.company`)}
+        </h3>
+        <span className="text-gray-500 text-sm dark:text-gray-400 print:text-xs">
           {t(`items.${companyKey}.duration`)}
         </span>
       </header>
@@ -51,6 +31,33 @@ export function CompanySection({
   );
 }
 
+export function TeamSection({
+  companyKey,
+  children,
+}: {
+  companyKey: CompanyKey;
+  children: React.ReactNode;
+}) {
+  const t = useTranslations(`resume.workExperience.items.${companyKey}.team`);
+
+  return (
+    <section className="mt-5 print:mt-3">
+      <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h4 className="font-bold text-gray-900 text-lg dark:text-white print:text-base">
+          {t("name")}
+        </h4>
+        <span className="text-gray-500 text-sm dark:text-gray-400 print:text-xs">
+          {t("duration")}
+        </span>
+      </header>
+      <p className="mt-1.5 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:text-xs print:leading-snug">
+        <RichText>{t("summary")}</RichText>
+      </p>
+      <div className="mt-1 print:mt-0.5">{children}</div>
+    </section>
+  );
+}
+
 export default function WorkExperienceSection({
   children,
   className,
@@ -58,13 +65,9 @@ export default function WorkExperienceSection({
   children: React.ReactNode;
   className?: string;
 }) {
-  const t = useTranslations("resume.workExperience");
   return (
-    <section className={cn("py-4 print:py-2", className)}>
-      <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <div className="mt-4 space-y-4 print:mt-2 print:space-y-3">
-        {children}
-      </div>
+    <section className={className}>
+      <div className="space-y-8 print:space-y-4">{children}</div>
     </section>
   );
 }

@@ -3,7 +3,6 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Post = { title: string; url: string };
@@ -17,7 +16,7 @@ export default function KnowledgeSharing({
   const posts = t.raw("posts") as Post[];
 
   return (
-    <section className={cn("py-4 print:py-2", className)}>
+    <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       <h4 className="mt-3 font-semibold text-gray-700 text-sm dark:text-gray-300 print:mt-2 print:text-xs">
         {t("subtitle")}
@@ -29,7 +28,7 @@ export default function KnowledgeSharing({
               href={p.url}
               className="inline-flex items-center gap-1 text-primary hover:underline"
             >
-              {p.title}
+              <span className="whitespace-nowrap">{p.title}</span>
               <ExternalLink size={12} />
             </Link>
           </li>

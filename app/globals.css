@@ -5,6 +5,12 @@
 @source inline("text-{blue,green,yellow,orange,red,purple,gray}-500");
 @source inline("border-{blue,green,yellow,orange,red,purple,gray}-500 border-blue-200");
 
+/* next/font 가 주입한 CSS 변수를 Tailwind 폰트 유틸리티에 연결한다. */
+@theme inline {
+  --font-sans: var(--font-noto-sans-kr), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
 
 @layer base {
   :root {

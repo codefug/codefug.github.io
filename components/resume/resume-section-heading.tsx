@@ -18,7 +18,7 @@ export function ResumeSectionHeading({
       <span className="relative z-10">{children}</span>
       <span
         aria-hidden
-        className="absolute bottom-1 left-0 h-2.5 w-full rounded-sm bg-primary/20 dark:bg-primary/30"
+        className="absolute bottom-1 left-0 h-2.5 w-full rounded-sm bg-primary/20 dark:bg-primary/30 print:hidden"
       />
     </h2>
   );

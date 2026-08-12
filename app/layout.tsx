@@ -1,6 +1,6 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
-import { Gothic_A1 } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_KR } from "next/font/google";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
 import { LocaleProvider } from "@/components/providers/locale-provider";
@@ -15,11 +15,17 @@ import "./globals.css";
 
 const metaMessages = koMessages.meta;
 
-const gothicA1 = Gothic_A1({
-  variable: "--gothic-a1",
-  weight: ["400", "500", "600", "700"],
+const notoSansKr = Noto_Sans_KR({
+  variable: "--font-noto-sans-kr",
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
-  display: "block",
+  display: "swap",
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -55,9 +61,13 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang={defaultLocale} suppressHydrationWarning>
+    <html
+      lang={defaultLocale}
+      className={`${notoSansKr.variable} ${jetBrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
-      <body className={`${gothicA1.className} antialiased`}>
+      <body className="font-sans antialiased">
         <LocaleProvider initialMessages={koMessages}>
           <ThemeProvider
             attribute="class"
