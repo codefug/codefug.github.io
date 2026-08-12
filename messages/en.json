@@ -321,7 +321,7 @@
       "title": "Seoung Hyun Lee Resume",
       "description": "Resume of Seoung Hyun Lee, Web Frontend Developer."
     },
-    "name": "이승현",
+    "name": "Seoung Hyun Lee",
     "role": "Web Frontend Developer",
     "contact": {
       "email": "Email",
@@ -370,7 +370,7 @@
       "allra": {
         "title": "Allra",
         "subtitle": "Allra Fintech",
-        "description": "An [B]early-settlement financial service[/B] that lets e-commerce sellers receive revenue ahead of their payout date. I joined just as the Next.js migration finished, and took on correcting logic that had been dropped or mistranslated in the move while hardening the service for production.\nBecause the product moves real money, [B]ISMS certification was the largest undertaking[/B]. I redesigned session and token handling to meet its requirements and closed the paths where credentials were leaking into logs and browser autofill. Alongside that, I traced production failures beyond the frontend to their real causes and improved the deployment and testing environment so the whole team could verify changes faster and more safely.",
+        "description": "An [B]early-settlement financial service[/B] that lets e-commerce sellers receive revenue ahead of their payout date. I joined just as the Next.js migration finished, and took on correcting logic that had been dropped or mistranslated in the move while hardening the service for production.\n\nBecause the product moves real money, [B]ISMS certification was the largest undertaking[/B]. I redesigned session and token handling to meet its requirements and closed the paths where credentials were leaking into logs and browser autofill. Alongside that, I traced production failures beyond the frontend to their real causes and improved the deployment and testing environment so the whole team could verify changes faster and more safely.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -384,24 +384,13 @@
             "title": "ISMS certification — redesigned authentication and session architecture",
             "details": [
               {
-                "text": "Moved session handling from a client that [B]computed token expiry itself and refreshed preemptively[/B] to one that [B]reissues in reaction to backend 401s[/B] — consolidating the source of expiry truth on the server and eliminating client/server disagreement about when a session ended (406 files)"
+                "text": "Moved session handling from a client that [B]computed token expiry itself and refreshed preemptively[/B] to one that [B]reissues in reaction to backend 401s[/B] — consolidating the source of expiry truth on the server and eliminating client/server disagreement about when a session ended"
               },
               {
                 "text": "[B]Centralized auth-gated queries behind a shared hook[/B], [B]eliminating the wasted network calls[/B] fired by off-screen components before authentication and rejected on arrival"
               },
               {
-                "text": "Removed [B]three misclassification paths[/B] where an outage looked like a logout and a 5xx looked like a 404, and closed a path where cached pages [B]bypassed auth gating[/B]"
-              }
-            ]
-          },
-          {
-            "title": "Closed credential exposure paths",
-            "details": [
-              {
-                "text": "Found and closed a debugging log that [B]serialized entire request headers and response bodies[/B], leaving auth tokens and cookies in production logs (tracing logs kept)"
-              },
-              {
-                "text": "On the form where sellers [B]look up revenue using their marketplace account credentials[/B], browser autofill was [B]pulling saved credentials in and exposing them[/B]; after confirming the standard attributes were ineffective, solved it by [B]preventing the form from being recognized as a login form[/B]"
+                "text": "Improved the error-handling logic so error types are classified correctly, and removed the logic that was blocking error propagation, closing a path that [B]bypassed auth gating[/B]"
               }
             ]
           },
@@ -450,7 +439,7 @@
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "description": "A [B]unified portal[/B] for managing the various services used inside Samil. I joined a project already underway, owned the frontend, and saw it through to production.\nIn the accounting domain, [B]clearing internal security review was a precondition for shipping[/B]. Replacing a build tool that had stopped receiving security updates and an editor that violated policy was the core work, and I added a server-state layer that replaced caching and synchronization previously handled by hand.",
+        "description": "A [B]unified portal[/B] for managing the various services used inside Samil. I joined a project already underway, owned the frontend, and saw it through to production.\n\nIn the accounting domain, [B]clearing internal security review was a precondition for shipping[/B]. Replacing a build tool that had stopped receiving security updates and an editor that violated policy was the core work, and I added a server-state layer that replaced caching and synchronization previously handled by hand.",
         "stack": ["React", "Vite", "TypeScript", "Tanstack Query"],
         "categories": [
           {
@@ -472,7 +461,7 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "description": "A [B]document analysis solution[/B] where AI analyzes reports. I owned the frontend end to end, from design through deployment.\nDisplaying and finely controlling many PDFs at once was the core feature, so I [B]built the viewer myself[/B] and solved the slowdown that came with document count through virtualization and parallel processing. Since the product was installed directly into client on-premises environments, reducing deployment size mattered just as much.",
+        "description": "A [B]document analysis solution[/B] where AI analyzes reports. I owned the frontend end to end, from design through deployment.\n\nDisplaying and finely controlling many PDFs at once was the core feature, so I [B]built the viewer myself[/B] and solved the slowdown that came with document count through virtualization and parallel processing. Since the product was installed directly into client on-premises environments, reducing deployment size mattered just as much.",
         "stack": ["Next.js", "TypeScript", "PDF.js", "Docker"],
         "categories": [
           {
@@ -494,37 +483,13 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "A [B]component- and token-based design system[/B] used across PwC products in-house, released as v1 together with the whole frontend team.\nAt that early stage the structural foundation mattered most. I established a type-safe styling pattern built on clsx and cva, and moved JS-state-driven animations to CSS transforms for reflow-free 60fps.",
-        "stack": ["Next.js", "TypeScript", "Storybook"],
-        "categories": [
-          {
-            "title": "Establishing code consistency in an early design system",
-            "details": [
-              {
-                "text": "At such an early stage, [B]agreeing on how the team would write things[/B] mattered more than adding components. I drove the adoption of clsx and cva to unify conditional styling and class naming, settling a type-safe styling pattern across the team."
-              },
-              {
-                "text": "For components that render the same UI over different fields and data, I [B]used generics so type inference adapts[/B] to each case, letting each product consume them without redeclaring types."
-              },
-              {
-                "text": "Reorganized and documented the ESLint and TypeScript setup so new contributors could produce consistent results without asking about conventions."
-              }
-            ]
-          },
-          {
-            "title": "Rethinking how animation was handled",
-            "details": [
-              {
-                "text": "Found that animations driven by JS state were causing unnecessary reflows, audited the components, and [B]separated out everything expressible with CSS transform and transition alone[/B] — reaching reflow-free 60fps and sharing that baseline with the team."
-              }
-            ]
-          }
-        ]
+        "description": "A [B]component- and token-based design system[/B] used across PwC products in-house, released as v1 together with the whole frontend team.\n\nAt that early stage the structural foundation mattered most. I established a type-safe styling pattern built on clsx and cva, and moved JS-state-driven animations to CSS transforms for reflow-free 60fps.",
+        "stack": ["Next.js", "TypeScript", "Storybook"]
       },
       "allraAdmin": {
         "title": "Allra Admin",
         "subtitle": "Allra Fintech",
-        "description": "The [B]internal admin[/B] used to operate the settlement service, living in a monorepo shared by several projects. I migrated the legacy PHP v1 to Next.js and [B]built the authentication and audit layer required for ISMS certification[/B].\nIn a financial admin a misbehaving API reaches real data immediately, so a safe way to verify work mattered as much as the features themselves. I proposed and built a mocking environment that reproduces every scenario without depending on the live API.",
+        "description": "The [B]internal admin[/B] used to operate the settlement service, living in a monorepo shared by several projects. I migrated the legacy PHP v1 to Next.js and [B]built the authentication and audit layer required for ISMS certification[/B].\n\nIn a financial admin a misbehaving API reaches real data immediately, so a safe way to verify work mattered as much as the features themselves. I proposed and built a mocking environment that reproduces every scenario without depending on the live API.",
         "stack": [
           "Next.js",
           "TypeScript",
@@ -533,17 +498,6 @@
           "Playwright"
         ],
         "categories": [
-          {
-            "title": "Incremental migration of an admin already in daily use",
-            "details": [
-              {
-                "text": "Joined midway through the migration of the PHP-based v1 into a Next.js monorepo. Because operators depended on the tool every day, I [B]designed components to keep the existing UI and UX largely unchanged[/B] while the stack moved underneath, so no one had to relearn their workflow."
-              },
-              {
-                "text": "Living in a monorepo shared by several projects meant deciding what deserved to be shared. I weighed [B]whether each piece was genuinely used across services, and whether extracting it would hurt readability[/B] before settling the boundary of the shared layer."
-              }
-            ]
-          },
           {
             "title": "Verifying without touching real data",
             "details": [
