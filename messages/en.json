@@ -337,7 +337,7 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "A frontend developer in my second year working with React and TypeScript, building financial services and internal operations tools.\nI aim for structures that let both users and teammates reach a decision easily."
+        "A frontend developer in my second year working with React and TypeScript,\n currently operating and improving an early-settlement financial service.\nI believe every piece of development should serve business value, and I work to look after both UX and DX in service of that."
       ]
     },
     "workExperience": {
