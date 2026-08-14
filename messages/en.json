@@ -407,10 +407,10 @@
                 "text": "Because [B]subsidy depletes sequentially across marketplaces[/B], one row's input changes another row's fee — resolved with a [B]two-pass calculation pipeline[/B]: the first pass determines each row's state, the second deducts subsidy [B]in fee-rate order[/B] across submittable rows only, making the calculation order explicit"
               },
               {
-                "text": "[B]Extracted the fee, limit, and subsidy logic into pure functions[/B] guarded by [B]80+ unit tests[/B], so changes to settlement policy surface regressions in tests first"
+                "text": "[B]Extracted the fee, limit, and subsidy logic into pure functions[/B] guarded by [B]unit tests[/B], so changes to settlement policy surface regressions in tests first"
               },
               {
-                "text": "Attaching the [B]business registration, ID, and bankbook documents sellers submit for a settlement contract was implemented separately in four flows[/B], losing confirmation results — unified into [B]a shared state machine[/B], stopping the [B]15 upload requests per second[/B] the duplicate hook produced"
+                "text": "Attaching the [B]business registration, ID, and bankbook documents sellers submit for a settlement contract was implemented separately in four flows[/B], losing confirmation results — unified into [B]a shared state machine[/B], removing the retry loop caused by a dependency cycle between hooks: measured before/after deployment, [B]upload retries per user fell 58% and contract completion time dropped 84%[/B]"
               },
               {
                 "text": "Condition-triggered overlays [B]stacked on each other and buried required modals[/B] — unified behind a coordinator where each declares only its intent to appear and [B]priority decides the single active one[/B]"
@@ -424,7 +424,10 @@
                 "text": "To verify complex financial flows, structured E2E tests into [B]three layers — Spec (user behavior), Flow (implementation), and Sequence (shared preconditions)[/B] — with API mocking and fixtures reproducing edge cases automatically ([L:https://allrafintech.co.kr/blog/137]company engineering blog[/L])"
               },
               {
-                "text": "CI time scaled linearly as tests and environments grew — improved it with a [B]CI architecture that generates and distributes shards in proportion to test count[/B], [B]cutting pure CI time ~30%[/B] and holding it flat even as tests tripled"
+                "text": "CI time scaled linearly as tests grew — I framed it as a tradeoff where [B]a fixed shard count either wastes runner resources on empty shards when tests are few, or runs short on shards and stretches runtime as tests grow[/B]. Designed [B]a matrix that counts the tests to run and derives the shard count dynamically on every run[/B], [B]keeping time and resource use in balance rather than optimizing one at the other's expense[/B]: as test executions grew 4x, total CI time still fell 30%, cutting [B]CI time per test by ~80%[/B]"
+              },
+              {
+                "text": "Later verified by measurement that [B]splitting into more shards cuts wall-clock time but actually increases billed time[/B] — billing is the sum of job durations, so every split adds cost. [B]Consolidated concurrency groups, removed duplicate triggers, and cleaned up flaky test logic[/B] to [B]cut billed time per merge by ~52%[/B]"
               },
               {
                 "text": "[B]Automated the repetitive test-writing work with an AI skill[/B] and consolidated the supporting docs into a single source so the team works the same way"
@@ -446,7 +449,7 @@
             "title": "Build system migration and structural cleanup",
             "details": [
               {
-                "text": "Migrated the build system to [B]Vite[/B] after CRA was deprecated and ruled out by internal security policy, cutting bundle size [B]1200kB → 500kB (58.3%)[/B]"
+                "text": "Migrated the build system to [B]Vite[/B] after CRA was deprecated and ruled out by internal security policy, cutting [B]bundle size by 58.3%[/B]"
               },
               {
                 "text": "Replaced an editor that violated the internal [B]CSP policy[/B] with react-quill-new, [B]building a custom image-resize module[/B] to close the gap"
@@ -468,13 +471,13 @@
             "title": "Rendering performance and deployment optimization",
             "details": [
               {
-                "text": "Built a [B]custom PDF.js Viewer[/B] to meet the core requirement of fine-grained control over multiple PDFs, applying [B]Web Worker + react-window virtualization[/B] to cut initial render [B]5401ms → 1780ms (67%)[/B]"
+                "text": "Built a [B]custom PDF.js Viewer[/B] to meet the core requirement of fine-grained control over multiple PDFs, applying [B]Web Worker + react-window virtualization[/B] to cut [B]initial render time by 67%[/B]"
               },
               {
-                "text": "On-premises installation at client sites made the 2.22GB image a deployment bottleneck — applied [B]standalone mode + multi-stage build[/B] for [B]2.22GB → 195MB (91.36%)[/B]"
+                "text": "On-premises installation at client sites made the large image a deployment bottleneck — applied [B]standalone mode + multi-stage build[/B], [B]cutting image size by 91.36%[/B]"
               },
               {
-                "text": "Introduced dynamic-import code splitting, cutting the bundle [B]302kB → 143kB (73.5%)[/B]"
+                "text": "Introduced dynamic-import code splitting, [B]cutting bundle size by 73.5%[/B]"
               }
             ]
           }
