@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { PATH } from "@/constants/path";
 import type { SeriesSummary } from "@/util/post";
 import SeriesCard from "./series-card";
 
@@ -23,13 +24,21 @@ export default function SeriesSection({
           className="mt-1 h-5 w-1 shrink-0 rounded-full bg-primary"
           aria-hidden="true"
         />
-        <div>
-          <h2 className="font-bold text-gray-900 text-lg md:text-xl dark:text-gray-100">
-            {t("title")}
-            <span className="ml-2 font-normal text-muted-foreground text-sm">
-              {seriesList.length}
-            </span>
-          </h2>
+        <div className="flex-1">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="font-bold text-gray-900 text-lg md:text-xl dark:text-gray-100">
+              {t("title")}
+              <span className="ml-2 font-normal text-muted-foreground text-sm">
+                {seriesList.length}
+              </span>
+            </h2>
+            <a
+              href={PATH.SERIES}
+              className="shrink-0 text-muted-foreground text-sm transition-colors hover:text-primary"
+            >
+              {t("viewAll")}
+            </a>
+          </div>
           <p className="mt-0.5 text-muted-foreground text-sm">
             {t("description")}
           </p>

@@ -264,13 +264,16 @@
     "aria": {
       "resume": "Go to resume page",
       "portfolio": "Go to portfolio page",
-      "search": "Go to search page"
+      "search": "Go to search page",
+      "series": "Go to series list"
     },
     "description": {
       "resume": "Career and outcomes on one page",
       "portfolio": "Architectures I designed and why",
-      "search": "Find posts by title"
-    }
+      "search": "Find posts by title",
+      "series": "Projects written across multiple posts"
+    },
+    "series": "Series"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -655,6 +658,7 @@
     "kkom-kkom": {
       "name": "KkomKkom",
       "description": "Bootcamp final project. Shared component design, a custom overlay hook, and an isomorphic fetch implementation."
-    }
+    },
+    "viewAll": "View all →"
   }
 }

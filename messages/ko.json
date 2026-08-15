@@ -264,13 +264,16 @@
     "aria": {
       "resume": "이력서 페이지로 이동",
       "portfolio": "포트폴리오 페이지로 이동",
-      "search": "검색 페이지로 이동"
+      "search": "검색 페이지로 이동",
+      "series": "시리즈 목록 페이지로 이동"
     },
     "description": {
       "resume": "경력과 성과를 한 장으로",
       "portfolio": "설계한 구조와 고민의 기록",
-      "search": "제목으로 글 찾기"
-    }
+      "search": "제목으로 글 찾기",
+      "series": "프로젝트를 여러 편으로 기록한 글 묶음"
+    },
+    "series": "Series"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -655,6 +658,7 @@
     "kkom-kkom": {
       "name": "꼼꼼",
       "description": "부트캠프 최종 프로젝트. 공통 컴포넌트 설계, 커스텀 오버레이 훅, 서버·클라이언트 호환 fetch까지 구조를 직접 설계했습니다."
-    }
+    },
+    "viewAll": "전체보기 →"
   }
 }
