@@ -11,6 +11,7 @@ import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
   createBlogPostStructuredData,
+  defaultOpenGraph,
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
@@ -28,9 +29,35 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const hidden = isHiddenPost(id);
+  const frontMatter = (await getPostFrontMattersByIdForAllLocales(id))[
+    defaultLocale
+  ];
+
+  // 글을 못 찾으면 상위 레이아웃 값을 그대로 쓴다.
+  if (!frontMatter) {
+    return {
+      alternates: createAlternateLinks(`${PATH.POSTS}/${id}`),
+      robots: { index: false, follow: false },
+    };
+  }
 
   return {
+    title: frontMatter.title,
+    description: frontMatter.excerpt,
     alternates: createAlternateLinks(`${PATH.POSTS}/${id}`),
+    openGraph: {
+      // openGraph는 병합이 아니라 교체라서 공통값을 매번 펼쳐 넣어야 한다.
+      ...defaultOpenGraph,
+      title: frontMatter.title,
+      description: frontMatter.excerpt,
+      // metadataBase가 layout에 있어서 상대 경로가 절대 URL로 해석된다.
+      url: `${PATH.POSTS}/${id}`,
+      type: "article",
+      publishedTime: frontMatter.date,
+      ...(frontMatter.header?.teaser && {
+        images: [frontMatter.header.teaser],
+      }),
+    },
     // 숨김 글은 URL로는 열리지만 검색엔진 색인에서는 제외한다.
     ...(hidden && { robots: { index: false, follow: false } }),
   };
