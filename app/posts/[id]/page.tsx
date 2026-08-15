@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Giscus from "@/components/giscus";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
+import { AdjacentPosts } from "@/components/post/AdjacentPosts";
 import { PostContent } from "@/components/post/PostContent";
 import { PostHeaderClient } from "@/components/post/PostHeaderClient";
 import PostNotFound from "@/components/post/PostNotFound";
@@ -14,6 +15,7 @@ import {
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 import {
+  getAdjacentPostsForAllLocales,
   getAllFrontMatterListIncludingHidden,
   getPostFrontMattersByIdForAllLocales,
   isHiddenPost,
@@ -66,6 +68,7 @@ export default async function Page({
           <PostContent postId={id} />
         </section>
       </section>
+      <AdjacentPosts adjacentByLocale={getAdjacentPostsForAllLocales(id)} />
       <Giscus />
       <RelatedPosts currentId={id} categories={frontMatterData.categories} />
     </section>
