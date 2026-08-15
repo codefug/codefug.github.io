@@ -34,11 +34,21 @@ export function CompanySection({
 export function TeamSection({
   companyKey,
   children,
+  /**
+   * 같은 팀의 프로젝트가 여러 A4 페이지에 걸쳐 있을 때,
+   * 두 번째 장부터는 팀 이름과 소개를 반복하지 않는다.
+   */
+  headless = false,
 }: {
   companyKey: CompanyKey;
   children: React.ReactNode;
+  headless?: boolean;
 }) {
   const t = useTranslations(`resume.workExperience.items.${companyKey}.team`);
+
+  if (headless) {
+    return <section className="print:mt-0">{children}</section>;
+  }
 
   return (
     <section className="mt-5 print:mt-3">

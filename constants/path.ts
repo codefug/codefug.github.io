@@ -5,7 +5,21 @@
 export const SIDEBAR_OFF_PATHS = ["/resume", "/portfolio"] as const;
 
 export function isSidebarOffPath(pathname: string): boolean {
-  return SIDEBAR_OFF_PATHS.some(
+  return matchesAny(SIDEBAR_OFF_PATHS, pathname);
+}
+
+/**
+ * 헤더·푸터 없이 본문만 보여주는 페이지.
+ * 이력서는 그 자체가 하나의 문서이고 인쇄가 주 용도라 화면 장식을 두지 않는다.
+ */
+export const CHROME_LESS_PATHS = ["/resume"] as const;
+
+export function isChromeLessPath(pathname: string): boolean {
+  return matchesAny(CHROME_LESS_PATHS, pathname);
+}
+
+function matchesAny(paths: readonly string[], pathname: string): boolean {
+  return paths.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
 }
