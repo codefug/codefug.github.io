@@ -3,12 +3,19 @@
 import { useLocale } from "next-intl";
 import { useMemo } from "react";
 import SeriesSection from "@/components/series/series-section";
-import { SERIES_GROUP_ID } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import type { Locale } from "@/i18n/config";
-import { buildCategorySections, buildSeriesSummaries } from "@/util/post";
-import CategorySection from "./category-section";
+import { buildSeriesSummaries } from "@/util/post";
+import { ProjectSection } from "./project-section";
+import { RecentPosts } from "./recent-posts";
 
+/**
+ * 홈 본문.
+ *
+ * 예전에는 카테고리 그룹마다 섹션을 세로로 쌓았지만, 글이 25편 규모에서는
+ * 섹션 하나가 1~2편짜리 토막이 되어 오히려 비어 보였다. 카테고리 탐색은
+ * /posts와 사이드바가 담당하므로, 홈은 "무엇을 만들었고 최근에 무엇을 썼는지"만 보여준다.
+ */
 export default function PostCategoryGallery({
   frontMatterListByLocale,
 }: {
@@ -18,11 +25,6 @@ export default function PostCategoryGallery({
   const totalFrontMatterList =
     frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
 
-  const sections = useMemo(
-    () => buildCategorySections(totalFrontMatterList),
-    [totalFrontMatterList],
-  );
-
   const seriesList = useMemo(
     () => buildSeriesSummaries(totalFrontMatterList),
     [totalFrontMatterList],
@@ -30,19 +32,9 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      {sections.map(({ groupId, posts, tags }) =>
-        // 시리즈는 글 단위가 아니라 시리즈 카드 단위로 보여준다.
-        groupId === SERIES_GROUP_ID ? (
-          <SeriesSection key={groupId} seriesList={seriesList} />
-        ) : (
-          <CategorySection
-            key={groupId}
-            groupId={groupId}
-            posts={posts}
-            tags={tags}
-          />
-        ),
-      )}
+      <ProjectSection posts={totalFrontMatterList} />
+      <SeriesSection seriesList={seriesList} />
+      <RecentPosts frontMatterListByLocale={frontMatterListByLocale} />
     </div>
   );
 }

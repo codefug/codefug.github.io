@@ -177,7 +177,9 @@
   "home": {
     "recentPosts": "최신 게시물",
     "allPosts": "모든 게시물",
-    "recentCategories": "최근 연구했던 카테고리"
+    "recentCategories": "최근 연구했던 카테고리",
+    "recentWriting": "최근 글",
+    "viewAllPosts": "전체 {count}편 보기"
   },
   "search": {
     "placeholder": "검색어를 입력하세요",

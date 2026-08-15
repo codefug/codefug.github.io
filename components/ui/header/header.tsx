@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NAVIGATION_ITEMS, type NavigationLabel } from "@/constants/navigation";
-import { PATH } from "@/constants/path";
+import { isSidebarOffPath, PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
 import {
@@ -28,7 +28,8 @@ export default function Header() {
     () => pathName.includes(PATH.POSTS),
     [pathName],
   );
-  const isResume = useMemo(() => pathName.includes(PATH.RESUME), [pathName]);
+  // 사이드바가 없는 페이지에서는 여는 버튼도 보이지 않아야 한다.
+  const isSidebarOff = useMemo(() => isSidebarOffPath(pathName), [pathName]);
   return (
     <header
       className={cn(
@@ -38,7 +39,7 @@ export default function Header() {
     >
       <div className="flex items-center justify-between gap-6 p-4">
         <section className="flex items-center gap-4">
-          {!isResume && <SideBarToggleButton />}
+          {!isSidebarOff && <SideBarToggleButton />}
           <Link
             href={PATH.HOME}
             passHref
@@ -54,9 +55,9 @@ export default function Header() {
           </Link>
         </section>
         <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
-          {!isResume && <HeaderNavigation />}
+          <HeaderNavigation hideDuplicatesOnMobile={!isSidebarOff} />
           <LanguageSelector />
-          {!isResume && <HeaderSwitch />}
+          <HeaderSwitch />
         </section>
       </div>
       {isShowVerticalScrollbar && <HorizontalScrollbar />}
@@ -64,7 +65,11 @@ export default function Header() {
   );
 }
 
-const HeaderNavigation = memo(function HeaderNavigation() {
+const HeaderNavigation = memo(function HeaderNavigation({
+  hideDuplicatesOnMobile,
+}: {
+  hideDuplicatesOnMobile: boolean;
+}) {
   const pathName = usePathname();
   const t = useTranslations("navigation");
 
@@ -74,6 +79,10 @@ const HeaderNavigation = memo(function HeaderNavigation() {
         {NAVIGATION_ITEMS.map((item) => {
           const key = item.label.toLowerCase() as Lowercase<NavigationLabel>;
           const isActive = pathName === item.href;
+          // 사이드바가 있는 화면에서는 모바일에서 같은 메뉴가 두 번 보이지 않게 한다.
+          // 검색은 아이콘이고 자주 쓰는 동작이라 예외로 남긴다.
+          const isDuplicated =
+            hideDuplicatesOnMobile && item.label !== "Search";
 
           return (
             <Tooltip key={item.label}>
@@ -85,6 +94,7 @@ const HeaderNavigation = memo(function HeaderNavigation() {
                   className={cn(
                     "relative rounded-md px-2 py-1 text-muted-foreground transition-colors hover:text-foreground",
                     isActive && "text-foreground",
+                    isDuplicated && "hidden md:inline-block",
                   )}
                   aria-label={t(`aria.${key}`)}
                   aria-current={isActive ? "page" : undefined}
