@@ -44,4 +44,7 @@ next-env.d.ts
 # claude
 .claude
 # ai
-.omc.playwright-mcp/
+.omc
+
+# playwright mcp 임시 산출물
+.playwright-mcp/
