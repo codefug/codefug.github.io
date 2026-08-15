@@ -205,15 +205,18 @@
       "resume": "Go to resume page",
       "portfolio": "Go to portfolio page",
       "search": "Go to search page",
-      "series": "Go to series list"
+      "series": "Go to series list",
+      "posts": "Go to all posts"
     },
     "description": {
       "resume": "Career and outcomes on one page",
       "portfolio": "Architectures I designed and why",
       "search": "Find posts by title",
-      "series": "Projects written across multiple posts"
+      "series": "Projects written across multiple posts",
+      "posts": "Everything in one place"
     },
-    "series": "Series"
+    "series": "Series",
+    "posts": "Posts"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -579,6 +582,14 @@
     "framework": {
       "label": "Framework",
       "description": "Digging into how React, Next.js, and Electron actually work"
+    },
+    "project": {
+      "label": "Projects",
+      "description": "Things I built, written up from problem to outcome"
+    },
+    "review": {
+      "label": "Reviews",
+      "description": "What I saw and took away from talks, conferences, and courses"
     }
   },
   "series": {
@@ -600,5 +611,9 @@
       "description": "Bootcamp final project. Shared component design, a custom overlay hook, and an isomorphic fetch implementation."
     },
     "viewAll": "View all →"
+  },
+  "posts": {
+    "title": "All posts",
+    "description": "Every post in one place, newest first."
   }
 }

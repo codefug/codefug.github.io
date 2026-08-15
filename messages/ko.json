@@ -205,15 +205,18 @@
       "resume": "이력서 페이지로 이동",
       "portfolio": "포트폴리오 페이지로 이동",
       "search": "검색 페이지로 이동",
-      "series": "시리즈 목록 페이지로 이동"
+      "series": "시리즈 목록 페이지로 이동",
+      "posts": "전체 글 페이지로 이동"
     },
     "description": {
       "resume": "경력과 성과를 한 장으로",
       "portfolio": "설계한 구조와 고민의 기록",
       "search": "제목으로 글 찾기",
-      "series": "프로젝트를 여러 편으로 기록한 글 묶음"
+      "series": "프로젝트를 여러 편으로 기록한 글 묶음",
+      "posts": "모든 글을 한 곳에서"
     },
-    "series": "Series"
+    "series": "Series",
+    "posts": "Posts"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -579,6 +582,14 @@
     "framework": {
       "label": "Framework",
       "description": "React·Next.js·Electron 등 프레임워크의 동작 원리를 파고든 기록"
+    },
+    "project": {
+      "label": "프로젝트",
+      "description": "직접 만든 것들을 문제 정의부터 결과까지 보고서 형태로 정리한 글"
+    },
+    "review": {
+      "label": "후기",
+      "description": "세미나·컨퍼런스·교육에서 보고 들은 것과 남은 생각"
     }
   },
   "series": {
@@ -600,5 +611,9 @@
       "description": "부트캠프 최종 프로젝트. 공통 컴포넌트 설계, 커스텀 오버레이 훅, 서버·클라이언트 호환 fetch까지 구조를 직접 설계했습니다."
     },
     "viewAll": "전체보기 →"
+  },
+  "posts": {
+    "title": "전체 글",
+    "description": "카테고리 구분 없이 모든 글을 최신순으로 봅니다."
   }
 }
