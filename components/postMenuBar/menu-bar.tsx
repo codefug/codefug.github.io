@@ -2,8 +2,6 @@
 
 import { cva } from "class-variance-authority";
 import { List, X } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useHighlightTOC from "@/hooks/use-highlight-toc";
@@ -13,8 +11,12 @@ import { usePostContentStore } from "@/store/use-post-content-store";
 
 type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
 
+/**
+ * 계층에 따라 들여쓰기하지 않고 쭉 나열한다.
+ * 목차는 훑어보는 용도라 depth를 표현하는 것보다 한눈에 들어오는 게 낫다.
+ */
 const menuBarVariant = cva(
-  "block py-1.5 text-sm transition-all duration-150 ease-in-out border-l-2 no-underline rounded-r-md",
+  "block w-full py-1.5 pl-3 pr-2 text-left text-sm transition-all duration-150 ease-in-out border-l-2 no-underline rounded-r-md hover:cursor-pointer",
   {
     variants: {
       isActive: {
@@ -22,21 +24,15 @@ const menuBarVariant = cva(
         false:
           "border-transparent text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-muted/60",
       },
-      level: {
-        1: "pl-3",
-        2: "pl-3",
-        3: "pl-6",
-        4: "pl-9",
-        5: "pl-12",
-        6: "pl-14",
-      },
     },
     defaultVariants: {
       isActive: false,
-      level: 2,
     },
   },
 );
+
+/** 고정 헤더에 가려지지 않도록 목표 위치보다 이만큼 위에서 멈춘다. */
+const SCROLL_OFFSET = 96;
 
 function queryProseHeadings(): Element[] {
   return Array.from(
@@ -72,7 +68,6 @@ function useFindAllHeadings(): HeadingData[] {
 export default function MenuBar() {
   const menuListRef = useRef<HTMLDivElement>(null);
   const [isShow, setIsShow] = useState(false);
-  const pathname = usePathname();
   const t = useTranslations("common");
 
   const headings = useFindAllHeadings();
@@ -80,6 +75,26 @@ export default function MenuBar() {
 
   const handleShowMenuList = useCallback(() => setIsShow(true), []);
   const handleHideMenuList = useCallback(() => setIsShow(false), []);
+
+  /**
+   * 앵커 링크 대신 직접 스크롤한다.
+   * 링크로 이동하면 헤더에 제목이 가리고 URL에 해시가 남는다.
+   */
+  const handleMoveToHeading = useCallback((id: string) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    const top =
+      target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+
+    window.scrollTo({
+      top,
+      // 접근성 설정에서 애니메이션을 줄이도록 했다면 존중한다.
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  }, []);
 
   useOutsideClick(menuListRef, handleHideMenuList);
 
@@ -137,17 +152,17 @@ export default function MenuBar() {
             id="table-of-contents"
           >
             {headings.map((heading) => (
-              <Link
-                href={`${pathname}#${heading.id}`}
+              <button
+                type="button"
                 key={heading.id}
+                onClick={() => handleMoveToHeading(heading.id)}
                 className={menuBarVariant({
-                  level: heading.level,
                   isActive: activeId === heading.id,
                 })}
                 aria-current={activeId === heading.id ? "page" : undefined}
               >
                 {heading.text}
-              </Link>
+              </button>
             ))}
           </nav>
         </div>
