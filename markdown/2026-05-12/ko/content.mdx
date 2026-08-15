@@ -139,4 +139,6 @@ hook만 믿을 수 없다는 뜻이었습니다. 그래서 기록 파일을 교�
 
 **둘.** 남의 프로세스 안에서 도는 코드는 **실패하더라도 조용히 실패해야** 합니다. 제 위젯이 안 뜨는 것보다 그것 때문에 Claude Code가 느려지는 게 훨씬 나쁩니다.
 
+**셋.** 시작할 때 품었던 전제가 틀렸습니다. Claude Code가 터미널 UI를 React Ink로 만들었다는 걸 보고 "React가 웹을 벗어나 훨씬 넓은 곳까지 간다"고 생각해서 Electron을 골랐습니다. 그런데 막상 만들어보니 Electron의 Renderer는 Chromium입니다. React가 웹을 벗어난 게 아니라 **웹이 데스크탑 안으로 들어온 것**에 가까웠습니다. 실제로 이 프로젝트에서 웹과 달랐던 지점은 React가 아니라 그 바깥 — 프로세스 분리, IPC, 파일 접근 권한 — 이었습니다. 정작 "React 생태계가 넓다"의 증거로 삼으려던 React Ink는 아직 못 써봤고, 그건 여전히 숙제로 남아 있습니다.
+
 - 저장소: [github.com/codefug/claude-pet](https://github.com/codefug/claude-pet)

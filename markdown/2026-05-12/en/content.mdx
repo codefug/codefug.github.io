@@ -139,4 +139,6 @@ Two things stayed with me.
 
 **Two.** Code that runs inside someone else's process must **fail quietly when it fails**. My widget not appearing is far better than my widget slowing down Claude Code.
 
+**Three.** The premise I started from was wrong. Seeing that Claude Code built its terminal UI with React Ink, I figured React reached far beyond the web, and picked Electron on that basis. But Electron's renderer is Chromium. React hadn't left the web so much as **the web had moved into the desktop**. What actually differed from the web here wasn't React but everything around it — process separation, IPC, filesystem permissions. And React Ink, the very thing that was supposed to prove the point, I still haven't touched. That one's still open.
+
 - Repository: [github.com/codefug/claude-pet](https://github.com/codefug/claude-pet)
