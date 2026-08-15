@@ -108,13 +108,11 @@ export function BeyondCode() {
                 <h3 className="font-bold text-base">
                   {t(`items.${key}.title`)}
                 </h3>
-                {Array.from({ length: tagCount }, (_, index) => (
-                  <Badge
-                    key={`${key}-tag-${index}`}
-                    variant="outline"
-                    className="text-[11px]"
-                  >
-                    {t(`items.${key}.tags.${index}`)}
+                {Array.from({ length: tagCount }, (_, index) =>
+                  t(`items.${key}.tags.${index}`),
+                ).map((tag) => (
+                  <Badge key={tag} variant="outline" className="text-[11px]">
+                    {tag}
                   </Badge>
                 ))}
               </div>
