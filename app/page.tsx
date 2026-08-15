@@ -46,7 +46,7 @@ export default async function Home() {
         </section>
         <div className="mb-14">
           <PostSwiper
-            cardNumber={10}
+            cardNumber={5}
             frontMatterListByLocale={frontMatterListByLocale}
           />
         </div>

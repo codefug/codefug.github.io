@@ -307,7 +307,8 @@
       "allCategorySelect": "Select all categories",
       "nextSlide": "Move to next slide",
       "previousSlide": "Move to previous slide",
-      "logo": "Codefug Blog logo"
+      "logo": "Codefug Blog logo",
+      "goToSlide": "Go to slide {index}"
     },
     "tableOfContents": "Table of Contents",
     "category": {
