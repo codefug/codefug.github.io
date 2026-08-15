@@ -395,6 +395,20 @@
                 "text": "After leaving Vercel to cut costs, designers and PMs had to [B]run Storybook locally[/B] to review UI — [B]proposed and built per-branch preview deployments[/B] so they could [B]review from a URL alone[/B]"
               }
             ]
+          },
+          {
+            "title": "Landing page performance — Lighthouse 50 → 95",
+            "details": [
+              {
+                "text": "The landing page is the first thing every visitor hits, and its bottleneck was an [B]LCP of 18.4s[/B]. Redesigned responsive images to give [B]each breakpoint's `<source>` its own explicit dimensions[/B], reserving layout per viewport ([B]CLS 0.99 → 0.1[/B]), and cut [B]the top image from 70KB to 30KB while making it 4x sharper[/B] via WebP and an explicit `fetchPriority`"
+              },
+              {
+                "text": "The remaining [B]600ms of TBT[/B] came from third-party scripts. Migrating observability [B]from Datadog to OpenReplay[/B] (cutting monthly cost by ~76%) also dropped the [B]RUM and session-replay bundle that was statically imported at 100% sampling[/B] and shipped even to logged-out visitors"
+              },
+              {
+                "text": "Code I assumed a flag had disabled was still in the bundle, so I [B]checked out the removal commit and its parent into separate worktrees and verified with an A/B build[/B] — [B]landing First Load JS 472KB → 413KB (−12.5%)[/B], with the entire reduction traced to that single chunk"
+              }
+            ]
           }
         ]
       },

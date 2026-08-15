@@ -76,16 +76,6 @@ export default function Page() {
                 <KeepTogether>
                   <ResumeProjectCard projectKey="digitalFinance" />
                 </KeepTogether>
-              </TeamSection>
-            </div>
-          </WorkExperienceSection>
-        </ResumePage>
-
-        {/* 3장 — 나머지 경력과 활동·학력·자격 */}
-        <ResumePage>
-          <WorkExperienceSection>
-            <div>
-              <TeamSection companyKey="pwc" headless>
                 <KeepTogether>
                   <ResumeProjectCard projectKey="documentAi" />
                 </KeepTogether>
@@ -95,7 +85,10 @@ export default function Page() {
               </TeamSection>
             </div>
           </WorkExperienceSection>
+        </ResumePage>
 
+        {/* 3장 — 나머지 경력과 활동·학력·자격 */}
+        <ResumePage>
           <KeepTogether>
             <SideProjects />
           </KeepTogether>
