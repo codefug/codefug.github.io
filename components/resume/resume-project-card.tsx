@@ -83,7 +83,8 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         <RichText>{t("description")}</RichText>
       </p>
 
-      <p className="mt-2.5 mb-4 text-gray-400 text-xs dark:text-gray-500">
+      {/* 기술 스택은 참고 정보라 본문보다 작게 둔다. */}
+      <p className="mt-1.5 mb-3 text-[9.5px] text-gray-400 dark:text-gray-500">
         {stack.join(", ")}
       </p>
 
