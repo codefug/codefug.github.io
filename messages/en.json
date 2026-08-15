@@ -623,7 +623,7 @@
     },
     "dev": {
       "label": "Dev",
-      "description": "Browsers, the web platform, and development tooling"
+      "description": "Concepts and principles that outlive any single framework"
     },
     "language": {
       "label": "Language",
