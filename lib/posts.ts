@@ -164,6 +164,19 @@ export function getAdjacentPosts(
   };
 }
 
+/**
+ * 언어 전환 시에도 클라이언트에서 즉시 반영되도록 로케일별로 미리 계산해 둔다.
+ */
+export function getAdjacentPostsForAllLocales(
+  currentId: string,
+): Record<Locale, AdjacentPosts> {
+  const result = {} as Record<Locale, AdjacentPosts>;
+  for (const locale of locales) {
+    result[locale] = getAdjacentPosts(currentId, locale);
+  }
+  return result;
+}
+
 export function isHiddenPost(id: string): boolean {
   const all = getAllFrontMatterListIncludingHidden()[defaultLocale];
   return all.find((post) => post.id === id)?.hidden === true;
