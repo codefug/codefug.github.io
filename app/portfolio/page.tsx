@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { getTranslations } from "next-intl/server";
-import GrowthJourney from "@/components/growth-journey";
-import AboutHeading from "@/components/portfolio/about-heading";
-import { FloatingShapesBackground } from "@/components/portfolio/floating-shapes-background";
-import { SidebarOff } from "@/components/portfolio/sidebar-off";
-import WorkExperience from "@/components/portfolio/work-experience";
+import { ArchitectureCases } from "@/components/portfolio/architecture-case";
+import { PortfolioHero } from "@/components/portfolio/portfolio-hero";
+import {
+  BeyondCode,
+  Closing,
+  CurrentWork,
+  PortfolioContainer,
+  Principles,
+} from "@/components/portfolio/portfolio-sections";
 import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
   createProfilePageStructuredData,
 } from "@/components/seo/utils";
-import { FadeIn } from "@/components/ui/fade-in";
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 
@@ -25,49 +27,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const Projects = dynamic(() => import("@/components/portfolio/projects"));
-
-const SideProjects = dynamic(() =>
-  import("@/components/portfolio/projects").then((mod) => mod.SideProjects),
-);
-
-const Education = dynamic(() => import("@/components/portfolio/education"));
-
-const Skills = dynamic(() => import("@/components/portfolio/skills"));
-
-const StudyGroup = dynamic(() => import("@/components/portfolio/study-group"));
-
-const Contact = dynamic(() => import("@/components/portfolio/contact"));
-
 export default function Page() {
   return (
     <>
-      <SidebarOff />
       <StructuredData jsonLd={createProfilePageStructuredData(defaultLocale)} />
-      <FloatingShapesBackground />
-      <div className="relative z-10 mx-auto w-full max-w-350 px-4">
-        <AboutHeading />
-        <GrowthJourney />
-        <WorkExperience />
-        <FadeIn className="mb-8">
-          <Skills />
-        </FadeIn>
-        <FadeIn className="mb-8">
-          <Projects />
-        </FadeIn>
-        <FadeIn>
-          <SideProjects />
-        </FadeIn>
-        <FadeIn>
-          <Education />
-        </FadeIn>
-        <FadeIn className="mb-2">
-          <StudyGroup />
-        </FadeIn>
-        <FadeIn className="mb-8">
-          <Contact />
-        </FadeIn>
-      </div>
+      <PortfolioContainer>
+        <PortfolioHero />
+        <CurrentWork />
+        <ArchitectureCases />
+        <Principles />
+        <BeyondCode />
+        <Closing />
+      </PortfolioContainer>
     </>
   );
 }

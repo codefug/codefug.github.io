@@ -162,7 +162,7 @@ export function createProfilePageStructuredData(
       "@id": `${BASE_URL}#author`,
       name: messages[locale].seo.author,
       alternateName: "codefug",
-      description: messages[locale].portfolio.intro,
+      description: messages[locale].portfolio.hero.summary,
       url: BASE_URL,
       image: {
         "@type": "ImageObject" as const,
