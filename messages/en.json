@@ -177,7 +177,9 @@
   "home": {
     "recentPosts": "Recent Posts",
     "allPosts": "All Posts",
-    "recentCategories": "Recently Studied Categories"
+    "recentCategories": "Recently Studied Categories",
+    "recentWriting": "Recent writing",
+    "viewAllPosts": "View all {count}"
   },
   "search": {
     "placeholder": "Enter search term",
