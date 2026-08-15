@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { PATH } from "@/constants/path";
 import getFrontMatterList from "@/lib/posts";
+import { buildSeriesSummaries } from "@/util/post";
 
 const BASE_URL = "https://codefug.github.io";
 
@@ -13,6 +14,15 @@ const postSiteMap: MetadataRoute.Sitemap = postFrontMatter.map((post) => {
     priority: 0.7,
   };
 });
+
+const seriesSiteMap: MetadataRoute.Sitemap = buildSeriesSummaries(
+  postFrontMatter,
+).map(({ slug, endDate }) => ({
+  url: `${BASE_URL}${PATH.SERIES}/${slug}`,
+  lastModified: new Date(endDate),
+  changeFrequency: "monthly",
+  priority: 0.8,
+}));
 
 export const dynamic = "force-static";
 
@@ -44,5 +54,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return [...postSiteMap, ...basePages];
+  return [...postSiteMap, ...seriesSiteMap, ...basePages];
 }

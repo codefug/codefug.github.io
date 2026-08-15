@@ -628,5 +628,24 @@
       "label": "기타",
       "description": "그 밖의 기록들"
     }
+  },
+  "series": {
+    "title": "프로젝트 시리즈",
+    "description": "하나의 프로젝트를 여러 편에 걸쳐 기록했습니다. 순서대로 읽으면 프로젝트가 어떻게 굴러갔는지 보입니다.",
+    "postCount": "{count}편",
+    "readFromStart": "1편부터 읽기",
+    "backToList": "목록으로",
+    "fandomk": {
+      "name": "Fandom-k",
+      "description": "아이돌 후원 서비스를 만들며 팀 프로젝트 세팅부터 무한 스크롤, 스켈레톤 UI까지 처음 부딪힌 것들을 정리했습니다."
+    },
+    "gheuppay": {
+      "name": "급페이",
+      "description": "카드 렌더링 최적화, MSW 기반 mock fetching, 개발 환경 분리까지 UX와 DX를 함께 끌어올린 기록입니다."
+    },
+    "kkom-kkom": {
+      "name": "꼼꼼",
+      "description": "부트캠프 최종 프로젝트. 공통 컴포넌트 설계, 커스텀 오버레이 훅, 서버·클라이언트 호환 fetch까지 구조를 직접 설계했습니다."
+    }
   }
 }

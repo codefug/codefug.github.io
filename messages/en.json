@@ -628,5 +628,24 @@
       "label": "Etc",
       "description": "Everything else"
     }
+  },
+  "series": {
+    "title": "Project Series",
+    "description": "One project, written across multiple posts. Read them in order to see how the project actually unfolded.",
+    "postCount": "{count} posts",
+    "readFromStart": "Start from part 1",
+    "backToList": "Back to list",
+    "fandomk": {
+      "name": "Fandom-k",
+      "description": "Building an idol support service — team project setup, infinite scroll, and skeleton UI."
+    },
+    "gheuppay": {
+      "name": "Gheuppay",
+      "description": "Card rendering optimization, MSW-based mock fetching, and dev environment isolation."
+    },
+    "kkom-kkom": {
+      "name": "KkomKkom",
+      "description": "Bootcamp final project. Shared component design, a custom overlay hook, and an isomorphic fetch implementation."
+    }
   }
 }

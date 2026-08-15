@@ -77,6 +77,16 @@ export function isSeriesTag(tag: string): boolean {
   return SERIES_TAGS.includes(tag as Tag);
 }
 
+/**
+ * 시리즈 태그는 그대로 노출하기엔 식별이 어려워(kkom-kkom 등),
+ * 표시용 이름과 설명을 i18n 키로 연결한다. (messages의 series.<slug>)
+ */
+export const SERIES_SLUGS = SERIES_TAGS;
+
+export function isValidSeriesSlug(slug: string): slug is Tag {
+  return isSeriesTag(slug);
+}
+
 const TAG_TO_GROUP_ID = new Map<string, CategoryGroupId>(
   CATEGORY_GROUPS.flatMap((group) =>
     group.tags.map((tag) => [tag as string, group.id] as const),
