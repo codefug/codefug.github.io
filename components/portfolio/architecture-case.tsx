@@ -105,12 +105,14 @@ function CaseItem({ item }: { item: ArchitectureCase }) {
             tone="rejected"
           >
             <ul className="flex flex-col gap-1.5">
-              {Array.from({ length: item.alternativeCount }, (_, index) => (
+              {Array.from({ length: item.alternativeCount }, (_, index) =>
+                t(`${base}.rejected.${index}`),
+              ).map((text) => (
                 <li
-                  key={`${base}-alt-${index}`}
+                  key={text}
                   className="flex gap-2 before:text-muted-foreground/40 before:content-['—']"
                 >
-                  {t(`${base}.rejected.${index}`)}
+                  {text}
                 </li>
               ))}
             </ul>
