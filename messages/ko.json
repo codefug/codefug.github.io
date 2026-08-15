@@ -246,7 +246,11 @@
     "resultsFor": "{query}에 대한 결과"
   },
   "post": {
-    "notFound": "해당 포스트를 찾을 수 없습니다."
+    "notFound": "해당 포스트를 찾을 수 없습니다.",
+    "readingTime": "{minutes}분",
+    "previous": "이전 글",
+    "next": "다음 글",
+    "adjacentNav": "이전 글과 다음 글"
   },
   "sidebar": {
     "profileAlt": "이승현 프로필 사진",

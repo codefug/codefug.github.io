@@ -1,0 +1,333 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e6]:
+        - img "이승현 프로필 사진" [ref=e9]
+        - generic [ref=e10]:
+          - heading "이승현" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Web Frontend Developer
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - generic [ref=e16]: 프로젝트 시리즈
+            - generic [ref=e17]:
+              - button "kkom-kkom" [ref=e20] [cursor=pointer]
+              - button "gheuppay" [ref=e25] [cursor=pointer]
+              - button "fandomk" [ref=e30] [cursor=pointer]
+          - generic [ref=e33]:
+            - generic [ref=e34]: Dev
+            - generic [ref=e35]:
+              - button "react" [ref=e38] [cursor=pointer]
+              - button "nextjs" [ref=e43] [cursor=pointer]
+              - button "reactdeepdive" [ref=e48] [cursor=pointer]
+              - button "web" [ref=e53] [cursor=pointer]
+          - generic [ref=e56]:
+            - generic [ref=e57]: Language
+            - generic [ref=e58]:
+              - button "javascript" [ref=e61] [cursor=pointer]
+              - button "typescript" [ref=e66] [cursor=pointer]
+        - list [ref=e71]:
+          - listitem [ref=e72]:
+            - link "Resume" [ref=e73] [cursor=pointer]:
+              - /url: /resume/
+          - listitem [ref=e74]:
+            - link "Search" [ref=e75] [cursor=pointer]:
+              - /url: /search/
+    - main [ref=e77]:
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - button "사이드바 열기/닫기" [ref=e81] [cursor=pointer]
+          - link "Codefug Blog 로고" [ref=e83] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e84]: codefug
+        - generic [ref=e85]:
+          - navigation [ref=e86]:
+            - link "이력서 페이지로 이동" [ref=e87] [cursor=pointer]:
+              - /url: /resume/
+              - text: Resume
+            - link "검색 페이지로 이동" [ref=e88] [cursor=pointer]:
+              - /url: /search/
+          - button "언어 선택" [ref=e93]: KO
+          - button "테마 전환" [ref=e94]
+      - generic [ref=e98]:
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]: dev blog
+            - heading "codefug" [level=1] [ref=e107]
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - generic [ref=e110]: "25"
+                - generic [ref=e111]: posts
+              - generic [ref=e112]:
+                - generic [ref=e113]: "2024"
+                - generic [ref=e114]: since
+              - generic [ref=e115]:
+                - generic [ref=e116]: Seoul
+                - generic [ref=e117]: location
+            - generic [ref=e118]:
+              - generic [ref=e119]: root-cause first
+              - generic [ref=e120]: find → fix → share
+              - generic [ref=e121]: team-first
+              - generic [ref=e122]: builds what's missing
+              - generic [ref=e123]: data-driven
+          - generic [ref=e124]:
+            - generic [ref=e125]: codefug — blog.ts
+            - generic [ref=e131]:
+              - generic [ref=e132]:
+                - generic [ref=e133]: "1"
+                - generic [ref=e134]: "2"
+                - generic [ref=e135]: "3"
+                - generic [ref=e136]: "4"
+                - generic [ref=e137]: "5"
+                - generic [ref=e138]: "6"
+                - generic [ref=e139]: "7"
+                - generic [ref=e140]: "8"
+                - generic [ref=e141]: "9"
+                - generic [ref=e142]: "10"
+                - generic [ref=e143]: "11"
+                - generic [ref=e144]: "12"
+              - generic [ref=e145]:
+                - generic [ref=e146]: // codefug.github.io
+                - generic [ref=e147]: "const blog = {"
+                - generic [ref=e148]: "author: \"codefug\","
+                - generic [ref=e149]: "values: [\"root-cause first\", \"find → fix → share\"],"
+                - generic [ref=e150]: "approach: \"find, fix, document\","
+                - generic [ref=e151]: "impact: \"individual → team\","
+                - generic [ref=e152]: "location: \"Seoul\","
+                - generic [ref=e153]: "posts: 25,"
+                - generic [ref=e154]: "}"
+                - generic [ref=e157]: ❯
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - generic [ref=e162]: team-first
+                - generic [ref=e163]: ships knowledge
+              - generic [ref=e164]:
+                - generic [ref=e165]: 25 posts
+                - generic [ref=e166]: Seoul, KR
+        - generic [ref=e167]:
+          - heading "최신 게시물" [level=1] [ref=e172]
+          - region [ref=e174]:
+            - generic [ref=e176]:
+              - group [ref=e177]:
+                - link "useSearchParams는 왜 Suspense가 필요할까 포스트 읽기" [ref=e178] [cursor=pointer]:
+                  - /url: /posts/2026-05-27
+                  - generic [ref=e179]:
+                    - generic [ref=e181]:
+                      - generic [ref=e182]: react
+                      - generic [ref=e183]: nextjs
+                    - heading "useSearchParams는 왜 Suspense가 필요할까" [level=2] [ref=e184]
+                    - paragraph [ref=e185]: 전역 Suspense로 감싸면 경고는 사라지지만, 페이지의 정적 마크업까지 placeholder로 대체됩니다. Next.js 소스코드를 따라가 BailoutToCSRError가 CLIENT_RENDERED 경계로 어떻게 흐르는지 살펴봅니다.
+                    - time [ref=e187]: 2026-05-27
+              - group [ref=e188]:
+                - link "React 생태계는 생각보다 넓다 — Electron 포스트 읽기" [ref=e189] [cursor=pointer]:
+                  - /url: /posts/2026-05-10
+                  - generic [ref=e190]:
+                    - generic [ref=e192]:
+                      - generic [ref=e193]: react
+                      - generic [ref=e194]: electron
+                    - heading "React 생태계는 생각보다 넓다 — Electron" [level=2] [ref=e195]
+                    - paragraph [ref=e196]: Claude Code가 터미널 UI를 React Ink로 만들었다는 걸 알고 React 생태계를 탐구하게 됐습니다. Electron 데스크탑 앱을 직접 만들며 Main/Renderer 구조, IPC 통신, Claude Code hook 연동을 알아봅니다.
+                    - time [ref=e198]: 2026-05-10
+              - group [ref=e199]:
+                - link "Server Action이 있는데 Route Handler는 왜 쓸까 포스트 읽기" [ref=e200] [cursor=pointer]:
+                  - /url: /posts/2026-01-29
+                  - generic [ref=e201]:
+                    - generic [ref=e203]: nextjs
+                    - heading "Server Action이 있는데 Route Handler는 왜 쓸까" [level=2] [ref=e205]
+                    - paragraph [ref=e206]: Next.js의 Server Action과 Route Handler의 차이를 알아보고, 각각을 언제 사용해야 하는지 알아봅니다.
+                    - time [ref=e208]: 2026-01-29
+              - group [ref=e209]:
+                - link "useCallback, useMemo는 왜 쓸까 포스트 읽기" [ref=e210] [cursor=pointer]:
+                  - /url: /posts/2026-01-18
+                  - generic [ref=e211]:
+                    - generic [ref=e213]: react
+                    - heading "useCallback, useMemo는 왜 쓸까" [level=2] [ref=e215]
+                    - paragraph [ref=e216]: 원시형과 참조형의 메모리 구조부터 useEffect 의존성 배열 함정, ESLint 경고의 한계, 메모이제이션 설계 원칙까지. useCallback과 useMemo를 언제 왜 써야 하는지 근본부터 이해합니다.
+                    - time [ref=e218]: 2026-01-18
+              - group [ref=e219]:
+                - link "자바스크립트에서 비동기 통신은 뭘까 포스트 읽기" [ref=e220] [cursor=pointer]:
+                  - /url: /posts/2024-11-10
+                  - generic [ref=e221]:
+                    - generic [ref=e223]: javascript
+                    - heading "자바스크립트에서 비동기 통신은 뭘까" [level=2] [ref=e225]
+                    - paragraph [ref=e226]: microtask queue, macrotask queue, call stack, web api와 관련된 비동기 동작 방식, 비동기 관련 역사와 비동기 코드의 다양한 활용법들을 알아보자.
+                    - time [ref=e228]: 2024-11-10
+              - group [ref=e229]:
+                - link "(꼼꼼 프로젝트) streaming 방식의 tanstack query 포스트 읽기" [ref=e230] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-4
+                  - generic [ref=e231]:
+                    - generic [ref=e233]: kkom-kkom
+                    - heading "(꼼꼼 프로젝트) streaming 방식의 tanstack query" [level=2] [ref=e235]
+                    - paragraph [ref=e236]: infinite scroll, optimistic update 그리고 streaming 방식이 결합된 쿼리 처리 ( useSuspenseQuery, useSuspenseInfiniteQuery )
+                    - time [ref=e238]: 2024-09-14
+              - group [ref=e239]:
+                - link "(꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현 포스트 읽기" [ref=e240] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-3
+                  - generic [ref=e241]:
+                    - generic [ref=e243]: kkom-kkom
+                    - heading "(꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현" [level=2] [ref=e245]
+                    - paragraph [ref=e246]: 서버 액션을 활용한 refresh token rotation, 커링 함수를 이용한 리팩토링
+                    - time [ref=e248]: 2024-09-14
+              - group [ref=e249]:
+                - link "(꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민 포스트 읽기" [ref=e250] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-2
+                  - generic [ref=e251]:
+                    - generic [ref=e253]: kkom-kkom
+                    - heading "(꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민" [level=2] [ref=e255]
+                    - paragraph [ref=e256]: progress bar 로직 연구하기(startTransition), next-nprogress-bar
+                    - time [ref=e258]: 2024-09-14
+              - group [ref=e259]:
+                - link "(꼼꼼 프로젝트) toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현 포스트 읽기" [ref=e260] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-1
+                  - generic [ref=e261]:
+                    - generic [ref=e263]: kkom-kkom
+                    - heading "(꼼꼼 프로젝트) toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현" [level=2] [ref=e265]
+                    - paragraph [ref=e266]: stacking context, compound pattern, 전역 상태를 활용한다는 것의 의미, 토스 개발자 실력 흡수하기
+                    - time [ref=e268]: 2024-09-14
+              - group [ref=e269]:
+                - link "(꼼꼼 프로젝트) 공통 버튼 컴포넌트의 종류를 쉽게 관리하고 누구나 쉽게 확인할 수 있게 하는 방법 포스트 읽기" [ref=e270] [cursor=pointer]:
+                  - /url: /posts/2024-09-11
+                  - generic [ref=e271]:
+                    - generic [ref=e273]: kkom-kkom
+                    - heading "(꼼꼼 프로젝트) 공통 버튼 컴포넌트의 종류를 쉽게 관리하고 누구나 쉽게 확인할 수 있게 하는 방법" [level=2] [ref=e275]
+                    - paragraph [ref=e276]: tailwind로 조건부 처리를 간편하게 하는 방법, 비개발자도 스타일을 쉽게 확인할 수 있도록 storybook 연동
+                    - time [ref=e278]: 2024-09-11
+            - generic:
+              - button "이전 슬라이드로 이동" [disabled]:
+                - generic: Previous slide
+              - img [ref=e279] [cursor=pointer]
+            - generic:
+              - button "다음 슬라이드로 이동" [disabled]:
+                - generic: Next slide
+              - img [ref=e282] [cursor=pointer]
+          - generic [ref=e286]:
+            - heading "모든 게시물" [level=1] [ref=e289]
+            - generic [ref=e291]:
+              - generic [ref=e292]:
+                - heading "태그 목록" [level=2] [ref=e293]
+                - generic [ref=e294]:
+                  - button "그리드 뷰" [ref=e295]
+                  - button "리스트 뷰" [pressed] [ref=e301]
+              - region [ref=e303]:
+                - generic [ref=e305]:
+                  - group [ref=e306]:
+                    - button "전체 카테고리 선택" [pressed] [ref=e307] [cursor=pointer]:
+                      - generic [ref=e308]: 전체(25)
+                  - group [ref=e309]:
+                    - button "react 카테고리 선택 (7개 게시물)" [ref=e310] [cursor=pointer]:
+                      - generic [ref=e311]: react(7)
+                  - group [ref=e312]:
+                    - button "nextjs 카테고리 선택 (4개 게시물)" [ref=e313] [cursor=pointer]:
+                      - generic [ref=e314]: nextjs(4)
+                  - group [ref=e315]:
+                    - button "electron 카테고리 선택 (1개 게시물)" [ref=e316] [cursor=pointer]:
+                      - generic [ref=e317]: electron(1)
+                  - group [ref=e318]:
+                    - button "javascript 카테고리 선택 (1개 게시물)" [ref=e319] [cursor=pointer]:
+                      - generic [ref=e320]: javascript(1)
+                  - group [ref=e321]:
+                    - button "kkom-kkom 카테고리 선택 (5개 게시물)" [ref=e322] [cursor=pointer]:
+                      - generic [ref=e323]: kkom-kkom(5)
+                  - group [ref=e324]:
+                    - button "gheuppay 카테고리 선택 (3개 게시물)" [ref=e325] [cursor=pointer]:
+                      - generic [ref=e326]: gheuppay(3)
+                  - group [ref=e327]:
+                    - button "reactdeepdive 카테고리 선택 (1개 게시물)" [ref=e328] [cursor=pointer]:
+                      - generic [ref=e329]: reactdeepdive(1)
+                  - group [ref=e330]:
+                    - button "web 카테고리 선택 (1개 게시물)" [ref=e331] [cursor=pointer]:
+                      - generic [ref=e332]: web(1)
+                  - group [ref=e333]:
+                    - button "typescript 카테고리 선택 (1개 게시물)" [ref=e334] [cursor=pointer]:
+                      - generic [ref=e335]: typescript(1)
+                  - group [ref=e336]:
+                    - button "fandomk 카테고리 선택 (3개 게시물)" [ref=e337] [cursor=pointer]:
+                      - generic [ref=e338]: fandomk(3)
+              - generic [ref=e339]:
+                - link "useSearchParams는 왜 Suspense가 필요할까 포스트 읽기" [ref=e340] [cursor=pointer]:
+                  - /url: /posts/2026-05-27
+                  - generic [ref=e342]:
+                    - generic [ref=e343]: react
+                    - generic [ref=e344]: nextjs
+                  - heading "useSearchParams는 왜 Suspense가 필요할까" [level=2] [ref=e345]
+                  - paragraph [ref=e346]: 전역 Suspense로 감싸면 경고는 사라지지만, 페이지의 정적 마크업까지 placeholder로 대체됩니다. Next.js 소스코드를 따라가 BailoutToCSRError가 CLIENT_RENDERED 경계로 어떻게 흐르는지 살펴봅니다.
+                  - generic [ref=e347]:
+                    - time [ref=e348]: 2026-05-27
+                    - generic [ref=e349]: ·
+                    - generic [ref=e350]: 21분
+                - link "React 생태계는 생각보다 넓다 — Electron 포스트 읽기" [ref=e351] [cursor=pointer]:
+                  - /url: /posts/2026-05-10
+                  - generic [ref=e353]:
+                    - generic [ref=e354]: react
+                    - generic [ref=e355]: electron
+                  - heading "React 생태계는 생각보다 넓다 — Electron" [level=2] [ref=e356]
+                  - paragraph [ref=e357]: Claude Code가 터미널 UI를 React Ink로 만들었다는 걸 알고 React 생태계를 탐구하게 됐습니다. Electron 데스크탑 앱을 직접 만들며 Main/Renderer 구조, IPC 통신, Claude Code hook 연동을 알아봅니다.
+                  - generic [ref=e358]:
+                    - time [ref=e359]: 2026-05-10
+                    - generic [ref=e360]: ·
+                    - generic [ref=e361]: 12분
+                - link "Server Action이 있는데 Route Handler는 왜 쓸까 포스트 읽기" [ref=e362] [cursor=pointer]:
+                  - /url: /posts/2026-01-29
+                  - generic [ref=e364]: nextjs
+                  - heading "Server Action이 있는데 Route Handler는 왜 쓸까" [level=2] [ref=e366]
+                  - paragraph [ref=e367]: Next.js의 Server Action과 Route Handler의 차이를 알아보고, 각각을 언제 사용해야 하는지 알아봅니다.
+                  - generic [ref=e368]:
+                    - time [ref=e369]: 2026-01-29
+                    - generic [ref=e370]: ·
+                    - generic [ref=e371]: 15분
+                - link "useCallback, useMemo는 왜 쓸까 포스트 읽기" [ref=e372] [cursor=pointer]:
+                  - /url: /posts/2026-01-18
+                  - generic [ref=e374]: react
+                  - heading "useCallback, useMemo는 왜 쓸까" [level=2] [ref=e376]
+                  - paragraph [ref=e377]: 원시형과 참조형의 메모리 구조부터 useEffect 의존성 배열 함정, ESLint 경고의 한계, 메모이제이션 설계 원칙까지. useCallback과 useMemo를 언제 왜 써야 하는지 근본부터 이해합니다.
+                  - generic [ref=e378]:
+                    - time [ref=e379]: 2026-01-18
+                    - generic [ref=e380]: ·
+                    - generic [ref=e381]: 47분
+                - link "자바스크립트에서 비동기 통신은 뭘까 포스트 읽기" [ref=e382] [cursor=pointer]:
+                  - /url: /posts/2024-11-10
+                  - generic [ref=e384]: javascript
+                  - heading "자바스크립트에서 비동기 통신은 뭘까" [level=2] [ref=e386]
+                  - paragraph [ref=e387]: microtask queue, macrotask queue, call stack, web api와 관련된 비동기 동작 방식, 비동기 관련 역사와 비동기 코드의 다양한 활용법들을 알아보자.
+                  - generic [ref=e388]:
+                    - time [ref=e389]: 2024-11-10
+                    - generic [ref=e390]: ·
+                    - generic [ref=e391]: 80분
+                - link "(꼼꼼 프로젝트) streaming 방식의 tanstack query 포스트 읽기" [ref=e392] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-4
+                  - generic [ref=e394]: kkom-kkom
+                  - heading "(꼼꼼 프로젝트) streaming 방식의 tanstack query" [level=2] [ref=e396]
+                  - paragraph [ref=e397]: infinite scroll, optimistic update 그리고 streaming 방식이 결합된 쿼리 처리 ( useSuspenseQuery, useSuspenseInfiniteQuery )
+                  - generic [ref=e398]:
+                    - time [ref=e399]: 2024-09-14
+                    - generic [ref=e400]: ·
+                    - generic [ref=e401]: 25분
+                - link "(꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현 포스트 읽기" [ref=e402] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-3
+                  - generic [ref=e404]: kkom-kkom
+                  - heading "(꼼꼼 프로젝트) 클라이언트와 서버 둘다 호환되는 fetch 구현" [level=2] [ref=e406]
+                  - paragraph [ref=e407]: 서버 액션을 활용한 refresh token rotation, 커링 함수를 이용한 리팩토링
+                  - generic [ref=e408]:
+                    - time [ref=e409]: 2024-09-14
+                    - generic [ref=e410]: ·
+                    - generic [ref=e411]: 17분
+                - link "(꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민 포스트 읽기" [ref=e412] [cursor=pointer]:
+                  - /url: /posts/2024-09-14-2
+                  - generic [ref=e414]: kkom-kkom
+                  - heading "(꼼꼼 프로젝트) startTransition, progress bar 구현에 대한 고민" [level=2] [ref=e416]
+                  - paragraph [ref=e417]: progress bar 로직 연구하기(startTransition), next-nprogress-bar
+                  - generic [ref=e418]:
+                    - time [ref=e419]: 2024-09-14
+                    - generic [ref=e420]: ·
+                    - generic [ref=e421]: 25분
+      - button "맨 위로 이동" [ref=e425] [cursor=pointer]
+      - generic [ref=e429]:
+        - generic [ref=e430]:
+          - link "Email" [ref=e431] [cursor=pointer]:
+            - /url: mailto:robot9917@gmail.com
+          - link "GitHub" [ref=e435] [cursor=pointer]:
+            - /url: https://github.com/codefug
+          - link "RSS 피드" [ref=e438] [cursor=pointer]:
+            - /url: /rss.xml
+        - paragraph [ref=e443]: © 2026 CodeFug Blog
+  - alert [ref=e444]
