@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** A4 한 장의 높이. 좌우·상하 여백은 컨테이너 패딩이 담당한다. */
-const PRINTABLE_HEIGHT = "297mm";
-
 /**
  * 이력서 A4 한 장.
  *
@@ -24,35 +21,27 @@ export function ResumePage({
   return (
     <section
       className={cn(
-        // 폭을 A4로 고정한다. 화면이 좁아지면 줄어드는 대신 가로 스크롤이 생겨서,
-        // 어떤 화면에서 보든 인쇄물과 같은 줄바꿈을 보게 된다.
-        "relative mx-auto w-[210mm] shrink-0 bg-white text-black",
+        // 크기를 A4로 고정한다. 내용이 적어도 한 장은 한 장이므로,
+        // 화면에서도 항상 종이 한 장 크기로 보여 인쇄 결과를 그대로 가늠할 수 있다.
+        // 화면이 좁아지면 줄어드는 대신 가로 스크롤이 생긴다.
+        //
+        // h가 아니라 min-h인 이유: 내용이 넘칠 때 잘라내지 않고 다음 장으로 흘려보낸다.
+        // 조용히 잘리는 것보다 페이지가 하나 늘어나는 편이 알아채기 쉽다.
+        "relative mx-auto min-h-[297mm] w-[210mm] shrink-0 bg-white text-black",
         // 화면: 실제 종이처럼 테두리와 그림자를 준다.
         "rounded-lg border border-gray-300 px-[11mm] py-[10mm] shadow-md",
         // 인쇄: 종이 장식만 걷어내고 패딩은 그대로 둔다.
         // 패딩을 없애면 본문 폭이 달라져 줄바꿈이 화면과 어긋난다.
         "print:m-0 print:rounded-none print:border-0 print:shadow-none",
-        // @page 여백을 0으로 두고 이 패딩이 여백 역할을 하므로, 높이는 A4 전체를 쓴다.
-        // max-w는 인쇄에서도 210mm를 유지해야 본문 폭이 화면과 같아진다.
-        //
-        // h가 아니라 min-h인 이유: 내용이 넘칠 때 잘라내지 않고 다음 장으로 흘려보낸다.
-        // 조용히 잘리는 것보다 페이지가 하나 늘어나는 편이 알아채기 쉽다.
-        "print:min-h-[297mm]",
         // 이 블록이 끝나면 다음 장으로 넘긴다. 마지막 장 뒤에는 빈 장을 만들지 않는다.
         "print:break-after-page print:last:break-after-auto",
         className,
       )}
     >
       {/*
-        화면에서만 보이는 A4 경계선.
-        이 선 아래는 인쇄 시 다음 장으로 넘어가므로,
-        내용을 수정하면서 넘치는지 바로 확인할 수 있다.
+        컨테이너 자체가 A4 한 장 크기이므로 아래 테두리가 곧 페이지 경계다.
+        내용이 이 테두리를 넘어가면 인쇄 시 다음 장으로 밀린다는 뜻이다.
       */}
-      <div
-        className="pointer-events-none absolute inset-x-0 border-red-400/40 border-t border-dashed print:hidden"
-        style={{ top: PRINTABLE_HEIGHT }}
-        aria-hidden="true"
-      />
       {children}
     </section>
   );
