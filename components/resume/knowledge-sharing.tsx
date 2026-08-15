@@ -18,10 +18,10 @@ export default function KnowledgeSharing({
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <h4 className="mt-3 font-semibold text-gray-700 text-sm dark:text-gray-300 print:mt-2 print:text-xs">
+      <h4 className="mt-3 font-semibold text-gray-700 text-sm dark:text-gray-300">
         {t("subtitle")}
       </h4>
-      <ul className="mt-2 space-y-1 text-sm print:text-xs">
+      <ul className="mt-2 space-y-1 text-sm">
         {posts.map((p) => (
           <li key={p.title}>
             <Link

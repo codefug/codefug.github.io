@@ -41,10 +41,11 @@ export default function Page() {
         인쇄 기준으로 A4 한 장이 ResumePage 하나다.
         페이지를 나누거나 합치려면 ResumePage 경계에서 섹션을 옮기면 된다.
       */}
-      <div className="flex flex-col gap-8 break-keep py-8 print:gap-0 print:py-0">
+      {/* 좁은 화면에서는 축소하지 않고 가로 스크롤로 넘긴다. */}
+      <div className="flex w-fit min-w-full flex-col items-center gap-8 break-keep px-4 py-8 print:w-auto print:min-w-0 print:gap-0 print:p-0">
         {/* 1장 — 인적사항과 현재 회사 */}
         <ResumePage>
-          <ResumeHeader />
+          <ResumeHeader className="mb-8" />
 
           <WorkExperienceSection>
             <div>
@@ -60,7 +61,7 @@ export default function Page() {
 
         {/* 2장 — 어드민과 이전 회사 */}
         <ResumePage>
-          <WorkExperienceSection>
+          <WorkExperienceSection headless>
             <div>
               <TeamSection companyKey="allra" headless>
                 <KeepTogether>
@@ -85,7 +86,7 @@ export default function Page() {
 
         {/* 3장 — 나머지 경력과 활동 */}
         <ResumePage>
-          <WorkExperienceSection>
+          <WorkExperienceSection headless>
             <div>
               <TeamSection companyKey="pwc" headless>
                 <KeepTogether>

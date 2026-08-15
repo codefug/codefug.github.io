@@ -38,19 +38,19 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
             href={item.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-400 text-xs hover:text-primary hover:underline print:text-gray-500"
+            className="text-gray-400 text-xs hover:text-primary hover:underline"
           >
             GitHub
           </a>
         )}
       </div>
-      <p className="mt-1 text-gray-600 text-sm dark:text-gray-400 print:text-xs">
+      <p className="mt-1 text-gray-600 text-sm dark:text-gray-400">
         <RichText>{item.description}</RichText>
       </p>
-      <p className="mt-1.5 text-gray-400 text-xs dark:text-gray-500 print:text-gray-500">
+      <p className="mt-1.5 text-gray-400 text-xs dark:text-gray-500">
         {item.stack.join(", ")}
       </p>
-      <ul className="mt-2 space-y-1 text-gray-700 text-sm dark:text-gray-300 print:mt-1 print:text-xs">
+      <ul className="mt-2 space-y-1 text-gray-700 text-sm dark:text-gray-300">
         {item.details.map((d, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content
           <li key={i} className="ml-4 list-disc">
@@ -67,9 +67,9 @@ export default function SideProjects({ className }: { className?: string }) {
   const items = t.raw("items") as SideProjectItem[];
 
   return (
-    <section className={cn("py-4 print:py-3", className)}>
+    <section className={cn("py-4", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <div className="mt-3 space-y-4 print:mt-2 print:space-y-3">
+      <div className="mt-3 space-y-4">
         {items.map((item) => (
           <SideProjectCard key={item.title} item={item} />
         ))}
