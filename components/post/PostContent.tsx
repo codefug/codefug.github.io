@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { useLayoutEffect } from "react";
-import type { Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import { mdxMap } from "@/lib/mdxMap";
 import { usePostContentStore } from "@/store/use-post-content-store";
 import { PostContentSkeleton } from "./PostContentSkeleton";
@@ -29,7 +29,8 @@ export function PostContent({ postId }: Props) {
     return <PostContentSkeleton />;
   }
 
-  const mdxModule = mdxMap[locale]?.[postId];
+  // 번역이 없는 글은 기본 언어(한글) 본문으로 넘어간다.
+  const mdxModule = mdxMap[locale]?.[postId] ?? mdxMap[defaultLocale]?.[postId];
   if (!mdxModule) {
     return null;
   }

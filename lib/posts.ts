@@ -77,7 +77,13 @@ export const getAllFrontMatterListIncludingHidden = cache(
 
     for (const locale of locales) {
       result[locale] = folderNames
-        .map((folderName) => readFrontMatter(folderName, locale))
+        .map(
+          (folderName) =>
+            // 번역이 없는 글은 목록에서 사라지는 대신 기본 언어(한글)로 보여준다.
+            // 앞으로 한글로만 써도 글이 누락되지 않게 하기 위함이다.
+            readFrontMatter(folderName, locale) ??
+            readFrontMatter(folderName, defaultLocale),
+        )
         .filter((item): item is FrontMatter => item !== null)
         .reverse();
     }
@@ -94,24 +100,31 @@ export async function getPostFrontMattersByIdForAllLocales(
 ): Promise<Record<Locale, ParsedFrontMatter>> {
   const frontMatters = {} as Record<Locale, ParsedFrontMatter>;
 
-  for (const locale of locales) {
-    const frontMatterPath = join(postsDirectory, id, locale, "frontmatter.mdx");
-    const contentPath = join(postsDirectory, id, locale, "content.mdx");
+  const read = async (locale: Locale): Promise<ParsedFrontMatter | null> => {
     try {
       const [frontMatterFile, contentFile] = await Promise.all([
-        readFile(frontMatterPath, "utf8"),
-        readFile(contentPath, "utf8"),
+        readFile(join(postsDirectory, id, locale, "frontmatter.mdx"), "utf8"),
+        readFile(join(postsDirectory, id, locale, "content.mdx"), "utf8"),
       ]);
       const { data } = grayMatter(frontMatterFile);
       const { content } = grayMatter(contentFile);
-      frontMatters[locale] = {
+      return {
         ...(data as ParsedFrontMatter),
         id,
         readingTime: getReadingTime(content, locale),
       };
     } catch {
-      // skip missing locales
+      return null;
     }
+  };
+
+  for (const locale of locales) {
+    // 번역이 없으면 기본 언어로 보여준다. (목록과 같은 규칙)
+    const frontMatter =
+      (await read(locale)) ??
+      (locale === defaultLocale ? null : await read(defaultLocale));
+
+    if (frontMatter) frontMatters[locale] = frontMatter;
   }
 
   return frontMatters;
