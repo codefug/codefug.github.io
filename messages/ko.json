@@ -623,7 +623,7 @@
     },
     "dev": {
       "label": "Dev",
-      "description": "브라우저와 웹 전반, 개발 환경에 대한 기록"
+      "description": "특정 프레임워크에 매이지 않는, 개발 전반에 대한 개념과 원리"
     },
     "language": {
       "label": "Language",
