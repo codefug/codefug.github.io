@@ -585,10 +585,6 @@
       "label": "Framework",
       "description": "Digging into how React, Next.js, and Electron actually work"
     },
-    "project": {
-      "label": "Projects",
-      "description": "Things I built, written up from problem to outcome"
-    },
     "review": {
       "label": "Reviews",
       "description": "What I saw and took away from talks, conferences, and courses"
@@ -612,7 +608,11 @@
       "name": "KkomKkom",
       "description": "Bootcamp final project. Shared component design, a custom overlay hook, and an isomorphic fetch implementation."
     },
-    "viewAll": "View all →"
+    "viewAll": "View all →",
+    "claude-pet": {
+      "name": "Claude Pet",
+      "description": "Building a macOS desktop widget that shows the status of every Claude Code session at once."
+    }
   },
   "posts": {
     "title": "All posts",

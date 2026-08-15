@@ -91,12 +91,14 @@ function CaseItem({ item }: { item: ArchitectureCase }) {
             {t(`${base}.decision`)}
           </Block>
 
-          <figure className="m-0">
-            <Mermaid>{item.diagram}</Mermaid>
-            <figcaption className="text-center text-muted-foreground/60 text-xs">
-              {t("diagramHint")}
-            </figcaption>
-          </figure>
+          {item.diagram && (
+            <figure className="m-0">
+              <Mermaid>{item.diagram}</Mermaid>
+              <figcaption className="text-center text-muted-foreground/60 text-xs">
+                {t("diagramHint")}
+              </figcaption>
+            </figure>
+          )}
 
           {/* 무엇을 안 했는지가 설계 판단의 근거다. */}
           <Block

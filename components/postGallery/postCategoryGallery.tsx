@@ -6,7 +6,6 @@ import SeriesSection from "@/components/series/series-section";
 import type { FrontMatter } from "@/constants/mdx";
 import type { Locale } from "@/i18n/config";
 import { buildSeriesSummaries } from "@/util/post";
-import { ProjectSection } from "./project-section";
 import { RecentPosts } from "./recent-posts";
 
 /**
@@ -32,7 +31,6 @@ export default function PostCategoryGallery({
 
   return (
     <div>
-      <ProjectSection posts={totalFrontMatterList} />
       <SeriesSection seriesList={seriesList} />
       <RecentPosts frontMatterListByLocale={frontMatterListByLocale} />
     </div>
