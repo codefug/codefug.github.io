@@ -13,6 +13,15 @@ const messages = {
 };
 
 /**
+ * 하위 세그먼트에서 openGraph를 다시 선언하면 상위 값이 병합되지 않고
+ * 통째로 교체된다. 공통으로 유지할 값은 여기에 두고 매번 펼쳐 넣는다.
+ */
+export const defaultOpenGraph = {
+  siteName: koMessages.meta.openGraph.title,
+  locale: "ko_KR",
+} satisfies Metadata["openGraph"];
+
+/**
  * 언어 코드를 hreflang 형식으로 변환
  */
 function getHreflangCode(locale: Locale): string {
