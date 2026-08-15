@@ -6,10 +6,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import { NAVIGATION_ITEMS, type NavigationLabel } from "@/constants/navigation";
 import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../tooltip";
 import { LanguageSelector } from "./language-selector";
 import { HeaderSwitch } from "./switch";
 import headerVariant from "./variant";
@@ -60,33 +66,55 @@ export default function Header() {
 
 const HeaderNavigation = memo(function HeaderNavigation() {
   const pathName = usePathname();
-  const t = useTranslations("navigation.aria");
+  const t = useTranslations("navigation");
 
   return (
-    <nav className="flex items-center gap-4 font-semibold text-sm md:text-base">
-      {NAVIGATION_ITEMS.map((item) => (
-        <Link
-          href={item.href}
-          target={item.target}
-          key={item.label}
-          passHref
-          className={cn(
-            "text-muted-foreground transition-colors hover:text-foreground",
-            pathName === item.href && "text-black dark:text-white",
-          )}
-          aria-label={t(
-            item.label.toLowerCase() as "resume" | "portfolio" | "search",
-          )}
-          rel={item.rel}
-        >
-          {item.label === "Search" ? (
-            <Search height={20} width={20} className="h-5 w-5" />
-          ) : (
-            item.label
-          )}
-        </Link>
-      ))}
-    </nav>
+    <TooltipProvider delayDuration={150}>
+      <nav className="flex items-center gap-1 font-semibold text-sm md:text-base">
+        {NAVIGATION_ITEMS.map((item) => {
+          const key = item.label.toLowerCase() as Lowercase<NavigationLabel>;
+          const isActive = pathName === item.href;
+
+          return (
+            <Tooltip key={item.label}>
+              <TooltipTrigger asChild>
+                <Link
+                  href={item.href}
+                  target={item.target}
+                  passHref
+                  className={cn(
+                    "relative rounded-md px-2 py-1 text-muted-foreground transition-colors hover:text-foreground",
+                    isActive && "text-foreground",
+                  )}
+                  aria-label={t(`aria.${key}`)}
+                  aria-current={isActive ? "page" : undefined}
+                  rel={item.rel}
+                >
+                  {item.label === "Search" ? (
+                    <Search height={20} width={20} className="h-5 w-5" />
+                  ) : (
+                    item.label
+                  )}
+                  {isActive && (
+                    <span
+                      className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary"
+                      aria-hidden="true"
+                    />
+                  )}
+                </Link>
+              </TooltipTrigger>
+              {/* 각 메뉴가 무엇을 보여주는 곳인지 한 줄로 설명한다. */}
+              <TooltipContent side="bottom" className="max-w-52 text-center">
+                <span className="font-semibold">{t(key)}</span>
+                <span className="block font-normal opacity-80">
+                  {t(`description.${key}`)}
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </nav>
+    </TooltipProvider>
   );
 });
 

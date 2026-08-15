@@ -265,6 +265,11 @@
       "resume": "Go to resume page",
       "portfolio": "Go to portfolio page",
       "search": "Go to search page"
+    },
+    "description": {
+      "resume": "Career and outcomes on one page",
+      "portfolio": "Architectures I designed and why",
+      "search": "Find posts by title"
     }
   },
   "meta": {

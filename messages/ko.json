@@ -265,6 +265,11 @@
       "resume": "이력서 페이지로 이동",
       "portfolio": "포트폴리오 페이지로 이동",
       "search": "검색 페이지로 이동"
+    },
+    "description": {
+      "resume": "경력과 성과를 한 장으로",
+      "portfolio": "설계한 구조와 고민의 기록",
+      "search": "제목으로 글 찾기"
     }
   },
   "meta": {
