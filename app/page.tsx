@@ -50,13 +50,9 @@ export default async function Home() {
             frontMatterListByLocale={frontMatterListByLocale}
           />
         </div>
-        <div>
-          <BlockHeader title={<HomeSectionTitle translationKey="allPosts" />}>
-            <PostCategoryGallery
-              frontMatterListByLocale={frontMatterListByLocale}
-            />
-          </BlockHeader>
-        </div>
+        <PostCategoryGallery
+          frontMatterListByLocale={frontMatterListByLocale}
+        />
       </div>
     </div>
   );
