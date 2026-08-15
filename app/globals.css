@@ -228,10 +228,14 @@
     break-inside: avoid;
   }
 
-  /* 헤딩 직후 페이지 분리 방지 */
-  h2,
-  h3,
-  h4 {
+  /*
+   * 헤딩 직후 페이지 분리 방지.
+   * 단 ResumePage처럼 스스로 페이지 경계를 지정한 요소는 건드리지 않는다.
+   * (break-after: avoid가 명시한 page 경계와 충돌해 분할 위치가 밀린다)
+   */
+  h2:not([class*="break-after"]),
+  h3:not([class*="break-after"]),
+  h4:not([class*="break-after"]) {
     break-after: avoid;
   }
 
