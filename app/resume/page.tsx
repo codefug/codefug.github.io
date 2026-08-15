@@ -81,7 +81,7 @@ export default function Page() {
           </WorkExperienceSection>
         </ResumePage>
 
-        {/* 3장 — 나머지 경력과 활동 */}
+        {/* 3장 — 나머지 경력과 활동·학력·자격 */}
         <ResumePage>
           <WorkExperienceSection>
             <div>
@@ -103,10 +103,6 @@ export default function Page() {
           <KeepTogether>
             <OpenSource />
           </KeepTogether>
-        </ResumePage>
-
-        {/* 4장 — 공유·학력·자격 */}
-        <ResumePage>
           <KeepTogether>
             <KnowledgeSharing />
           </KeepTogether>

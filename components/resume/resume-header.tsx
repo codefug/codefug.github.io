@@ -26,7 +26,7 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
 
 function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
-    <li className="flex items-center justify-end gap-1.5">
+    <li className="flex items-center justify-start gap-1.5">
       {/*
         라벨 칸을 고정 폭(w-24)으로 잡으면 짧은 라벨 뒤에 빈 공간이 남아
         블록 전체가 오른쪽 끝에 붙지 못한다. 내용 폭만 차지하게 둔다.
@@ -96,13 +96,13 @@ export default function ResumeHeader({ className }: { className?: string }) {
         {/* 이름 아래에 소개가 붙고, 연락처는 오른쪽에 둔다. */}
         <div className="flex min-w-0 flex-1 items-start justify-between gap-6">
           <div className="min-w-0 flex-1">
-            <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-2xl text-gray-900 dark:text-white">
+            <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-[22px] text-gray-900 dark:text-white">
               <span>{t("name")}</span>
-              <span className="font-medium text-primary text-sm">
+              <span className="font-medium text-[11px] text-primary">
                 {t("role")}
               </span>
             </h1>
-            <div className="mt-2 space-y-2 text-[11.5px] text-gray-700 leading-relaxed dark:text-gray-300">
+            <div className="mt-2 space-y-1.5 text-[9.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
               {paragraphs.map((p, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: static content
                 <p key={i} className="whitespace-pre-line">
@@ -112,7 +112,7 @@ export default function ResumeHeader({ className }: { className?: string }) {
             </div>
           </div>
 
-          <ul className="flex shrink-0 flex-col gap-y-1 text-[11.5px]">
+          <ul className="flex shrink-0 flex-col gap-y-0.5 text-[9.5px]">
             {contacts.map((contact) => (
               <ContactListItem key={contact.label} {...contact} />
             ))}

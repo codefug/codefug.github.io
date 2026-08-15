@@ -12,7 +12,7 @@ export default function ResumeEducation({ className }: { className?: string }) {
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <ul className="mt-4 space-y-2 text-[13px]">
+      <ul className="mt-3 space-y-1.5 text-[9.5px]">
         {items.map((e) => (
           <li key={e.title}>
             <div className="font-semibold text-gray-900 dark:text-white">
