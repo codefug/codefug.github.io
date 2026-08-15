@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
@@ -11,51 +10,44 @@ export default function PostListItem({
   categories,
   date,
   excerpt,
-  header,
   title,
   id,
+  readingTime,
 }: FrontMatter) {
-  const t = useTranslations("common.aria");
+  const t = useTranslations();
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
 
   return (
     <a
       href={linkHref}
-      aria-label={t("postRead", { title })}
+      aria-label={t("common.aria.postRead", { title })}
       rel="bookmark"
       title={title}
-      className="group flex gap-4 rounded-xl border border-border bg-background p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm sm:gap-5"
+      className="group relative flex flex-col gap-1.5 rounded-xl border border-border bg-background p-4 pl-5 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm"
     >
-      <div className="relative h-20 w-24 flex-shrink-0 overflow-hidden rounded-lg sm:h-24 sm:w-32">
-        <Image
-          priority={false}
-          src={header.teaser}
-          alt={title}
-          fill
-          sizes="(max-width: 640px) 96px, 128px"
-          placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
-          className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
-        />
+      <span
+        className="absolute top-4 bottom-4 left-0 w-0.5 rounded-full bg-primary/0 transition-colors duration-200 group-hover:bg-primary/60"
+        aria-hidden="true"
+      />
+      <div className="flex flex-wrap items-center gap-1">
+        {categories.map((category) => (
+          <Badge key={category + id} variant="outline" className="text-xs">
+            {category}
+          </Badge>
+        ))}
       </div>
-
-      <div className="flex min-w-0 flex-1 flex-col justify-between">
-        <div>
-          <div className="mb-1.5 flex flex-wrap gap-1">
-            {categories.map((category) => (
-              <Badge key={category + id} variant="outline" className="text-xs">
-                {category}
-              </Badge>
-            ))}
-          </div>
-          <h2 className="mb-1 line-clamp-1 font-bold text-sm sm:text-base">
-            {title}
-          </h2>
-          <p className="line-clamp-2 text-muted-foreground text-xs sm:text-sm">
-            {excerpt}
-          </p>
-        </div>
-        <time className="mt-2 text-muted-foreground/60 text-xs">{date}</time>
+      <h2 className="line-clamp-1 font-bold text-base transition-colors group-hover:text-primary sm:text-lg">
+        {title}
+      </h2>
+      <p className="line-clamp-2 text-muted-foreground text-sm">{excerpt}</p>
+      <div className="mt-1 flex items-center gap-2 text-muted-foreground/60 text-xs">
+        <time>{date}</time>
+        {readingTime && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{t("post.readingTime", { minutes: readingTime })}</span>
+          </>
+        )}
       </div>
     </a>
   );

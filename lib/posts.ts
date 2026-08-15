@@ -9,6 +9,23 @@ import { getReadingTime } from "@/util/reading-time";
 
 const postsDirectory = join(process.cwd(), "markdown");
 
+/**
+ * 목록 카드는 썸네일 대신 읽는 시간을 보여주므로,
+ * 프론트매터를 읽을 때 본문 기준 읽는 시간을 함께 계산해 둔다.
+ */
+function readReadingTime(
+  folderName: string,
+  locale: Locale,
+): number | undefined {
+  try {
+    const contentPath = join(postsDirectory, folderName, locale, "content.mdx");
+    const { content } = grayMatter(readFileSync(contentPath, "utf8"));
+    return getReadingTime(content, locale);
+  } catch {
+    return undefined;
+  }
+}
+
 function readFrontMatter(
   folderName: string,
   locale: Locale,
@@ -20,6 +37,7 @@ function readFrontMatter(
     return {
       id: folderName,
       ...(matterResult.data as Omit<FrontMatter, "id">),
+      readingTime: readReadingTime(folderName, locale),
     };
   } catch {
     return null;
