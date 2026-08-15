@@ -25,7 +25,7 @@ export function ArchitectureCases() {
   const t = useTranslations("portfolio.architecture");
 
   return (
-    <section id="architecture" className="mb-16 scroll-mt-24">
+    <section id="work" className="mb-16 scroll-mt-24">
       <SectionHeading title={t("title")} subtitle={t("subtitle")} />
 
       {/* 면접관이 제목만 훑고 관심 있는 것만 펼칠 수 있도록 아코디언으로 둔다. */}
