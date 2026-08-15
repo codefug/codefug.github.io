@@ -1,0 +1,177 @@
+import Mermaid from "@/components/mdx/mermaid.tsx";
+
+## 메타 태그를 다 넣었는데 왜 파란 링크 한 줄일까
+
+`title`, `description`, `og:image`를 빠짐없이 넣었습니다. 그런데 검색 결과는 여전히 **제목 한 줄과 설명 두 줄**이었습니다.
+
+반면 어떤 페이지는 별점, 조리 시간, 재료 개수까지 검색 결과에 나옵니다. 같은 HTML인데 왜 다를까요.
+
+이유는 이렇습니다. 검색엔진은 페이지를 **읽을** 수는 있지만, 그 안의 "4.8"이 별점인지 가격인지 버전 번호인지는 **모릅니다.** 사람은 문맥으로 알지만 기계는 아닙니다.
+
+메타 태그는 페이지 전체를 한 덩어리로 설명합니다. "이 페이지의 제목은 X이고 요약은 Y다"까지입니다. 하지만 검색 결과에 별점을 띄우려면 **"이 숫자가 별점이고, 만점은 5이며, 13,000명이 매겼다"**를 알려줘야 합니다.
+
+그 역할을 하는 게 구조화된 데이터입니다.
+
+## 무엇이 달라지는가
+
+구글 공식 문서의 그림이 이걸 가장 명확하게 보여줍니다.
+
+![JSON-LD가 리치 결과로 이어지는 과정](/images/2026-08-15/json-ld-to-rich-result.png)
+
+가운데 `<script type="application/ld+json">` 안의 값들이 왼쪽 검색 결과의 각 요소로 **그대로 연결**됩니다. `aggregateRating`이 별점 4.8이 되고, `recipeIngredient`가 "3 ingredients"가 됩니다.
+
+FAQ도 마찬가지입니다.
+
+![FAQ 구조화된 데이터가 검색 결과에 표시되는 모습](/images/2026-08-15/faq-rich-result.png)
+
+`Question`과 `acceptedAnswer`로 표시해두면 검색 결과에서 바로 답을 펼쳐볼 수 있습니다. 사용자가 클릭하지 않아도 답을 얻는다는 뜻이라 트래픽 관점에서는 손해 같지만, **검색 결과에서 차지하는 면적이 커집니다.**
+
+## 세 가지 방식 중에 무엇을 쓸까
+
+구조화된 데이터를 넣는 방법은 세 가지입니다.
+
+| 방식 | 넣는 위치 | 특징 |
+| --- | --- | --- |
+| **JSON-LD** | `<script>` 안에 따로 | 마크업과 분리됨. 구글 권장 |
+| Microdata | HTML 태그 속성으로 | 마크업에 섞임 |
+| RDFa | HTML 태그 속성으로 | 마크업에 섞임 |
+
+**JSON-LD를 씁니다.** 이유는 관리 때문입니다.
+
+Microdata나 RDFa는 `<div itemprop="ratingValue">4.8</div>`처럼 **마크업 안에 섞여 들어갑니다.** 그러면 디자인을 바꾸려고 태그 구조를 손볼 때마다 구조화된 데이터가 함께 깨집니다. 반대로 JSON-LD는 별도 스크립트라 **화면 구조와 독립적**입니다.
+
+구글도 JSON-LD를 권장합니다.
+
+## Next.js에서 넣기 — XSS 한 줄
+
+Next.js 공식 문서가 알려주는 패턴은 간단합니다. 다만 **한 줄이 중요합니다.**
+
+```tsx
+export function StructuredData({ jsonLd }: { jsonLd: JsonLdData }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}
+```
+
+`.replace(/</g, "\\u003c")`가 그 줄입니다.
+
+`JSON.stringify`는 **악의적인 문자열을 걸러주지 않습니다.** 만약 글 제목에 `</script><script>...`가 들어 있으면, 그대로 출력됐을 때 스크립트 태그가 닫히고 새 스크립트가 실행됩니다. `<`를 유니코드로 바꿔두면 JSON 파싱에는 영향이 없으면서 태그로 해석되지 않습니다.
+
+사용자가 제목을 입력하는 서비스라면 반드시 필요한 처리입니다.
+
+### 타입으로 오타 막기
+
+스키마 속성 이름은 외워서 쓰기 어렵습니다. `datePublished`인지 `publishedDate`인지 헷갈리는데, **틀려도 에러가 안 납니다.** 그냥 무시될 뿐이라 한참 뒤에 발견하게 됩니다.
+
+`schema-dts`를 쓰면 타입으로 잡힙니다.
+
+```ts
+import type { Graph } from "schema-dts";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      headline: title,
+      datePublished: date,
+      // publishedDate로 쓰면 여기서 타입 에러
+    },
+  ],
+} satisfies Graph;
+```
+
+`satisfies`를 쓰는 이유는 타입 검사는 받으면서 **실제 객체의 구체적인 타입은 유지**하기 위해서입니다.
+
+## 검증은 어떻게 하나
+
+넣었으면 확인해야 합니다. 구글 **리치 검색결과 테스트**에 URL을 넣으면 됩니다.
+
+![리치 검색결과 테스트 화면](/images/2026-08-15/rich-result-test.png)
+
+위 예시를 보면 `Recipe` 타입은 인식됐지만 **경고 6개**가 있습니다. `video`, `nutrition`, `description` 같은 **선택 속성이 비어 있다**는 뜻입니다.
+
+여기서 알아둘 게 있습니다. 속성은 두 종류입니다.
+
+- **필수 속성** — 없으면 리치 결과 자체가 안 나옵니다
+- **권장 속성** — 없어도 나오지만, **채울수록 더 풍부하게 나옵니다**
+
+경고는 에러가 아니라 "더 채울 수 있다"는 안내입니다. 다만 경쟁 페이지가 다 채웠다면 그만큼 밀립니다.
+
+## 하면 안 되는 것들
+
+구글 가이드라인 중 실수하기 쉬운 것들입니다.
+
+**1. 화면에 없는 정보를 넣지 않기.** 페이지에 별점을 안 보여주면서 구조화된 데이터에만 별점을 넣으면 안 됩니다. 검색 결과와 실제 페이지가 다르면 사용자를 속이는 것이고, **패널티 대상**입니다.
+
+**2. 구조화된 데이터만 있는 페이지를 만들지 않기.** 마크업만 넣어둔 빈 페이지는 스팸으로 봅니다.
+
+**3. 한 페이지에 여러 방식을 섞지 않기.** JSON-LD와 Microdata를 같이 쓰면 검색엔진이 어느 쪽을 믿어야 할지 모릅니다.
+
+원칙은 하나입니다. **구조화된 데이터는 화면에 있는 내용을 기계가 읽을 수 있게 번역한 것**이지, 화면에 없는 정보를 주장하는 수단이 아닙니다.
+
+## 이 블로그에는 어떻게 넣었나
+
+글마다 `BlogPosting`을, 사이트 전체에 `Blog`와 `Person`을 넣었습니다.
+
+<Mermaid>
+{`flowchart TD
+  P["페이지"] --> C["구조화된 데이터 컴포넌트"]
+  C -->|"JSON.stringify + < 이스케이프"| S["script type=application/ld+json"]
+
+  D1["글 상세"] -->|"BlogPosting + BreadcrumbList"| C
+  D2["홈"] -->|"Blog + ItemList"| C
+  D3["포트폴리오"] -->|"ProfilePage + Person"| C`}
+</Mermaid>
+
+`BreadcrumbList`를 함께 넣은 이유는 검색 결과에서 **URL 대신 경로가 보이게** 하기 위해서입니다. `codefug.github.io › posts › 2026-08-15`보다 `홈 › 글 › 구조화된 데이터는 왜 필요할까`가 읽기 좋습니다.
+
+## 메타데이터에서 만난 함정
+
+Next.js를 쓴다면 알아둘 게 하나 있습니다. 저는 이걸 반대로 알고 있었습니다.
+
+**메타데이터는 얕게 병합됩니다.**
+
+```ts
+// layout.tsx
+export const metadata = {
+  openGraph: { siteName: "codefug", images: ["/og.png"] },
+};
+
+// page.tsx
+export const metadata = {
+  openGraph: { title: "글 제목" },
+  // siteName과 images가 합쳐지는 게 아니라 사라진다
+};
+```
+
+`openGraph`처럼 **객체가 값인 속성은 하위에서 다시 선언하면 통째로 덮어씌워집니다.** 병합이 아니라 교체입니다.
+
+그래서 페이지마다 OG 이미지가 사라지는 일이 생깁니다. 공통 값을 상수로 빼두고 매번 펼쳐 넣는 편이 안전합니다.
+
+```ts
+export const metadata = {
+  openGraph: { ...defaultOpenGraph, title: "글 제목" },
+};
+```
+
+## 정리
+
+구조화된 데이터를 넣으면서 남은 것은 이겁니다.
+
+메타 태그는 **페이지가 무엇인지** 알려주고, 구조화된 데이터는 **페이지 안의 값이 각각 무엇인지** 알려줍니다. 검색엔진 입장에서는 후자가 있어야 별점을 별점으로, 날짜를 날짜로 다룰 수 있습니다.
+
+그리고 이건 검색엔진만을 위한 게 아닙니다. **화면에 있는 것과 마크업이 일치하는지 점검하게 되는** 부수 효과가 있었습니다. 구조화된 데이터를 채우다 보면 "이 페이지가 무엇을 주장하고 있는가"를 다시 보게 됩니다.
+
+### 참고
+
+- [Google 검색 중심 — 구조화된 데이터 소개](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data)
+- [리치 검색결과 테스트](https://search.google.com/test/rich-results)
+- [schema.org](https://schema.org/)
+- [Next.js — JSON-LD](https://nextjs.org/docs/app/guides/json-ld)

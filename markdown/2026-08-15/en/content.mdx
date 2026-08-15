@@ -1,0 +1,177 @@
+import Mermaid from "@/components/mdx/mermaid.tsx";
+
+## All the meta tags were there. Why still one blue link?
+
+`title`, `description`, `og:image` — all present. And the search result was still **one line of title and two lines of description**.
+
+Meanwhile some pages show star ratings, cooking time, and ingredient counts right in the results. Same HTML. Why the difference?
+
+Here's why. A search engine can **read** your page, but it has no idea whether the "4.8" inside it is a rating, a price, or a version number. A human infers that from context; a machine doesn't.
+
+Meta tags describe the page as one lump: "this page's title is X and its summary is Y." But to get a star rating into the search result, you have to say **"this number is a rating, out of 5, given by 13,000 people."**
+
+That's what structured data does.
+
+## What changes
+
+Google's own diagram shows it best.
+
+![How JSON-LD becomes a rich result](/images/2026-08-15/json-ld-to-rich-result.png)
+
+The values inside `<script type="application/ld+json">` in the middle map **directly** onto elements of the search result on the left. `aggregateRating` becomes the 4.8 stars; `recipeIngredient` becomes "3 ingredients."
+
+FAQs work the same way.
+
+![FAQ structured data shown in search results](/images/2026-08-15/faq-rich-result.png)
+
+Mark content up as `Question` and `acceptedAnswer` and users can expand the answer without leaving the results page. That sounds like lost traffic, but **it takes up far more space in the results**.
+
+## Three formats — which one?
+
+There are three ways to add structured data.
+
+| Format | Where it goes | Notes |
+| --- | --- | --- |
+| **JSON-LD** | A separate `<script>` | Detached from markup. Google's recommendation |
+| Microdata | HTML tag attributes | Mixed into markup |
+| RDFa | HTML tag attributes | Mixed into markup |
+
+**Use JSON-LD.** The reason is maintenance.
+
+Microdata and RDFa embed themselves into your markup, like `<div itemprop="ratingValue">4.8</div>`. Restructure your tags for a design change and the structured data breaks along with it. JSON-LD lives in its own script, so it's **independent of your visual structure**.
+
+Google recommends it too.
+
+## Adding it in Next.js — one line that matters
+
+The pattern from the Next.js docs is simple. But **one line carries weight**.
+
+```tsx
+export function StructuredData({ jsonLd }: { jsonLd: JsonLdData }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}
+```
+
+That line is `.replace(/</g, "\\u003c")`.
+
+`JSON.stringify` **does not sanitize malicious strings.** If a post title contains `</script><script>...`, printing it verbatim closes the script tag and executes a new one. Escaping `<` to its Unicode form leaves JSON parsing untouched while making it impossible to read as a tag.
+
+If users supply any of the text, this isn't optional.
+
+### Catching typos with types
+
+Schema property names are hard to memorize. Is it `datePublished` or `publishedDate`? Get it wrong and **nothing errors** — the property is silently ignored, so you find out much later.
+
+`schema-dts` turns that into a type error.
+
+```ts
+import type { Graph } from "schema-dts";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      headline: title,
+      datePublished: date,
+      // write publishedDate here and the type check fails
+    },
+  ],
+} satisfies Graph;
+```
+
+`satisfies` is used so you get the type check while **keeping the concrete type of the actual object**.
+
+## How to verify
+
+Once it's in, check it. Paste the URL into Google's **Rich Results Test**.
+
+![Rich Results Test screen](/images/2026-08-15/rich-result-test.png)
+
+In this example the `Recipe` type was recognized, but there are **six warnings** — optional properties like `video`, `nutrition`, and `description` are **empty**.
+
+Worth knowing: properties come in two kinds.
+
+- **Required** — without them, you get no rich result at all
+- **Recommended** — optional, but **the more you fill in, the richer the result**
+
+Warnings aren't errors; they're an invitation to fill more in. Though if a competing page filled them all in, you lose ground by that much.
+
+## What not to do
+
+The guidelines that are easiest to violate.
+
+**1. Don't mark up information that isn't on the page.** Adding a star rating to structured data when the page shows no rating is deceptive — the search result wouldn't match the page. That's **penalty territory**.
+
+**2. Don't create pages that exist only to hold structured data.** An empty page with nothing but markup reads as spam.
+
+**3. Don't mix formats on one page.** Use JSON-LD and Microdata together and the search engine can't tell which one to trust.
+
+The principle is singular: **structured data translates what's on the screen into something machines can read.** It isn't a channel for claiming things the page doesn't show.
+
+## How this blog does it
+
+Each post carries `BlogPosting`; the site carries `Blog` and `Person`.
+
+<Mermaid>
+{`flowchart TD
+  P["page"] --> C["structured data component"]
+  C -->|"JSON.stringify + escape <"| S["script type=application/ld+json"]
+
+  D1["post detail"] -->|"BlogPosting + BreadcrumbList"| C
+  D2["home"] -->|"Blog + ItemList"| C
+  D3["portfolio"] -->|"ProfilePage + Person"| C`}
+</Mermaid>
+
+`BreadcrumbList` is there so search results show **a path instead of a URL**. `Home › Posts › Why structured data matters` reads better than `codefug.github.io › posts › 2026-08-15`.
+
+## A trap in metadata
+
+One thing to know if you use Next.js. I had this backwards.
+
+**Metadata merges shallowly.**
+
+```ts
+// layout.tsx
+export const metadata = {
+  openGraph: { siteName: "codefug", images: ["/og.png"] },
+};
+
+// page.tsx
+export const metadata = {
+  openGraph: { title: "Post title" },
+  // siteName and images don't merge in — they disappear
+};
+```
+
+Properties whose value is an object, like `openGraph`, are **replaced wholesale when redeclared lower down**. Replacement, not merging.
+
+That's how OG images quietly vanish from individual pages. Safer to keep shared values in a constant and spread them every time.
+
+```ts
+export const metadata = {
+  openGraph: { ...defaultOpenGraph, title: "Post title" },
+};
+```
+
+## Wrapping up
+
+What stayed with me after adding structured data.
+
+Meta tags tell a search engine **what the page is**. Structured data tells it **what each value inside the page is**. Only the second lets a search engine treat a rating as a rating and a date as a date.
+
+And it isn't only for search engines. A side effect was **being forced to check that the markup matches what's actually on screen**. Filling in structured data makes you look again at what your page is claiming.
+
+### References
+
+- [Google Search Central — Intro to structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data)
+- [Rich Results Test](https://search.google.com/test/rich-results)
+- [schema.org](https://schema.org/)
+- [Next.js — JSON-LD](https://nextjs.org/docs/app/guides/json-ld)
