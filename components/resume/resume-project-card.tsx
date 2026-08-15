@@ -20,13 +20,13 @@ interface Props {
 function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
   return (
     // biome-ignore lint/suspicious/noArrayIndexKey: static content
-    <li className="ml-4 list-disc">
+    <li className="ml-3.5 list-disc">
       <RichText>{detail.text}</RichText>
       {detail.subItems && (
-        <ul className="mt-1 space-y-1 pl-4">
+        <ul className="mt-1 space-y-1 pl-3.5">
           {detail.subItems.map((s, j) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: static content
-            <li key={j} className="ml-4 list-disc">
+            <li key={j} className="ml-3.5 list-disc">
               <RichText>{s}</RichText>
             </li>
           ))}
@@ -38,7 +38,7 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
 
 function DetailList({ details }: { details: DetailItem[] }) {
   return (
-    <ul className="mt-1 space-y-1 text-[13px] text-gray-700 dark:text-gray-300">
+    <ul className="mt-1 space-y-1 text-[9.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
       {details.map((d, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static content
         <ProjectCategoryDetail key={i} detail={d} />
@@ -50,7 +50,7 @@ function DetailList({ details }: { details: DetailItem[] }) {
 function ProjectCategory({ category }: { category: Category }) {
   return (
     <section className="border-primary/30 border-l-2 pl-3">
-      <h4 className="font-semibold text-[13px] text-gray-800 dark:text-gray-200">
+      <h4 className="font-semibold text-[10px] text-gray-800 dark:text-gray-200">
         <RichText>{category.title}</RichText>
       </h4>
       <DetailList details={category.details} />
@@ -66,7 +66,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
     : [];
 
   return (
-    <article className={cn("py-5", className)}>
+    <article className={cn("py-3.5", className)}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 font-bold text-[13px] text-gray-900 dark:text-white">
@@ -79,7 +79,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         </div>
       </header>
 
-      <p className="mt-2.5 text-[13px] text-gray-700 leading-relaxed dark:text-gray-300">
+      <p className="mt-2 text-[9.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
         <RichText>{t("description")}</RichText>
       </p>
 
@@ -88,7 +88,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
       </p>
 
       {categories.length > 0 && (
-        <div className="mt-4 space-y-6">
+        <div className="mt-3 space-y-4">
           {categories.map((cat) => (
             <ProjectCategory key={cat.title} category={cat} />
           ))}

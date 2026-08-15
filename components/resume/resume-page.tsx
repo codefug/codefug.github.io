@@ -28,7 +28,7 @@ export function ResumePage({
         // 어떤 화면에서 보든 인쇄물과 같은 줄바꿈을 보게 된다.
         "relative mx-auto w-[210mm] shrink-0 bg-white text-black",
         // 화면: 실제 종이처럼 테두리와 그림자를 준다.
-        "rounded-lg border border-gray-300 px-[14mm] py-[12mm] shadow-md",
+        "rounded-lg border border-gray-300 px-[11mm] py-[10mm] shadow-md",
         // 인쇄: 종이 장식만 걷어내고 패딩은 그대로 둔다.
         // 패딩을 없애면 본문 폭이 달라져 줄바꿈이 화면과 어긋난다.
         "print:m-0 print:rounded-none print:border-0 print:shadow-none",
