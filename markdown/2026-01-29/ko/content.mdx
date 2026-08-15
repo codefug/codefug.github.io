@@ -1,85 +1,21 @@
-Server Action은 RPC 스타일의 인터페이스로 서버 함수를 쉽게 호출할 수 있습니다. 그런데 Next.js 공식 문서에서는 BFF 패턴을 설명할 때 Route Handler를 권장합니다. 왜일까요?
-
-Server Action과 Route Handler의 설계 의도가 다르기 때문입니다. Server Action은 데이터 변경(mutation)을 위해 설계되었고, Route Handler는 HTTP Endpoint를 제공하기 위해 설계되었습니다. 이 차이는 성능에도 영향을 미칩니다.
-
----
-# Server Action과 Route Handler의 차이
-
-## Server Action의 설계 의도
-
-Server Action은 데이터 변경(mutation)을 위해 설계되었습니다. 내부적으로 POST 요청만 사용합니다:
-
-```tsx
-'use server'
-
-export async function createPost(formData: FormData) {
-  const title = formData.get('title')
-  const content = formData.get('content')
-
-  await db.posts.create({ title, content })
-  revalidatePath('/posts')
-}
-```
-
-Server Action은 Next.js의 캐시 아키텍처와 깊게 연결되어 있습니다:
-- 함수 호출 후 자동으로 UI를 갱신합니다
-- `revalidatePath`, `revalidateTag`로 캐시를 제어합니다
-- form의 action 속성과 함께 사용하면 JavaScript 없이도 동작합니다(progressive enhancement)
-
-```mermaid
-flowchart LR
-    A[Client] -->|"POST 요청"| B[Server Action]
-    B -->|"데이터 변경"| C[Database]
-    B -->|"캐시 갱신"| D[Next.js Cache]
-    D -->|"새 UI"| A
-```
-
-> [!NOTE] revalidatePath, revalidateTag
->
-> Next.js의 fetch 요청에 태그를 지정할 수 있습니다. `revalidateTag`는 특정 태그가 붙은 캐시를 무효화하고, `revalidatePath`는 특정 경로의 캐시를 무효화합니다.
-
-> [!NOTE] progressive enhancement
-> 
-> JS가 로드되지 않았을 때도 form 태그의 action 속성에 담긴 서버 함수를 호출할 수 있습니다.
-
-## Route Handler의 역할
-
-Route Handler는 HTTP Endpoint입니다. 모든 HTTP 메서드를 지원하고, BFF(Backend for Frontend) 패턴 구성에 사용합니다:
-
-> [!NOTE] BFF (Backend for Frontend)
->
-> 프론트엔드를 위한 전용 백엔드 레이어입니다. 외부 API를 프록시하고, 여러 데이터 소스를 조합하며, 민감한 정보(API 키 등)를 숨깁니다.
-
-```ts
-// app/api/weather/route.ts
-export async function POST(request: Request) {
-  const body = await request.json()
-  const searchParams = new URLSearchParams({ lat: body.lat, lng: body.lng })
-
-  const weatherResponse = await fetch(`${weatherEndpoint}?${searchParams}`)
-  const weatherData = await weatherResponse.text()
-  const payload = parseWeatherData.asJSON(weatherData)
-
-  return new Response(payload, { status: 200 })
-}
-```
-
----
-
-# Server Action은 Queue 방식으로 동작합니다
-
-Next.js 공식 문서에는 다음 문장이 있습니다:
+Next.js 공식 문서에는 이런 문장이 있습니다.
 
 > Server Actions are queued. Using them for data fetching introduces sequential execution.
 
-Server Action은 순차 실행됩니다. 순차 실행의 범위를 확인하기 위해 다음을 테스트했습니다:
-1. Promise.all로 감싸도 순차 실행되는가
-2. 여러 컴포넌트가 각각 Server Action을 호출해도 순차 실행되는가
+Server Action은 순차 실행된다는 말입니다. 그런데 이 문장만으로는 **범위**를 알 수 없었습니다.
 
-## 테스트 환경
+- `Promise.all`로 감싸면 병렬이 될까
+- 서로 다른 컴포넌트가 각자 호출해도 순차일까
+- React Query 같은 라이브러리를 끼우면 달라질까
 
-- **Next.js 앱**: Route Handler와 Server Action으로 Express API를 호출
-- **Express 백엔드**: `/api/data?id={id}` 엔드포인트 제공 (10ms 응답 지연)
+"순차"가 호출 단위인지, 컴포넌트 단위인지, 탭 전체인지에 따라
+쓸 수 있는 곳이 완전히 달라집니다. 직접 측정해봤습니다.
+
+## 측정 환경
+
+- **Next.js 앱**: Route Handler와 Server Action으로 각각 Express API 호출
+- **Express 백엔드**: `/api/data?id={id}`, 응답에 10ms 지연
+- 요청 30개씩, 개발 서버(HTTP/1.1)
 
 ```ts
 // Server Action
@@ -102,51 +38,37 @@ export async function GET(request: Request) {
 }
 ```
 
-테스트는 개발 서버(HTTP/1.1)에서 진행했습니다.
+Route Handler를 같이 둔 건 **대조군**입니다.
+순차 실행이 Server Action의 성질인지, 아니면 제 측정 환경 탓인지 구분해야 했습니다.
 
-## 테스트 시나리오
+## 1. Promise.all로 감싸면
 
-Server Action의 순차 실행 범위를 확인하기 위해 3가지 패턴을 테스트했습니다.
-
-### 1. Promise.all로 직접 호출
-
-Promise.all로 여러 요청을 감싸면 병렬 실행될까요?
-
-**Server Action 호출**
 ```tsx
-// Client Component
+// Server Action
 const promises = Array.from({ length: 30 }, (_, i) =>
   serverActionFetchData(i + 1)
 );
-const data = await Promise.all(promises);
-```
+await Promise.all(promises);
 
-**Route Handler 호출**
-```tsx
-// Client Component
+// Route Handler
 const promises = Array.from({ length: 30 }, (_, i) =>
   fetch(`/api/data?id=${i + 1}`).then(res => res.json())
 );
-const data = await Promise.all(promises);
+await Promise.all(promises);
 ```
-
-**실행 결과**
 
 ![Promise.all 직접 호출 결과 - Server Action은 순차 실행, Route Handler는 병렬 실행](/images/2026-01-29/Pasted%20image%2020260129024238.png)
 
-네트워크 패널:
 ![네트워크 패널 - Server Action(앞쪽)은 순차, Route Handler(뒤쪽)는 병렬](/images/2026-01-29/Pasted%20image%2020260129024324.png)
 
-- 앞쪽: Server Action 호출 (순차 실행)
-- 뒤쪽: Route Handler 호출 (병렬 실행)
+앞쪽이 Server Action, 뒤쪽이 Route Handler입니다.
+Route Handler는 요청이 한꺼번에 나가고, Server Action은 계단 모양입니다.
 
-Route Handler는 요청이 병렬로 발생합니다. Server Action은 한 요청이 완료되어야 다음 요청이 시작됩니다.
+`Promise.all`은 **이미 시작된 작업을 기다리는 도구**이지 병렬로 만드는 도구가 아닙니다.
+Server Action은 시작 자체가 큐에 걸려 있어서 감싸도 달라지지 않습니다.
 
-### 2. React Query의 useQueries 사용
+## 2. React Query를 끼우면
 
-React Query 같은 데이터 fetching 라이브러리를 사용하면 어떻게 될까요?
-
-**Server Action + useQueries**
 ```tsx
 const queries = useQueries({
   queries: Array.from({ length: 30 }, (_, i) => ({
@@ -156,30 +78,17 @@ const queries = useQueries({
 });
 ```
 
-**Route Handler + useQueries**
-```tsx
-const queries = useQueries({
-  queries: Array.from({ length: 30 }, (_, i) => ({
-    queryKey: ["route-handler", i + 1],
-    queryFn: () => fetch(`/api/data?id=${i + 1}`).then(res => res.json()),
-  })),
-});
-```
-
-**실행 결과**
-
 ![React Query useQueries 결과 - Server Action은 여전히 순차 실행](/images/2026-01-29/Pasted%20image%2020260129024437.png)
 
-네트워크 패널:
 ![React Query 네트워크 패널 - Server Action은 순차, Route Handler는 병렬](/images/2026-01-29/Pasted%20image%2020260129024522.png)
 
-React Query를 사용해도 Server Action은 순차 실행됩니다.
+동일합니다. 라이브러리가 호출을 관리하든 말든 큐는 그대로입니다.
 
-### 3. 독립 컴포넌트가 각각 useQuery 호출
+## 3. 독립된 컴포넌트가 각각 호출하면
 
-컴포넌트가 각각 독립적으로 Server Action을 호출하면 어떻게 될까요?
+여기가 제일 궁금했던 부분입니다.
+한 곳에서 30번 부르는 것과, 서로 모르는 컴포넌트 30개가 한 번씩 부르는 건 다른 상황입니다.
 
-**Server Action을 호출하는 독립 컴포넌트**
 ```tsx
 function DataItem({ id }: { id: number }) {
   const { data } = useQuery({
@@ -189,86 +98,27 @@ function DataItem({ id }: { id: number }) {
   return <div>{data?.data}</div>;
 }
 
-// 30개의 독립 컴포넌트 렌더링
-<>
-  {Array.from({ length: 30 }, (_, i) => (
-    <DataItem key={i} id={i + 1} />
-  ))}
-</>
+// 30개의 독립 컴포넌트
+{Array.from({ length: 30 }, (_, i) => <DataItem key={i} id={i + 1} />)}
 ```
-
-**Route Handler를 호출하는 독립 컴포넌트**
-```tsx
-function DataItem({ id }: { id: number }) {
-  const { data } = useQuery({
-    queryKey: ["data", id],
-    queryFn: () => fetch(`/api/data?id=${id}`).then(res => res.json()),
-  });
-  return <div>{data?.data}</div>;
-}
-
-// 30개의 독립 컴포넌트 렌더링
-<>
-  {Array.from({ length: 30 }, (_, i) => (
-    <DataItem key={i} id={i + 1} />
-  ))}
-</>
-```
-
-**실행 결과**
 
 ![독립 컴포넌트 호출 결과 - 컴포넌트가 독립적으로 호출해도 Server Action은 순차 실행](/images/2026-01-29/Pasted%20image%2020260129030320.png)
 
-네트워크 패널:
 ![독립 컴포넌트 네트워크 패널 - Server Action은 여전히 순차 실행](/images/2026-01-29/Pasted%20image%2020260129030257.png)
 
-컴포넌트가 각각 독립적으로 호출해도 Server Action은 순차 실행됩니다.
+**여전히 순차입니다.**
 
-## 테스트 결과
+이게 이번 측정에서 가장 중요한 결과였습니다.
+큐는 호출부나 컴포넌트 단위가 아니라 **탭 전체에 하나**입니다.
 
-모든 시나리오에서 동일한 결과가 나타났습니다:
-
-- **Route Handler**: 병렬 실행 (여러 HTTP 요청 동시 발생)
-- **Server Action**: 순차 실행 (한 요청 완료 후 다음 요청 실행)
-
-### Server Action의 Queue 동작
-
-- 하나의 브라우저 탭 내 모든 Server Action 호출이 Queue에 담김
-- Promise.all로 감싸도 순차 실행
-- 각 컴포넌트가 독립적으로 호출해도 전역 Queue에서 관리
-- React Query 같은 라이브러리를 사용해도 동일
-
-> [!NOTE] 프로덕션 환경에서는 차이가 더 커집니다
->
-> 1. 실제 프로덕션에서는 네트워크 지연이 더 큽니다
-> 2. HTTP/2 멀티플렉싱이 적용되면:
->    - Route Handler: 하나의 TCP 연결에서 여러 요청 동시 처리 (성능 향상)
->    - Server Action: 여전히 순차 실행 (변화 없음)
-
-## 왜 Queue 방식으로 설계했을까
-
-Server Action은 mutation을 위해 만들어졌습니다. 여러 mutation이 동시에 실행되면 race condition이 발생할 수 있습니다:
-
-```tsx
-// 동시 실행 시 문제가 발생하는 케이스
-async function updateUserProfile(formData: FormData) {
-  'use server'
-  const user = await db.users.findOne(userId)
-  user.name = formData.get('name')
-  await db.users.save(user) // race condition 위험
-}
-```
-
-Queue 방식은 데이터 일관성을 보장합니다. 하지만 여러 독립적인 요청을 병렬로 처리해야 할 때는 적합하지 않습니다.
-
-> [!NOTE] Server Action 내부에서는 병렬 처리 가능
->
-> Server Action 내부에서 `Promise.all`을 사용하면 병렬 처리됩니다. 문제는 여러 Server Action을 외부에서 호출할 때 순차 실행되는 것입니다.
+즉 서로 아무 관계 없는 컴포넌트끼리도 서로를 기다립니다.
+A 컴포넌트의 Server Action이 느리면 B 컴포넌트가 그만큼 늦게 시작합니다.
+컴포넌트를 분리해도 이 결합은 사라지지 않습니다.
 
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant Q as Action Queue
+    participant Q as Action Queue (탭당 1개)
     participant S as Server
 
     C->>Q: Server Action 1 호출
@@ -277,79 +127,53 @@ sequenceDiagram
     Note over Q: Action 1 완료 대기
     S-->>Q: Action 1 완료
     Q->>S: Action 2 실행
-    S-->>Q: Action 2 완료
-    Q-->>C: 응답
 ```
 
----
-# 결론
+## 왜 이렇게 설계했을까
 
-Server Action과 Route Handler는 각각 다른 목적으로 설계되었습니다.
-
-## Server Action을 사용해야 하는 경우
-
-1. **Form을 통한 데이터 변경**: progressive enhancement 지원
-2. **단일 mutation**: 순차 실행으로 충분한 경우
-3. **내부 병렬 처리**: Server Action 내부에서 Promise.all 사용
-4. **캐시 갱신**: revalidatePath, revalidateTag와 함께 사용
+Server Action은 mutation을 위해 만들어졌습니다.
+여러 mutation이 동시에 나가면 순서가 뒤엉킵니다.
 
 ```tsx
-'use server'
-
-export async function createPost(formData: FormData) {
-  await db.posts.create({
-    title: formData.get('title'),
-    content: formData.get('content')
-  })
-
-  revalidatePath('/posts')
+async function updateUserProfile(formData: FormData) {
+  'use server'
+  const user = await db.users.findOne(userId)
+  user.name = formData.get('name')
+  await db.users.save(user)
 }
 ```
 
-## Route Handler를 사용해야 하는 경우
+이게 병렬로 실행되면 나중에 시작한 요청이 먼저 끝나 덮어쓸 수 있습니다.
+큐는 그 순서를 보장합니다. **읽기에 안 맞는 게 아니라, 쓰기에 맞춘 결과**입니다.
 
-1. **BFF 패턴**: 외부 API 프록시, 여러 데이터 조합
-2. **독립적인 여러 엔드포인트**: 각 API를 독립적으로 호출
-3. **Non-UI 응답**: webhook, RSS, sitemap 제공
-4. **병렬 fetching**: Client Component에서 여러 엔드포인트 동시 호출
+> Server Action **내부**에서 `Promise.all`을 쓰는 건 병렬로 동작합니다.
+> 큐에 걸리는 건 액션의 실행 단위이지 그 안의 fetch가 아닙니다.
+> 여러 곳에서 데이터를 모아야 한다면 액션 하나 안에서 모으면 됩니다.
 
-```ts
-// app/api/dashboard/route.ts
-export async function GET(request: Request) {
-  const [users, posts, analytics] = await Promise.all([
-    fetchUsers(),
-    fetchPosts(),
-    fetchAnalytics()
-  ])
+## 측정의 한계
 
-  return Response.json({ users, posts, analytics })
-}
-```
+개발 서버(HTTP/1.1)에서 쟀습니다. 프로덕션에서 그대로 재현되는 수치는 아닙니다.
 
-## 핵심 정리
+다만 **방향은 유지될 것으로 봅니다.** HTTP/2 멀티플렉싱이 붙으면
+Route Handler는 더 빨라질 여지가 있지만, Server Action의 큐는
+네트워크 계층이 아니라 그 위에 있어서 영향을 받지 않습니다.
+격차가 줄기보다는 벌어지는 쪽입니다.
 
-| 항목               | Server Action                 | Route Handler                   |
-| ------------------ | ----------------------------- | ------------------------------- |
-| **설계 의도**      | Mutation                      | HTTP Endpoint                   |
-| **외부 호출 시**   | Queue (순차)                  | 병렬 가능                       |
-| **내부 병렬 처리** | Promise.all 가능              | Promise.all 가능                |
-| **HTTP 메서드**    | POST만                        | 모든 메서드                     |
-| **캐시 통합**      | 깊게 통합됨                   | 수동 처리                       |
-| **사용 상황**      | Form mutation, 단일/통합 변경 | BFF, 독립적 엔드포인트, webhook |
+수치 자체보다 **순차/병렬이라는 형태의 차이**를 보려던 측정이었습니다.
 
-**Server Action**: 논리적 작업 단위로 묶고, 캐시 통합이 필요한 경우
-- 내부에서 Promise.all로 병렬 처리 가능
-- Form의 progressive enhancement 지원
+## 정리
 
-**Route Handler**: 독립적인 여러 API 엔드포인트 또는 BFF 패턴 구성
-- 클라이언트에서 각 엔드포인트를 병렬 호출 가능
-- 모든 HTTP 메서드 지원
+- Server Action의 큐는 **탭당 하나**입니다. `Promise.all`, React Query,
+  컴포넌트 분리 — 전부 이걸 우회하지 못했습니다.
+- 그래서 **독립적인 여러 데이터를 클라이언트에서 병렬로 가져와야 한다면**
+  Route Handler가 맞습니다.
+- Server Action은 mutation용입니다. 여러 소스를 모아야 하면
+  **액션 하나 안에서 `Promise.all`** 로 처리하면 됩니다.
+- 문서에 "queued"라고만 적힌 말의 범위는, **직접 재보기 전에는 몰랐습니다.**
+  호출 단위일 거라고 짐작했는데 실제로는 탭 전체였습니다.
 
----
+### 참고
 
-## 참고 자료
-
-- [Next.js - Backend For Your Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
-- [Next.js - Updating Data](https://nextjs.org/docs/app/getting-started/updating-data)
-- [Next.js - Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route)
-- [React - Server Functions](https://react.dev/reference/rsc/server-functions)
+- [Next.js — Backend For Your Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+- [Next.js — Updating Data](https://nextjs.org/docs/app/getting-started/updating-data)
+- [React — Server Functions](https://react.dev/reference/rsc/server-functions)
