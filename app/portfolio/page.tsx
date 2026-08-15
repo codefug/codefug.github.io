@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ArchitectureCases } from "@/components/portfolio/architecture-case";
+import { Credentials, Journey } from "@/components/portfolio/journey";
 import { PortfolioHero } from "@/components/portfolio/portfolio-hero";
 import {
   BeyondCode,
@@ -37,6 +38,8 @@ export default function Page() {
         <ArchitectureCases />
         <Principles />
         <BeyondCode />
+        <Journey />
+        <Credentials />
         <Closing />
       </PortfolioContainer>
     </>

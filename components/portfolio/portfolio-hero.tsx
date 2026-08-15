@@ -1,65 +1,88 @@
 "use client";
 
-import { ArrowRight, Building2 } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
 import { PATH } from "@/constants/path";
 
+/**
+ * 큰 박스 하나로 눌러 담지 않고 좌우로 나눠 시선이 흐르게 한다.
+ * 왼쪽은 무슨 일을 하는 사람인지, 오른쪽은 지금 어디에 있는지.
+ */
 export function PortfolioHero() {
   const t = useTranslations("portfolio.hero");
   const tNow = useTranslations("portfolio.now");
-  const tArchitecture = useTranslations("portfolio.architecture");
 
   return (
-    <section className="relative mb-16 overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-primary/8 via-card to-card px-6 py-12 md:px-12 md:py-16">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, color-mix(in srgb, currentColor 7%, transparent) 1px, transparent 1px)",
-          backgroundSize: "22px 22px",
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative max-w-3xl">
-        <Badge variant="outline" className="mb-4 bg-card/60">
-          <Building2 className="mr-1.5 h-3 w-3" aria-hidden="true" />
-          {t("current")} · {tNow("company")}
-        </Badge>
-
-        <h1 className="mb-1 font-bold text-3xl md:text-5xl">{t("name")}</h1>
-        <p className="mb-5 font-mono text-muted-foreground text-sm md:text-base">
+    <section className="mb-20 pt-6">
+      <div className="mb-8 flex items-center gap-3">
+        <span className="h-px w-8 bg-primary" aria-hidden="true" />
+        <span className="font-mono text-muted-foreground text-xs uppercase tracking-[0.2em]">
           {t("role")}
-        </p>
+        </span>
+      </div>
 
-        <p className="mb-4 text-balance font-bold text-xl leading-snug md:text-2xl">
-          {t("tagline")}
-        </p>
-        <p className="mb-7 max-w-2xl text-muted-foreground leading-relaxed">
-          {t("summary")}
-        </p>
-
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="#architecture"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-opacity hover:opacity-90"
-          >
-            {tArchitecture("title")}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </a>
-          <a
-            href={PATH.RESUME}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 font-medium text-sm transition-colors hover:border-primary/40 hover:text-primary"
-          >
-            {t("viewResume")}
-          </a>
-          <a
-            href={PATH.HOME}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 font-medium text-sm transition-colors hover:border-primary/40 hover:text-primary"
-          >
-            {t("viewBlog")}
-          </a>
+      <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-end">
+        <div>
+          <h1 className="mb-6 text-balance font-bold text-4xl leading-[1.15] tracking-tight md:text-6xl">
+            {t("tagline")}
+          </h1>
+          <p className="max-w-2xl text-base text-muted-foreground leading-relaxed md:text-lg">
+            {t("summary")}
+          </p>
         </div>
+
+        {/* 지금 어디서 무엇을 하는지 — 면접관이 가장 먼저 확인하는 정보 */}
+        <dl className="flex flex-col gap-4 border-border border-l pl-6 text-sm lg:pb-2">
+          <div>
+            <dt className="mb-1 text-muted-foreground/60 text-xs uppercase tracking-wide">
+              {t("name")}
+            </dt>
+            <dd className="font-semibold text-base">{tNow("company")}</dd>
+          </div>
+          <div>
+            <dt className="mb-1 text-muted-foreground/60 text-xs uppercase tracking-wide">
+              {tNow("team")}
+            </dt>
+            <dd className="font-mono text-muted-foreground">
+              {tNow("period")}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <a
+          href="#work"
+          className="group inline-flex items-center gap-2 font-medium text-sm"
+        >
+          <span className="border-primary border-b pb-0.5 transition-colors group-hover:text-primary">
+            {t("viewWork")}
+          </span>
+          <ArrowDown
+            className="h-4 w-4 text-primary transition-transform group-hover:translate-y-0.5"
+            aria-hidden="true"
+          />
+        </a>
+        <a
+          href={PATH.RESUME}
+          className="group inline-flex items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-foreground"
+        >
+          {t("viewResume")}
+          <ArrowUpRight
+            className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden="true"
+          />
+        </a>
+        <a
+          href={PATH.HOME}
+          className="group inline-flex items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-foreground"
+        >
+          {t("viewBlog")}
+          <ArrowUpRight
+            className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden="true"
+          />
+        </a>
       </div>
     </section>
   );

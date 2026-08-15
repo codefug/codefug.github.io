@@ -2,16 +2,17 @@
   "portfolio": {
     "meta": {
       "title": "Seounghyun Lee — Frontend Developer",
-      "description": "Designing the API layer, session architecture, and test infrastructure for an invoice-factoring fintech service. Decisions recorded with the alternatives I rejected."
+      "description": "A frontend developer operating and improving an invoice-factoring service. A record of problems met in production and solved structurally."
     },
     "hero": {
       "name": "Seounghyun Lee",
       "role": "Frontend Developer",
-      "tagline": "I change the structure so the bug can't come back",
-      "summary": "Instead of fixing recurring bugs one at a time, I reshape the structure so they become impossible. I delete invalid states at the type level, and enforce rules with lint rather than documents.",
+      "tagline": "I run the service, then fix what keeps breaking",
+      "summary": "I operate and improve an invoice-factoring service where real money moves. When something breaks repeatedly, I don't just stop the symptom — I reshape the structure so it can't happen again. Rewriting authentication and building the test pipeline both started that way.",
       "current": "Now",
-      "viewBlog": "Read the blog",
-      "viewResume": "View resume"
+      "viewWork": "See the work",
+      "viewBlog": "Blog",
+      "viewResume": "Resume"
     },
     "now": {
       "title": "What I do now",
@@ -21,14 +22,14 @@
       "serviceLabel": "Services I work on",
       "services": {
         "allra": {
-          "name": "Allra (allra.co.kr)",
-          "description": "An invoice-factoring service that turns online sellers' unsettled receivables into immediate cash. Contracts, document submission, and e-signature all happen remotely.",
-          "role": "Primary web frontend developer · designed the API layer and session architecture"
+          "name": "Allra",
+          "description": "An invoice-factoring service that lets online business owners receive their revenue before the settlement date. Because real money moves through it, authentication and operational stability were the defining requirements.",
+          "role": "Web frontend · authentication/session architecture, test and deployment environment"
         },
         "admin": {
           "name": "Allra Admin",
-          "description": "Internal admin for settlement, payout, collection, and member management. Three admin apps share one design system in a single monorepo.",
-          "role": "Developer experience and session security"
+          "description": "The internal admin service used by the operations team.",
+          "role": "Developer environment and session security"
         }
       }
     },
@@ -37,70 +38,70 @@
       "subtitle": "Looking back through my notes, three things kept repeating",
       "items": {
         "rootCause": {
-          "title": "Go down to the root cause",
-          "description": "I don't stop at the symptom — I read library source, server logs, and the database until the cause is certain. For a contract-document incident, I cross-referenced frontend and backend logs to reproduce how three separate defects chained together."
+          "title": "Fix the cause, not the symptom",
+          "description": "When something breaks in production I don't stop at putting out the fire. I read library source and logs until the cause is certain, and I follow problems that started outside the frontend to wherever they came from."
         },
         "typeLevel": {
-          "title": "Delete impossible states with types",
-          "description": "When two things must not overlap, I make overlapping unrepresentable rather than managing it. The overlay system returns a single active value, so simultaneous display is impossible at the type level."
+          "title": "Make the same failure impossible",
+          "description": "Recurring problems get structural fixes rather than individual patches. When two things must not overlap, I make overlapping unrepresentable; when a state is invalid, I make it impossible to express rather than checking for it."
         },
         "enforceWithTools": {
-          "title": "Enforce rules with tools, not documents",
-          "description": "I started by writing guide documents, then changed direction. Direct date calls are blocked by a GritQL plugin; restricted imports by a lint rule. A document can go unread — lint has to pass."
+          "title": "Leave rules as tools, not documents",
+          "description": "What I find myself repeating in code review moves into a lint rule or automation. A document can go unread — lint has to pass."
         }
       }
     },
     "architecture": {
-      "title": "Architectures I designed",
+      "title": "Problems from production, and how I solved them",
       "subtitle": "Less about what I built, more about why it's shaped that way and what I chose not to do",
-      "problemLabel": "Problem",
-      "decisionLabel": "Decision",
+      "problemLabel": "What went wrong",
+      "decisionLabel": "How I solved it",
       "rejectedLabel": "Rejected alternatives",
       "resultLabel": "Result",
       "diagramHint": "Click a diagram to enlarge",
       "trpc-migration": {
-        "title": "From Server Actions to tRPC",
-        "summary": "Moved 16 domains and 131 server actions behind a single entry point",
-        "problem": "MSW can't intercept Server Actions, so Storybook used module mocking while E2E used next.onFetch. Mocking the same API differently per environment meant the mock data silently drifted apart.",
-        "decision": "I put a single Route Handler at the entry and layered tRPC on top. Each endpoint keeps index, schema, and fixture together in one folder, so the schema and its mock data always live side by side. Middleware wraps in logging → error → auth order, so logging observes the final transformed error.",
+        "title": "Mock data kept drifting between test environments",
+        "summary": "Consolidated an API layer that had split across environments into one entry point",
+        "problem": "Every new feature meant imitating the same API two different ways — Storybook used module mocking because MSW can't intercept server actions, and E2E used something else. One API with two imitations meant the mock data silently drifted, and tests could pass while the real thing was broken.",
+        "decision": "I routed API requests through a single point and layered a type-safe layer on top. Each endpoint keeps its request, schema, and mock data together in one folder, so the schema and its mock always live side by side. Middleware wraps in logging → error → auth order, so logging observes the final transformed error.",
         "rejected": {
-          "0": "Keep Server Actions with a stronger shared wrapper — the split mocking problem would remain untouched",
+          "0": "Keep the existing approach with a stronger shared wrapper — the split-mocking problem would remain untouched",
           "1": "Call the backend directly from middleware — token handling scatters again"
         },
-        "result": "Zero 'use server' remaining. Storybook, E2E, and local development now share the same fixtures, so they can no longer drift. The codebase has since grown from 16 to 29 domains on the same structure."
+        "result": "Storybook, E2E, and local development now share the same mocks, so they can no longer drift. New domains extend the same structure."
       },
       "reactive-session": {
-        "title": "A session model that doesn't count expiry",
-        "summary": "Replaced client-side expiry estimation with reacting to the backend's 401",
-        "problem": "The server refreshes tokens ten minutes before expiry, but the client checked a cached expiry timestamp against a one-minute threshold. When the cache went stale, healthy sessions were logged out. A review comment I'd left six months earlier — that the refresh and logout APIs were racing — came back as a real incident.",
-        "decision": "The frontend stopped estimating expiry and started reacting to 401s. The key is splitting the outcome three ways: refreshed, rejected, and transient. Mistaking a 5xx or network error for expiry turns a backend outage into a site-wide forced logout. Concurrent 401s collapse into a single refresh via single-flight.",
+        "title": "Valid sessions were being logged out",
+        "summary": "Replaced client-side expiry estimation with reacting to the server's response",
+        "problem": "Users who were properly logged in were getting signed out. The client calculated token expiry itself and refreshed preemptively, but with the frontend and backend each judging expiry separately, the two drifted apart. In a service where real money moves, losing your session mid-contract means losing the work you were doing.",
+        "decision": "The frontend stopped estimating expiry and started reacting to 401s. The key is splitting the outcome three ways: refreshed, rejected, and transient. Mistaking a 5xx or network error for expiry turns a brief outage into a site-wide logout. Concurrent 401s collapse into a single refresh, and the refresh call itself goes through a separate client so it can't recurse.",
         "rejected": {
           "0": "Refresh the cached expiry more often — clock skew remains and request volume grows",
           "1": "Put refresh on the server — refresh state is per-user, so the server would need a shared structure that breaks across instances"
         },
-        "result": "Auth state now has one source, /me, and four session hooks were removed. It resolved a production issue where a session expiring mid-contract went untracked by the page."
+        "result": "Expiry judgment moved entirely to the server, eliminating frontend/backend mismatch. Auth-dependent queries were also centralized into a shared hook, removing requests that fired before authentication and got rejected."
       },
       "overlay-coordinator": {
-        "title": "Overlays that cannot collide",
-        "summary": "Replaced z-index competition with one declarative priority order",
-        "problem": "The modal queue, sidebar, and onboarding each managed their own open state. Collisions were prevented only by z-index numbers, so the policy for who wins existed nowhere in the code. Required modals kept getting buried behind onboarding.",
-        "decision": "One slot on screen, with array order as priority. The crucial part is returning a single active overlay — instead of managing overlap, the overlapping state became unrepresentable. Registration accepts only a state-derived boolean; imperative open() calls are banned, so there's no second copy of the state to fall out of sync.",
+        "title": "Required modals got buried behind other overlays",
+        "summary": "Replaced independently-opening overlays with a priority that picks exactly one",
+        "problem": "Several overlays appeared automatically based on conditions, each managing its own open state. Collisions were prevented only by z-index numbers, so the policy for who wins existed nowhere in the code. Modals the user had to see kept ending up behind other overlays.",
+        "decision": "One slot on screen, with array order as priority. The crucial part is returning a single active overlay — instead of managing overlap, the overlapping state became unrepresentable. Registration accepts only a state-derived value and imperative calls are blocked, so there's no second copy of the state to fall out of sync.",
         "rejected": {
-          "0": "Fold in imperative overlays — built, then rolled back. Imperative overlays are triggered by user action, so they never had a simultaneity problem; the machinery only added complexity",
-          "1": "Unify the backdrop dim — built, then rolled back. Radix Overlay isn't a visual element but the host of scroll locking, so removing it regresses scroll lock"
+          "0": "Fold in user-triggered overlays — built, then rolled back. Those are opened by the user directly, so they never collide; the machinery only added complexity",
+          "1": "Unify the backdrop dim — built, then rolled back. That element isn't a visual effect but the host of scroll locking, so removing it unlocks scrolling"
         },
-        "result": "Eight recurring modal-ordering and flicker issues were resolved structurally. Both rolled-back extensions are documented with their reasons, so the next person doesn't walk the same path again."
+        "result": "Each overlay now only declares its intent to appear, and priority decides the single active one. Both rolled-back extensions are documented with their reasons, so the next person doesn't walk the same path again."
       },
       "vrt-infra": {
-        "title": "A self-sizing E2E pipeline",
-        "summary": "Tests grew 4×, wall-clock time dropped 30%",
-        "problem": "Changing one line meant manually re-checking unrelated pages, and manual QA stopped scaling. After adopting E2E the opposite problem appeared: a fixed shard count left shards idle when tests were few, and starved them when tests grew.",
-        "decision": "The pipeline counts the tests and derives the shard count (one per fifteen). The build runs once and every shard pulls the same artifact. Report merging only runs on failure. Tests split into specs (user behavior), flows (implementation), and sequences (shared setup), so a failure immediately tells you whether the scenario or the implementation broke.",
+        "title": "Every deploy meant checking things by hand",
+        "summary": "Test executions grew 4×, while CI time dropped 30%",
+        "problem": "Changing one line meant re-checking unrelated pages. Financial flows have too many conditions to verify manually. Adopting E2E created the opposite problem: a fixed shard count wasted runners when tests were few and starved them when tests grew.",
+        "decision": "The pipeline counts the tests to be run and derives the shard count each time, so neither time nor resources tip too far. The build runs once and every shard reuses the output. Tests split into three layers — user behavior, implementation, and shared setup — so a failure immediately tells you whether the scenario or the implementation broke.",
         "rejected": {
-          "0": "Raise the worker count — measurement showed billed time is the sum of job durations, so parallelism doesn't reduce it. It also caused mock pollution and flaky failures, so I went back to serial",
-          "1": "Gate CI on VRT — font rendering differs between local macOS and CI Linux. A tight threshold breaks on environment noise; a loose one misses real changes. I scoped VRT to a review aid instead"
+          "0": "Raise the worker count — measurement showed billed time is the sum of job durations, so it didn't drop. It also caused mock contamination and flaky failures, so I reverted",
+          "1": "Gate CI on screenshot comparison — font rendering differs between local and CI. A tight threshold breaks on environment noise; a loose one misses real changes. I scoped it to a review aid instead"
         },
-        "result": "Test executions went from 48 to 194 while wall-clock time fell from 11m35s to 9m11s. The biggest saving wasn't code at all — it was removing duplicate triggers, which I only found after measurement overturned my hypothesis twice."
+        "result": "Test executions grew 4× while total CI time fell 30%, cutting CI time per test by roughly 80%. I later measured that sharding reduces wall-clock time but increases billed time, and trimmed duplicate triggers and concurrency groups to cut billed time per merge roughly in half."
       }
     },
     "beyond": {
@@ -108,25 +109,69 @@
       "items": {
         "backend": {
           "title": "Fixed a sort bug in the backend repo",
-          "description": "I followed a pagination anomaly found on the frontend into the backend. With only one sort key, rows sharing that value got reordered between pages — some duplicated, others silently disappeared. I added the primary key as a tie-breaker to establish a total order, along with a test that fails if the tie-breaker is removed.",
+          "description": "I followed a list-ordering anomaly found on the frontend into the backend. With only one sort key, rows sharing that value got reordered between pages — some duplicated, others silently disappeared. I added the primary key as a tie-breaker, along with a test that fails if the tie-breaker is removed.",
           "tags": ["Java", "QueryDSL"]
         },
         "review": {
-          "title": "105 code reviews",
-          "description": "364 comments across 105 pull requests. I approve and comment rather than block — if it isn't worth stopping the flow, I don't stop it. When my own review comment turns out to be wrong, I leave it up with the correction attached.",
+          "title": "Code review and team standards",
+          "description": "I approve and comment rather than block — if it isn't worth stopping the flow, I don't stop it. What I find myself repeating in reviews gets moved into a lint rule or a document, so I don't have to say it twice.",
           "tags": ["Collaboration"]
         },
         "writing": {
           "title": "Technical writing",
-          "description": "I published our E2E adoption experience on an external engineering blog. Architecture decisions live in internal docs — including the ones we rolled back, with the reasoning intact. I only write when a problem I hit connects to a principle.",
+          "description": "I published our E2E adoption experience on the company engineering blog. Architecture decisions live in documents — including the ones we rolled back, with the reasoning intact. I only write when a problem I hit connects to a principle.",
           "tags": ["Writing"]
         }
       }
     },
     "closing": {
       "title": "Build it, roll it back, write it down",
-      "description": "Looking back over ten months, twelve things were finished and then deliberately discarded. I record what I rolled back so the next person doesn't have to walk the whole path again to learn the same thing.",
+      "description": "Several things were finished and then deliberately discarded. I record what I rolled back so the next person doesn't have to walk the whole path again to learn the same thing.",
       "cta": "Read more on the blog"
+    },
+    "journey": {
+      "title": "How I got here",
+      "subtitle": "From an English Literature degree to operating a financial service",
+      "items": {
+        "univ": {
+          "period": "2017 ~ 2024",
+          "title": "Incheon National University — English Literature & Computer Science",
+          "description": "I enrolled in English Literature and later added Computer Science as a double major, graduating with a 4.02 major GPA."
+        },
+        "bootcamp": {
+          "period": "Mar 2024 ~ Sep 2024",
+          "title": "Codeit Sprint Frontend Bootcamp",
+          "description": "Six months focused on frontend. In team projects I designed infinite scroll and shared components for the first time — the retrospective I wrote then is the first post on this blog."
+        },
+        "pwc": {
+          "period": "Jan 2025 ~ Oct 2025",
+          "title": "Samil PwC AC — Digital Team",
+          "description": "I led early frontend development for an internal service portal and an AI document analysis tool. In an accounting domain, passing internal security policy was a precondition for release, so I replaced the build tooling and editor and saw a project through from design to production for the first time."
+        },
+        "allra": {
+          "period": "Oct 2025 ~ Present",
+          "title": "Allra Fintech — Frontend Team",
+          "description": "I operate and improve an invoice-factoring service where real money moves. I joined just as a migration finished, starting by correcting logic that had been dropped along the way, and contributed the frontend requirements for the company's ISMS certification."
+        }
+      }
+    },
+    "credentials": {
+      "title": "Credentials & study",
+      "certLabel": "Certifications",
+      "studyLabel": "Study groups",
+      "items": {
+        "awsClf": {
+          "name": "AWS Certified Cloud Practitioner",
+          "period": "Aug 2026",
+          "description": "I studied for this because I wanted to know where and how the service actually runs. Working on the deployment pipeline made it clear that not knowing the infrastructure limits the calls you can make on the frontend."
+        },
+        "opic": {
+          "name": "OPIc IH",
+          "period": "Jul 2023",
+          "description": "My English Literature background means I read English documentation and original source comfortably."
+        }
+      },
+      "study": "I've taken part in study groups consistently since 2024 — frontend performance, AWS, TypeScript, and React design patterns and testing."
     }
   },
   "home": {
