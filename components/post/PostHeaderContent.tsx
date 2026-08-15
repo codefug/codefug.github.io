@@ -1,5 +1,4 @@
-import { CalendarDays, Clock, Tag } from "lucide-react";
-import Image from "next/image";
+import { CalendarDays, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ParsedFrontMatter } from "@/constants/mdx";
 
@@ -7,65 +6,60 @@ type Props = {
   frontMatter: ParsedFrontMatter;
 };
 
-function CategoryBadgeList({ categories }: { categories: string | string[] }) {
-  const normalized = Array.isArray(categories) ? categories : [categories];
-  return (
-    <div className="absolute top-4 left-4 flex flex-wrap gap-2 sm:top-6 sm:left-6">
-      {normalized.map((category) => (
-        <Badge
-          key={category}
-          variant="secondary"
-          className="bg-white/90 font-medium text-gray-800 text-xs hover:bg-white sm:text-sm"
-        >
-          <Tag className="mr-1 h-3 w-3" /> {category}
-        </Badge>
-      ))}
-    </div>
-  );
-}
-
 export function PostHeaderContent({ frontMatter }: Props) {
-  const { title, categories, excerpt, header, date, readingTime } = frontMatter;
+  const { title, categories, excerpt, date, readingTime } = frontMatter;
+  const normalizedCategories = Array.isArray(categories)
+    ? categories
+    : [categories];
 
   return (
-    <header>
-      <div className="relative mb-6 h-[300px] w-full overflow-hidden rounded-xl sm:h-[400px] md:h-[450px]">
-        <Image
-          src={header.teaser}
-          alt={title}
-          fill
-          sizes="(max-width: 768px) 100vw, 1200px"
-          priority
-          className="object-cover object-center transition-transform duration-500 hover:scale-105"
+    <header className="not-prose mb-10">
+      {/*
+        teaser 이미지는 포스트 고유 이미지가 아니라 기술 로고여서
+        450px를 차지하면서 카테고리 뱃지와 같은 말을 반복했다.
+        이미지를 걷어내고 제목 자체를 배너로 세운다.
+      */}
+      <div className="relative overflow-hidden rounded-xl border border-border/60 bg-linear-to-br from-primary/8 via-card to-card px-6 py-10 md:px-10 md:py-14">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, color-mix(in srgb, currentColor 7%, transparent) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+          aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/70" />
-        <CategoryBadgeList categories={categories} />
-      </div>
+        <div className="relative">
+          <div className="mb-4 flex flex-wrap gap-1.5">
+            {normalizedCategories.map((category) => (
+              <Badge key={category} variant="outline" className="bg-card/60">
+                {category}
+              </Badge>
+            ))}
+          </div>
 
-      <div className="mb-6 space-y-4">
-        <h1 className="mb-0 font-bold text-3xl text-gray-900 tracking-tight sm:text-4xl md:text-5xl dark:text-gray-50">
-          {title}
-        </h1>
+          <h1 className="mb-4 text-balance font-bold text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            {title}
+          </h1>
 
-        <div className="flex items-center justify-end gap-4 text-gray-600 text-sm dark:text-gray-400">
-          {readingTime && (
-            <div className="flex items-center">
-              <Clock className="mr-2 h-4 w-4" />
-              <span>약 {readingTime}분</span>
-            </div>
-          )}
-          <div className="flex items-center">
-            <CalendarDays className="mr-2 h-4 w-4" />
-            <time dateTime={date}>{date}</time>
+          <p className="mb-6 max-w-3xl text-lg text-muted-foreground leading-relaxed">
+            {excerpt}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-4 text-muted-foreground/70 text-sm">
+            <span className="flex items-center gap-1.5">
+              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+              <time dateTime={date}>{date}</time>
+            </span>
+            {readingTime && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4" aria-hidden="true" />약 {readingTime}
+                분
+              </span>
+            )}
           </div>
         </div>
-
-        <p className="text-gray-600 text-lg leading-relaxed md:text-xl dark:text-gray-300">
-          {excerpt}
-        </p>
       </div>
-
-      <div className="border-gray-200 border-b dark:border-gray-800" />
     </header>
   );
 }
