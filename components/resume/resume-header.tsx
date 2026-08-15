@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
+import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
 type IconProps = { className?: string; size?: number };
@@ -26,15 +27,15 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
 function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
     <li className="flex items-center gap-2">
-      <div className="flex w-24 shrink-0 items-center gap-1.5 print:w-20">
-        <Icon className="h-3.5 w-3.5 shrink-0 text-primary print:text-gray-600" />
-        <span className="font-semibold text-gray-600 dark:text-gray-400 print:text-gray-500">
+      <div className="flex w-24 shrink-0 items-center gap-1.5">
+        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
+        <span className="font-semibold text-gray-600 dark:text-gray-400">
           {label}
         </span>
       </div>
       <Link
         href={href}
-        className="min-w-0 text-gray-800 hover:text-primary hover:underline dark:text-gray-300 print:text-gray-700 print:no-underline"
+        className="min-w-0 text-gray-800 hover:text-primary hover:underline dark:text-gray-300 print:no-underline"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -44,7 +45,7 @@ function ContactListItem({ Icon, label, value, href }: ContactItem) {
   );
 }
 
-export default function ResumeHeader() {
+export default function ResumeHeader({ className }: { className?: string }) {
   const t = useTranslations("resume");
   const paragraphs = t.raw("aboutMe.paragraphs") as string[];
   const contacts: ContactItem[] = [
@@ -75,10 +76,10 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="flex flex-col gap-4 print:gap-3">
+    <header className={cn("flex flex-col gap-4", className)}>
       {/* 위: 사진 · 이름 · 연락처 */}
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-6 print:flex-row print:items-start print:gap-6">
-        <div className="relative size-40 shrink-0 lg:size-30 print:size-30">
+      <div className="flex flex-row flex-col items-start items-center gap-4 gap-6">
+        <div className="relative size-30 size-40 shrink-0">
           <Image
             src="/images/profile/image.jpg"
             alt="이승현 프로필"
@@ -88,14 +89,14 @@ export default function ResumeHeader() {
             className="overflow-hidden rounded-full object-cover object-top"
           />
         </div>
-        <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:flex-row sm:items-start print:flex-row">
-          <h1 className="flex flex-col flex-wrap items-baseline justify-center font-bold text-3xl text-gray-900 sm:flex-row sm:justify-start sm:gap-2 dark:text-white print:text-2xl">
+        <div className="flex min-w-0 flex-1 flex-row flex-col items-start justify-between gap-3">
+          <h1 className="flex flex-row flex-col flex-wrap items-baseline justify-start justify-center gap-2 font-bold text-3xl text-gray-900 dark:text-white">
             <span>{t("name")}</span>
-            <span className="font-medium text-lg text-primary print:text-lg">
+            <span className="font-medium text-lg text-primary">
               {t("role")}
             </span>
           </h1>
-          <ul className="flex shrink-0 flex-col gap-y-0.5 text-sm print:mt-0 print:text-xs">
+          <ul className="flex shrink-0 flex-col gap-y-0.5 text-sm">
             {contacts.map((contact) => (
               <ContactListItem key={contact.label} {...contact} />
             ))}
@@ -108,7 +109,7 @@ export default function ResumeHeader() {
         연락처 옆에 두면 데스크탑에서 폭이 좁아져 세로로 길어지므로,
         연락처 아래 전체 폭을 쓰게 한다.
       */}
-      <div className="space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:space-y-2 print:text-xs print:leading-snug">
+      <div className="space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200">
         {paragraphs.map((p, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content
           <p key={i} className="whitespace-pre-line">

@@ -16,19 +16,15 @@ export default function ResumeCertification({
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <ul className="mt-3 space-y-2 text-sm print:mt-2 print:space-y-2">
+      <ul className="mt-3 space-y-2 text-sm">
         {items.map((c) => (
           <li key={c.title}>
-            <div className="font-semibold text-gray-900 dark:text-white print:text-xs">
+            <div className="font-semibold text-gray-900 dark:text-white">
               {c.title}
             </div>
-            <div className="text-gray-500 dark:text-gray-400 print:text-xs">
-              {c.duration}
-            </div>
+            <div className="text-gray-500 dark:text-gray-400">{c.duration}</div>
             {c.detail && (
-              <div className="text-gray-700 dark:text-gray-300 print:text-xs">
-                {c.detail}
-              </div>
+              <div className="text-gray-700 dark:text-gray-300">{c.detail}</div>
             )}
           </li>
         ))}

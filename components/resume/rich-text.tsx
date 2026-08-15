@@ -45,13 +45,10 @@ function RichTokens({ line }: { line: string }) {
               href={token.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline decoration-dotted hover:decoration-solid print:text-gray-700 print:no-underline"
+              className="text-primary underline decoration-dotted hover:decoration-solid print:no-underline"
             >
               {token.content}
-              <span
-                aria-hidden
-                className="hidden print:inline print:text-[10px] print:text-gray-500"
-              >
+              <span aria-hidden className="hidden">
                 {" "}
                 ({token.url})
               </span>
