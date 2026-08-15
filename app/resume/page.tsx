@@ -61,7 +61,7 @@ export default function Page() {
 
         {/* 2장 — 어드민과 이전 회사 */}
         <ResumePage>
-          <WorkExperienceSection headless>
+          <WorkExperienceSection>
             <div>
               <TeamSection companyKey="allra" headless>
                 <KeepTogether>
@@ -76,9 +76,6 @@ export default function Page() {
                 <KeepTogether>
                   <ResumeProjectCard projectKey="digitalFinance" />
                 </KeepTogether>
-                <KeepTogether>
-                  <ResumeProjectCard projectKey="documentAi" />
-                </KeepTogether>
               </TeamSection>
             </div>
           </WorkExperienceSection>
@@ -86,9 +83,12 @@ export default function Page() {
 
         {/* 3장 — 나머지 경력과 활동 */}
         <ResumePage>
-          <WorkExperienceSection headless>
+          <WorkExperienceSection>
             <div>
               <TeamSection companyKey="pwc" headless>
+                <KeepTogether>
+                  <ResumeProjectCard projectKey="documentAi" />
+                </KeepTogether>
                 <KeepTogether>
                   <ResumeProjectCard projectKey="samilDevKit" />
                 </KeepTogether>
@@ -103,7 +103,10 @@ export default function Page() {
           <KeepTogether>
             <OpenSource />
           </KeepTogether>
+        </ResumePage>
 
+        {/* 4장 — 공유·학력·자격 */}
+        <ResumePage>
           <KeepTogether>
             <KnowledgeSharing />
           </KeepTogether>

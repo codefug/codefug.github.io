@@ -69,7 +69,7 @@ export function RichText({ children }: { children: string }) {
         const content = isIndented ? line.slice(1) : line;
         if (isIndented)
           return (
-            <ul key={lineIndex} className="mt-0.5 pl-4">
+            <ul key={lineIndex} className="mt-1 pl-4">
               <li className="ml-4 list-disc">
                 <RichTokens line={content} />
               </li>
