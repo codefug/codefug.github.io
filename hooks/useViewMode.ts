@@ -4,27 +4,40 @@ import { useCallback, useEffect, useState } from "react";
 
 type ViewMode = "grid" | "list";
 
+const STORAGE_KEY_PREFIX = "post-view-mode";
+
+function storageKey(scope?: string) {
+  return scope ? `${STORAGE_KEY_PREFIX}:${scope}` : STORAGE_KEY_PREFIX;
+}
+
 const viewModeStorage = {
-  get(): ViewMode {
-    const stored = sessionStorage.getItem("post-view-mode") as ViewMode | null;
+  get(scope?: string): ViewMode {
+    const stored = sessionStorage.getItem(storageKey(scope)) as ViewMode | null;
     return stored === "grid" || stored === "list" ? stored : "list";
   },
-  set(mode: ViewMode): void {
-    sessionStorage.setItem("post-view-mode", mode);
+  set(mode: ViewMode, scope?: string): void {
+    sessionStorage.setItem(storageKey(scope), mode);
   },
 };
 
-export function useViewMode() {
+/**
+ * 목록 보기 방식(리스트/갤러리) 상태.
+ * 홈에는 카테고리별 섹션이 여러 개 있으므로 scope로 섹션마다 독립적으로 기억한다.
+ */
+export function useViewMode(scope?: string) {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   useEffect(() => {
-    setViewMode(viewModeStorage.get());
-  }, []);
+    setViewMode(viewModeStorage.get(scope));
+  }, [scope]);
 
-  const toggle = useCallback((mode: ViewMode) => {
-    setViewMode(mode);
-    viewModeStorage.set(mode);
-  }, []);
+  const toggle = useCallback(
+    (mode: ViewMode) => {
+      setViewMode(mode);
+      viewModeStorage.set(mode, scope);
+    },
+    [scope],
+  );
 
   return { viewMode, toggle };
 }

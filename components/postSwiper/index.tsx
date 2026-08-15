@@ -42,7 +42,7 @@ export default function PostSwiper({
       setApi={setApi}
       plugins={[Autoplay({ delay: 6000, stopOnInteraction: true })]}
       opts={{ align: "start", loop: true }}
-      className="relative"
+      className="group/carousel relative"
     >
       <CarouselContent className="ml-0">
         {filteredPostInfoList.map((postInfo) => (
