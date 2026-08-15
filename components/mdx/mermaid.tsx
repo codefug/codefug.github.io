@@ -1,6 +1,7 @@
 "use client";
 
 import mermaid from "mermaid";
+import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import OverlayModal from "./overlay-modal";
@@ -12,20 +13,22 @@ type MermaidProps = {
 
 export default function Mermaid({ children, className }: MermaidProps) {
   const ref = useRef<HTMLButtonElement>(null);
-  const [isRendered, setIsRendered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [svgContent, setSvgContent] = useState<string>("");
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    if (!ref.current || isRendered) return;
+    const element = ref.current;
+    if (!element) return;
 
     const id = `mermaid-${Math.random().toString(36).substring(7)}`;
-    const element = ref.current;
     const code = children.trim();
+    let cancelled = false;
 
+    // 테마가 바뀌면 다이어그램 색도 따라가야 하므로 매번 다시 그린다.
     mermaid.initialize({
       startOnLoad: false,
-      theme: "default",
+      theme: resolvedTheme === "dark" ? "dark" : "default",
       securityLevel: "loose",
       fontFamily: "inherit",
     });
@@ -33,19 +36,20 @@ export default function Mermaid({ children, className }: MermaidProps) {
     mermaid
       .render(id, code)
       .then(({ svg }) => {
-        if (element && !isRendered) {
-          element.innerHTML = svg;
-          setSvgContent(svg);
-          setIsRendered(true);
-        }
+        if (cancelled || !element) return;
+        element.innerHTML = svg;
+        setSvgContent(svg);
       })
       .catch((error) => {
+        if (cancelled || !element) return;
         console.error("Mermaid rendering error:", error);
-        if (element) {
-          element.innerHTML = `<pre class="text-red-500">Mermaid 렌더링 오류: ${error.message}</pre>`;
-        }
+        element.innerHTML = `<pre class="text-destructive">Mermaid 렌더링 오류: ${error.message}</pre>`;
       });
-  }, [children, isRendered]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [children, resolvedTheme]);
 
   return (
     <>
@@ -53,17 +57,18 @@ export default function Mermaid({ children, className }: MermaidProps) {
         ref={ref}
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className={`my-6 flex w-full cursor-pointer justify-center overflow-x-auto rounded-lg bg-gray-50 p-4 transition-all hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 ${className || ""}`}
+        className={`my-6 flex w-full cursor-pointer justify-center overflow-x-auto rounded-lg bg-muted/40 p-4 transition-colors hover:bg-muted ${className || ""}`}
         aria-label="Click to view larger diagram"
       />
       {isModalOpen &&
         createPortal(
           <OverlayModal
             onClose={() => setIsModalOpen(false)}
-            className="bg-white p-6 dark:bg-gray-800"
+            className="bg-background p-6"
           >
             <div
               className="flex h-[80vh] justify-center"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: mermaid가 생성한 SVG
               dangerouslySetInnerHTML={{ __html: svgContent }}
             />
           </OverlayModal>,
