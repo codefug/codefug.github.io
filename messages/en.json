@@ -600,5 +600,27 @@
         }
       ]
     }
+  },
+  "categories": {
+    "retrospective": {
+      "label": "Retrospective",
+      "description": "Looking back on projects and seasons of work"
+    },
+    "series": {
+      "label": "Project Series",
+      "description": "One project, written across multiple posts"
+    },
+    "dev": {
+      "label": "Dev",
+      "description": "Technical notes from digging into React and Next.js"
+    },
+    "language": {
+      "label": "Language",
+      "description": "Exploring JavaScript and TypeScript themselves"
+    },
+    "etc": {
+      "label": "Etc",
+      "description": "Everything else"
+    }
   }
 }

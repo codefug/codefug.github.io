@@ -14,8 +14,9 @@ import {
 import { PATH } from "@/constants/path";
 import { defaultLocale } from "@/i18n/config";
 import {
-  getFrontMatterListForAllLocales,
+  getAllFrontMatterListIncludingHidden,
   getPostFrontMattersByIdForAllLocales,
+  isHiddenPost,
 } from "@/lib/posts";
 
 export async function generateMetadata({
@@ -24,8 +25,12 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  const hidden = isHiddenPost(id);
+
   return {
     alternates: createAlternateLinks(`${PATH.POSTS}/${id}`),
+    // 숨김 글은 URL로는 열리지만 검색엔진 색인에서는 제외한다.
+    ...(hidden && { robots: { index: false, follow: false } }),
   };
 }
 
@@ -68,7 +73,8 @@ export default async function Page({
 }
 
 export function generateStaticParams() {
-  const allPosts = getFrontMatterListForAllLocales();
+  // 숨김 글도 직접 URL로는 접근 가능해야 하므로 정적 경로는 전부 생성한다.
+  const allPosts = getAllFrontMatterListIncludingHidden();
   return allPosts[defaultLocale].map(({ id }) => ({ id }));
 }
 
