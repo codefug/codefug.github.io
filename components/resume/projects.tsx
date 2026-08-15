@@ -13,7 +13,7 @@ export default function ProjectsSection({
 }) {
   const t = useTranslations("resume.projects");
   return (
-    <section className={cn("py-4", className)}>
+    <section className={cn("py-5", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
       {children}
     </section>

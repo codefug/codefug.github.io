@@ -44,13 +44,13 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
           </a>
         )}
       </div>
-      <p className="mt-1 text-gray-600 text-sm dark:text-gray-400">
+      <p className="mt-1 text-[13px] text-gray-600 dark:text-gray-400">
         <RichText>{item.description}</RichText>
       </p>
-      <p className="mt-1.5 text-gray-400 text-xs dark:text-gray-500">
+      <p className="mt-2.5 text-gray-400 text-xs dark:text-gray-500">
         {item.stack.join(", ")}
       </p>
-      <ul className="mt-2 space-y-1 text-gray-700 text-sm dark:text-gray-300">
+      <ul className="mt-2.5 space-y-1 text-[13px] text-gray-700 dark:text-gray-300">
         {item.details.map((d, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content
           <li key={i} className="ml-4 list-disc">
@@ -67,9 +67,9 @@ export default function SideProjects({ className }: { className?: string }) {
   const items = t.raw("items") as SideProjectItem[];
 
   return (
-    <section className={cn("py-4", className)}>
+    <section className={cn("py-5", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <div className="mt-3 space-y-4">
+      <div className="mt-4 space-y-4">
         {items.map((item) => (
           <SideProjectCard key={item.title} item={item} />
         ))}

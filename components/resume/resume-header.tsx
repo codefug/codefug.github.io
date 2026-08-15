@@ -26,10 +26,14 @@ const LinkedInIconAdapted = ({ className }: IconProps) => (
 
 function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
-    <li className="flex items-center gap-2">
-      <div className="flex w-24 shrink-0 items-center gap-1.5">
-        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
-        <span className="font-semibold text-gray-600 dark:text-gray-400">
+    <li className="flex items-center justify-end gap-1.5">
+      {/*
+        라벨 칸을 고정 폭(w-24)으로 잡으면 짧은 라벨 뒤에 빈 공간이 남아
+        블록 전체가 오른쪽 끝에 붙지 못한다. 내용 폭만 차지하게 둔다.
+      */}
+      <div className="flex shrink-0 items-center gap-1">
+        <Icon className="h-3 w-3 shrink-0 text-primary" />
+        <span className="font-semibold text-gray-500 dark:text-gray-400">
           {label}
         </span>
       </div>
@@ -77,9 +81,8 @@ export default function ResumeHeader({ className }: { className?: string }) {
 
   return (
     <header className={cn("flex flex-col gap-4", className)}>
-      {/* 위: 사진 · 이름 · 연락처 */}
-      <div className="flex flex-row flex-col items-start items-center gap-4 gap-6">
-        <div className="relative size-30 size-40 shrink-0">
+      <div className="flex items-start gap-6">
+        <div className="relative size-24 shrink-0">
           <Image
             src="/images/profile/image.jpg"
             alt="이승현 프로필"
@@ -89,33 +92,32 @@ export default function ResumeHeader({ className }: { className?: string }) {
             className="overflow-hidden rounded-full object-cover object-top"
           />
         </div>
-        <div className="flex min-w-0 flex-1 flex-row flex-col items-start justify-between gap-3">
-          <h1 className="flex flex-row flex-col flex-wrap items-baseline justify-start justify-center gap-2 font-bold text-3xl text-gray-900 dark:text-white">
-            <span>{t("name")}</span>
-            <span className="font-medium text-lg text-primary">
-              {t("role")}
-            </span>
-          </h1>
-          <ul className="flex shrink-0 flex-col gap-y-0.5 text-sm">
+
+        {/* 이름 아래에 소개가 붙고, 연락처는 오른쪽에 둔다. */}
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-2xl text-gray-900 dark:text-white">
+              <span>{t("name")}</span>
+              <span className="font-medium text-primary text-sm">
+                {t("role")}
+              </span>
+            </h1>
+            <div className="mt-2 space-y-2 text-[11.5px] text-gray-700 leading-relaxed dark:text-gray-300">
+              {paragraphs.map((p, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: static content
+                <p key={i} className="whitespace-pre-line">
+                  <RichText>{p}</RichText>
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <ul className="flex shrink-0 flex-col gap-y-1 text-[11.5px]">
             {contacts.map((contact) => (
               <ContactListItem key={contact.label} {...contact} />
             ))}
           </ul>
         </div>
-      </div>
-
-      {/*
-        아래: 소개.
-        연락처 옆에 두면 데스크탑에서 폭이 좁아져 세로로 길어지므로,
-        연락처 아래 전체 폭을 쓰게 한다.
-      */}
-      <div className="space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200">
-        {paragraphs.map((p, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static content
-          <p key={i} className="whitespace-pre-line">
-            <RichText>{p}</RichText>
-          </p>
-        ))}
       </div>
     </header>
   );
