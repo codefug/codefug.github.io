@@ -313,7 +313,8 @@
     "tableOfContents": "Table of Contents",
     "category": {
       "all": "All",
-      "list": "Tag List"
+      "list": "Tag List",
+      "showMore": "Show more"
     }
   },
   "seo": {

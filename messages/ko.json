@@ -313,7 +313,8 @@
     "tableOfContents": "목차",
     "category": {
       "all": "전체",
-      "list": "태그 목록"
+      "list": "태그 목록",
+      "showMore": "더 보기"
     }
   },
   "seo": {
