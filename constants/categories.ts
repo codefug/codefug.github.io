@@ -21,8 +21,9 @@ export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
 export type CategoryGroupId =
   | "retrospective"
   | "series"
-  | "dev"
+  | "framework"
   | "language"
+  | "dev"
   | "etc";
 
 export type CategoryGroup = {
@@ -44,12 +45,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
     order: 1,
   },
   {
-    id: "dev",
+    id: "framework",
     tags: [
       TAG_LIST.REACT,
       TAG_LIST.NEXTJS,
       TAG_LIST.ELECTRON,
-      TAG_LIST.WEB,
       TAG_LIST.REACTDEEPDIVE,
     ],
     order: 2,
@@ -58,6 +58,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
     id: "language",
     tags: [TAG_LIST.TYPESCRIPT, TAG_LIST.JAVASCRIPT],
     order: 3,
+  },
+  {
+    id: "dev",
+    tags: [TAG_LIST.WEB],
+    order: 4,
   },
 ];
 

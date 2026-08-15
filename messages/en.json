@@ -623,7 +623,7 @@
     },
     "dev": {
       "label": "Dev",
-      "description": "Technical notes from digging into React and Next.js"
+      "description": "Browsers, the web platform, and development tooling"
     },
     "language": {
       "label": "Language",
@@ -632,6 +632,10 @@
     "etc": {
       "label": "Etc",
       "description": "Everything else"
+    },
+    "framework": {
+      "label": "Framework",
+      "description": "Digging into how React, Next.js, and Electron actually work"
     }
   },
   "series": {
