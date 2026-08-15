@@ -21,9 +21,13 @@ function generateMdxMap() {
 
   const localeArrAlphabetical = LOCALES.toSorted();
 
-  // 각 locale과 폴더 조합에 대해 import 생성
+  // 번역이 없는 글도 있으므로 실제로 파일이 있는 조합만 import한다.
+  const hasContent = (folder, locale) =>
+    existsSync(join(MARKDOWN_DIR, folder, locale, "content.mdx"));
+
   folders.forEach((folder) => {
     localeArrAlphabetical.forEach((locale) => {
+      if (!hasContent(folder, locale)) return;
       const importName = `MDX_${locale}_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
       code += `import * as ${importName} from "@/markdown/${folder}/${locale}/content.mdx";\n`;
     });
@@ -34,6 +38,7 @@ function generateMdxMap() {
   LOCALES.forEach((locale) => {
     code += `  ${locale}: {\n`;
     folders.forEach((folder) => {
+      if (!hasContent(folder, locale)) return;
       const importName = `MDX_${locale}_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
       code += `    "${folder}": ${importName},\n`;
     });

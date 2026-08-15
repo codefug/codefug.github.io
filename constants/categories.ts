@@ -3,7 +3,6 @@ export const TAG_LIST = {
   TYPESCRIPT: "typescript",
   KKOM_KKOM: "kkom-kkom",
   GHEUPPAY: "gheuppay",
-  REACTDEEPDIVE: "reactdeepdive",
   REACT: "react",
   WEB: "web",
   NEXTJS: "nextjs",
@@ -49,12 +48,7 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     id: "framework",
-    tags: [
-      TAG_LIST.REACT,
-      TAG_LIST.NEXTJS,
-      TAG_LIST.ELECTRON,
-      TAG_LIST.REACTDEEPDIVE,
-    ],
+    tags: [TAG_LIST.REACT, TAG_LIST.NEXTJS, TAG_LIST.ELECTRON],
     order: 2,
   },
   {
