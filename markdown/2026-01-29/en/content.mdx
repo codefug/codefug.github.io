@@ -1,85 +1,21 @@
-Server Actions provide an RPC-style interface for easily calling server functions. However, Next.js official documentation recommends Route Handlers when explaining the BFF pattern. Why?
-
-It's because Server Actions and Route Handlers have different design intentions. Server Actions are designed for data mutations, while Route Handlers are designed to provide HTTP endpoints. This difference also affects performance.
-
----
-# Differences Between Server Actions and Route Handlers
-
-## Design Intent of Server Actions
-
-Server Actions are designed for data mutations. Internally, they only use POST requests:
-
-```tsx
-'use server'
-
-export async function createPost(formData: FormData) {
-  const title = formData.get('title')
-  const content = formData.get('content')
-
-  await db.posts.create({ title, content })
-  revalidatePath('/posts')
-}
-```
-
-Server Actions are deeply integrated with Next.js's cache architecture:
-- Automatically refresh UI after function calls
-- Control cache with `revalidatePath` and `revalidateTag`
-- Work without JavaScript when used with form's action attribute (progressive enhancement)
-
-```mermaid
-flowchart LR
-    A[Client] -->|"POST request"| B[Server Action]
-    B -->|"Mutate data"| C[Database]
-    B -->|"Refresh cache"| D[Next.js Cache]
-    D -->|"New UI"| A
-```
-
-> [!NOTE] revalidatePath, revalidateTag
->
-> You can tag Next.js fetch requests. `revalidateTag` invalidates caches with specific tags, and `revalidatePath` invalidates caches for specific paths.
-
-> [!NOTE] progressive enhancement
->
-> Even when JS hasn't loaded, you can call server functions contained in the form tag's action attribute.
-
-## Role of Route Handlers
-
-Route Handlers are HTTP Endpoints. They support all HTTP methods and are used to construct BFF (Backend for Frontend) patterns:
-
-> [!NOTE] BFF (Backend for Frontend)
->
-> A dedicated backend layer for the frontend. It proxies external APIs, combines multiple data sources, and hides sensitive information (API keys, etc.).
-
-```ts
-// app/api/weather/route.ts
-export async function POST(request: Request) {
-  const body = await request.json()
-  const searchParams = new URLSearchParams({ lat: body.lat, lng: body.lng })
-
-  const weatherResponse = await fetch(`${weatherEndpoint}?${searchParams}`)
-  const weatherData = await weatherResponse.text()
-  const payload = parseWeatherData.asJSON(weatherData)
-
-  return new Response(payload, { status: 200 })
-}
-```
-
----
-
-# Server Actions Operate as a Queue
-
-The Next.js official documentation contains this statement:
+The Next.js docs contain this line:
 
 > Server Actions are queued. Using them for data fetching introduces sequential execution.
 
-Server Actions execute sequentially. To verify the scope of sequential execution, I tested the following:
-1. Does Promise.all still execute sequentially?
-2. Do multiple components each calling Server Actions still execute sequentially?
+Server Actions run sequentially. But that sentence alone doesn't tell you the **scope**.
 
-## Test Environment
+- Does wrapping them in `Promise.all` make them parallel?
+- What if separate components each call their own?
+- Does a library like React Query change anything?
 
-- **Next.js app**: Calls Express API via Route Handler and Server Action
-- **Express backend**: Provides `/api/data?id={id}` endpoint (10ms response delay)
+Whether "sequential" means per call site, per component, or per tab completely
+changes where you can use them. So I measured it.
+
+## Setup
+
+- **Next.js app**: calls an Express API through both a Route Handler and a Server Action
+- **Express backend**: `/api/data?id={id}`, 10ms response delay
+- 30 requests each, dev server (HTTP/1.1)
 
 ```ts
 // Server Action
@@ -102,51 +38,37 @@ export async function GET(request: Request) {
 }
 ```
 
-Tests were conducted on the development server (HTTP/1.1).
+The Route Handler is the **control**. I needed to separate "this is how Server Actions
+behave" from "this is an artifact of my setup."
 
-## Test Scenarios
+## 1. Wrapped in Promise.all
 
-I tested 3 patterns to verify the scope of Server Action's sequential execution.
-
-### 1. Direct Call with Promise.all
-
-Does wrapping multiple requests with Promise.all enable parallel execution?
-
-**Server Action Call**
 ```tsx
-// Client Component
+// Server Action
 const promises = Array.from({ length: 30 }, (_, i) =>
   serverActionFetchData(i + 1)
 );
-const data = await Promise.all(promises);
-```
+await Promise.all(promises);
 
-**Route Handler Call**
-```tsx
-// Client Component
+// Route Handler
 const promises = Array.from({ length: 30 }, (_, i) =>
   fetch(`/api/data?id=${i + 1}`).then(res => res.json())
 );
-const data = await Promise.all(promises);
+await Promise.all(promises);
 ```
 
-**Execution Results**
+![Promise.all results — Server Action sequential, Route Handler parallel](/images/2026-01-29/Pasted%20image%2020260129024238.png)
 
-![Promise.all direct call results - Server Actions execute sequentially, Route Handlers execute in parallel](/images/2026-01-29/Pasted%20image%2020260129024238.png)
+![Network panel — Server Action (front) sequential, Route Handler (back) parallel](/images/2026-01-29/Pasted%20image%2020260129024324.png)
 
-Network panel:
-![Network panel - Server Actions (front) sequential, Route Handlers (back) parallel](/images/2026-01-29/Pasted%20image%2020260129024324.png)
+Server Action in front, Route Handler behind. The Route Handler fires everything at
+once; the Server Action forms a staircase.
 
-- Front: Server Action calls (sequential execution)
-- Back: Route Handler calls (parallel execution)
+`Promise.all` is a tool for **awaiting work that already started**, not for making it
+parallel. Server Action starts are held in a queue, so wrapping changes nothing.
 
-Route Handlers send requests in parallel. Server Actions must complete one request before starting the next.
+## 2. With React Query
 
-### 2. Using React Query's useQueries
-
-What happens when using data fetching libraries like React Query?
-
-**Server Action + useQueries**
 ```tsx
 const queries = useQueries({
   queries: Array.from({ length: 30 }, (_, i) => ({
@@ -156,30 +78,17 @@ const queries = useQueries({
 });
 ```
 
-**Route Handler + useQueries**
-```tsx
-const queries = useQueries({
-  queries: Array.from({ length: 30 }, (_, i) => ({
-    queryKey: ["route-handler", i + 1],
-    queryFn: () => fetch(`/api/data?id=${i + 1}`).then(res => res.json()),
-  })),
-});
-```
+![React Query useQueries — Server Action still sequential](/images/2026-01-29/Pasted%20image%2020260129024437.png)
 
-**Execution Results**
+![React Query network panel — Server Action sequential, Route Handler parallel](/images/2026-01-29/Pasted%20image%2020260129024522.png)
 
-![React Query useQueries results - Server Actions still execute sequentially](/images/2026-01-29/Pasted%20image%2020260129024437.png)
+Identical. Whoever manages the calls, the queue stays.
 
-Network panel:
-![React Query network panel - Server Actions sequential, Route Handlers parallel](/images/2026-01-29/Pasted%20image%2020260129024522.png)
+## 3. Independent components each calling once
 
-Even with React Query, Server Actions execute sequentially.
+This was the case I most wanted to see. Thirty calls from one place is a different
+situation from thirty components that know nothing about each other.
 
-### 3. Independent Components Each Calling useQuery
-
-What happens when components each independently call Server Actions?
-
-**Independent Component Calling Server Action**
 ```tsx
 function DataItem({ id }: { id: number }) {
   const { data } = useQuery({
@@ -189,167 +98,81 @@ function DataItem({ id }: { id: number }) {
   return <div>{data?.data}</div>;
 }
 
-// Render 30 independent components
-<>
-  {Array.from({ length: 30 }, (_, i) => (
-    <DataItem key={i} id={i + 1} />
-  ))}
-</>
+// 30 independent components
+{Array.from({ length: 30 }, (_, i) => <DataItem key={i} id={i + 1} />)}
 ```
 
-**Independent Component Calling Route Handler**
-```tsx
-function DataItem({ id }: { id: number }) {
-  const { data } = useQuery({
-    queryKey: ["data", id],
-    queryFn: () => fetch(`/api/data?id=${id}`).then(res => res.json()),
-  });
-  return <div>{data?.data}</div>;
-}
+![Independent components — Server Action still sequential](/images/2026-01-29/Pasted%20image%2020260129030320.png)
 
-// Render 30 independent components
-<>
-  {Array.from({ length: 30 }, (_, i) => (
-    <DataItem key={i} id={i + 1} />
-  ))}
-</>
-```
+![Network panel — Server Action still sequential](/images/2026-01-29/Pasted%20image%2020260129030257.png)
 
-**Execution Results**
+**Still sequential.**
 
-![Independent component call results - Server Actions execute sequentially even when components call independently](/images/2026-01-29/Pasted%20image%2020260129030320.png)
+This was the most important result. The queue isn't per call site or per component —
+there's **one per tab**.
 
-Network panel:
-![Independent component network panel - Server Actions still execute sequentially](/images/2026-01-29/Pasted%20image%2020260129030257.png)
-
-Even when components call independently, Server Actions execute sequentially.
-
-## Test Results
-
-All scenarios showed the same results:
-
-- **Route Handler**: Parallel execution (multiple HTTP requests sent simultaneously)
-- **Server Action**: Sequential execution (next request starts after previous completes)
-
-### Server Action's Queue Behavior
-
-- All Server Action calls within a single browser tab go into a Queue
-- Still executes sequentially even when wrapped with Promise.all
-- Managed in a global Queue even when each component calls independently
-- Same behavior even when using libraries like React Query
-
-> [!NOTE] Differences are greater in production environments
->
-> 1. Network latency is greater in actual production
-> 2. When HTTP/2 multiplexing is applied:
->    - Route Handler: Multiple requests processed simultaneously on one TCP connection (performance improvement)
->    - Server Action: Still sequential execution (no change)
-
-## Why Design as Queue?
-
-Server Actions were created for mutations. When multiple mutations execute simultaneously, race conditions can occur:
-
-```tsx
-// Case where simultaneous execution causes problems
-async function updateUserProfile(formData: FormData) {
-  'use server'
-  const user = await db.users.findOne(userId)
-  user.name = formData.get('name')
-  await db.users.save(user) // Risk of race condition
-}
-```
-
-The Queue approach ensures data consistency. However, it's not suitable when multiple independent requests need parallel processing.
-
-> [!NOTE] Parallel processing possible inside Server Actions
->
-> Using `Promise.all` inside a Server Action enables parallel processing. The problem is sequential execution when calling multiple Server Actions from outside.
+Which means unrelated components wait on each other. If component A's Server Action
+is slow, component B starts that much later. Splitting components doesn't break the
+coupling.
 
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant Q as Action Queue
+    participant Q as Action Queue (one per tab)
     participant S as Server
 
-    C->>Q: Call Server Action 1
-    Q->>S: Execute Action 1
-    C->>Q: Call Server Action 2
-    Note over Q: Wait for Action 1 completion
-    S-->>Q: Action 1 complete
-    Q->>S: Execute Action 2
-    S-->>Q: Action 2 complete
-    Q-->>C: Response
+    C->>Q: Server Action 1
+    Q->>S: run Action 1
+    C->>Q: Server Action 2
+    Note over Q: waits for Action 1
+    S-->>Q: Action 1 done
+    Q->>S: run Action 2
 ```
 
----
-# Conclusion
+## Why design it this way
 
-Server Actions and Route Handlers are designed for different purposes.
-
-## When to Use Server Actions
-
-1. **Data mutation via forms**: Supports progressive enhancement
-2. **Single mutations**: When sequential execution is sufficient
-3. **Internal parallel processing**: Using Promise.all inside Server Action
-4. **Cache refresh**: Use with revalidatePath, revalidateTag
+Server Actions exist for mutations. Concurrent mutations tangle ordering.
 
 ```tsx
-'use server'
-
-export async function createPost(formData: FormData) {
-  await db.posts.create({
-    title: formData.get('title'),
-    content: formData.get('content')
-  })
-
-  revalidatePath('/posts')
+async function updateUserProfile(formData: FormData) {
+  'use server'
+  const user = await db.users.findOne(userId)
+  user.name = formData.get('name')
+  await db.users.save(user)
 }
 ```
 
-## When to Use Route Handlers
+Run these in parallel and a later request can finish first and overwrite the earlier
+one. The queue guarantees order. It isn't **badly suited to reads** so much as
+**deliberately fitted to writes**.
 
-1. **BFF pattern**: Proxy external APIs, combine multiple data
-2. **Multiple independent endpoints**: Call each API independently
-3. **Non-UI responses**: Provide webhooks, RSS, sitemaps
-4. **Parallel fetching**: Call multiple endpoints simultaneously from Client Component
+> `Promise.all` **inside** a Server Action does run in parallel.
+> What's queued is the action's execution, not the fetches within it.
+> If you need to gather from several sources, gather inside a single action.
 
-```ts
-// app/api/dashboard/route.ts
-export async function GET(request: Request) {
-  const [users, posts, analytics] = await Promise.all([
-    fetchUsers(),
-    fetchPosts(),
-    fetchAnalytics()
-  ])
+## Limits of this measurement
 
-  return Response.json({ users, posts, analytics })
-}
-```
+I measured on a dev server (HTTP/1.1). These aren't numbers that transfer to production.
 
-## Key Summary
+But **the direction should hold.** With HTTP/2 multiplexing the Route Handler has room
+to get faster, while the Server Action queue sits above the network layer and is
+unaffected. The gap would widen rather than close.
 
-| Item               | Server Action                 | Route Handler                   |
-| ------------------ | ----------------------------- | ------------------------------- |
-| **Design Intent**  | Mutation                      | HTTP Endpoint                   |
-| **External Calls** | Queue (sequential)            | Parallel possible               |
-| **Internal Parallel** | Promise.all possible       | Promise.all possible            |
-| **HTTP Methods**   | POST only                     | All methods                     |
-| **Cache Integration** | Deeply integrated          | Manual handling                 |
-| **Use Cases**      | Form mutations, single/unified changes | BFF, independent endpoints, webhooks |
+This was a measurement about the **shape** — sequential versus parallel — not the numbers.
 
-**Server Action**: When grouping as logical work unit and cache integration needed
-- Can process in parallel internally with Promise.all
-- Supports form's progressive enhancement
+## Takeaways
 
-**Route Handler**: Multiple independent API endpoints or BFF pattern construction
-- Client can call each endpoint in parallel
-- Supports all HTTP methods
+- The Server Action queue is **one per tab**. `Promise.all`, React Query, and splitting
+  components all failed to get around it.
+- So when you need **several independent fetches in parallel from the client**,
+  the Route Handler is the right tool.
+- Server Actions are for mutations. To combine sources, use **`Promise.all` inside a
+  single action**.
+- The scope behind the docs' one word "queued" wasn't something **I knew before
+  measuring.** I'd assumed per call site; it was the whole tab.
 
----
+### References
 
-## References
-
-- [Next.js - Backend For Your Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
-- [Next.js - Updating Data](https://nextjs.org/docs/app/getting-started/updating-data)
-- [Next.js - Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route)
-- [React - Server Functions](https://react.dev/reference/rsc/server-functions)
+- [Next.js — Backend For Your Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+- [Next.js — Updating Data](https://nextjs.org/docs/app/getting-started/updating-data)
+- [React — Server Functions](https://react.dev/reference/rsc/server-functions)
