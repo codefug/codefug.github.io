@@ -10,6 +10,8 @@ export const TAG_LIST = {
   FANDOMK: "fandomk",
   ELECTRON: "electron",
   RETROSPECTIVE: "retrospective",
+  REVIEW: "review",
+  PROJECT: "project",
 } as const;
 
 export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
@@ -19,11 +21,13 @@ export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
  * `order`가 홈 화면에서의 노출 순서를 결정한다.
  */
 export type CategoryGroupId =
+  | "project"
   | "retrospective"
   | "series"
   | "framework"
   | "language"
   | "dev"
+  | "review"
   | "etc";
 
 export type CategoryGroup = {
@@ -35,8 +39,8 @@ export type CategoryGroup = {
 
 export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
-    id: "retrospective",
-    tags: [TAG_LIST.RETROSPECTIVE],
+    id: "project",
+    tags: [TAG_LIST.PROJECT],
     order: 0,
   },
   {
@@ -63,6 +67,16 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
     id: "dev",
     tags: [TAG_LIST.WEB],
     order: 4,
+  },
+  {
+    id: "retrospective",
+    tags: [TAG_LIST.RETROSPECTIVE],
+    order: 5,
+  },
+  {
+    id: "review",
+    tags: [TAG_LIST.REVIEW],
+    order: 6,
   },
 ];
 
