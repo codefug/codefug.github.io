@@ -1,0 +1,162 @@
+import Mermaid from "@/components/mdx/mermaid.tsx";
+
+## The same mistake, but only one gets flagged
+
+`exhaustive-deps` warns when you put an unstable function in a dependency array.
+So I'd been treating the rule as a **safety net**: no warning meant no problem.
+
+Then I hit an effect that re-ran on every render with no warning at all.
+I decided to find out whether the rule has blind spots.
+
+I ran two cases side by side on `eslint-plugin-react-hooks` **7.1.1**.
+
+```jsx
+// A: function defined inside the component
+function A() {
+  const [count, setCount] = useState(0);
+  const handleClick = () => { console.log(count); };
+  useEffect(() => { handleClick(); }, [handleClick]);
+}
+
+// B: function returned from a custom hook
+function useAutoSave() {
+  const [lastSaved, setLastSaved] = useState(null);
+  const save = (content) => { setLastSaved(content); };  // no memoization
+  return { save, lastSaved };
+}
+
+function B() {
+  const [content, setContent] = useState("");
+  const { save } = useAutoSave();
+  useEffect(() => {
+    const timer = setInterval(() => save(content), 5000);
+    return () => clearInterval(timer);
+  }, [save, content]);
+}
+```
+
+The result:
+
+```
+6:9  warning  The 'handleClick' function makes the dependencies of useEffect Hook
+              (at line 7) change on every render. Move it inside the useEffect
+              callback. Alternatively, wrap the definition of 'handleClick' in
+              its own useCallback() Hook   react-hooks/exhaustive-deps
+
+✖ 1 problem (0 errors, 1 warning)
+```
+
+**Only A is caught.** B is silent.
+
+Both do the same thing: a new function every render, landing in a dependency array,
+re-running the effect. Only one gets a warning.
+
+## Finding the actual boundary
+
+Was it "because it's a custom hook," or something broader? I ran a few more.
+
+**C. The hook uses `useCallback`, but its dependency is unstable**
+
+```jsx
+function useAutoSave(onDone) {
+  const save = useCallback((c) => { onDone(c); }, [onDone]);
+  return { save };
+}
+
+function C() {
+  // inline function → new every render → onDone changes → save changes
+  const { save } = useAutoSave((c) => console.log(c));
+  useEffect(() => { save(content); }, [save, content]);
+}
+```
+
+No warning — **even though `useCallback` is there.** Being wrapped and being stable
+are two different things, and the rule doesn't look that far.
+
+**D. The hook returns the function directly, no destructuring** — no warning.
+
+**E. A plain function, not a hook, returning a function**
+
+```jsx
+function makeFn() { return () => {}; }
+function E() {
+  const fn = makeFn();
+  useEffect(() => { fn(); }, [fn]);
+}
+```
+
+Also silent.
+
+So the boundary was **not custom-hook-versus-not**.
+
+> The rule only tracks functions **defined directly in the component body**.
+> A function that arrives as **the return value of a call** is assumed stable,
+> whatever its source.
+
+<Mermaid>
+{`flowchart TD
+  Q{"Where did this<br/>function come from?"}
+  Q -->|"defined directly in<br/>the component body"| W["tracked for instability<br/>→ warns"]
+  Q -->|"return value of a call<br/>(hook or plain function)"| S["assumed stable<br/>→ silent"]`}
+</Mermaid>
+
+## Why that assumption is reasonable
+
+The rule doesn't have much choice.
+
+Whether `useAutoSave()` hands back a stable function depends on **its implementation**.
+If the hook lives in another file, that's outside the linter's view. Even in the same
+file, chasing return values through is closer to type checking than to what a lint
+rule can carry.
+
+So it picked **"assume stable when unknown."** The opposite choice would fire a
+warning at every piece of code that takes a function from a hook — a rule nobody
+would keep enabled.
+
+It's a sound tradeoff. But **the blind spot it creates is yours to know about.**
+
+## What to look at instead
+
+The practical consequence:
+
+> **The moment a hook returns a function, that hook owns its reference stability** —
+> because the caller has no way to check.
+
+There's nothing the calling side can do. Whether `save` is stable isn't visible from
+the call site, and ESLint won't say. **Opening the hook's implementation is the only way.**
+
+So when writing custom hooks I settled on:
+
+- **Return a function? Wrap it in `useCallback`.** No exceptions.
+- Once wrapped, **verify its dependencies are stable too.** That's where case C bites:
+  a callback received as an argument gives you no guarantee.
+- Returning an object? `useMemo`, for the same reason.
+
+### The other side of it
+
+This doesn't mean wrapping every hook return value.
+If the returned function **never lands in a dependency array**, being recreated each
+render is harmless. Wrapping a function that only feeds `onClick` just adds cost.
+
+The test is **"could this function end up in someone's dependency array?"**
+For a shared hook the answer is usually yes, so wrap it. For a hook used in exactly
+one place, you can skip it.
+
+## Takeaways
+
+- `exhaustive-deps` tracks **only functions defined in the component body**.
+  Functions arriving as **return values are assumed stable**. Custom-hook-or-not
+  isn't the criterion.
+- A `useCallback` wrapper with **unstable dependencies** produces the same problem,
+  also without a warning.
+- Therefore **a hook that returns functions must own their reference stability.**
+  Callers have no way to verify it.
+- No warning doesn't mean no problem — it means **outside the rule's field of view.**
+
+That last point is why I wrote this. I'd been reading silence as a pass, but without
+knowing **what the rule declines to look at**, that reading didn't hold up.
+
+### References
+
+- [React — removing effect dependencies](https://react.dev/learn/removing-effect-dependencies)
+- [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks) (verified on 7.1.1)

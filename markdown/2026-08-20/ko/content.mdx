@@ -1,0 +1,162 @@
+import Mermaid from "@/components/mdx/mermaid.tsx";
+
+## 같은 실수인데 한쪽만 경고한다
+
+`exhaustive-deps`는 의존성 배열에 불안정한 함수를 넣으면 경고해줍니다.
+그래서 저는 이 규칙을 **안전망**으로 여기고 있었습니다. 경고가 없으면 괜찮은 줄 알았습니다.
+
+그런데 경고가 없는데도 effect가 매 렌더 다시 도는 코드를 만났습니다.
+규칙이 못 잡는 자리가 있는 건지 확인해보기로 했습니다.
+
+`eslint-plugin-react-hooks` **7.1.1**에 두 가지를 나란히 넣고 돌렸습니다.
+
+```jsx
+// A: 컴포넌트 안에서 만든 함수
+function A() {
+  const [count, setCount] = useState(0);
+  const handleClick = () => { console.log(count); };
+  useEffect(() => { handleClick(); }, [handleClick]);
+}
+
+// B: 커스텀 훅이 반환한 함수
+function useAutoSave() {
+  const [lastSaved, setLastSaved] = useState(null);
+  const save = (content) => { setLastSaved(content); };  // 메모이제이션 없음
+  return { save, lastSaved };
+}
+
+function B() {
+  const [content, setContent] = useState("");
+  const { save } = useAutoSave();
+  useEffect(() => {
+    const timer = setInterval(() => save(content), 5000);
+    return () => clearInterval(timer);
+  }, [save, content]);
+}
+```
+
+결과입니다.
+
+```
+6:9  warning  The 'handleClick' function makes the dependencies of useEffect Hook
+              (at line 7) change on every render. Move it inside the useEffect
+              callback. Alternatively, wrap the definition of 'handleClick' in
+              its own useCallback() Hook   react-hooks/exhaustive-deps
+
+✖ 1 problem (0 errors, 1 warning)
+```
+
+**A만 걸립니다.** B는 조용합니다.
+
+두 코드가 하는 일은 같습니다. 매 렌더마다 새 함수가 만들어지고,
+그게 의존성 배열에 들어가 effect를 다시 돌립니다.
+그런데 한쪽만 경고합니다.
+
+## 경계가 어디까지인지 확인했다
+
+"커스텀 훅이라서"인지, 아니면 더 넓은 규칙인지 궁금해서 몇 가지를 더 돌려봤습니다.
+
+**C. 훅 내부에서 `useCallback`을 썼지만 그 의존성이 불안정한 경우**
+
+```jsx
+function useAutoSave(onDone) {
+  const save = useCallback((c) => { onDone(c); }, [onDone]);
+  return { save };
+}
+
+function C() {
+  // 인라인 함수라 매 렌더 새로 생성 → onDone이 바뀜 → save도 바뀜
+  const { save } = useAutoSave((c) => console.log(c));
+  useEffect(() => { save(content); }, [save, content]);
+}
+```
+
+경고 없습니다. **`useCallback`을 썼는데도** 그렇습니다.
+감쌌다는 사실과 참조가 안정적이라는 사실은 별개인데, 규칙은 여기까지 보지 않습니다.
+
+**D. 구조분해 없이 훅이 함수를 직접 반환하는 경우** — 경고 없음
+
+**E. 훅이 아니라 평범한 함수가 반환한 함수**
+
+```jsx
+function makeFn() { return () => {}; }
+function E() {
+  const fn = makeFn();
+  useEffect(() => { fn(); }, [fn]);
+}
+```
+
+이것도 경고 없습니다.
+
+정리하면 경계는 **커스텀 훅이냐 아니냐가 아니었습니다.**
+
+> 규칙은 **컴포넌트 본문에서 직접 정의한 함수**만 추적합니다.
+> **호출의 반환값으로 들어온 함수**는 출처가 무엇이든 안정적이라고 가정합니다.
+
+<Mermaid>
+{`flowchart TD
+  Q{"이 함수가<br/>어디서 왔나?"}
+  Q -->|"컴포넌트 본문에서<br/>직접 정의"| W["불안정한지 추적한다<br/>→ 경고"]
+  Q -->|"호출의 반환값<br/>(훅 · 일반 함수 무관)"| S["안정적이라고 가정<br/>→ 침묵"]`}
+</Mermaid>
+
+## 가정이 합리적인 이유
+
+규칙 입장에서는 어쩔 수 없습니다.
+
+`useAutoSave()`가 안정적인 함수를 주는지 아닌지는 **그 훅의 구현을 봐야** 압니다.
+훅이 다른 파일에 있으면 린트 규칙의 시야 밖입니다.
+설령 같은 파일이라도, 반환값을 끝까지 추적하는 건 타입 검사에 가까운 일이지
+린트 규칙이 감당할 범위가 아닙니다.
+
+그래서 **"모르면 안정적이라고 친다"** 를 고른 겁니다.
+반대로 골랐다면 훅에서 함수를 받는 모든 코드가 경고를 뿜었을 테고,
+그건 아무도 안 쓰는 규칙이 됐을 겁니다.
+
+합리적인 선택입니다. 다만 **그 결과로 생긴 사각지대는 내가 알고 있어야** 합니다.
+
+## 그래서 어디를 봐야 하나
+
+이 사각지대의 실질적 의미는 이겁니다.
+
+> **훅이 함수를 반환하는 순간, 그 훅은 참조 안정성에 대한 책임을 진다.**
+> 쓰는 쪽에서는 확인할 방법이 없기 때문입니다.
+
+쓰는 쪽에서 할 수 있는 게 없습니다. `save`가 안정적인지 아닌지는
+호출부만 봐서는 알 수 없고, ESLint도 안 알려줍니다.
+**훅 구현을 직접 열어보는 것 말고는 방법이 없습니다.**
+
+그래서 커스텀 훅을 만들 때 규칙을 이렇게 정리했습니다.
+
+- **함수를 반환하면 `useCallback`으로 감싼다.** 예외 없이.
+- 감쌌으면 **그 의존성도 안정적인지 확인한다.** C 케이스가 여기서 걸립니다.
+  인자로 받은 콜백을 의존성에 넣었다면, 그 콜백이 안정적이라는 보장이 없습니다.
+- 객체를 반환하면 `useMemo`로 감싼다. 같은 이유입니다.
+
+### 반대편 이야기도 해두면
+
+그렇다고 모든 훅 반환값을 감싸라는 뜻은 아닙니다.
+반환한 함수가 **의존성 배열에 들어가지 않는다면** 매 렌더 새로 만들어져도 문제없습니다.
+`onClick`에만 쓰이는 함수를 `useCallback`으로 감싸는 건 비용만 늘립니다.
+
+기준은 **"이 함수가 남의 의존성 배열에 들어갈 가능성이 있는가"** 입니다.
+공용 훅이라면 대체로 예라고 봐야 하고, 그래서 감싸는 편이 맞습니다.
+한 곳에서만 쓰는 훅이면 안 감싸도 됩니다.
+
+## 정리
+
+- `exhaustive-deps`는 **컴포넌트 본문에서 정의한 함수만** 추적합니다.
+  **호출의 반환값으로 온 함수는 안정적이라고 가정**하고 넘어갑니다.
+  커스텀 훅이냐 아니냐는 기준이 아닙니다.
+- `useCallback`으로 감쌌어도 **의존성이 불안정하면** 결과는 같고, 이것도 경고가 없습니다.
+- 그래서 **함수를 반환하는 훅은 참조 안정성을 스스로 책임져야** 합니다.
+  쓰는 쪽에는 확인할 수단이 없습니다.
+- 경고가 없다는 건 **문제가 없다는 뜻이 아니라 규칙의 시야 안에 없다는 뜻**입니다.
+
+마지막이 이 글을 쓴 이유입니다. 저는 경고가 없으면 통과한 줄 알았는데,
+**규칙이 무엇을 보지 않는지**를 모르면 그 판단 자체가 성립하지 않았습니다.
+
+### 참고
+
+- [React — removing effect dependencies](https://react.dev/learn/removing-effect-dependencies)
+- [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks) (확인 버전 7.1.1)
