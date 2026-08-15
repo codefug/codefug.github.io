@@ -9,9 +9,9 @@ export const TAG_LIST = {
   NEXTJS: "nextjs",
   FANDOMK: "fandomk",
   ELECTRON: "electron",
+  CLAUDE_PET: "claude-pet",
   RETROSPECTIVE: "retrospective",
   REVIEW: "review",
-  PROJECT: "project",
 } as const;
 
 export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
@@ -21,7 +21,6 @@ export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
  * `order`가 홈 화면에서의 노출 순서를 결정한다.
  */
 export type CategoryGroupId =
-  | "project"
   | "retrospective"
   | "series"
   | "framework"
@@ -39,13 +38,13 @@ export type CategoryGroup = {
 
 export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
-    id: "project",
-    tags: [TAG_LIST.PROJECT],
-    order: 0,
-  },
-  {
     id: "series",
-    tags: [TAG_LIST.FANDOMK, TAG_LIST.GHEUPPAY, TAG_LIST.KKOM_KKOM],
+    tags: [
+      TAG_LIST.CLAUDE_PET,
+      TAG_LIST.FANDOMK,
+      TAG_LIST.GHEUPPAY,
+      TAG_LIST.KKOM_KKOM,
+    ],
     order: 1,
   },
   {
