@@ -1,10 +1,15 @@
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { TAG_GROUP_TO_ARRAY_MAP, type TAG_LIST } from "@/constants/categories";
+import {
+  CATEGORY_GROUP_ORDER,
+  type CategoryGroupId,
+  getGroupIdByTag,
+} from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
@@ -24,6 +29,7 @@ export function PostGroupContent({
 }: {
   frontMatterList: FrontMatter[];
 }) {
+  const t = useTranslations("categories");
   const postsByCategory = useMemo(
     () => groupPostsByFirstCategory(frontMatterList),
     [frontMatterList],
@@ -31,20 +37,18 @@ export function PostGroupContent({
 
   return (
     <SidebarGroup className="py-2">
-      {Object.entries(TAG_GROUP_TO_ARRAY_MAP).map(([key, value]) => {
+      {CATEGORY_GROUP_ORDER.map((id: CategoryGroupId) => {
+        // 어느 그룹에도 속하지 않는 태그는 fallback 그룹으로 모여 누락되지 않는다.
         const matchedCategories = Object.keys(postsByCategory).filter(
-          (category) =>
-            value.includes(
-              category as (typeof TAG_LIST)[keyof typeof TAG_LIST],
-            ),
+          (category) => getGroupIdByTag(category) === id,
         );
 
         if (matchedCategories.length === 0) return null;
 
         return (
-          <section key={key}>
+          <section key={id}>
             <SidebarGroupLabel className="px-3 py-1 font-semibold text-[10px] text-sidebar-foreground/30 uppercase tracking-widest">
-              {key}
+              {t(`${id}.label`)}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               {matchedCategories.map((category) => (

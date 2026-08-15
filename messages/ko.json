@@ -600,5 +600,27 @@
         }
       ]
     }
+  },
+  "categories": {
+    "retrospective": {
+      "label": "회고",
+      "description": "프로젝트와 시기를 돌아보며 남긴 기록"
+    },
+    "series": {
+      "label": "프로젝트 시리즈",
+      "description": "하나의 프로젝트를 여러 편에 걸쳐 기록한 글"
+    },
+    "dev": {
+      "label": "Dev",
+      "description": "React·Next.js를 파고들며 정리한 기술 노트"
+    },
+    "language": {
+      "label": "Language",
+      "description": "JavaScript와 TypeScript 그 자체에 대한 탐구"
+    },
+    "etc": {
+      "label": "기타",
+      "description": "그 밖의 기록들"
+    }
   }
 }
