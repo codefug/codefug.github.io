@@ -1,6 +1,8 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { type ReactNode, useMemo } from "react";
+import { isChromeLessPath } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import Footer from "../ui/footer";
 import Header from "../ui/header/header";
@@ -9,10 +11,14 @@ import { useSidebar } from "../ui/sidebar";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { isMobile, state } = useSidebar();
+  const pathname = usePathname();
   const isNeedShorten = useMemo(
     () => state === "expanded" && !isMobile,
     [state, isMobile],
   );
+
+  // 이력서처럼 그 자체가 하나의 문서인 페이지는 헤더·푸터 없이 본문만 보여준다.
+  const isChromeLess = useMemo(() => isChromeLessPath(pathname), [pathname]);
 
   return (
     <main
@@ -22,10 +28,14 @@ export default function Layout({ children }: { children: ReactNode }) {
         isNeedShorten ? "w-[calc(100%-var(--sidebar-width))]" : "w-full",
       )}
     >
-      <Header />
+      {!isChromeLess && <Header />}
       <div className="flex-1">{children}</div>
-      <ScrollUpButton />
-      <Footer />
+      {!isChromeLess && (
+        <>
+          <ScrollUpButton />
+          <Footer />
+        </>
+      )}
     </main>
   );
 }

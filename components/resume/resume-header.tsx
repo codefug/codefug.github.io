@@ -75,41 +75,46 @@ export default function ResumeHeader() {
   ];
 
   return (
-    <header className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6 print:flex-row print:items-start print:justify-between print:gap-6">
-      <div className="relative size-40 lg:size-30 print:size-30">
-        <Image
-          src="/images/profile/image.jpg"
-          alt="이승현 프로필"
-          fill
-          loading="eager"
-          fetchPriority="high"
-          className="shrink-0 self-center overflow-hidden rounded-full object-cover object-top"
-        />
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 lg:flex-row print:flex-row">
-        <div className="flex">
-          <div className="flex flex-col">
-            <h1 className="flex flex-col flex-wrap items-baseline justify-center font-bold text-3xl text-gray-900 sm:flex-row sm:justify-start sm:gap-2 dark:text-white print:text-2xl">
-              <span>{t("name")}</span>
-              <span className="font-medium text-lg text-primary print:text-lg">
-                {t("role")}
-              </span>
-            </h1>
-            <div className="mt-3 space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:mt-2 print:space-y-2 print:text-xs print:leading-snug">
-              {paragraphs.map((p, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                <p key={i} className="whitespace-pre-line">
-                  <RichText>{p}</RichText>
-                </p>
-              ))}
-            </div>
-          </div>
+    <header className="flex flex-col gap-4 print:gap-3">
+      {/* 위: 사진 · 이름 · 연락처 */}
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-6 print:flex-row print:items-start print:gap-6">
+        <div className="relative size-40 shrink-0 lg:size-30 print:size-30">
+          <Image
+            src="/images/profile/image.jpg"
+            alt="이승현 프로필"
+            fill
+            loading="eager"
+            fetchPriority="high"
+            className="overflow-hidden rounded-full object-cover object-top"
+          />
         </div>
-        <ul className="flex flex-col gap-y-0.5 text-sm print:mt-0 print:text-xs">
-          {contacts.map((contact) => (
-            <ContactListItem key={contact.label} {...contact} />
-          ))}
-        </ul>
+        <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:flex-row sm:items-start print:flex-row">
+          <h1 className="flex flex-col flex-wrap items-baseline justify-center font-bold text-3xl text-gray-900 sm:flex-row sm:justify-start sm:gap-2 dark:text-white print:text-2xl">
+            <span>{t("name")}</span>
+            <span className="font-medium text-lg text-primary print:text-lg">
+              {t("role")}
+            </span>
+          </h1>
+          <ul className="flex shrink-0 flex-col gap-y-0.5 text-sm print:mt-0 print:text-xs">
+            {contacts.map((contact) => (
+              <ContactListItem key={contact.label} {...contact} />
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/*
+        아래: 소개.
+        연락처 옆에 두면 데스크탑에서 폭이 좁아져 세로로 길어지므로,
+        연락처 아래 전체 폭을 쓰게 한다.
+      */}
+      <div className="space-y-3 text-gray-800 text-sm leading-relaxed dark:text-gray-200 print:space-y-2 print:text-xs print:leading-snug">
+        {paragraphs.map((p, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static content
+          <p key={i} className="whitespace-pre-line">
+            <RichText>{p}</RichText>
+          </p>
+        ))}
       </div>
     </header>
   );
