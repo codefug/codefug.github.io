@@ -5,6 +5,12 @@ import { PATH } from "./path";
  */
 export const NAVIGATION_ITEMS = [
   {
+    label: "Series",
+    href: PATH.SERIES,
+    target: "_self",
+    rel: "noopener noreferrer",
+  },
+  {
     label: "Resume",
     href: PATH.RESUME,
     target: "_self",

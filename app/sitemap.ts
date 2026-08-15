@@ -34,12 +34,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    // {
-    //   url: `${BASE_URL}${PATH.PORTFOLIO}`,
-    //   lastModified: new Date(),
-    //   changeFrequency: "monthly",
-    //   priority: 0.8,
-    // },
+    {
+      url: `${BASE_URL}${PATH.PORTFOLIO}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}${PATH.SERIES}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     {
       url: `${BASE_URL}${PATH.RESUME}`,
       lastModified: new Date(),
