@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# 명시하지 않으면 워크플로 토큰이 저장소 전반에 쓰기 권한을 갖는다.
+# 배포는 아래 personal_token으로 하므로 기본 토큰은 읽기만 있으면 된다.
+permissions:
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
