@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
-import { SITE_URL } from "@/constants/site";
+import { CONTACT_EMAIL, SITE_URL } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
@@ -57,8 +57,9 @@ export default function ResumeHeader({ className }: { className?: string }) {
     {
       Icon: Mail,
       label: t("contact.email"),
-      value: t("contact.emailValue"),
-      href: `mailto:${t("contact.emailValue")}`,
+      // 이메일도 번역 대상이 아니라 상수를 따른다.
+      value: CONTACT_EMAIL,
+      href: `mailto:${CONTACT_EMAIL}`,
     },
     {
       Icon: GithubIconAdapted,

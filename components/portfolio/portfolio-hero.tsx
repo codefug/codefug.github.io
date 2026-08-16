@@ -5,14 +5,14 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PATH } from "@/constants/path";
-import { SITE_URL } from "@/constants/site";
+import { CONTACT_EMAIL, SITE_URL } from "@/constants/site";
 
 const CONTACTS = [
   {
     key: "email",
     icon: Mail,
-    href: "mailto:leeseounghyun9917@gmail.com",
-    label: "leeseounghyun9917@gmail.com",
+    href: `mailto:${CONTACT_EMAIL}`,
+    label: CONTACT_EMAIL,
   },
   {
     key: "github",
