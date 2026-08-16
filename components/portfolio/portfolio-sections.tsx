@@ -84,6 +84,7 @@ export function Principles() {
 }
 
 const BEYOND_ITEMS = [
+  { key: "backend", icon: Wrench, tagCount: 2 },
   { key: "review", icon: MessagesSquare, tagCount: 1 },
   { key: "writing", icon: FileText, tagCount: 1 },
 ] as const;

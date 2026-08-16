@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
-type Contribution = { title: string; url: string };
+type Contribution = { title: string; url: string; description?: string };
 
 export default function OpenSource({ className }: { className?: string }) {
   const t = useTranslations("resume.openSource");
@@ -24,6 +24,11 @@ export default function OpenSource({ className }: { className?: string }) {
               {item.title}
               <ExternalLink size={12} />
             </Link>
+            {item.description && (
+              <div className="text-gray-700 dark:text-gray-300">
+                {item.description}
+              </div>
+            )}
           </li>
         ))}
       </ul>
