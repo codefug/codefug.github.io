@@ -4,6 +4,7 @@ import { Rss } from "lucide-react";
 import Link from "next/link";
 import Email from "@/assets/icons/EmailIcon";
 import Github from "@/assets/icons/GithubIcon";
+import { CONTACT_EMAIL } from "@/constants/site";
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
       <div className="mx-auto flex flex-col items-center gap-3 px-4 py-5">
         <div className="flex items-center gap-3">
           <Link
-            href="mailto:robot9917@gmail.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Email"

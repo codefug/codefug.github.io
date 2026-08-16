@@ -10,6 +10,9 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://codefug.github.io";
 
+/** 공개 연락용 이메일. 푸터·포트폴리오·이력서가 모두 이 값을 쓴다. */
+export const CONTACT_EMAIL = "leeseounghyun9917@gmail.com";
+
 /**
  * 내부 경로를 절대 URL로 만든다. 이력서는 PDF로 인쇄돼 도메인 밖에서 열리므로
  * 상대 경로로 두면 링크가 죽는다.
