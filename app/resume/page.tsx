@@ -17,8 +17,10 @@ import { StructuredData } from "@/components/seo/StructuredData";
 import {
   createAlternateLinks,
   createProfilePageStructuredData,
+  defaultOpenGraph,
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
+import { SITE_URL } from "@/constants/site";
 import { defaultLocale } from "@/i18n/config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,6 +29,13 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t("title"),
     description: t("description"),
     alternates: createAlternateLinks(PATH.RESUME),
+    openGraph: {
+      ...defaultOpenGraph,
+      type: "profile",
+      title: t("title"),
+      description: t("description"),
+      url: `${SITE_URL}${PATH.RESUME}`,
+    },
   };
 }
 

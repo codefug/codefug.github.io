@@ -48,7 +48,7 @@ function RichTokens({ line }: { line: string }) {
               className="text-primary underline decoration-dotted hover:decoration-solid print:no-underline"
             >
               {token.content}
-              <span aria-hidden className="hidden">
+              <span aria-hidden className="hidden print:inline">
                 {" "}
                 ({token.url})
               </span>
