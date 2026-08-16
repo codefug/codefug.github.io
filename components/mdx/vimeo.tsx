@@ -20,6 +20,7 @@ const VimeoPlayer = ({
         height={height}
         allow="autoplay; fullscreen"
         allowFullScreen
+        referrerPolicy="no-referrer"
       />
     </div>
   );
