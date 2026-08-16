@@ -95,10 +95,6 @@ export function isSeriesTag(tag: string): boolean {
  */
 export const SERIES_SLUGS = SERIES_TAGS;
 
-export function isValidSeriesSlug(slug: string): slug is Tag {
-  return isSeriesTag(slug);
-}
-
 const TAG_TO_GROUP_ID = new Map<string, CategoryGroupId>(
   CATEGORY_GROUPS.flatMap((group) =>
     group.tags.map((tag) => [tag as string, group.id] as const),
@@ -116,8 +112,3 @@ export const CATEGORY_GROUP_ORDER: CategoryGroupId[] = [
   ),
   FALLBACK_GROUP_ID,
 ];
-
-/** 사이드바가 사용하는 기존 형태 (그룹명 → 태그 배열) */
-export const TAG_GROUP_TO_ARRAY_MAP: Record<string, Tag[]> = Object.fromEntries(
-  CATEGORY_GROUPS.map((group) => [group.id, group.tags]),
-);

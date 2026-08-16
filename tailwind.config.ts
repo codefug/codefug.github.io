@@ -16,13 +16,6 @@ export default {
           },
         },
       },
-      backgroundImage: {
-        sun: 'url("/icons/sun.svg")',
-        moon: 'url("/icons/moon.svg")',
-      },
-      backgroundSize: {
-        "theme-icon": "1.75rem",
-      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

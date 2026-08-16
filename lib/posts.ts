@@ -41,7 +41,7 @@ function readFrontMatter(folderName: string): FrontMatter | null {
  * 숨김 처리된 글을 제외한다.
  * 목록·검색·RSS·사이트맵 등 "글을 보여주는" 모든 경로는 이 필터를 거쳐야 한다.
  */
-export function excludeHidden(postList: FrontMatter[]): FrontMatter[] {
+function excludeHidden(postList: FrontMatter[]): FrontMatter[] {
   return postList.filter((post) => !post.hidden);
 }
 
