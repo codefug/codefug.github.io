@@ -25,11 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # 배포 워크플로(main.yml)와 같은 버전을 쓴다.
+      # 버전은 package.json의 packageManager 필드를 따른다.
+      # 여기에 version을 적으면 그 값이 우선해 배포와 어긋날 수 있다.
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
           run_install: false
 
       - name: Install Node.js
@@ -47,7 +47,7 @@ jobs:
       - name: Generate MDX map
         run: pnpm run generate-mdx
 
-      # main에 이미 있던 lint 오류(a11y·noArrayIndexKey 등 8건) 때문에
+      # main에 이미 있던 lint 오류(noArrayIndexKey·a11y 등 20건) 때문에
       # 지금 막으면 Dependabot PR을 포함해 모든 PR이 빨간불이 된다.
       # 기존 오류를 정리한 뒤 이 줄을 지워 차단으로 바꿀 것.
       - name: Lint
