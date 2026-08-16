@@ -11,23 +11,24 @@ function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
   let lastIndex = 0;
   for (const match of text.matchAll(COMBINED_RE)) {
-    if (match.index! > lastIndex)
+    const matchStart = match.index ?? 0;
+    if (matchStart > lastIndex)
       tokens.push({
         type: "text",
-        content: text.slice(lastIndex, match.index),
+        content: text.slice(lastIndex, matchStart),
         start: lastIndex,
       });
     if (match[1] !== undefined) {
-      tokens.push({ type: "bold", content: match[1], start: match.index! });
+      tokens.push({ type: "bold", content: match[1], start: matchStart });
     } else {
       tokens.push({
         type: "link",
         url: match[2],
         content: match[3],
-        start: match.index!,
+        start: matchStart,
       });
     }
-    lastIndex = match.index! + match[0].length;
+    lastIndex = matchStart + match[0].length;
   }
   if (lastIndex < text.length)
     tokens.push({
