@@ -17,10 +17,10 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v6
 
+      # 버전은 package.json의 packageManager 필드를 따른다.
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
-          version: latest
           run_install: false
 
       - name: Install Node.js
@@ -29,14 +29,16 @@ jobs:
           node-version: 22
           cache: "pnpm"
 
+      # CI(ci.yml)와 같은 방식으로 설치해야 검사한 것과 배포하는 것이 같아진다.
+      # lockfile이 어긋나면 조용히 다른 버전을 깔지 말고 여기서 멈추는 편이 낫다.
       - name: Install dependencies
-        run: |
-          pnpm install --no-frozen-lockfile
-          pnpm run build
+        run: pnpm install --frozen-lockfile
 
-      - name: Deploy 🚀
-        run: |
-          touch out/.nojekyll
+      - name: Build
+        run: pnpm run build
+
+      - name: Disable Jekyll
+        run: touch out/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
