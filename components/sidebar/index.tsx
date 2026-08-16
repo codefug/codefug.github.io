@@ -1,7 +1,5 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -17,19 +15,16 @@ import {
 } from "@/components/ui/sidebar";
 import type { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import { PostGroupContent } from "./PostGroupContent";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 export default function AppSidebar({
-  frontMatterListByLocale,
+  frontMatterList,
 }: {
-  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
+  frontMatterList: FrontMatter[];
 }) {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const totalFrontMatterList =
-    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -68,7 +63,7 @@ export default function AppSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent className="gap-0" style={{ scrollbarWidth: "none" }}>
-        <PostGroupContent frontMatterList={totalFrontMatterList} />
+        <PostGroupContent frontMatterList={frontMatterList} />
 
         <SidebarGroup className="mt-auto border-sidebar-border border-t pt-2">
           <SidebarGroupContent>

@@ -2,14 +2,7 @@ import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
 import type { ParsedFrontMatter } from "@/constants/mdx";
 import { SITE_URL as BASE_URL } from "@/constants/site";
-import { type Locale, locales } from "@/i18n/config";
-import enMessages from "@/messages/en.json";
 import koMessages from "@/messages/ko.json";
-
-const messages = {
-  ko: koMessages,
-  en: enMessages,
-};
 
 /**
  * 하위 세그먼트에서 openGraph를 다시 선언하면 상위 값이 병합되지 않고
@@ -21,39 +14,13 @@ export const defaultOpenGraph = {
 } satisfies Metadata["openGraph"];
 
 /**
- * 언어 코드를 hreflang 형식으로 변환
+ * 페이지의 canonical link를 생성하는 함수
  */
-function getHreflangCode(locale: Locale): string {
-  const localeMap: Record<Locale, string> = {
-    ko: "ko-KR",
-    en: "en-US",
-  };
-  return localeMap[locale];
-}
-
-/**
- * 페이지의 alternate links를 생성하는 함수
- * SSG 모드에서는 같은 URL에 대해 언어별 alternate를 생성
- */
-export function createAlternateLinks(
-  path: string,
-  includeXDefault = true,
-): Metadata["alternates"] {
+export function createAlternateLinks(path: string): Metadata["alternates"] {
   const url = `${BASE_URL}${path}`;
-  const languages: Record<string, string> = {};
-
-  locales.forEach((locale) => {
-    languages[getHreflangCode(locale)] = url;
-  });
 
   return {
     canonical: url,
-    languages: includeXDefault
-      ? {
-          ...languages,
-          "x-default": url, // 기본 언어(한국어)를 x-default로 지정
-        }
-      : languages,
   };
 }
 
@@ -69,10 +36,7 @@ export interface BlogPostData {
   wordCount?: number;
 }
 
-export function createBlogPostStructuredData(
-  data: BlogPostData,
-  locale: Locale = "ko",
-): Graph {
+export function createBlogPostStructuredData(data: BlogPostData): Graph {
   const blogUrl = `${BASE_URL}/posts/${data.id}`;
   const imageUrl = data.thumbnailImageUrl
     ? `${BASE_URL}${data.thumbnailImageUrl}`
@@ -95,7 +59,7 @@ export function createBlogPostStructuredData(
         },
         author: {
           "@type": "Person",
-          name: messages[locale].seo.author,
+          name: koMessages.seo.author,
           url: BASE_URL,
         },
         publisher: {
@@ -113,7 +77,7 @@ export function createBlogPostStructuredData(
         dateModified: data.modifiedDate
           ? new Date(data.modifiedDate).toISOString()
           : new Date(data.date).toISOString(),
-        inLanguage: getHreflangCode(locale),
+        inLanguage: "ko-KR",
         mainEntityOfPage: {
           "@type": "WebPage",
           "@id": blogUrl,
@@ -132,7 +96,7 @@ export function createBlogPostStructuredData(
             position: 1 as const,
             item: {
               "@id": BASE_URL,
-              name: messages[locale].seo.home,
+              name: koMessages.seo.home,
             },
           },
           {
@@ -140,7 +104,7 @@ export function createBlogPostStructuredData(
             position: 2 as const,
             item: {
               "@id": `${BASE_URL}/posts`,
-              name: messages[locale].seo.blog,
+              name: koMessages.seo.blog,
             },
           },
           {
@@ -154,23 +118,20 @@ export function createBlogPostStructuredData(
   };
 }
 
-export function createProfilePageStructuredData(
-  locale: Locale = "ko",
-  path = "/portfolio",
-) {
+export function createProfilePageStructuredData(path = "/portfolio") {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
     "@id": `${BASE_URL}${path}#profilepage`,
     url: `${BASE_URL}${path}`,
-    name: messages[locale].seo.author,
-    inLanguage: getHreflangCode(locale),
+    name: koMessages.seo.author,
+    inLanguage: "ko-KR",
     mainEntity: {
       "@type": "Person" as const,
       "@id": `${BASE_URL}#author`,
-      name: messages[locale].seo.author,
+      name: koMessages.seo.author,
       alternateName: "codefug",
-      description: messages[locale].portfolio.hero.summary,
+      description: koMessages.portfolio.hero.summary,
       url: BASE_URL,
       image: {
         "@type": "ImageObject" as const,
@@ -187,14 +148,11 @@ export function createProfilePageStructuredData(
       alumniOf: [
         {
           "@type": "EducationalOrganization" as const,
-          name: locale === "ko" ? "인천대학교" : "Incheon National University",
+          name: "인천대학교",
         },
         {
           "@type": "EducationalOrganization" as const,
-          name:
-            locale === "ko"
-              ? "코드잇 스프린트 FE 부트캠프"
-              : "Codeit Sprint FE Bootcamp",
+          name: "코드잇 스프린트 FE 부트캠프",
         },
       ],
       knowsAbout: [
@@ -221,7 +179,6 @@ export function createProfilePageStructuredData(
 
 export function createBlogItemListStructuredData(
   posts: ParsedFrontMatter[],
-  locale: Locale = "ko",
 ): Graph {
   return {
     "@context": "https://schema.org",
@@ -231,18 +188,18 @@ export function createBlogItemListStructuredData(
         "@id": `${BASE_URL}#website`,
         name: "Codefug Blog",
         alternateName: "코드퍼그 블로그",
-        description: messages[locale].meta.description,
+        description: koMessages.meta.description,
         url: BASE_URL,
-        inLanguage: getHreflangCode(locale),
+        inLanguage: "ko-KR",
         author: {
           "@type": "Person",
           "@id": `${BASE_URL}#author`,
-          name: messages[locale].seo.author,
+          name: koMessages.seo.author,
         },
         publisher: {
           "@type": "Person",
           "@id": `${BASE_URL}#author`,
-          name: messages[locale].seo.author,
+          name: koMessages.seo.author,
         },
         blogPost: posts.slice(0, 10).map((post) => ({
           "@type": "BlogPosting",
@@ -276,11 +233,11 @@ export function createBlogItemListStructuredData(
               author: {
                 "@type": "Person" as const,
                 "@id": `${BASE_URL}#author`,
-                name: messages[locale].seo.author,
+                name: koMessages.seo.author,
                 url: BASE_URL,
               },
               datePublished: new Date(post.date).toISOString(),
-              inLanguage: getHreflangCode(locale),
+              inLanguage: "ko-KR",
             },
           };
         }),

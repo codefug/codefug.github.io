@@ -2,10 +2,10 @@
 
 import { Code, Globe, Mail, PenLine } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PATH } from "@/constants/path";
 import { CONTACT_EMAIL, SITE_URL } from "@/constants/site";
+import { useTranslations } from "@/lib/messages";
 
 const CONTACTS = [
   {

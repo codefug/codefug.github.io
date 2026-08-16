@@ -4,7 +4,7 @@ import { join } from "node:path";
 const MARKDOWN_DIR = join(process.cwd(), "markdown");
 const LIB_DIR = join(process.cwd(), "lib");
 const OUTPUT_PATH = join(LIB_DIR, "mdxMap.ts");
-const LOCALES = ["ko", "en"];
+const LOCALE = "ko";
 
 function generateMdxMap() {
   // lib 폴더 없으면 생성
@@ -13,36 +13,27 @@ function generateMdxMap() {
   // markdown 디렉토리에서 모든 폴더 가져오기
   const folders = readdirSync(MARKDOWN_DIR);
 
-  // 각 폴더와 locale에 대한 dynamic import 코드 생성
+  // 각 폴더에 대한 dynamic import 코드 생성
   let code = `// 자동 생성된 파일입니다. 직접 수정하지 마세요.\n\n`;
 
   code += `import type { MDXModule } from "mdx/types";\n`;
-  code += `import type { Locale } from "@/i18n/config";\n`;
 
-  const localeArrAlphabetical = LOCALES.toSorted();
-
-  // 번역이 없는 글도 있으므로 실제로 파일이 있는 조합만 import한다.
-  const hasContent = (folder, locale) =>
-    existsSync(join(MARKDOWN_DIR, folder, locale, "content.mdx"));
+  // 글이 없는 폴더도 있을 수 있으므로 실제로 파일이 있는 것만 import한다.
+  const hasContent = (folder) =>
+    existsSync(join(MARKDOWN_DIR, folder, LOCALE, "content.mdx"));
 
   folders.forEach((folder) => {
-    localeArrAlphabetical.forEach((locale) => {
-      if (!hasContent(folder, locale)) return;
-      const importName = `MDX_${locale}_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
-      code += `import * as ${importName} from "@/markdown/${folder}/${locale}/content.mdx";\n`;
-    });
+    if (!hasContent(folder)) return;
+    const importName = `MDX_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
+    code += `import * as ${importName} from "@/markdown/${folder}/${LOCALE}/content.mdx";\n`;
   });
 
-  code += `\nexport const mdxMap: Record<Locale, Record<string, MDXModule>> = {\n`;
+  code += `\nexport const mdxMap: Record<string, MDXModule> = {\n`;
 
-  LOCALES.forEach((locale) => {
-    code += `  ${locale}: {\n`;
-    folders.forEach((folder) => {
-      if (!hasContent(folder, locale)) return;
-      const importName = `MDX_${locale}_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
-      code += `    "${folder}": ${importName},\n`;
-    });
-    code += `  },\n`;
+  folders.forEach((folder) => {
+    if (!hasContent(folder)) return;
+    const importName = `MDX_${folder.replace(/[^a-zA-Z0-9]/g, "_")}`;
+    code += `  "${folder}": ${importName},\n`;
   });
 
   code += `};\n`;

@@ -1,18 +1,11 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import type { SeriesSummary } from "@/util/post";
 import SeriesCard from "./series-card";
 
-export function SeriesList({
-  seriesByLocale,
-}: {
-  seriesByLocale: Record<Locale, SeriesSummary[]>;
-}) {
+export function SeriesList({ seriesList }: { seriesList: SeriesSummary[] }) {
   const t = useTranslations("series");
-  const locale = useLocale() as Locale;
-  const seriesList = seriesByLocale[locale] ?? seriesByLocale.ko;
 
   const totalPosts = seriesList.reduce(
     (sum, series) => sum + series.posts.length,

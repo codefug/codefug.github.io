@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 
 export default function ErrorPage({
   error,
@@ -11,7 +11,7 @@ export default function ErrorPage({
 }) {
   const t = useTranslations("common.error");
   return (
-    <html lang="en">
+    <html lang="ko">
       <body>
         <div>
           <h2>{t("title")}</h2>

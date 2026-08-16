@@ -21,7 +21,6 @@ export default function ImageOverlay({
 
   return (
     <>
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: handled below */}
       <img
         src={src}
         alt={alt ?? ""}

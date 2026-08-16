@@ -1,6 +1,5 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import {
   CATEGORY_GROUP_ORDER,
@@ -9,7 +8,7 @@ import {
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { useViewMode } from "@/hooks/useViewMode";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import PostGallery from ".";
 import { ViewToggle } from "./view-toggle";
@@ -21,13 +20,11 @@ const ALL = "all";
  * 홈은 카테고리별로 나뉘어 있어 "전체를 시간순으로" 훑기 어렵기 때문에 따로 둔다.
  */
 export function AllPosts({
-  frontMatterListByLocale,
+  frontMatterList: posts,
 }: {
-  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
+  frontMatterList: FrontMatter[];
 }) {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const posts = frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
 
   const [group, setGroup] = useState<CategoryGroupId | typeof ALL>(ALL);
   const { viewMode, toggle } = useViewMode("all-posts");

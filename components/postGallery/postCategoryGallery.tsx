@@ -1,10 +1,8 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import { useMemo } from "react";
 import SeriesSection from "@/components/series/series-section";
 import type { FrontMatter } from "@/constants/mdx";
-import type { Locale } from "@/i18n/config";
 import { buildSeriesSummaries } from "@/util/post";
 import { RecentPosts } from "./recent-posts";
 
@@ -16,23 +14,19 @@ import { RecentPosts } from "./recent-posts";
  * /posts와 사이드바가 담당하므로, 홈은 "무엇을 만들었고 최근에 무엇을 썼는지"만 보여준다.
  */
 export default function PostCategoryGallery({
-  frontMatterListByLocale,
+  frontMatterList,
 }: {
-  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
+  frontMatterList: FrontMatter[];
 }) {
-  const locale = useLocale() as Locale;
-  const totalFrontMatterList =
-    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
-
   const seriesList = useMemo(
-    () => buildSeriesSummaries(totalFrontMatterList),
-    [totalFrontMatterList],
+    () => buildSeriesSummaries(frontMatterList),
+    [frontMatterList],
   );
 
   return (
     <div>
       <SeriesSection seriesList={seriesList} />
-      <RecentPosts frontMatterListByLocale={frontMatterListByLocale} />
+      <RecentPosts frontMatterList={frontMatterList} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 
 export default function PostListItem({

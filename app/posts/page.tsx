@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { AllPosts } from "@/components/postGallery/all-posts";
 import { createAlternateLinks } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
-import { getFrontMatterListForAllLocales } from "@/lib/posts";
+import { getTranslations } from "@/lib/messages";
+import { getFrontMatterList } from "@/lib/posts";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("posts");
@@ -16,7 +16,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Page() {
-  return (
-    <AllPosts frontMatterListByLocale={getFrontMatterListForAllLocales()} />
-  );
+  return <AllPosts frontMatterList={getFrontMatterList()} />;
 }

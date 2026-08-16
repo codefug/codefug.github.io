@@ -1,10 +1,9 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
-import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 import {
   AppCarouselNext,
@@ -19,20 +18,17 @@ import {
 import PostBannerCard from "./post-banner-card";
 
 export default function PostSwiper({
-  frontMatterListByLocale,
+  frontMatterList,
   cardNumber,
 }: {
-  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
+  frontMatterList: FrontMatter[];
   cardNumber: number;
 }) {
   const t = useTranslations("common.aria");
-  const locale = useLocale() as Locale;
-  const postInfoList =
-    frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
 
   const filteredPostInfoList = useMemo(
-    () => postInfoList.slice(0, cardNumber),
-    [postInfoList, cardNumber],
+    () => frontMatterList.slice(0, cardNumber),
+    [frontMatterList, cardNumber],
   );
 
   const { api, setApi, selectedIndex, scrollTo } = useCarouselIndicator();

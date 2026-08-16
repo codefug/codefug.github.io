@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import ResumeCertification from "@/components/resume/certification";
 import ResumeEducation from "@/components/resume/education";
@@ -21,7 +20,7 @@ import {
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
 import { SITE_URL } from "@/constants/site";
-import { defaultLocale } from "@/i18n/config";
+import { getTranslations } from "@/lib/messages";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("resume.meta");
@@ -43,9 +42,7 @@ export default function Page() {
   return (
     <>
       <SidebarOff />
-      <StructuredData
-        jsonLd={createProfilePageStructuredData(defaultLocale, PATH.RESUME)}
-      />
+      <StructuredData jsonLd={createProfilePageStructuredData(PATH.RESUME)} />
       {/*
         인쇄 기준으로 A4 한 장이 ResumePage 하나다.
         페이지를 나누거나 합치려면 ResumePage 경계에서 섹션을 옮기면 된다.

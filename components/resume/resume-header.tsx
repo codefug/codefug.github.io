@@ -3,10 +3,10 @@
 import { Globe, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
 import { CONTACT_EMAIL, SITE_URL } from "@/constants/site";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 

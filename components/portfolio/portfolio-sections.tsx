@@ -7,11 +7,11 @@ import {
   ShieldCheck,
   Wrench,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import { SectionHeading } from "./architecture-case";
 
 const SERVICE_KEYS = ["allra", "admin"] as const;

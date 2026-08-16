@@ -14,11 +14,10 @@ import {
   defaultOpenGraph,
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
-import { defaultLocale } from "@/i18n/config";
 import {
-  getAdjacentPostsForAllLocales,
+  getAdjacentPosts,
   getAllFrontMatterListIncludingHidden,
-  getPostFrontMattersByIdForAllLocales,
+  getPostFrontMattersById,
   isHiddenPost,
 } from "@/lib/posts";
 
@@ -29,9 +28,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const hidden = isHiddenPost(id);
-  const frontMatter = (await getPostFrontMattersByIdForAllLocales(id))[
-    defaultLocale
-  ];
+  const frontMatter = await getPostFrontMattersById(id).catch(() => null);
 
   // 글을 못 찾으면 상위 레이아웃 값을 그대로 쓴다.
   if (!frontMatter) {
@@ -69,13 +66,12 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const frontMatters = await getPostFrontMattersByIdForAllLocales(id);
+  const frontMatterData = await getPostFrontMattersById(id).catch(() => null);
 
-  if (!frontMatters[defaultLocale]) {
+  if (!frontMatterData) {
     return <PostNotFound />;
   }
 
-  const frontMatterData = frontMatters[defaultLocale];
   const structuredData = createBlogPostStructuredData({
     id,
     title: frontMatterData.title,
@@ -88,14 +84,14 @@ export default async function Page({
     <section className="mx-auto w-full max-w-350 px-4">
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
-      <PostHeaderClient frontMatters={frontMatters} />
+      <PostHeaderClient frontMatter={frontMatterData} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar />
         <section className="max-w-full">
           <PostContent postId={id} />
         </section>
       </section>
-      <AdjacentPosts adjacentByLocale={getAdjacentPostsForAllLocales(id)} />
+      <AdjacentPosts adjacent={getAdjacentPosts(id)} />
       <Giscus />
       <RelatedPosts currentId={id} categories={frontMatterData.categories} />
     </section>
@@ -105,7 +101,7 @@ export default async function Page({
 export function generateStaticParams() {
   // 숨김 글도 직접 URL로는 접근 가능해야 하므로 정적 경로는 전부 생성한다.
   const allPosts = getAllFrontMatterListIncludingHidden();
-  return allPosts[defaultLocale].map(({ id }) => ({ id }));
+  return allPosts.map(({ id }) => ({ id }));
 }
 
 export const dynamicParams = false;

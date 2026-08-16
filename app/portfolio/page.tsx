@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { ArchitectureCases } from "@/components/portfolio/architecture-case";
 import { Credentials, Journey } from "@/components/portfolio/journey";
 import { PortfolioHero } from "@/components/portfolio/portfolio-hero";
@@ -18,7 +17,7 @@ import {
 } from "@/components/seo/utils";
 import { PATH } from "@/constants/path";
 import { SITE_URL } from "@/constants/site";
-import { defaultLocale } from "@/i18n/config";
+import { getTranslations } from "@/lib/messages";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("portfolio.meta");
@@ -40,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <>
-      <StructuredData jsonLd={createProfilePageStructuredData(defaultLocale)} />
+      <StructuredData jsonLd={createProfilePageStructuredData()} />
       <PortfolioContainer>
         <PortfolioHero />
         <CurrentWork />

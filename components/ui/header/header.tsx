@@ -4,10 +4,10 @@ import { Menu, Search } from "lucide-react";
 import { motion, useMotionValue, useScroll, useSpring } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NAVIGATION_ITEMS, type NavigationLabel } from "@/constants/navigation";
 import { isSidebarOffPath, PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 import SidebarButton from "../../sidebar/sidebar-button";
 import {
@@ -16,7 +16,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../tooltip";
-import { LanguageSelector } from "./language-selector";
 import { HeaderSwitch } from "./switch";
 import headerVariant from "./variant";
 
@@ -56,7 +55,6 @@ export default function Header() {
         </section>
         <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
           <HeaderNavigation hideDuplicatesOnMobile={!isSidebarOff} />
-          <LanguageSelector />
           <HeaderSwitch />
         </section>
       </div>

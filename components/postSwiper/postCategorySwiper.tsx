@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 

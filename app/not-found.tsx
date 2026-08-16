@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
 import { PATH } from "@/constants/path";
+import { getTranslations } from "@/lib/messages";
 
 export default async function NotFound() {
   const t = await getTranslations("common.notFound");
