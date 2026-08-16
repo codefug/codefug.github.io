@@ -3,15 +3,16 @@ import { HeroTerminal } from "./hero-terminal";
 
 interface HeroSectionProps {
   postCount: number;
+  sinceYear: number;
 }
 
-export function HeroSection({ postCount }: HeroSectionProps) {
+export function HeroSection({ postCount, sinceYear }: HeroSectionProps) {
   return (
     <section className="relative min-h-[85vh] overflow-hidden transition-[width,margin] duration-200 ease-linear">
       <HeroBackground />
       <div className="relative z-10 flex min-h-[85vh] items-center px-4">
         <div className="mx-auto grid w-full max-w-[1368px] grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <HeroIdentity postCount={postCount} />
+          <HeroIdentity postCount={postCount} sinceYear={sinceYear} />
           <HeroTerminal postCount={postCount} />
         </div>
       </div>
