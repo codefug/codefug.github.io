@@ -4,9 +4,12 @@
   "private": true,
   "homepage": "https://codefug.github.io",
   "type": "module",
+  "packageManager": "pnpm@10.33.4",
   "scripts": {
     "generate-mdx": "node scripts/generateMdxMap.mjs",
-    "prebuild": "pnpm run generate-mdx",
+    "validate-posts": "node scripts/validatePosts.mjs",
+    "typecheck": "tsc --noEmit",
+    "prebuild": "pnpm run generate-mdx && pnpm run validate-posts",
     "predev": "pnpm run generate-mdx",
     "dev": "next dev",
     "build": "next build",

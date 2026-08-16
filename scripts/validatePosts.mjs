@@ -1,0 +1,147 @@
+/**
+ * 글 메타데이터 검증.
+ *
+ * 정적 블로그가 조용히 깨지는 지점은 빌드 실패가 아니라 "발행됐는데 잘못된 글"이다.
+ * 프론트매터에 title이 없으면 목록 카드가 빈칸으로 나가고, date 형식이 틀리면
+ * 정렬과 RSS pubDate가 어긋나고, teaser 경로가 없으면 OG 카드 이미지가 깨진다.
+ * 셋 다 빌드는 성공하므로 배포된 뒤에야 눈에 띈다. 그래서 빌드 전에 막는다.
+ *
+ * 빌드를 실패시키는 것(error)과 알리기만 하는 것(warning)을 구분한다.
+ * 글이 잘못 나가는 문제는 error, 사람이 판단할 문제는 warning이다.
+ */
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import grayMatter from "gray-matter";
+
+const MARKDOWN_DIR = join(process.cwd(), "markdown");
+const PUBLIC_DIR = join(process.cwd(), "public");
+const LOCALES = ["ko", "en"];
+const DEFAULT_LOCALE = "ko";
+
+/** constants/categories.ts의 TAG_LIST를 소스로 삼는다. 값만 필요하므로 정규식으로 뽑는다. */
+function readKnownTags() {
+  const source = readFileSync(
+    join(process.cwd(), "constants", "categories.ts"),
+    "utf8",
+  );
+  const tagListBlock = source.match(/export const TAG_LIST = \{([\s\S]*?)\}/);
+  if (!tagListBlock) return null;
+  return new Set(
+    [...tagListBlock[1].matchAll(/:\s*"([^"]+)"/g)].map((m) => m[1]),
+  );
+}
+
+const errors = [];
+const warnings = [];
+
+const knownTags = readKnownTags();
+if (!knownTags) {
+  warnings.push(
+    "constants/categories.ts에서 TAG_LIST를 읽지 못했다. 카테고리 검증을 건너뛴다.",
+  );
+}
+
+const folders = readdirSync(MARKDOWN_DIR).filter((folder) =>
+  LOCALES.some((locale) =>
+    existsSync(join(MARKDOWN_DIR, folder, locale, "frontmatter.mdx")),
+  ),
+);
+
+for (const folder of folders) {
+  const localesPresent = [];
+
+  for (const locale of LOCALES) {
+    const dir = join(MARKDOWN_DIR, folder, locale);
+    const frontMatterPath = join(dir, "frontmatter.mdx");
+    if (!existsSync(frontMatterPath)) continue;
+    localesPresent.push(locale);
+
+    const where = `${folder}/${locale}`;
+
+    // 프론트매터만 있고 본문이 없으면 글 상세가 빈 페이지로 나간다.
+    if (!existsSync(join(dir, "content.mdx"))) {
+      errors.push(`${where}: frontmatter.mdx는 있는데 content.mdx가 없다.`);
+    }
+
+    let data;
+    try {
+      ({ data } = grayMatter(readFileSync(frontMatterPath, "utf8")));
+    } catch (error) {
+      errors.push(`${where}: 프론트매터를 파싱하지 못했다. (${error.message})`);
+      continue;
+    }
+
+    for (const field of ["title", "excerpt", "date"]) {
+      const value = data[field];
+      if (typeof value !== "string" || value.trim() === "") {
+        errors.push(`${where}: '${field}'가 비어 있거나 문자열이 아니다.`);
+      }
+    }
+
+    // 날짜는 정렬·RSS pubDate·사이트맵 lastModified의 기준이라 형식이 어긋나면 조용히 틀어진다.
+    if (typeof data.date === "string") {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
+        errors.push(
+          `${where}: 'date'는 YYYY-MM-DD 형식이어야 한다. (받은 값: ${data.date})`,
+        );
+      } else if (Number.isNaN(new Date(data.date).getTime())) {
+        errors.push(`${where}: 'date'가 실재하지 않는 날짜다. (${data.date})`);
+      }
+    }
+
+    if (!Array.isArray(data.categories) || data.categories.length === 0) {
+      errors.push(`${where}: 'categories'는 비어 있지 않은 배열이어야 한다.`);
+    } else if (knownTags) {
+      // 그룹에 없는 태그는 빌드를 막을 일은 아니지만 홈에서 'etc'로 조용히 흘러간다.
+      for (const category of data.categories) {
+        if (!knownTags.has(category)) {
+          warnings.push(
+            `${where}: '${category}'는 TAG_LIST에 없다. 홈에서 etc로 분류된다.`,
+          );
+        }
+      }
+    }
+
+    // teaser는 OG 태그 전용이라 화면에는 안 보인다. 깨져도 공유하기 전까지 모른다.
+    const teaser = data.header?.teaser;
+    if (teaser === undefined) {
+      warnings.push(`${where}: 'header.teaser'가 없어 OG 이미지가 비어 있다.`);
+    } else if (typeof teaser !== "string" || !teaser.startsWith("/")) {
+      errors.push(
+        `${where}: 'header.teaser'는 '/'로 시작하는 경로여야 한다. (받은 값: ${teaser})`,
+      );
+    } else if (!existsSync(join(PUBLIC_DIR, teaser))) {
+      errors.push(
+        `${where}: 'header.teaser' 파일이 public에 없다. (${teaser})`,
+      );
+    }
+
+    if (data.hidden !== undefined && typeof data.hidden !== "boolean") {
+      errors.push(`${where}: 'hidden'은 true/false여야 한다.`);
+    }
+  }
+
+  // 번역이 없으면 기본 언어로 대체되므로(lib/posts.ts) 장애는 아니다. 다만 기본 언어가 없으면 대체할 것이 없다.
+  if (!localesPresent.includes(DEFAULT_LOCALE)) {
+    errors.push(
+      `${folder}: 기본 언어(${DEFAULT_LOCALE}) 프론트매터가 없다. 대체할 글이 없다.`,
+    );
+  } else if (localesPresent.length < LOCALES.length) {
+    const missing = LOCALES.filter((l) => !localesPresent.includes(l));
+    warnings.push(`${folder}: ${missing.join(", ")} 번역이 없다.`);
+  }
+}
+
+for (const warning of warnings) console.warn(`⚠️  ${warning}`);
+for (const error of errors) console.error(`❌ ${error}`);
+
+if (errors.length > 0) {
+  console.error(
+    `\n글 검증 실패: ${folders.length}개 글에서 오류 ${errors.length}건.`,
+  );
+  process.exit(1);
+}
+
+console.log(
+  `✅ 글 검증 통과: ${folders.length}개 글${warnings.length ? `, 경고 ${warnings.length}건` : ""}.`,
+);
