@@ -70,6 +70,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         <table {...props} />
       </div>
     ),
+    th: (props) => <th className="whitespace-nowrap" {...props} />,
+    td: (props) => (
+      <td className="break-keep first:whitespace-nowrap" {...props} />
+    ),
     // a: CustomLink,
     img: (props) => <ImageOverlay {...props} />,
     ...components,
