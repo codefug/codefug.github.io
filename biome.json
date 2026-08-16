@@ -55,7 +55,7 @@
         "noUselessFragments": "warn"
       },
       "correctness": {
-        "noUnusedVariables": "off",
+        "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "warn"
       },
       "style": {

@@ -47,15 +47,14 @@ jobs:
       - name: Generate MDX map
         run: pnpm run generate-mdx
 
-      # main에 이미 있던 lint 오류(noArrayIndexKey·a11y 등 20건) 때문에
-      # 지금 막으면 Dependabot PR을 포함해 모든 PR이 빨간불이 된다.
-      # 기존 오류를 정리한 뒤 이 줄을 지워 차단으로 바꿀 것.
       - name: Lint
         run: pnpm run lint:check
-        continue-on-error: true
 
       - name: Typecheck
         run: pnpm exec tsc --noEmit
+
+      - name: Test
+        run: pnpm run test
 
       - name: Build
         run: pnpm run build

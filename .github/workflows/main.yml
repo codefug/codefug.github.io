@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # ci.yml은 병렬로 돌아서 실패해도 배포를 못 막는다.
+      # 배포 경로에서도 lint가 게이트가 되도록 한 번 더 건다.
+      - name: Lint
+        run: pnpm run lint:check
+
       - name: Build
         run: pnpm run build
 
