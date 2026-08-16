@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
@@ -19,7 +19,6 @@ interface Props {
 
 function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
   return (
-    // biome-ignore lint/suspicious/noArrayIndexKey: static content
     <li className="ml-3.5 list-disc">
       <RichText>{detail.text}</RichText>
       {detail.subItems && (

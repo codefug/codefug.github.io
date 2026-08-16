@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useTranslations } from "@/lib/messages";
 
 export default function SidebarButton({ children }: { children: ReactNode }) {
   const t = useTranslations("common.aria");

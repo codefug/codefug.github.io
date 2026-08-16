@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar";
 import {
@@ -9,6 +8,7 @@ import {
   getGroupIdByTag,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
+import { useTranslations } from "@/lib/messages";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
 function groupPostsByFirstCategory(

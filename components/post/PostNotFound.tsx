@@ -1,7 +1,7 @@
 "use client";
 
 import { FileX2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 
 export default function PostNotFound() {
   const t = useTranslations("post");

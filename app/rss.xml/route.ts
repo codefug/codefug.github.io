@@ -1,10 +1,10 @@
 import { SITE_URL as BASE_URL } from "@/constants/site";
-import { getFrontMatterListForAllLocales } from "@/lib/posts";
+import { getFrontMatterList } from "@/lib/posts";
 
 export const dynamic = "force-static";
 
 export async function GET() {
-  const posts = getFrontMatterListForAllLocales().ko;
+  const posts = getFrontMatterList();
 
   const items = posts
     .map(

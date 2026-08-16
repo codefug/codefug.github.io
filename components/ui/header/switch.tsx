@@ -1,9 +1,9 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useTranslations } from "@/lib/messages";
 
 function useThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();

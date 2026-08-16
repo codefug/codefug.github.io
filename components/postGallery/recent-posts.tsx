@@ -1,12 +1,11 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useViewMode } from "@/hooks/useViewMode";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import PostGallery from ".";
 import { ViewToggle } from "./view-toggle";
 
@@ -18,16 +17,17 @@ const RECENT_COUNT = 8;
  * 홈에서는 구분 없이 최근 글만 보여주고 전체 목록으로 넘긴다.
  */
 export function RecentPosts({
-  frontMatterListByLocale,
+  frontMatterList,
 }: {
-  frontMatterListByLocale: Record<Locale, FrontMatter[]>;
+  frontMatterList: FrontMatter[];
 }) {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const posts = frontMatterListByLocale[locale] || frontMatterListByLocale.ko;
   const { viewMode, toggle } = useViewMode("home-recent");
 
-  const recent = useMemo(() => posts.slice(0, RECENT_COUNT), [posts]);
+  const recent = useMemo(
+    () => frontMatterList.slice(0, RECENT_COUNT),
+    [frontMatterList],
+  );
 
   return (
     <section className="mb-14">
@@ -46,7 +46,7 @@ export function RecentPosts({
             href={PATH.POSTS}
             className="group inline-flex shrink-0 items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-primary"
           >
-            {t("home.viewAllPosts", { count: posts.length })}
+            {t("home.viewAllPosts", { count: frontMatterList.length })}
             <ArrowRight
               className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"

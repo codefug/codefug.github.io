@@ -1,8 +1,8 @@
 "use client";
 
 import { Award, BookOpen, Languages } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
+import { useTranslations } from "@/lib/messages";
 import { SectionHeading } from "./architecture-case";
 
 const JOURNEY_KEYS = ["univ", "bootcamp", "pwc", "allra"] as const;

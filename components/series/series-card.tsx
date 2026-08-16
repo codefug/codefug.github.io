@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowRight, Layers } from "lucide-react";
-import { useTranslations } from "next-intl";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import { Card } from "../ui/card";
 
 /**

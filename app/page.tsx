@@ -10,8 +10,7 @@ import {
   createBlogItemListStructuredData,
 } from "@/components/seo/utils";
 import BlockHeader from "@/components/ui/block-header";
-import { defaultLocale } from "@/i18n/config";
-import { getFrontMatterListForAllLocales } from "@/lib/posts";
+import { getFrontMatterList } from "@/lib/posts";
 import { shouldShowBirthdayBanner } from "@/util/birthday";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,22 +20,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const frontMatterListByLocale = getFrontMatterListForAllLocales();
+  const frontMatterList = getFrontMatterList();
   const showBirthdayBanner = shouldShowBirthdayBanner();
 
   return (
     <div>
       <StructuredData
-        jsonLd={createBlogItemListStructuredData(
-          frontMatterListByLocale[defaultLocale],
-          defaultLocale,
-        )}
+        jsonLd={createBlogItemListStructuredData(frontMatterList)}
       />
       {showBirthdayBanner && <BirthdayBanner />}
       <section className="my-10 lg:mt-0">
-        <HeroSection
-          postCount={frontMatterListByLocale[defaultLocale].length}
-        />
+        <HeroSection postCount={frontMatterList.length} />
       </section>
       <div className="mx-auto w-full max-w-350 px-4">
         <section className="mb-2">
@@ -45,14 +39,9 @@ export default async function Home() {
           />
         </section>
         <div className="mb-14">
-          <PostSwiper
-            cardNumber={5}
-            frontMatterListByLocale={frontMatterListByLocale}
-          />
+          <PostSwiper cardNumber={5} frontMatterList={frontMatterList} />
         </div>
-        <PostCategoryGallery
-          frontMatterListByLocale={frontMatterListByLocale}
-        />
+        <PostCategoryGallery frontMatterList={frontMatterList} />
       </div>
     </div>
   );

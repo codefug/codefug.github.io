@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import type { SeriesSummary } from "@/util/post";
 import SeriesCard from "./series-card";
 

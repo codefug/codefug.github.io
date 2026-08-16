@@ -1,21 +1,18 @@
 "use client";
 
 import { ArrowLeft, Layers } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 
 export function SeriesDetail({
   slug,
-  postsByLocale,
+  posts,
 }: {
   slug: string;
-  postsByLocale: Record<Locale, FrontMatter[]>;
+  posts: FrontMatter[];
 }) {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const posts = postsByLocale[locale] ?? postsByLocale.ko;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">

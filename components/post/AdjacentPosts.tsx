@@ -1,26 +1,21 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  adjacentByLocale: Record<
-    Locale,
-    { previous: FrontMatter | null; next: FrontMatter | null }
-  >;
+  adjacent: { previous: FrontMatter | null; next: FrontMatter | null };
 };
 
 /**
  * 댓글 위에서 시간 순서상 이전/다음 글로 이동한다.
  */
-export function AdjacentPosts({ adjacentByLocale }: Props) {
+export function AdjacentPosts({ adjacent }: Props) {
   const t = useTranslations("post");
-  const locale = useLocale() as Locale;
-  const { previous, next } = adjacentByLocale[locale] ?? adjacentByLocale.ko;
+  const { previous, next } = adjacent;
 
   if (!previous && !next) return null;
 

@@ -2,12 +2,11 @@
 
 import { cva } from "class-variance-authority";
 import { List, X } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useHighlightTOC from "@/hooks/use-highlight-toc";
 import useOutsideClick from "@/hooks/use-outside-click";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
-import { usePostContentStore } from "@/store/use-post-content-store";
 
 type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
 
@@ -55,12 +54,10 @@ function parseHeadingsFromProse(): HeadingData[] {
 
 function useFindAllHeadings(): HeadingData[] {
   const [headings, setHeadings] = useState<HeadingData[]>([]);
-  const isMounted = usePostContentStore((state) => state.isMounted);
 
   useEffect(() => {
-    if (!isMounted) return;
     setHeadings(parseHeadingsFromProse());
-  }, [isMounted]);
+  }, []);
 
   return headings;
 }

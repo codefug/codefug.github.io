@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useTranslations } from "next-intl";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
+import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 
 /**

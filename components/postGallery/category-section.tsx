@@ -1,10 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import type { CategoryGroupId } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { useViewMode } from "@/hooks/useViewMode";
+import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import PostGallery from ".";
 import { ViewToggle } from "./view-toggle";

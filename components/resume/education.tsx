@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Edu = { title: string; duration: string; detail: string };

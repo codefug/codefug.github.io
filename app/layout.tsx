@@ -3,13 +3,11 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Noto_Sans_KR } from "next/font/google";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
-import { LocaleProvider } from "@/components/providers/locale-provider";
 import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { SITE_URL } from "@/constants/site";
-import { defaultLocale } from "@/i18n/config";
-import { getFrontMatterListForAllLocales } from "@/lib/posts";
+import { getFrontMatterList } from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
 import ThemeProvider from "@/provider/theme-provider";
 import "./globals.css";
@@ -52,8 +50,8 @@ export const metadata: Metadata = {
 };
 
 function SidebarWrapper() {
-  const frontMatterListByLocale = getFrontMatterListForAllLocales();
-  return <Sidebar frontMatterListByLocale={frontMatterListByLocale} />;
+  const frontMatterList = getFrontMatterList();
+  return <Sidebar frontMatterList={frontMatterList} />;
 }
 
 export default function RootLayout({
@@ -63,25 +61,23 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang={defaultLocale}
+      lang="ko"
       className={`${notoSansKr.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className="font-sans antialiased">
-        <LocaleProvider initialMessages={koMessages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SidebarProvider defaultOpen={false}>
-              <SidebarWrapper />
-              <Layout>{children}</Layout>
-            </SidebarProvider>
-          </ThemeProvider>
-        </LocaleProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider defaultOpen={false}>
+            <SidebarWrapper />
+            <Layout>{children}</Layout>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

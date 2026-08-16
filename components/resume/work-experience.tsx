@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 import { RichText } from "./rich-text";
 
 type CompanyKey = "allra" | "pwc";

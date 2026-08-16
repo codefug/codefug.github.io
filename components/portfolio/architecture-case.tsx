@@ -2,7 +2,6 @@
 
 import { Ban, Lightbulb, Target, TrendingUp } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import {
   Accordion,
@@ -13,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import type { ArchitectureCase } from "@/constants/portfolio/architecture";
 import { ARCHITECTURE_CASES } from "@/constants/portfolio/architecture";
+import { useTranslations } from "@/lib/messages";
 
 // 머메이드는 무거우므로 펼쳤을 때 불러온다.
 const Mermaid = dynamic(() => import("@/components/mdx/mermaid"), {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 

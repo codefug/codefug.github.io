@@ -17,7 +17,8 @@ pnpm lint            # biome check --write
 
 ## 글 추가
 
-`markdown/<날짜-id>/{ko,en}/` 아래에 `frontmatter.mdx`와 `content.mdx`를 둔다.
+`markdown/<날짜-id>/ko/` 아래에 `frontmatter.mdx`와 `content.mdx`를 둔다.
+사이트는 한국어 단일 언어다 (과거의 ko/en 이중 구조는 제거됨).
 폴더를 추가하면 `pnpm dev`/`pnpm build`의 pre 스크립트가 `lib/mdxMap.ts`를 다시 만든다.
 
 frontmatter 필드:
@@ -40,7 +41,7 @@ hidden: true # 선택. 목록·검색·RSS·사이트맵에서 제외하고 noin
 `constants/categories.ts`가 단일 원천이다. 태그를 그룹(`CATEGORY_GROUPS`)에 넣으면
 홈 섹션·사이드바·내비게이션이 모두 따라온다. 어느 그룹에도 없는 태그는 `etc`로 모인다.
 
-그룹을 추가하면 `messages/{ko,en}.json`의 `categories.<id>`에 `label`과 `description`을 반드시 넣어야 한다.
+그룹을 추가하면 `messages/ko.json`의 `categories.<id>`에 `label`과 `description`을 반드시 넣어야 한다.
 
 ## 스타일
 

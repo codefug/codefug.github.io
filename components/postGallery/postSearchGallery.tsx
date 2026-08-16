@@ -1,10 +1,10 @@
 "use client";
 
 import { SearchX } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { useTranslations } from "@/lib/messages";
 import BlockHeader from "../ui/block-header";
 import { Input } from "../ui/input";
 import PostGallery from ".";
