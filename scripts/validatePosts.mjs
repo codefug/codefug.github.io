@@ -17,6 +17,11 @@ const MARKDOWN_DIR = join(process.cwd(), "markdown");
 const PUBLIC_DIR = join(process.cwd(), "public");
 const LOCALE = "ko";
 
+/** 오늘 날짜(YYYY-MM-DD)를 한국 시간 기준으로 돌려준다. */
+export function todayInSeoul() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+}
+
 /** constants/categories.ts의 TAG_LIST를 소스로 삼는다. 값만 필요하므로 정규식으로 뽑는다. */
 export function readKnownTags() {
   const source = readFileSync(
@@ -77,6 +82,12 @@ export function validatePostFolder(folder, knownTags) {
       );
     } else if (Number.isNaN(new Date(data.date).getTime())) {
       errors.push(`${where}: 'date'가 실재하지 않는 날짜다. (${data.date})`);
+    } else if (data.date > todayInSeoul()) {
+      // 예약 발행 기능이 없으므로 미래 날짜는 언제나 실수다.
+      // CI(UTC)에서 한국 새벽 빌드가 어제로 판정되지 않도록 KST 기준으로 잰다.
+      errors.push(
+        `${where}: 'date'가 미래다. (${data.date}, 오늘: ${todayInSeoul()})`,
+      );
     }
   }
 
