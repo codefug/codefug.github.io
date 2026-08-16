@@ -29,6 +29,8 @@ export default function Mermaid({ children, className }: MermaidProps) {
     mermaid.initialize({
       startOnLoad: false,
       theme: resolvedTheme === "dark" ? "dark" : "default",
+      // 라벨의 <br/> 줄바꿈을 쓰고 있어 loose가 필요하다. strict로 올리면
+      // 태그가 글자 그대로 나온다. 입력이 저장소 안의 MDX뿐이라 감수한다.
       securityLevel: "loose",
       fontFamily: "inherit",
     });
