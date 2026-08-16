@@ -2,8 +2,9 @@ import type { MDXComponents } from "mdx/types";
 import { createElement, type ReactNode } from "react";
 import Callout from "./components/mdx/callout";
 import CodeOverlay from "./components/mdx/code-overlay";
+import CustomLink from "./components/mdx/custom-link";
 import ImageOverlay from "./components/mdx/image-overlay";
-import Mermaid from "./components/mdx/mermaid";
+import Mermaid from "./components/mdx/mermaid-lazy";
 import { getHeaderHltr } from "./constants/header-hltr";
 import processCallout from "./util/callout";
 
@@ -74,7 +75,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     td: (props) => (
       <td className="break-keep first:whitespace-nowrap" {...props} />
     ),
-    // a: CustomLink,
+    a: CustomLink,
     img: (props) => <ImageOverlay {...props} />,
     ...components,
   };
