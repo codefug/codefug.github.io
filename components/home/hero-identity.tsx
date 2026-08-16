@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 
 interface HeroIdentityProps {
   postCount: number;
+  sinceYear: number;
 }
 
 const TRAIT_TAGS = [
@@ -14,18 +15,18 @@ const TRAIT_TAGS = [
   "data-driven",
 ];
 
-const BLOG_STATS = (postCount: number) => [
+const BLOG_STATS = (postCount: number, sinceYear: number) => [
   { value: postCount, label: "posts" },
-  { value: "2024", label: "since" },
+  { value: sinceYear, label: "since" },
   { value: "Seoul", label: "location" },
 ];
 
-export function HeroIdentity({ postCount }: HeroIdentityProps) {
+export function HeroIdentity({ postCount, sinceYear }: HeroIdentityProps) {
   return (
     <div className="flex flex-col">
       <DevBlogLabel />
       <BlogTitle />
-      <BlogStats postCount={postCount} />
+      <BlogStats postCount={postCount} sinceYear={sinceYear} />
       <TraitTagList />
     </div>
   );
@@ -67,7 +68,13 @@ function BlogTitle() {
   );
 }
 
-function BlogStats({ postCount }: { postCount: number }) {
+function BlogStats({
+  postCount,
+  sinceYear,
+}: {
+  postCount: number;
+  sinceYear: number;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -75,7 +82,7 @@ function BlogStats({ postCount }: { postCount: number }) {
       transition={{ delay: 0.38, duration: 0.5 }}
       className="mb-8 flex items-center gap-6"
     >
-      {BLOG_STATS(postCount).map(({ value, label }) => (
+      {BLOG_STATS(postCount, sinceYear).map(({ value, label }) => (
         <div key={label} className="flex flex-col">
           <span className="font-bold text-foreground text-xl">{value}</span>
           <span className="text-muted-foreground text-xs">{label}</span>

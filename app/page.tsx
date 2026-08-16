@@ -22,6 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const frontMatterList = getFrontMatterList();
   const showBirthdayBanner = shouldShowBirthdayBanner();
+  // 하드코딩하면 글을 숨기거나 지웠을 때 "since"가 실제 노출 글과 어긋난다.
+  const sinceYear = frontMatterList.reduce(
+    (min, post) => Math.min(min, Number(post.date.slice(0, 4))),
+    new Date().getFullYear(),
+  );
 
   return (
     <div>
@@ -30,7 +35,7 @@ export default async function Home() {
       />
       {showBirthdayBanner && <BirthdayBanner />}
       <section className="my-10 lg:mt-0">
-        <HeroSection postCount={frontMatterList.length} />
+        <HeroSection postCount={frontMatterList.length} sinceYear={sinceYear} />
       </section>
       <div className="mx-auto w-full max-w-350 px-4">
         <section className="mb-2">
