@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import type { CalloutType } from "@/constants/callout";
 
-export function isCallout(children: JSX.Element[]) {
+function isCallout(children: JSX.Element[]) {
   if (
     typeof children[1].props.children === "string" &&
     children[1].props.children.startsWith("[!")
@@ -10,7 +10,7 @@ export function isCallout(children: JSX.Element[]) {
   return false;
 }
 
-export function extractCallOutType(
+function extractCallOutType(
   children: { props: { children: string } }[],
 ): CalloutType {
   const callOutType = children[1].props.children.slice(

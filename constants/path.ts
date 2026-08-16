@@ -31,5 +31,4 @@ export const PATH = {
   PORTFOLIO: "/portfolio",
   RESUME: "/resume",
   SEARCH: "/search",
-  ABOUT: "/about",
 } as const;
