@@ -1,9 +1,8 @@
 import type { MetadataRoute } from "next";
 import { PATH } from "@/constants/path";
+import { SITE_URL as BASE_URL } from "@/constants/site";
 import getFrontMatterList from "@/lib/posts";
 import { buildSeriesSummaries } from "@/util/post";
-
-const BASE_URL = "https://codefug.github.io";
 
 const postFrontMatter = getFrontMatterList();
 const postSiteMap: MetadataRoute.Sitemap = postFrontMatter.map((post) => {

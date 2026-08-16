@@ -290,8 +290,7 @@
       "linkedin": "LinkedIn",
       "linkedinValue": "in/lee-seung-hyun",
       "linkedinHref": "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
-      "blog": "Blog",
-      "blogValue": "https://codefug.github.io"
+      "blog": "Blog"
     },
     "aboutMe": {
       "title": "About Me",
@@ -493,7 +492,7 @@
       "items": [
         {
           "title": "Claude Pet",
-          "url": "https://codefug.github.io/posts/2026-05-10",
+          "url": "/posts/2026-05-10",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "macOS widget showing real-time status of parallel Claude Code sessions (distributed via Homebrew)",
@@ -510,23 +509,23 @@
       "posts": [
         {
           "title": "Why Use Route Handlers When Server Actions Exist?",
-          "url": "https://codefug.github.io/posts/2026-01-29"
+          "url": "/posts/2026-01-29"
         },
         {
           "title": "The React Ecosystem Is Bigger Than You Think — Electron",
-          "url": "https://codefug.github.io/posts/2026-05-10"
+          "url": "/posts/2026-05-10"
         },
         {
           "title": "Why Does useSearchParams Require Suspense?",
-          "url": "https://codefug.github.io/posts/2026-05-27"
+          "url": "/posts/2026-05-27"
         },
         {
           "title": "What is asynchronous communication in JavaScript?",
-          "url": "https://codefug.github.io/posts/2024-11-10"
+          "url": "/posts/2024-11-10"
         },
         {
           "title": "Toss slash analysis, custom overlay hook with zustand",
-          "url": "https://codefug.github.io/posts/2024-09-14-1"
+          "url": "/posts/2024-09-14-1"
         }
       ]
     },

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { SITE_URL } from "@/constants/site";
 
 interface HeroTerminalProps {
   postCount: number;
@@ -175,7 +176,7 @@ function TerminalComment() {
       transition={{ delay: 0.4, duration: 0.4 }}
       className="text-muted-foreground/50 text-xs"
     >
-      {"// codefug.github.io"}
+      {`// ${SITE_URL.replace(/^https?:\/\//, "")}`}
     </motion.div>
   );
 }

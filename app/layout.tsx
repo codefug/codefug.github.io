@@ -7,6 +7,7 @@ import { LocaleProvider } from "@/components/providers/locale-provider";
 import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { SITE_URL } from "@/constants/site";
 import { defaultLocale } from "@/i18n/config";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
@@ -35,12 +36,12 @@ export const metadata: Metadata = {
   authors: [{ name: "Codefug" }],
   creator: "Codefug",
   publisher: "Codefug",
-  metadataBase: new URL("https://codefug.github.io"),
+  metadataBase: new URL(SITE_URL),
   alternates: createAlternateLinks("/"),
   openGraph: {
     title: metaMessages.openGraph.title,
     description: metaMessages.openGraph.description,
-    url: "https://codefug.github.io",
+    url: SITE_URL,
     type: "website",
   },
   twitter: {

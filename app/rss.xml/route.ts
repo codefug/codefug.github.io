@@ -1,6 +1,5 @@
+import { SITE_URL as BASE_URL } from "@/constants/site";
 import { getFrontMatterListForAllLocales } from "@/lib/posts";
-
-const BASE_URL = "https://codefug.github.io";
 
 export const dynamic = "force-static";
 

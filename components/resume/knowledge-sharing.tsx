@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { absoluteUrl } from "@/constants/site";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
 type Post = { title: string; url: string };
@@ -25,7 +26,7 @@ export default function KnowledgeSharing({
         {posts.map((p) => (
           <li key={p.title}>
             <Link
-              href={p.url}
+              href={absoluteUrl(p.url)}
               className="inline-flex items-center gap-1 text-primary hover:underline"
             >
               <span className="whitespace-nowrap">{p.title}</span>
