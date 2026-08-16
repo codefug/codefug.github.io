@@ -285,8 +285,7 @@
       "linkedin": "LinkedIn",
       "linkedinValue": "in/lee-seung-hyun",
       "linkedinHref": "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
-      "blog": "Blog",
-      "blogValue": "https://codefug.github.io"
+      "blog": "Blog"
     },
     "aboutMe": {
       "title": "About Me",
@@ -485,7 +484,7 @@
       "items": [
         {
           "title": "Claude Pet",
-          "url": "https://codefug.github.io/posts/2026-05-10",
+          "url": "/posts/2026-05-10",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "병렬 Claude Code 세션의 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
@@ -502,23 +501,23 @@
       "posts": [
         {
           "title": "Server Action이 있는데 Route Handler는 왜 쓸까?",
-          "url": "https://codefug.github.io/posts/2026-01-29"
+          "url": "/posts/2026-01-29"
         },
         {
           "title": "React 생태계는 생각보다 넓다 — Electron",
-          "url": "https://codefug.github.io/posts/2026-05-10"
+          "url": "/posts/2026-05-10"
         },
         {
           "title": "useSearchParams는 왜 Suspense가 필요할까",
-          "url": "https://codefug.github.io/posts/2026-05-27"
+          "url": "/posts/2026-05-27"
         },
         {
           "title": "자바스크립트에서 비동기 통신은 뭘까",
-          "url": "https://codefug.github.io/posts/2024-11-10"
+          "url": "/posts/2024-11-10"
         },
         {
           "title": "toss slash 분석, zustand와 연결된 커스텀 overlay 훅 구현",
-          "url": "https://codefug.github.io/posts/2024-09-14-1"
+          "url": "/posts/2024-09-14-1"
         }
       ]
     },

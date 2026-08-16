@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "generate-mdx": "node scripts/generateMdxMap.mjs",
-    "prebuild": "npm run generate-mdx",
-    "predev": "npm run generate-mdx",
+    "prebuild": "pnpm run generate-mdx",
+    "predev": "pnpm run generate-mdx",
     "dev": "next dev",
     "build": "next build",
     "start": "npx serve@latest out",

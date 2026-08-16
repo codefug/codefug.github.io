@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
+import { SITE_URL } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
@@ -74,8 +75,9 @@ export default function ResumeHeader({ className }: { className?: string }) {
     {
       Icon: Globe,
       label: t("contact.blog"),
-      value: t("contact.blogValue"),
-      href: t("contact.blogValue"),
+      // 블로그 주소는 도메인 자체가 값이라 번역 파일이 아니라 상수를 따른다.
+      value: SITE_URL.replace(/^https?:\/\//, ""),
+      href: SITE_URL,
     },
   ];
 

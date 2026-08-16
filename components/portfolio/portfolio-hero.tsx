@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PATH } from "@/constants/path";
+import { SITE_URL } from "@/constants/site";
 
 const CONTACTS = [
   {
@@ -29,7 +30,7 @@ const CONTACTS = [
     key: "blog",
     icon: PenLine,
     href: PATH.HOME,
-    label: "codefug.github.io",
+    label: SITE_URL.replace(/^https?:\/\//, ""),
   },
 ] as const;
 

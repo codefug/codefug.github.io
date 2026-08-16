@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
 import type { ParsedFrontMatter } from "@/constants/mdx";
+import { SITE_URL as BASE_URL } from "@/constants/site";
 import { type Locale, locales } from "@/i18n/config";
 import enMessages from "@/messages/en.json";
 import koMessages from "@/messages/ko.json";
-
-const BASE_URL = "https://codefug.github.io";
 
 const messages = {
   ko: koMessages,
