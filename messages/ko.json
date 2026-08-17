@@ -48,7 +48,7 @@
     "keywords": "개발, 프로그래밍, React, Next.js, JavaScript, TypeScript, 블로그",
     "openGraph": {
       "title": "Codefug Blog",
-      "description": "project experiences and development notes"
+      "description": "프로젝트 경험과 개발 노트를 공유하는 블로그"
     }
   },
   "common": {
@@ -116,7 +116,7 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "React, TypeScript 기반의 2년차 프론트엔드 개발자로,\n현재 선정산 금융 서비스를 운영 및 개선하고 있습니다.\n모든 개발은 비즈니스적 가치를 위해서 이루어져야 한다고 믿으며 이를 위해 UX와 DX를 모두 챙기기 위해 노력하고 있습니다."
+        "React, TypeScript 기반의 2년차 프론트엔드 개발자로,\n실제 자금이 오가는 선정산 금융 서비스를 운영 및 개선하고 있습니다.\n운영 중 반복해서 터지는 문제를 만나면 증상만 막지 않고, 왜 반복되는지 찾아 구조를 고치는 쪽을 택합니다."
       ]
     },
     "workExperience": {
@@ -220,7 +220,7 @@
                 "text": "유입의 첫 관문인 랜딩의 병목이 [B]LCP 18.4초[/B]였습니다. 반응형 이미지를 재설계해 [B]브레이크포인트별 `<source>`에 독립 치수를 부여[/B]하여 뷰포트마다 레이아웃을 미리 예약하고([B]CLS 0.99 → 0.1[/B]), WebP 전환과 `fetchPriority` 명시로 [B]최상단 이미지를 70KB → 30KB로 줄이면서 4배 선명하게[/B] 개선"
               },
               {
-                "text": "남은 [B]TBT 600ms[/B]는 서드파티가 원인이었습니다. 관측 도구를 [B]Datadog에서 OpenReplay로 전환[/B](월 비용 약 76% 절감)하는 과정에서, 100% 샘플링으로 [B]정적 import되어 비로그인 방문자에게도 내려가던 RUM·세션 리플레이 번들[/B]이 함께 빠졌습니다"
+                "text": "남은 [B]TBT 600ms[/B]는 서드파티가 원인이었습니다. 관측 도구를 [B]Datadog에서 OpenReplay로 전환[/B]하는 과정에서, 100% 샘플링으로 [B]정적 import되어 비로그인 방문자에게도 내려가던 RUM·세션 리플레이 번들[/B]이 함께 빠졌습니다"
               },
               {
                 "text": "플래그로 껐다고 생각한 코드가 실제로는 번들에 남아 있었기 때문에, [B]제거 커밋과 그 부모를 각각 워크트리에 체크아웃해 A/B 빌드로 검증[/B] — [B]랜딩 First Load JS 472KB → 413KB(−12.5%)[/B], 감소분 전부가 문제의 청크 하나였음을 확인"
