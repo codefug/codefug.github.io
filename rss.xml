@@ -8,13 +8,6 @@
     <atom:link href="https://codefug.github.io/rss.xml" rel="self" type="application/rss+xml"/>
     
     <item>
-      <title><![CDATA[exhaustive-deps는 어디까지 봐줄까 — 규칙의 사각지대를 찾아서]]></title>
-      <link>https://codefug.github.io/posts/2026-08-15-4/</link>
-      <guid>https://codefug.github.io/posts/2026-08-15-4/</guid>
-      <description><![CDATA[경고가 없어서 괜찮은 줄 알았는데 effect가 매 렌더 다시 돌았습니다. 다섯 가지 경우를 직접 돌려보니 경계는 커스텀 훅이냐가 아니었습니다. 규칙이 왜 그렇게 가정하는지까지 확인했습니다.]]></description>
-      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title><![CDATA[구조화된 데이터는 왜 필요할까]]></title>
       <link>https://codefug.github.io/posts/2026-08-15/</link>
       <guid>https://codefug.github.io/posts/2026-08-15/</guid>
