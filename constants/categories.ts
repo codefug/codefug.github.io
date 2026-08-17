@@ -36,7 +36,8 @@ export const TAG_LABEL: Partial<Record<Tag, string>> = {
  * `label`·`description`은 messages의 `categories.<id>`에서 가져온다.
  */
 export type CategoryGroupId =
-  | "toyProject"
+  | "sideProject"
+  | "learningProject"
   | "workProject"
   | "series"
   | "framework"
@@ -80,15 +81,18 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
     id: "project",
     order: 1,
     groups: [
+      /*
+        직접 필요해서 만든 것과, 배우면서 팀으로 만든 것을 나눠 둔다.
+        2024년 팀 프로젝트와 2026년 개인 작업을 한 칸에 두면
+        목록에서 둘이 같은 무게로 읽힌다.
+      */
       {
-        id: "toyProject",
-        tags: [
-          TAG_LIST.CLAUDE_PET,
-          TAG_LIST.REINDEER_LETTER,
-          TAG_LIST.FANDOMK,
-          TAG_LIST.GHEUPPAY,
-          TAG_LIST.KKOM_KKOM,
-        ],
+        id: "sideProject",
+        tags: [TAG_LIST.CLAUDE_PET, TAG_LIST.REINDEER_LETTER],
+      },
+      {
+        id: "learningProject",
+        tags: [TAG_LIST.KKOM_KKOM, TAG_LIST.GHEUPPAY, TAG_LIST.FANDOMK],
       },
       { id: "workProject", tags: [] },
     ],
@@ -144,7 +148,8 @@ function findSection(
  */
 const ORDERED_GROUP_IDS: CategoryGroupId[] = [
   "series",
-  "toyProject",
+  "sideProject",
+  "learningProject",
   "workProject",
 ];
 
