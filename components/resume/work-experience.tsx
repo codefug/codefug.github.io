@@ -51,7 +51,7 @@ export function TeamSection({
   }
 
   return (
-    <section className="mt-6">
+    <section className="mt-5">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h4 className="font-bold text-[13px] text-gray-900 dark:text-white">
           {t("name")}
@@ -77,7 +77,7 @@ export default function WorkExperienceSection({
 }) {
   return (
     <section className={className}>
-      <div className="space-y-9">{children}</div>
+      <div className="space-y-6">{children}</div>
     </section>
   );
 }

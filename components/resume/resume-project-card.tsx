@@ -65,7 +65,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
     : [];
 
   return (
-    <article className={cn("py-3.5", className)}>
+    <article className={cn("py-2.5", className)}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 font-bold text-[13px] text-gray-900 dark:text-white">
@@ -83,12 +83,14 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
       </p>
 
       {/* 기술 스택은 참고 정보라 본문보다 작게 둔다. */}
-      <p className="mt-1.5 mb-3 text-[9.5px] text-gray-400 dark:text-gray-500">
+      <p className="mt-1.5 mb-2 text-[9.5px] text-gray-400 dark:text-gray-500">
         {stack.join(", ")}
       </p>
 
       {categories.length > 0 && (
-        <div className="mt-3 space-y-4">
+        // 카테고리가 여러 개일 때 간격이 쌓여 페이지를 넘기므로 좁게 둔다.
+        // 제목이 굵어 간격이 좁아도 묶음 경계는 구분된다.
+        <div className="mt-2.5 space-y-2.5">
           {categories.map((cat) => (
             <ProjectCategory key={cat.title} category={cat} />
           ))}
