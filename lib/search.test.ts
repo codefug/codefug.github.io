@@ -103,6 +103,22 @@ describe("suggestPosts", () => {
     expect(suggestPosts(index, "왜", 2).length).toBeLessThanOrEqual(2);
   });
 
+  it("요약에만 있는 말은 제안하지 않는다", () => {
+    // "이벤트 루프"는 b의 요약에만 있다. 확정 검색에서는 찾히지만
+    // 자동완성은 제목만 보므로 목록에 뜨지 않아야 한다.
+    expect(searchPosts(index, "이벤트 루프").map((p) => p.id)).toContain("b");
+    expect(suggestPosts(index, "이벤트 루프")).toEqual([]);
+  });
+
+  it("카테고리만 맞는 것도 제안하지 않는다", () => {
+    expect(searchPosts(index, "nextjs").map((p) => p.id)).toContain("a");
+    expect(suggestPosts(index, "nextjs")).toEqual([]);
+  });
+
+  it("제목에 있는 말은 제안한다", () => {
+    expect(suggestPosts(index, "구조화된").map((s) => s.id)).toContain("c");
+  });
+
   it("제안 제목으로 다시 검색하면 그 글이 나온다", () => {
     // 자동완성에서 고른 항목을 그대로 확정 검색에 넘기는 흐름
     const [first] = suggestPosts(index, "비동기");
