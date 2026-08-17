@@ -68,12 +68,13 @@ function GroupNode({
   /*
     태그가 하나뿐이고 그 이름이 그룹 이름과 같으면(Web > Web) 한 단계가 군더더기다.
     그럴 때는 그룹 토글을 접고 태그만 보여준다.
+    이 태그가 그룹 자리를 대신하므로 형제 그룹과 같은 크기로 둔다.
   */
   if (
     categories.length === 1 &&
     resolveTagLabel(categories[0]) === t(`${groupId}.label`)
   ) {
-    return <CollapsiblePostList category={categories[0]} />;
+    return <CollapsiblePostList category={categories[0]} asGroupLabel />;
   }
 
   const hasCurrentPost = categories.some((category) =>
@@ -95,7 +96,8 @@ function GroupNode({
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <SidebarGroupContent className="pl-2">
+          {/* 그룹 이름의 화살표만큼 더 들여써서 한 단계 아래임을 보인다. */}
+          <SidebarGroupContent className="pl-4">
             {categories.map((category) => (
               <CollapsiblePostList key={category} category={category} />
             ))}
