@@ -77,3 +77,16 @@ export function getSeriesPosts(
     .filter((post) => post.categories.includes(slug))
     .toSorted(compareByReadingOrder);
 }
+
+/**
+ * 태그 하나에 속한 글. 여러 편으로 이어지는 태그(시리즈·프로젝트)는
+ * 1편부터 읽도록 오래된 순, 그 외에는 최신 순으로 돌려준다.
+ */
+export function getPostsByTag(
+  postList: FrontMatter[],
+  tag: string,
+): FrontMatter[] {
+  const matched = postList.filter((post) => post.categories.includes(tag));
+  if (isSeriesTag(tag)) return matched.toSorted(compareByReadingOrder);
+  return matched.toSorted((a, b) => compareByReadingOrder(b, a));
+}

@@ -437,7 +437,11 @@
     "webDev": {
       "label": "웹",
       "description": "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글"
-    }
+    },
+    "pageTitle": "{category} 글",
+    "pageDescription": "{category} 카테고리의 글 목록입니다.",
+    "postCount": "{count}편",
+    "backToPosts": "전체 글로"
   },
   "series": {
     "title": "시리즈",
