@@ -1,0 +1,123 @@
+지금까지 `setTimeout`으로 무거운 task를 쪼개서 화면이 멈추지 않게 만드는 방법을 봤습니다. 그런데 task를 쪼갤 때 쓰이는 것이 `setTimeout`만은 아닙니다. 이번 글에서는 macrotask와 함께 동작하는 microtask의 개념을 정리하고, 이 둘과 렌더링이 어떤 순서로 처리되는지 살펴봅니다.
+
+## Microtask
+
+`Microtask`는 주로 `Promise`를 사용해 만듭니다. `Promise`와 함께 쓰이는 `.then/catch/finally`의 핸들러(소비 함수)가 `Microtask`가 됩니다. 또는 `Promise`를 핸들링하는 `await`를 사용해 만들기도 합니다.
+
+> 이 외에도 표준 API인 `queueMicrotask(func)`를 사용해서 함수 `func`를 `Microtask Queue`에 넣어 처리할 수 있습니다.
+
+> 자바스크립트 엔진은 **Macrotask**를 하나 처리할 때마다, 다른 `Macrotask`를 수행하거나 렌더링하기 전에 **Microtask Queue**에 있는 모든 task를 실행합니다.
+
+```js
+setTimeout(() => alert("timeout"));
+
+Promise.resolve().then(() => alert("promise"));
+
+alert("code");
+
+// (현재 호출 스택에서 script 태그에 있는 코드를 읽는 Macrotask 중이며, 코드를 한 줄씩 실행 중입니다.)
+// 1. setTimeout(()=>alert("timeout")) - 호출 스택에서 실행, ms가 지나면 콜백 함수를 Macrotask queue에 등록
+// 2. Promise.resolve().then(()=>alert("promise")) - 콜백 함수를 Microtask Queue에 등록
+// 3. alert("code") - 바로 호출됩니다. (현재 script 태그를 읽는 Macrotask를 수행 중입니다.)
+// 4. script 태그에 있는 코드를 읽는 Macrotask 종료
+// 5. Microtask queue에 있는 then() 콜백 함수 실행 (호출 스택으로 이동해서 실행, 이 과정에서 이벤트 루프는 큐가 다 비워질 때까지 안 돌아감)
+// 6. Microtask queue 비워짐
+// 7. ()=>alert("timeout") - 다음 Macrotask 실행 (호출 스택에서 Macrotask 하나 이동)
+// (해당 Macrotask가 끝나면 다시 Microtask를 실행해서 큐를 비우고, 렌더링 후 다음 Macrotask를 실행하는 과정이 반복됩니다.)
+```
+
+## 처리 로직
+
+![](/images/2024-11-10/Pasted%20image%2020241109193930.png)
+
+`Macrotask(script, mousemove, setTimeout 등)` 하나가 처리되고 난 후 `Microtask` 전부가 처리되고, 그 이후에 렌더링이 진행되는 것을 확인할 수 있습니다.
+
+**Microtask는 다른 이벤트 핸들러나 렌더링 작업, 혹은 다른 Macrotask가 실행되기 전에 전부 처리됩니다.**
+
+script 태그에 있는 코드를 읽는 작업도 `Macrotask`이기 때문에, script 코드를 한 줄씩 호출 스택에 담고 실행하는 과정이 끝난 후에야 Microtask들을 실행합니다.
+
+이런 처리 순서가 중요한 이유는, 마우스 좌표 변경이나 네트워크 통신에 의한 데이터 변경처럼 애플리케이션 환경에 변화를 주는 작업에 영향을 받지 않고 모든 `Microtask`를 동일한 환경에서 처리할 수 있기 때문입니다.
+
+정리하면 "현재 실행 중인 macrotask 실행이 끝나면 → 현재 존재하는 모든 microtask 실행 → 렌더링 → 다음 macrotask 실행"의 순서를 가집니다.
+
+이 과정을 확인하기 위해 리페인트 전에 콜백 함수를 호출하는 **requestAnimationFrame**으로 확인해보겠습니다.
+
+![](/images/2024-11-10/Pasted%20image%2020241109221737.png)
+
+> **requestAnimationFrame**
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241109214448.png)
+>
+> 브라우저 리페인트 전에 애니메이션 처리를 하기 위해 사용하는 윈도우 메소드입니다.
+>
+> 별도의 큐에서 관리되어 프레임 단위로 렌더링할 수 있도록 보장합니다. (초당 프레임 기준은 모니터 주사율에 의해 설정됩니다.)
+>
+> 프레임 단위의 렌더링을 보장하기 때문에 애니메이션 동작이 더 부드러워집니다.
+
+## queueMicrotask로 만든 progress bar
+
+만약 임의로 특정 함수를 `Microtask Queue`로 보내고 싶다면 `queueMicrotask` 함수를 사용하면 됩니다. (`setTimeout`과 다른 점은, `ms`가 0초인 `setTimeout`을 이용할 때는 `Macrotask queue`로 보내져서 기존의 `Microtask Queue`가 다 끝나고 다음 `Macrotask`가 실행될 때 함수가 실행된다는 것입니다.)
+
+```js
+<div id="progress"></div>
+
+<script>
+  let i = 0;
+
+  function count() {
+    // 무거운 작업을 쪼갠 후 이를 수행
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+
+    if (i < 1e6) {
+      queueMicrotask(count);
+    }
+  }
+
+  count();
+</script>
+```
+
+렌더링이 되기 전에 Microtask Queue에 있는 `count` 함수가 재귀 호출을 하면서 Microtask Queue에 새로운 `count` 함수를 계속 추가하는 방식이기 때문에, 실제 화면에는 최종값만 보이게 됩니다. Microtask queue가 완전히 비워져야 브라우저 렌더링이 일어나기 때문입니다. 앞서 본 `setTimeout` 기반 progress bar와 달리, 중간 값이 화면에 그려지지 않는 이유가 여기 있습니다.
+
+## sync, macro, micro 비교
+
+다음 예제를 통해 확실히 알아보겠습니다.
+
+```js
+// sync, macro, micro 원소 안에 숫자가 있고 button으로 이들을 제어한다고 가정.
+button.addEventListener("click", () => {
+  for (let i = 0; i <= 100000; i++) {
+    sync.innerHTML = i;
+
+    setTimeout(() => {
+      macro.innerHTML = i;
+    }, 0);
+
+    queueMicrotask(() => {
+      micro.innerHTML = i;
+    });
+  }
+});
+```
+
+위 핸들러를 실행시키면 다음과 같은 결과가 나옵니다.
+
+1. `sync`는 렌더링이 일어나지 않다가 100,000 상태가 됩니다.
+2. `micro`는 렌더링이 일어나지 않다가 100,000 상태가 됩니다.
+3. `macro`는 잠시 기다리다가 1부터 100,000까지 차례대로 렌더링됩니다.
+
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_1.jpg)
+
+이때 차례대로 실행되는 코드들(`sync.innerHTML = i`, `setTimeout`, `queueMicrotask`)이 실행되고 있는 동안은 브라우저에서 다른 동작을 할 수 없습니다. 콜 스택에 쌓인 작업을 그대로 둔 채 다른 동작을 진행할 수는 없기 때문입니다.
+
+> `setTimeout`의 타이밍 함수(시간을 재서 콜백을 던져주는 함수)같은 Web API는 `Macrotask queue`가 할당되는 외부 스레드에서 진행됩니다. 작업을 할당해 처리하는 것은 브라우저나 Node.js의 역할입니다.
+
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_2.jpg)
+![](/images/2024-11-10/macro%20task,%20micro%20task,%20call%20stack_241110_031903_3.jpg)
+
+단, 만약 중간에 다른 `Macrotask`(마우스 이벤트 등)가 `Macrotask queue`로 들어와서 먼저 실행 가능한 상태가 된다면, queue는 해당 `Macrotask`를 먼저 처리합니다.
+
+여기까지가 자바스크립트의 싱글 스레드 실행 모델과 이벤트 루프, 그리고 macrotask와 microtask의 처리 순서입니다. "왜" 비동기 작업이 이렇게 동작하는지 알았으니, 다음으로는 콜백부터 Promise, async/await에 이르기까지 비동기 작업을 "어떻게" 다뤄왔는지 그 역사를 살펴볼 차례입니다.

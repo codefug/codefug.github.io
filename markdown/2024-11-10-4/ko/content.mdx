@@ -1,0 +1,243 @@
+자바스크립트 비동기 처리를 하나씩 정리하는 시리즈입니다. 이번 편에서는 가장 오래된 비동기 처리 방식인 콜백부터 시작해서, 콜백의 한계를 넘기 위해 등장한 Promise의 기본 구조까지 살펴보겠습니다.
+
+## 콜백
+
+호스트 환경이 제공하는 함수를 사용하면 비동기 동작을 스케줄링할 수 있습니다. (`setTimeout` 같은 함수)
+
+스크립트나 모듈을 로드하는 함수도 비동기라고 할 수 있는데, 이를 예시로 살펴보겠습니다.
+
+```js
+function loadScript(src) {
+  // <script> 태그를 만들고 페이지에 추가합니다. 태그가 추가되면 src의 스크립트를 로딩하고 실행합니다.
+  let script = document.createElement("script");
+  script.src = src;
+  document.head.append(script);
+}
+
+loadScript("/my/script.js"); // script.js엔 "function newFunction() {…}"이 있습니다.
+
+// 스크립트는 비동기적으로 실행되므로 아래 코드는 로딩이 끝나길 기다리지 않습니다.
+// newFunction이 존재하지 않는다는 에러가 발생합니다!
+newFunction();
+```
+
+여기에 콜백을 추가해보겠습니다.
+
+> **콜백 함수**
+>
+> 주로 함수 안에 전달인자로 다른 함수에 전달되는 함수를 의미합니다. 일종의 루틴이나 동작을 완료하기 위해 외부 함수 내부에서 호출됩니다.
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement("script");
+  script.src = src;
+
+  // script가 load 이벤트를 일으키면 (load 되면) callback에 script를 담아서 실행시킵니다.
+  script.onload = () => callback(script);
+
+  document.head.append(script);
+}
+
+loadScript("/my/script.js", function () {
+  // 콜백 함수는 스크립트 로드가 끝나면 실행됩니다.
+  newFunction(); // 이제 함수 호출이 제대로 동작합니다.
+  // ...
+});
+```
+
+이 방식을 콜백 기반 비동기 프로그래밍이라고 합니다. loadScript에 콜백 함수를 전해줘서 newFunction이 비동기 실행과 나란히 일어날 수 있게 해줍니다.
+
+### 오류 우선 콜백
+
+스크립트 로딩이 실패하는 경우 발생하는 에러도 핸들링할 수 있어야 합니다.
+
+```js
+function loadScript(src, callback) {
+  let script = document.createElement("script");
+  script.src = src;
+
+  // 성공 시 null과 script를, 실패 시 에러 객체를 인수에 넣습니다.
+  script.onload = () => callback(null, script);
+  script.onerror = () =>
+    callback(new Error(`${src}를 불러오는 도중에 에러가 발생했습니다.`));
+
+  document.head.append(script);
+}
+
+loadScript("/my/script.js", function (error, script) {
+  if (error) {
+    // 에러 처리
+  } else {
+    // 스크립트 로딩이 성공적으로 끝남
+  }
+});
+```
+
+위 패턴은 **오류 우선 콜백**으로, 에러를 처리하기 위해 사용되는 흔한 패턴입니다. callback의 첫 번째 인수는 에러를 위해 남겨두고, 두 번째 이후 인수들은 에러가 없을 때 넘겨줄 인수로 씁니다.
+
+### 콜백 속 콜백, 그리고 콜백 지옥
+
+만약 두 개의 스크립트를 차례대로 불러오려 한다면 콜백 안에 콜백을 넣어야 합니다.
+
+```js
+loadScript("/my/script.js", function (script) {
+  loadScript("/my/script2.js", function (script) {
+    loadScript("/my/script3.js", function (script) {
+      // 세 스크립트 로딩이 끝난 후 실행됨
+    });
+  });
+});
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241107193715.png)
+
+위 방식은 멸망의 피라미드, 즉 콜백 지옥이라 부르는 상황을 만듭니다. 코드가 오른쪽으로 점점 옮겨지면서 가독성도 해치고 코드 재사용도 어려워집니다. 각 단계를 이름 붙인 함수로 분리하는 방법도 있지만, 모양만 개선될 뿐 로직을 위아래로 옮겨 다니며 파악해야 하는 문제는 그대로 남습니다.
+
+### 그래도 콜백이 필요한 순간
+
+콜백을 무조건 피해야 하는 것은 아닙니다. 특정 동작이 끝나는 것이 보장되고 그다음 코드를 실행해야 할 때는 여전히 유용합니다. 예를 들어 천천히 커지는 원을 만드는 `showCircle(cx, cy, radius, callback)` 함수라면, 원을 다 그린 후 callback으로 "안녕하세요!" 텍스트를 추가하는 식으로 씁니다.
+
+```js
+showCircle(150, 150, 100, (div) => {
+  div.classList.add("message-ball");
+  div.append("안녕하세요!");
+});
+```
+
+> 콜백을 활용하면 해당 작업은 Microtask Queue가 아니라 Macrotask Queue로 이동합니다(`setTimeout`의 동작 방식). 둘의 차이는 시리즈 뒷부분에서 다룹니다.
+
+## Promise
+
+콜백 지옥 같은 문제를 근본적으로 풀기 위해 등장한 것이 Promise입니다. 시간이 얼마나 걸리든 상관없이, 약속한 결과를 만들어내는 "제작 코드"(예: 원격에서 스크립트를 불러오는 것처럼 시간이 걸리는 일)가 준비되었을 때, 그 결과를 기다렸다가 소비하는 "소비 코드"가 이를 사용할 수 있도록 해줍니다. 소비의 주체(함수)는 여럿이 될 수 있습니다.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // executor (제작 코드, '가수')
+});
+
+// promise.then/catch/finally 등등
+```
+
+### executor 함수
+
+`new Promise`에 전달되는 콜백은 executor라고 하며, `new Promise`가 만들어질 때 자동으로 실행되어 결과를 최종적으로 만들어내는 제작 코드를 담고 있습니다.
+
+executor에서는 상황에 따라 성공 시 결과 value와 함께 `resolve(value)`를, 에러 발생 시 에러 객체 error와 함께 `reject(error)`를 반드시 호출해야 합니다.
+
+new Promise 생성자가 반환하는 promise 객체는 PromiseState, PromiseResult라는 내부 프로퍼티를 가지며, resolve/reject 여부에 따라 그 값이 채워집니다.
+
+![](/images/2024-11-10/Pasted%20image%2020241107195926.png)
+
+executor는 `new Promise`에 의해 자동으로, 즉각적으로 호출됩니다. 인자로 받는 `resolve`와 `reject`는 자바스크립트 엔진이 미리 정의한 함수이므로 개발자가 따로 만들 필요는 없습니다.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  // 1초 뒤에 일이 성공적으로 끝났다는 신호가 전달되면서 result는 '완료'가 됩니다.
+  setTimeout(() => resolve("완료"), 1000);
+});
+```
+
+반대로 실패했다면 `reject(new Error("에러 발생!"))`처럼 호출합니다. `resolve`나 `reject`가 완료된 Promise를 settled Promise라고 부릅니다.
+
+### 주의사항
+
+1. **한번 처리된 Promise는 바뀌지 않습니다.**
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  resolve("완료");
+
+  reject(new Error("…")); // 무시됨
+  setTimeout(() => resolve("…")); // 무시됨
+});
+```
+
+2. **Error 객체와 함께 reject해야 합니다.**
+3. **꼭 Promise가 비동기적인 것을 다루지 않아도 됩니다.** `resolve(123)`처럼 즉시 값을 전달하면 곧바로 이행 상태가 됩니다.
+4. **PromiseState와 PromiseResult는 내부 프로퍼티이기 때문에 직접 접근할 수 없습니다.**
+
+### 소비 함수
+
+소비 함수는 `.then`, `.catch`, `.finally` 메서드를 사용해 등록됩니다.
+
+#### .then
+
+Promise가 fulfilled 혹은 rejected로 완료되면 이후에 실행되는 소비 함수입니다.
+
+```js
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => resolve("완료!"), 1000);
+});
+
+// resolve 함수는 .then의 첫 번째 함수(인수)를 실행합니다.
+promise.then(
+  (result) => alert(result), // 1초 후 "완료!"를 출력
+  (error) => alert(error), // 실행되지 않음
+);
+```
+
+성공 처리만 하고 싶다면 두 번째 인수를 생략하면 됩니다.
+
+#### .catch
+
+`.then(null, 에러처리함수)` 형태로 에러만 처리해도 되지만, `.catch`를 활용하면 더 간결하게 표현할 수 있습니다.
+
+```js
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error("에러 발생!")), 1000);
+});
+
+// .catch(f)는 promise.then(null, f)과 동일하게 작동합니다
+promise.catch(alert); // 1초 뒤 "Error: 에러 발생!" 출력
+```
+
+#### .finally
+
+Promise가 처리되면 성공·실패 여부와 상관없이 항상 실행되는 메서드입니다.
+
+```js
+new Promise((resolve, reject) => {
+  /* 시간이 걸리는 어떤 일을 수행하고, 그 후 resolve, reject를 호출함 */
+})
+  // 성공·실패 여부와 상관없이 Promise가 처리되면 실행됨
+  .finally(() => 로딩 인디케이터 중지)
+  .then(result => alert(result), error => alert(error));
+```
+
+finally는 인수가 없으며, 자동으로 다음 핸들러에 결과 혹은 에러를 전달합니다.
+
+### loadScript를 Promise로 바꾸기
+
+앞서 본 콜백 방식의 loadScript를 Promise로 바꿔보겠습니다.
+
+```js
+function loadScript(src) {
+  return new Promise(function (resolve, reject) {
+    let script = document.createElement("script");
+    script.src = src;
+
+    script.onload = () => resolve(script);
+    script.onerror = () =>
+      reject(new Error(`${src}를 불러오는 도중에 에러가 발생함`));
+
+    document.head.append(script);
+  });
+}
+```
+
+Promise를 사용하면 callback 로직을 밖으로 뺄 수 있습니다. 다음과 같이 사용할 수 있습니다.
+
+```js
+let promise = loadScript(
+  "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js",
+);
+
+promise.then(
+  (script) => alert(`${script.src}을 불러왔습니다!`),
+  (error) => alert(`Error: ${error.message}`),
+);
+```
+
+then, catch, finally 메서드에 소비 함수만 던져주면, 저장된 promise가 알아서 소비 함수에 인자를 넣어 실행시킵니다.
+
+다음 편에서는 이 `.then`을 이어 붙여 여러 비동기 작업을 순서대로 처리하는 Promise 체이닝과, 그 과정에서 에러를 다루는 방법을 살펴보겠습니다.

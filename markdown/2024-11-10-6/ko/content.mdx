@@ -1,0 +1,262 @@
+앞서 Promise 체이닝과 에러 핸들링을 살펴봤습니다. 이번 편에서는 여러 Promise를 한 번에 다루는 Promise API의 정적 메서드들과, 요청을 중간에 취소하는 AbortController, 그리고 콜백 함수를 Promise로 바꾸는 Promisification을 정리합니다.
+
+## Promise API
+
+### Promise.all
+
+여러 개의 Promise를 동시에 실행시키고 모든 Promise가 준비될 때까지 기다립니다. Promise인 배열을 받고 새로운 Promise를 반환합니다.
+
+```js
+Promise.all([
+  new Promise((resolve) => setTimeout(() => resolve(1), 3000)),
+  new Promise((resolve) => setTimeout(() => resolve(2), 2000)),
+  new Promise((resolve) => setTimeout(() => resolve(3), 1000)),
+]).then(alert); // Promise 전체가 처리되면 1, 2, 3이 반환됩니다.
+```
+
+각 Promise 요청이 다 끝나면 배열의 순서에 따라 결과값이 또 다른 배열 형태로 소비 함수에 전달됩니다.
+
+![](/images/2024-11-10/Pasted%20image%2020241108150808.png)
+
+fetch는 인수에 있는 url에 요청을 보내서 response를 Promise 형태로 반환하는 함수입니다.
+
+```js
+let urls = [
+  "https://api.github.com/users/iliakan",
+  "https://api.github.com/users/Violet-Bora-Lee",
+  "https://api.github.com/users/jeresig",
+];
+
+// fetch를 사용해 url을 Promise로 매핑하고, 모든 작업이 이행될 때까지 기다립니다.
+let requests = urls.map((url) => fetch(url));
+Promise.all(requests).then((responses) =>
+  responses.forEach((response) => alert(`${response.url}: ${response.status}`)),
+);
+```
+
+받은 응답 배열을 다시 `.then((responses) => Promise.all(responses.map((r) => r.json())))`처럼 Promise.all에 넣어 `json()` 파싱하는 식으로 체인을 늘려갈 수도 있습니다.
+
+#### Promise.all의 에러 핸들링
+
+내부 배열에서 하나라도 rejected가 일어나면 전체를 에러로 판단합니다.
+
+```js
+Promise.all([
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+  new Promise((resolve, reject) =>
+    setTimeout(() => reject(new Error("에러 발생!")), 2000),
+  ),
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
+]).catch(alert); // Error: 에러 발생!
+```
+
+> **Promise reject가 일어나도 호출은 계속 일어납니다.** 별도의 처리(AbortController)가 없다면 rejected가 일어나도 다른 Promise 처리가 취소되지는 않고, 결과만 무시됩니다.
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241108152428.png)
+>
+> 실제로 네트워크 요청을 보면 fetch 자체는 일어난 것을 확인할 수 있습니다.
+>
+> ![](/images/2024-11-10/Pasted%20image%2020241108152443.png)
+
+> **Promise.all의 인수에 있는 배열**은 꼭 Promise 객체가 아니어도 됩니다. `Promise.all([promise, 2, 3])`처럼 숫자를 넣으면 그 값을 그대로 소비 함수로 전달합니다.
+
+### Promise.allSettled
+
+Promise.all은 하나라도 에러가 나면 전부 결과를 받지 못합니다. html, css, json이 전부 필요한 render 함수처럼 하나라도 없으면 의미가 없는 경우엔 이 방식이 유용하지만, `allSettled`는 하나가 에러 나더라도 다른 요청의 결과는 받을 수 있게 하려고 나왔습니다.
+
+1. 응답이 성공하였을 때 – `{status:"fulfilled", value:result}`
+2. 에러가 발생하였을 때 – `{status:"rejected", reason:error}`
+
+```js
+Promise.allSettled(urls.map((url) => fetch(url))).then((results) => {
+  results.forEach((result, num) => {
+    // 응답이 성공하면 value에, 에러가 발생하면 reason에 결과가 들어갑니다.
+    if (result.status == "fulfilled") {
+      alert(`${urls[num]}: ${result.value.status}`);
+    }
+    if (result.status == "rejected") {
+      alert(`${urls[num]}: ${result.reason}`);
+    }
+  });
+});
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108154631.png)
+
+### Promise.race
+
+Promise.all과 유사하게 Promise 배열 전체를 처리하지만, 가장 먼저 처리되는 Promise의 결과를 반환합니다.
+
+```js
+Promise.race([
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+  new Promise((resolve, reject) =>
+    setTimeout(() => reject(new Error("에러 발생!")), 2000),
+  ),
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000)),
+]).then(alert); // 1
+```
+
+### Promise.resolve와 Promise.reject
+
+resolve와 reject 메서드는 async/await의 등장으로 잘 사용되지 않습니다. 하지만 이어질 폴리필을 이해하기 위해 한번 짚어보겠습니다. (`async function`은 리턴값을 무조건 Promise로 꺼내고, 내부에서 throw Error하면 rejected 상태의 Promise를 반환합니다.)
+
+#### Promise.resolve
+
+`Promise.resolve(value)`는 결과값이 value인 fulfilled한 Promise를 생성합니다.
+
+```js
+// let promise = new Promise(resolve => resolve(value));
+
+let cache = new Map();
+
+function loadCached(url) {
+  if (cache.has(url)) {
+    return Promise.resolve(cache.get(url));
+  }
+
+  return fetch(url)
+    .then((response) => response.text())
+    .then((text) => {
+      cache.set(url, text);
+      return text;
+    });
+}
+```
+
+`loadCached`는 fetch할 때 cache에 데이터를 저장해두고, 다음에 같은 요청을 보냈을 때 cache에서 꺼내서 전달합니다. 이때 `Promise.resolve`를 이용해 `loadCached`가 항상 Promise를 반환한다는 걸 정해두면, 사용하는 쪽에서는 `.then/catch` 같은 메서드로 소비 함수를 넣을 수 있게 됩니다. 같은 방식으로 `Promise.resolve(p).then(onFulfilled, onRejected)`를 활용하면 구식 브라우저를 위한 allSettled 폴리필도 만들 수 있습니다.
+
+#### Promise.reject
+
+`Promise.reject(error)`는 결과값이 error인 rejected Promise를 반환합니다.
+
+```js
+let promise = Promise.reject(error);
+```
+
+![](/images/2024-11-10/Pasted%20image%2020241108160624.png)
+
+## Fetch: Abort
+
+> 글 흐름을 위해 Promise API 파트에 이어서 다루지만, 엄밀히 말하면 AbortController는 Promise API는 아닙니다.
+
+앞서 Promise.all에서 에러가 발생해도 다른 Promise의 결과는 무시될 뿐 호출 자체는 막을 수 없다고 했습니다. AbortController라는 빌트인 객체를 활용하면 Promise 호출 자체를 막을 수 있습니다.
+
+### AbortController 객체
+
+```js
+let controller = new AbortController();
+```
+
+AbortController는 프로퍼티 하나, 메서드 하나를 갖고 있습니다.
+
+![](/images/2024-11-10/Pasted%20image%2020241108161157.png)
+
+1. `signal`은 인스턴스에서 바로 찾을 수 있으며, event listener를 세팅할 수 있는 프로퍼티입니다.
+2. `abort`가 실행되면 instance.signal이 "abort" 이벤트를 발생시키고, instance.signal.aborted가 true가 됩니다.
+
+즉 signal에 취소 가능한 작업을 리스너로 달아 놓고, abort() 함수로 취소하는 방식입니다.
+
+```js
+let controller = new AbortController();
+let signal = controller.signal;
+
+// 취소 가능한 작업에 signal을 주고, controller.abort()가 실행되면 실행될 리스너를 세팅합니다.
+signal.addEventListener("abort", () => alert("abort!"));
+
+controller.abort(); // abort!
+alert(signal.aborted); // true
+```
+
+다른 이벤트를 구현해서 동일한 기능을 만들 수도 있지만, 내부적으로 fetch는 AbortController를 인식하기 때문에 AbortController를 사용하는 것이 좋습니다.
+
+### fetch와 함께 사용
+
+fetch 옵션에는 signal이라는 프로퍼티가 존재합니다.
+
+```js
+let controller = new AbortController();
+fetch(url, {
+  signal: controller.signal,
+});
+```
+
+이제 이전과 같이 `controller.abort()` 함수로 fetch 요청을 제어해주면 됩니다.
+
+> 단, fetch가 abort하는 시기보다 더 빨리 끝나면 이미 나온 결과를 없애지는 않습니다.
+
+### AbortController의 확장성
+
+하나의 controller를 여러 fetch에 등록해두면, 등록된 모든 fetch가 하나의 controller 신호를 따르게 됩니다. Promise.all을 통해 fetch와 다른 일반 Promise를 결합할 수도 있습니다.
+
+```js
+let urls = [...];
+let controller = new AbortController();
+
+let ourJob = new Promise((resolve, reject) => { // our task
+  ...
+  controller.signal.addEventListener('abort', reject);
+});
+
+let fetchJobs = urls.map(url => fetch(url, { // fetches
+  signal: controller.signal
+}));
+
+// Wait for fetches and our task in parallel
+let results = await Promise.all([...fetchJobs, ourJob]);
+
+// if controller.abort() is called from elsewhere,
+// it aborts all fetches and ourJob
+```
+
+## Promisification
+
+콜백을 받는 함수를 Promise를 반환하는 함수로 바꾸는 것을 Promisification이라고 합니다. 4편에서 다룬 오류 우선 콜백 방식의 loadScript(src, callback)를 다시 예로 들면, 콜백을 내부로 숨기고 resolve/reject로 바꿔 감싸주기만 하면 됩니다.
+
+```js
+function loadScriptPromise(src) {
+  return new Promise((resolve, reject) => {
+    // (err, script) => {...}는 기존 콜백 방식 loadScript에서 쓰이던 콜백 함수가 내부로 숨겨진 것입니다.
+    loadScript(src, (err, script) => {
+      if (err) reject(err);
+      else resolve(script);
+    });
+  });
+}
+
+// 사용법:
+// loadScriptPromise('path/script.js').then(...)
+```
+
+이 Promisification은 하나의 함수에만 쓸 수 있습니다. 확장성 있게 만들기 위해 함수 f를 받아서 f 호출부에 커스텀 콜백을 붙인 래퍼 함수를 반환하는 헬퍼 함수를 만들어 보겠습니다. 콜백의 성공 결과가 여러 개일 수도 있으므로 `manyArgs` 옵션까지 포함한 최종 형태는 다음과 같습니다.
+
+```js
+// manyArgs가 false면(기본값) 첫 번째 결과만, true면 결과 전체를 배열로 반환합니다.
+function promisify(f, manyArgs = false) {
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      function callback(err, ...results) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(manyArgs ? results : results[0]);
+        }
+      }
+
+      args.push(callback);
+      f.call(this, ...args);
+    });
+  };
+}
+
+// 사용법: promisify에 들어가는 f는 여러 인수가 필요하고 콜백이 마지막 인수로 들어가는 함수입니다.
+// f(arg1, arg2, ..., (err, ...results)=>{});
+f = promisify(f, true);
+f(...).then(arrayOfResults => ..., err => ...);
+```
+
+> 단, Promisification은 콜백을 완전히 대체하지는 못합니다. 콜백은 여러 번 호출할 수 있지만 Promise는 하나의 결과만 가질 수 있기 때문입니다(Promisification한 함수의 콜백을 여러 번 호출해도 두 번째부터는 무시됩니다).
+
+이를 미리 처리해주는 promisify 라이브러리나 Node.js 내장 함수도 존재합니다.
+
+다음 편에서는 Promise 핸들러가 왜 항상 마이크로태스크 큐를 거쳐 비동기로 실행되는지, 그리고 이를 훨씬 편하게 다룰 수 있게 해주는 async/await 문법을 다루면서 시리즈를 마무리합니다.

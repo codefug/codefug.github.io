@@ -1,6 +1,7 @@
 export const TAG_LIST = {
   JAVASCRIPT: "javascript",
   TYPESCRIPT: "typescript",
+  ASYNC_JS: "async-js",
   KKOM_KKOM: "kkom-kkom",
   GHEUPPAY: "gheuppay",
   REACT: "react",
@@ -39,6 +40,7 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     id: "series",
     tags: [
+      TAG_LIST.ASYNC_JS,
       TAG_LIST.CLAUDE_PET,
       TAG_LIST.FANDOMK,
       TAG_LIST.GHEUPPAY,
