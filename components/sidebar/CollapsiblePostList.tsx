@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { PATH } from "@/constants/path";
 import { cn } from "@/lib/utils";
+import { resolveTagLabel } from "@/util/tag-label";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 /**
@@ -28,7 +29,7 @@ export function CollapsiblePostList({ category }: { category: string }) {
           : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
       )}
     >
-      {category}
+      {resolveTagLabel(category)}
     </SidebarAnchorButton>
   );
 }
