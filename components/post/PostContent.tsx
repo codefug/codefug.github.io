@@ -1,5 +1,3 @@
-"use client";
-
 import { mdxMap } from "@/lib/mdxMap";
 
 type Props = {

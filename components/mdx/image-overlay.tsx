@@ -21,16 +21,18 @@ export default function ImageOverlay({
 
   return (
     <>
-      <img
-        src={src}
-        alt={alt ?? ""}
-        className={`cursor-zoom-in ${className ?? ""}`}
+      {/*
+        img에 onClick만 달면 키보드로는 포커스가 가지 않아 열 수 없다.
+        button으로 감싸면 포커스·Enter/Space·스크린리더 인식이 전부 따라온다.
+      */}
+      <button
+        type="button"
         onClick={() => setIsModalOpen(true)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") setIsModalOpen(true);
-        }}
-        aria-label="Click to view larger image"
-      />
+        className="block cursor-zoom-in"
+        aria-label={alt ? `${alt} 크게 보기` : "이미지 크게 보기"}
+      >
+        <img src={src} alt={alt ?? ""} className={className} />
+      </button>
       {isModalOpen &&
         createPortal(
           <OverlayModal

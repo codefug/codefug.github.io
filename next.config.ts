@@ -7,9 +7,9 @@ const nextConfig: NextConfig = {
   // Allow trailing slashes in URLs
   trailingSlash: true,
   images: {
+    // 정적 익스포트라 이미지 최적화 서버가 없다. 원본을 그대로 내보낸다.
+    // (unoptimized면 커스텀 loader는 호출되지 않으므로 두지 않는다.)
     unoptimized: true,
-    loader: "imgix",
-    path: "https://codefug.github.io",
     remotePatterns: [
       {
         protocol: "https",
