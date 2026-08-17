@@ -72,7 +72,7 @@
         "noAriaUnsupportedElements": "warn",
         "noAccessKey": "warn",
         "useAltText": "warn",
-        "useButtonType": "off",
+        "useButtonType": "warn",
         "useSemanticElements": "warn"
       },
       "security": {

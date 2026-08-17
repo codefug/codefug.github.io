@@ -20,6 +20,7 @@ export default function PostCategorySwiper({
         {categoryList.map(({ category, id }) => (
           <CarouselItem key={id + category} className="basis-auto">
             <button
+              type="button"
               onClick={() => setValue?.(category)}
               aria-label={t("categorySelect", { category, count: 0 })}
               aria-pressed={category === value}

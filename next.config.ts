@@ -1,5 +1,7 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
+// 도메인이 바뀔 때 고칠 곳을 한 군데로 모은다. (constants/site.ts가 단일 원천)
+import { SITE_URL } from "./constants/site";
 
 const nextConfig: NextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
@@ -28,8 +30,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  assetPrefix:
-    process.env.NODE_ENV === "production" ? "https://codefug.github.io" : "",
+  assetPrefix: process.env.NODE_ENV === "production" ? SITE_URL : "",
   output: "export",
 };
 
