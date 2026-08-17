@@ -10,6 +10,7 @@ export const TAG_LIST = {
   FANDOMK: "fandomk",
   ELECTRON: "electron",
   CLAUDE_PET: "claude-pet",
+  REINDEER_LETTER: "reindeer-letter",
   RETROSPECTIVE: "retrospective",
   REVIEW: "review",
 } as const;
@@ -22,6 +23,8 @@ export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
  */
 export type CategoryGroupId =
   | "retrospective"
+  | "toyProject"
+  | "workProject"
   | "series"
   | "framework"
   | "language"
@@ -38,10 +41,10 @@ export type CategoryGroup = {
 
 export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
-    id: "series",
+    id: "toyProject",
     tags: [
-      TAG_LIST.ASYNC_JS,
       TAG_LIST.CLAUDE_PET,
+      TAG_LIST.REINDEER_LETTER,
       TAG_LIST.FANDOMK,
       TAG_LIST.GHEUPPAY,
       TAG_LIST.KKOM_KKOM,
@@ -49,29 +52,39 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
     order: 1,
   },
   {
+    id: "workProject",
+    tags: [],
+    order: 2,
+  },
+  {
+    id: "series",
+    tags: [TAG_LIST.ASYNC_JS],
+    order: 3,
+  },
+  {
     id: "framework",
     tags: [TAG_LIST.REACT, TAG_LIST.NEXTJS, TAG_LIST.ELECTRON],
-    order: 2,
+    order: 4,
   },
   {
     id: "language",
     tags: [TAG_LIST.TYPESCRIPT, TAG_LIST.JAVASCRIPT],
-    order: 3,
+    order: 5,
   },
   {
     id: "dev",
     tags: [TAG_LIST.WEB],
-    order: 4,
+    order: 6,
   },
   {
     id: "retrospective",
     tags: [TAG_LIST.RETROSPECTIVE],
-    order: 5,
+    order: 7,
   },
   {
     id: "review",
     tags: [TAG_LIST.REVIEW],
-    order: 6,
+    order: 8,
   },
 ];
 
@@ -79,13 +92,20 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
 export const FALLBACK_GROUP_ID: CategoryGroupId = "etc";
 
 /**
- * 시리즈 그룹에 속한 태그는 "하나의 프로젝트를 여러 편으로 나눠 쓴 글"이므로,
- * 목록에서 오래된 순(1편 → 마지막 편)으로 읽는 편이 자연스럽다.
+ * 여러 편으로 나눠 쓴 글이 모이는 그룹들.
+ * 이 태그의 글은 목록에서 오래된 순(1편 → 마지막 편)으로 읽는 편이 자연스럽다.
  */
 export const SERIES_GROUP_ID: CategoryGroupId = "series";
 
-export const SERIES_TAGS: readonly Tag[] =
-  CATEGORY_GROUPS.find((group) => group.id === SERIES_GROUP_ID)?.tags ?? [];
+const ORDERED_GROUP_IDS: CategoryGroupId[] = [
+  SERIES_GROUP_ID,
+  "toyProject",
+  "workProject",
+];
+
+export const SERIES_TAGS: readonly Tag[] = CATEGORY_GROUPS.filter((group) =>
+  ORDERED_GROUP_IDS.includes(group.id),
+).flatMap((group) => group.tags);
 
 export function isSeriesTag(tag: string): boolean {
   return SERIES_TAGS.includes(tag as Tag);
