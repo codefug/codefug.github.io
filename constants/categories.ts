@@ -38,12 +38,7 @@ export type CategoryGroupId =
  * 그룹을 다시 묶는 대분류. 사이드바·홈에서 최상위 섹션이 되고,
  * 그 안의 그룹이 하위 토글로 들어간다.
  */
-export type CategorySectionId =
-  | "project"
-  | "series"
-  | "dev"
-  | "retrospective"
-  | "etc";
+export type CategorySectionId = "project" | "series" | "dev" | "notes" | "etc";
 
 export type CategoryGroup = {
   id: CategoryGroupId;
@@ -98,7 +93,7 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
     ],
   },
   {
-    id: "retrospective",
+    id: "notes",
     order: 4,
     groups: [
       { id: "essay", tags: [TAG_LIST.ESSAY] },

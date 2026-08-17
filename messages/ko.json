@@ -32,18 +32,18 @@
       "search": "검색 페이지로 이동",
       "series": "시리즈 목록 페이지로 이동",
       "posts": "전체 글 페이지로 이동",
-      "retrospective": "회고 페이지로 이동"
+      "notes": "기록 페이지로 이동"
     },
     "description": {
       "resume": "경력과 성과를 한 장으로",
       "search": "제목으로 글 찾기",
       "series": "프로젝트를 여러 편으로 기록한 글 묶음",
       "posts": "모든 글을 한 곳에서",
-      "retrospective": "한 해와 배움을 돌아본 기록"
+      "notes": "회고와 생각을 남긴 글"
     },
     "series": "Series",
     "posts": "Posts",
-    "retrospective": "Retrospective"
+    "notes": "Notes"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -488,24 +488,24 @@
       "label": "Dev",
       "description": "프레임워크와 언어, 웹 전반에 대한 기록"
     },
-    "retrospective": {
-      "label": "회고",
-      "description": "한 해와 프로젝트, 컨퍼런스와 교육을 돌아보며 남긴 기록"
+    "notes": {
+      "label": "기록",
+      "description": "돌아본 것과 생각한 것, 보고 들은 것을 남긴 글"
     },
     "etc": {
       "label": "기타",
       "description": "아직 분류하지 않은 글"
     }
   },
-  "retrospective": {
+  "notes": {
     "meta": {
-      "title": "회고",
-      "description": "한 해와 프로젝트, 컨퍼런스와 교육을 돌아보며 남긴 기록입니다."
+      "title": "기록",
+      "description": "회고와 생각, 세미나·컨퍼런스 후기를 남긴 글입니다."
     },
-    "title": "회고",
-    "description": "한 해를 돌아보고, 배운 것을 정리합니다. 되돌린 결정도 이유와 함께 남깁니다.",
+    "title": "기록",
+    "description": "돌아본 것과 생각한 것을 남깁니다. 되돌린 결정도 이유와 함께 적습니다.",
     "emptyTitle": "아직 쓰는 중입니다",
-    "emptyDescription": "연간 회고와 컨퍼런스·교육 참관기를 준비하고 있습니다. 곧 이 자리에 올라옵니다.",
+    "emptyDescription": "연간 회고와 컨퍼런스·교육 후기를 준비하고 있습니다. 곧 이 자리에 올라옵니다.",
     "upcoming": "준비 중"
   }
 }
