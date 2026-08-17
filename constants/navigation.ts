@@ -17,6 +17,12 @@ export const NAVIGATION_ITEMS = [
     rel: "noopener noreferrer",
   },
   {
+    label: "Retrospective",
+    href: PATH.RETROSPECTIVE,
+    target: "_self",
+    rel: "noopener noreferrer",
+  },
+  {
     label: "Resume",
     href: PATH.RESUME,
     target: "_self",
