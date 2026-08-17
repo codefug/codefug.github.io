@@ -52,10 +52,6 @@ function GroupNode({
   );
   if (categories.length === 0) return null;
 
-  const total = categories.reduce(
-    (sum, category) => sum + postsByCategory[category].length,
-    0,
-  );
   const hasCurrentPost = categories.some((category) =>
     postsByCategory[category].some(isCurrentPath),
   );
@@ -72,19 +68,12 @@ function GroupNode({
             <h3 className="font-medium text-[11px] text-sidebar-foreground/60">
               {t(`${groupId}.label`)}
             </h3>
-            <span className="text-[10px] text-sidebar-foreground/30 tabular-nums">
-              {total}
-            </span>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarGroupContent className="pl-2">
             {categories.map((category) => (
-              <CollapsiblePostList
-                key={category}
-                category={category}
-                frontMatterList={postsByCategory[category]}
-              />
+              <CollapsiblePostList key={category} category={category} />
             ))}
           </SidebarGroupContent>
         </CollapsibleContent>
@@ -122,10 +111,6 @@ export function PostGroupContent({
         );
         if (categories.length === 0) return null;
 
-        const total = categories.reduce(
-          (sum, category) => sum + postsByCategory[category].length,
-          0,
-        );
         const hasCurrentPost = categories.some((category) =>
           postsByCategory[category].some(isCurrentPath),
         );
@@ -148,9 +133,6 @@ export function PostGroupContent({
                   <h2 className="font-semibold text-[11px] text-sidebar-foreground/70 uppercase tracking-widest">
                     {t(`${sectionId}.label`)}
                   </h2>
-                  <span className="text-[10px] text-sidebar-foreground/30 tabular-nums">
-                    {total}
-                  </span>
                 </div>
                 <p className="mt-0.5 pl-5 text-[11px] text-sidebar-foreground/40 leading-snug">
                   {t(`${sectionId}.description`)}
@@ -167,7 +149,6 @@ export function PostGroupContent({
                         <CollapsiblePostList
                           key={category}
                           category={category}
-                          frontMatterList={postsByCategory[category]}
                         />
                       ))
                     : groupIds.map((groupId) => (
