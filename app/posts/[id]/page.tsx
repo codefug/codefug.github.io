@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Giscus from "@/components/giscus";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
 import { AdjacentPosts } from "@/components/post/AdjacentPosts";
 import { PostContent } from "@/components/post/PostContent";
@@ -92,7 +91,6 @@ export default async function Page({
         </section>
       </section>
       <AdjacentPosts adjacent={getAdjacentPosts(id)} />
-      <Giscus />
       <RelatedPosts currentId={id} categories={frontMatterData.categories} />
     </section>
   );
