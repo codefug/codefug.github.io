@@ -100,12 +100,17 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
       */
       {
         id: "sideProject",
-        tags: [TAG_LIST.CLAUDE_PET, TAG_LIST.REINDEER_LETTER],
+        tags: [TAG_LIST.CLAUDE_PET],
         hasPage: true,
       },
       {
         id: "learningProject",
-        tags: [TAG_LIST.KKOM_KKOM, TAG_LIST.GHEUPPAY, TAG_LIST.FANDOMK],
+        tags: [
+          TAG_LIST.KKOM_KKOM,
+          TAG_LIST.GHEUPPAY,
+          TAG_LIST.FANDOMK,
+          TAG_LIST.REINDEER_LETTER,
+        ],
         hasPage: true,
       },
       { id: "workProject", tags: [] },

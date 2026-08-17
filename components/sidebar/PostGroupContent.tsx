@@ -82,20 +82,37 @@ function GroupNode({
     return <CollapsiblePostList category={categories[0]} asGroupLabel />;
   }
 
+  const groupHref = `${PATH.GROUPS}/${toGroupSlug(groupId)}`;
+  const isGroupPage = pathname.startsWith(groupHref);
+
+  /*
+    전용 페이지가 있는 그룹은 토글 없이 이동만 남긴다.
+    글 목록은 그 페이지가 보여주므로, 사이드바에서 또 펼치면 같은 목록이 두 곳에 생긴다.
+  */
+  if (hasGroupPage(groupId)) {
+    return (
+      <SidebarAnchorButton
+        href={groupHref}
+        aria-current={isGroupPage ? "page" : undefined}
+        className={cn(
+          "block w-full rounded-md px-3 py-1 text-left font-medium text-[11px] transition-colors hover:bg-sidebar-accent",
+          isGroupPage
+            ? "text-sidebar-foreground"
+            : "text-sidebar-foreground/60",
+        )}
+      >
+        {t(`${groupId}.label`)}
+      </SidebarAnchorButton>
+    );
+  }
+
   const hasCurrentPost = categories.some((category) =>
     postsByCategory[category].some(isCurrentPath),
   );
 
-  const groupHref = `${PATH.GROUPS}/${toGroupSlug(groupId)}`;
-  const isGroupPage = pathname.startsWith(groupHref);
-
   return (
     <Collapsible defaultOpen={hasCurrentPost} className="group/group" asChild>
       <div>
-        {/*
-          화살표는 펼치기, 이름은 이동이다.
-          그룹 전체를 한 번에 훑고 싶을 때가 태그 하나만 볼 때보다 많다.
-        */}
         <div className="flex items-center rounded-md transition-colors hover:bg-sidebar-accent">
           <CollapsibleTrigger
             className="cursor-pointer select-none py-1 pr-1 pl-3"
@@ -106,24 +123,9 @@ function GroupNode({
               aria-hidden="true"
             />
           </CollapsibleTrigger>
-          {hasGroupPage(groupId) ? (
-            <SidebarAnchorButton
-              href={groupHref}
-              aria-current={isGroupPage ? "page" : undefined}
-              className={cn(
-                "flex-1 py-1 pr-3 text-left font-medium text-[11px] transition-colors",
-                isGroupPage
-                  ? "text-sidebar-foreground"
-                  : "text-sidebar-foreground/60",
-              )}
-            >
-              {t(`${groupId}.label`)}
-            </SidebarAnchorButton>
-          ) : (
-            <h3 className="flex-1 py-1 pr-3 font-medium text-[11px] text-sidebar-foreground/60">
-              {t(`${groupId}.label`)}
-            </h3>
-          )}
+          <h3 className="flex-1 py-1 pr-3 font-medium text-[11px] text-sidebar-foreground/60">
+            {t(`${groupId}.label`)}
+          </h3>
         </div>
         <CollapsibleContent>
           {/* 그룹 이름의 화살표만큼 더 들여써서 한 단계 아래임을 보인다. */}
