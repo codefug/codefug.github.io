@@ -114,8 +114,18 @@ export function validatePostFolder(folder, knownTags) {
     errors.push(
       `${where}: 'header.teaser'는 '/'로 시작하는 경로여야 한다. (받은 값: ${teaser})`,
     );
-  } else if (!existsSync(join(PUBLIC_DIR, teaser))) {
+  } else if (!existsSync(join(PUBLIC_DIR, decodeURIComponent(teaser)))) {
     errors.push(`${where}: 'header.teaser' 파일이 public에 없다. (${teaser})`);
+  }
+
+  const thumbnailCaption = data.header?.thumbnailCaption;
+  if (
+    thumbnailCaption !== undefined &&
+    (typeof thumbnailCaption !== "string" || thumbnailCaption.trim() === "")
+  ) {
+    errors.push(
+      `${where}: 'header.thumbnailCaption'은 비어 있지 않은 문자열이어야 한다.`,
+    );
   }
 
   if (data.hidden !== undefined && typeof data.hidden !== "boolean") {

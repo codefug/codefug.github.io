@@ -47,7 +47,11 @@ export default function PostListItem({
         </div>
       ) : (
         <div className="hidden aspect-square w-20 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:block">
-          <DefaultThumbnail category={categories[0]} compact />
+          <DefaultThumbnail
+            category={categories[0]}
+            caption={header?.thumbnailCaption}
+            compact
+          />
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
