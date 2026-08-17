@@ -403,7 +403,7 @@
     },
     "learningProject": {
       "label": "학습 프로젝트",
-      "description": "팀으로 만들며 처음 부딪혀본 문제들의 기록",
+      "description": "실무를 시작하기 전, 팀으로 만들며 처음 부딪혀본 문제들의 기록",
       "thumbnailCaption": "처음 부딪힌 기록"
     },
     "workProject": {
