@@ -8,6 +8,13 @@
     <atom:link href="https://codefug.github.io/rss.xml" rel="self" type="application/rss+xml"/>
     
     <item>
+      <title><![CDATA[exhaustive-deps는 어디까지 봐줄까 — 규칙의 사각지대를 찾아서]]></title>
+      <link>https://codefug.github.io/posts/2026-08-15-4/</link>
+      <guid>https://codefug.github.io/posts/2026-08-15-4/</guid>
+      <description><![CDATA[경고가 없어서 괜찮은 줄 알았는데 effect가 매 렌더 다시 돌았습니다. 다섯 가지 경우를 직접 돌려보니 경계는 커스텀 훅이냐가 아니었습니다. 규칙이 왜 그렇게 가정하는지까지 확인했습니다.]]></description>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title><![CDATA[구조화된 데이터는 왜 필요할까]]></title>
       <link>https://codefug.github.io/posts/2026-08-15/</link>
       <guid>https://codefug.github.io/posts/2026-08-15/</guid>
@@ -99,10 +106,10 @@
       <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title><![CDATA[꼼꼼 — 부트캠프 최종 프로젝트 회고]]></title>
+      <title><![CDATA[꼼꼼 — 디자인이 확정되지 않은 채 시작한 프로젝트의 구조 설계]]></title>
       <link>https://codefug.github.io/posts/2024-09-14-project/</link>
       <guid>https://codefug.github.io/posts/2024-09-14-project/</guid>
-      <description><![CDATA[공통 버튼 컴포넌트부터 커스텀 오버레이 훅, progress bar, 서버/클라 호환 fetch, streaming tanstack query까지. 꼼꼼 프로젝트에서 부딪히고 풀어낸 것들을 하나로 정리했습니다.]]></description>
+      <description><![CDATA[시안이 계속 바뀔 수 있다는 전제로 구조를 잡아야 했습니다. 공통 버튼 컴포넌트, 커스텀 오버레이 훅, progress bar, 서버·클라이언트 호환 fetch, streaming tanstack query까지 다섯 가지 문제를 하나로 정리했습니다.]]></description>
       <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
     </item>
     <item>
