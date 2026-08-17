@@ -189,8 +189,9 @@ const NavigationDropdown = memo(function NavigationDropdown({
   return (
     <div className={cn("group relative", isDuplicated && "hidden md:block")}>
       {/*
-        호버·포커스로만 연다. 클릭으로 여는 상태를 따로 두면
-        한 번 누른 뒤 마우스를 치워도 메뉴가 열린 채로 남는다.
+        호버와 키보드 포커스로만 연다. focus-within은 클릭에도 걸려서
+        한 번 누른 뒤 마우스를 치워도 메뉴가 열린 채로 남으므로,
+        키보드 이동에만 반응하는 focus-visible로 본다.
         터치 기기에서는 이 메뉴가 숨고 사이드바 트리가 같은 역할을 한다.
       */}
       <button
@@ -199,7 +200,7 @@ const NavigationDropdown = memo(function NavigationDropdown({
         aria-current={isActive ? "page" : undefined}
         aria-haspopup="menu"
         className={cn(
-          "relative rounded-md px-2 py-1 text-muted-foreground transition-colors group-focus-within:text-foreground group-hover:text-foreground",
+          "relative rounded-md px-2 py-1 text-muted-foreground transition-colors group-hover:text-foreground group-has-focus-visible:text-foreground",
           isActive && "text-foreground",
         )}
       >
@@ -215,7 +216,7 @@ const NavigationDropdown = memo(function NavigationDropdown({
       <div
         className={cn(
           "invisible absolute top-full left-1/2 z-40 w-52 -translate-x-1/2 pt-1 opacity-0 transition-[opacity,visibility] duration-150",
-          "group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100",
+          "group-hover:visible group-hover:opacity-100 group-has-focus-visible:visible group-has-focus-visible:opacity-100",
         )}
       >
         <ul className="overflow-hidden rounded-lg border border-border bg-popover p-1 shadow-lg">
