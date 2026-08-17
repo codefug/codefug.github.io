@@ -1,3 +1,4 @@
-:HL["https://codefug.github.io/_next/static/chunks/13._vxcrrq5.h.css","style"]
-:HL["https://codefug.github.io/_next/static/chunks/0acpfjjqtt-ln.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":20,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"HT-6leAYFFWVlGm6mVGLF"}
+:HL["https://codefug.github.io/_next/static/chunks/1ibgw_y9mgw9s.css","style"]
+:HL["https://codefug.github.io/_next/static/chunks/099wm272_os32.css","style"]
+:HL["https://codefug.github.io/_next/static/chunks/3k6cl0b19097s.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"N6t7LI9aVkJRDAH2I-sgf"}
