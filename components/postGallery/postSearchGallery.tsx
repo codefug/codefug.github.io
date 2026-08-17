@@ -5,26 +5,10 @@ import { useMemo, useRef, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useTranslations } from "@/lib/messages";
+import { createSearchIndex, searchPosts } from "@/lib/search";
 import BlockHeader from "../ui/block-header";
 import { Input } from "../ui/input";
 import PostGallery from ".";
-
-function compileSearchRegex(query: string): RegExp {
-  try {
-    return new RegExp(query, "i");
-  } catch {
-    return /(?:)/;
-  }
-}
-
-function filterPostsByQuery(
-  posts: FrontMatter[],
-  query: string,
-  regex: RegExp,
-): FrontMatter[] {
-  if (!query.trim()) return [];
-  return posts.filter((post) => regex.test(post.title));
-}
 
 export default function PostSearchGallery({
   totalFrontMatterList,
@@ -36,14 +20,15 @@ export default function PostSearchGallery({
   const debouncedQuery = useDebouncedValue(query, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const regexValue = useMemo(
-    () => compileSearchRegex(debouncedQuery),
-    [debouncedQuery],
+  // 인덱스는 글 목록이 바뀔 때만 다시 만든다.
+  const index = useMemo(
+    () => createSearchIndex(totalFrontMatterList),
+    [totalFrontMatterList],
   );
 
   const filteredFrontMatterList = useMemo(
-    () => filterPostsByQuery(totalFrontMatterList, debouncedQuery, regexValue),
-    [debouncedQuery, totalFrontMatterList, regexValue],
+    () => searchPosts(index, debouncedQuery),
+    [index, debouncedQuery],
   );
 
   return (
