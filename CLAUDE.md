@@ -48,7 +48,8 @@ hidden: true # 선택. 목록·검색·RSS·사이트맵에서 제외하고 noin
 - 다크 모드를 지원한다. 새 컴포넌트에서는 `dark:`를 개별 지정하지 말고
   `bg-card`, `text-muted-foreground`, `border-border` 같은 시맨틱 토큰을 쓴다.
   그러면 다크 모드가 자동으로 따라온다.
-- 목록 카드에는 썸네일 이미지를 넣지 않는다. `header.teaser`는 OG 태그 전용이다.
+- `header.teaser`는 OG 태그와 목록 카드의 작은 아이콘에 함께 쓴다.
+  카드에서는 꽉 채우지 않고 여백을 둔 정사각 자리에 원본 비율로 넣는다.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
