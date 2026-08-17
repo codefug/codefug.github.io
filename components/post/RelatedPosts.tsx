@@ -1,13 +1,12 @@
 import PostCard from "@/components/postCard";
-import { getRelatedPosts } from "@/lib/posts";
+import type { FrontMatter } from "@/constants/mdx";
 
 type Props = {
-  currentId: string;
-  categories: string[];
+  /** 최신 글 섹션과 중복을 피하려고 목록은 호출부에서 넘겨받는다. */
+  related: FrontMatter[];
 };
 
-export function RelatedPosts({ currentId, categories }: Props) {
-  const related = getRelatedPosts(currentId, categories);
+export function RelatedPosts({ related }: Props) {
   if (related.length === 0) return null;
 
   return (
