@@ -25,33 +25,24 @@
 
 ![편지 작성 화면](/images/projects/reindeer-letter/image-1.png)
 
-개발 5명, 디자인 1명으로 구성된 6인 팀 프로젝트였고, 저는 @codefug으로 참여했습니다. 프론트엔드는 Next.js, TypeScript, Tailwind CSS, Zustand, Axios를 중심으로 구성했고, MSW로 API를 모킹하며 개발했습니다. GitHub Actions로 CI를 돌렸고 GTM/GA로 사용자 행동을 추적했습니다. 패키지 매니저는 pnpm을 사용했습니다. 백엔드는 Nest.js와 Prisma, PostgreSQL(Supabase)로 구성되어 Vercel과 AWS Lambda에 배포되는 구조였습니다.
+| | |
+| --- | --- |
+| 기간 · 팀 | 6인 (개발 5, 디자인 1) |
+| 역할 | 프론트엔드 |
+| 링크 | [서비스](https://www.reindeer-letter.site/) · [GitHub](https://github.com/reindeer-letter/client) |
 
 만든 이유는 단순했습니다. 연말이 되면 누구나 한 번쯤 편지를 쓰고 싶어지지만, 막상 쓴 편지를 "그 날"에 전달할 방법은 마땅치 않습니다. 미래의 나 혹은 소중한 사람에게 정확한 타이밍에 마음을 전달하는 경험을 만들어보고 싶었습니다.
 
 ## 설계
 
-```mermaid
-flowchart LR
-  subgraph core["코어"]
-    A["Next.js"]
-    B["TypeScript"]
-    C["Tailwind CSS"]
-  end
-  subgraph data["상태 · 통신"]
-    D["Zustand"]
-    E["axios"]
-    F["zod · react-hook-form"]
-  end
-  subgraph perf["렌더링 최적화"]
-    G["react-window"]
-  end
-  subgraph ops["개발 · 운영"]
-    H["MSW"]
-    I["GitHub Actions"]
-    J["GTM · GA"]
-  end
-```
+| 구분 | 스택 |
+| --- | --- |
+| 코어 | ![Next.js](https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) |
+| 상태 · 통신 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
+| 렌더링 최적화 | ![react-window](https://img.shields.io/badge/react--window-61DAFB?logo=react&logoColor=black) |
+| 개발 · 운영 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white) ![GA](https://img.shields.io/badge/GTM_·_GA-E37400?logo=googleanalytics&logoColor=white) |
+
+백엔드는 Nest.js와 Prisma, PostgreSQL(Supabase)로 구성되어 Vercel과 AWS Lambda에 배포되는 구조였습니다.
 
 SNS를 통한 유입을 주요 채널로 설계했습니다. 카카오톡이나 인스타그램 공유 링크를 타고 들어오는 사용자가 많을 것이라는 전제였고, 실제로 서비스 운영 과정에서 이 전제가 새로운 문제로 이어졌습니다(마주친 문제 1번).
 

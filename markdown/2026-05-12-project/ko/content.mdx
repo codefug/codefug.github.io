@@ -6,27 +6,21 @@ Claude Code를 여러 탭에 띄워놓고 병렬로 작업하는 경우가 많�
 
 계기가 하나 더 있었습니다. Claude Code의 소스가 유출된 적이 있었는데, 터미널 UI를 React Ink로 구현했다는 점이 인상적이었습니다. Anthropic 같은 기업도 쓸 만큼 안정적인 라이브러리라는 뜻이었고, React가 웹을 넘어 터미널까지 커버하는 생각보다 넓은 생태계라는 걸 실감했습니다. 평소에는 업무와 직접 연관이 없으면 사이드 프로젝트를 잘 벌이지 않는 편인데, 마침 필요한 앱이 있었기에 이 계기로 직접 만들어보기로 했습니다.
 
-만든 것은 화면 위에 항상 떠 있는 macOS 데스크탑 위젯입니다. 실행 중인 모든 Claude Code 세션의 상태를 카드로 보여주고, 권한 요청이 발생하면 바로 알 수 있게 합니다. 개인 프로젝트로 3일, 105개 커밋을 들여 완성했고, Homebrew로 배포했습니다. Electron, React, TypeScript, esbuild로 만들었습니다.
+만든 것은 화면 위에 항상 떠 있는 macOS 데스크탑 위젯입니다. 실행 중인 모든 Claude Code 세션의 상태를 카드로 보여주고, 권한 요청이 발생하면 바로 알 수 있게 합니다.
+
+| | |
+| --- | --- |
+| 기간 · 규모 | 3일 · 105 커밋 (개인) |
+| 배포 | Homebrew |
+| 링크 | [GitHub](https://github.com/codefug/claude-pet) |
 
 ## 설계
 
-```mermaid
-flowchart LR
-  subgraph app["앱"]
-    A["Electron"]
-    B["React"]
-    C["TypeScript"]
-  end
-  subgraph state["상태 · 데이터"]
-    D["Tanstack Query"]
-    E["chokidar (파일 감시)"]
-    F["zod"]
-  end
-  subgraph build["빌드 · 배포"]
-    G["Vite · esbuild"]
-    H["electron-builder · Homebrew"]
-  end
-```
+| 구분 | 스택 |
+| --- | --- |
+| 앱 | ![Electron](https://img.shields.io/badge/Electron-2B2E3A?logo=electron&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) |
+| 상태 · 데이터 | ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![chokidar](https://img.shields.io/badge/chokidar-339933?logo=nodedotjs&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
+| 빌드 · 배포 | ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) ![esbuild](https://img.shields.io/badge/esbuild-FFCF00?logo=esbuild&logoColor=black) ![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?logo=homebrew&logoColor=white) |
 
 ### 왜 Electron이었나
 
