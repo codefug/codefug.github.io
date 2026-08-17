@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SidebarOff } from "@/components/portfolio/sidebar-off";
 import ResumeCertification from "@/components/resume/certification";
 import ResumeEducation from "@/components/resume/education";
 import KnowledgeSharing from "@/components/resume/knowledge-sharing";
@@ -8,6 +7,7 @@ import ResumeHeader from "@/components/resume/resume-header";
 import { KeepTogether, ResumePage } from "@/components/resume/resume-page";
 import ResumeProjectCard from "@/components/resume/resume-project-card";
 import SideProjects from "@/components/resume/side-projects";
+import { SidebarOff } from "@/components/resume/sidebar-off";
 import WorkExperienceSection, {
   CompanySection,
   TeamSection,
