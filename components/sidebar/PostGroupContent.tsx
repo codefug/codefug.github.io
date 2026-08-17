@@ -15,13 +15,17 @@ import {
   type CategorySectionId,
   getGroupIdByTag,
   getGroupIdsBySection,
+  hasGroupPage,
   shouldFlattenGroups,
+  toGroupSlug,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
+import { cn } from "@/lib/utils";
 import { resolveTagLabel } from "@/util/tag-label";
 import { CollapsiblePostList } from "./CollapsiblePostList";
+import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 /**
  * 글이 가진 카테고리 전부를 기준으로 묶는다. 한 글이 여러 태그를 가지면
@@ -58,6 +62,7 @@ function GroupNode({
   isCurrentPath: (post: FrontMatter) => boolean;
 }) {
   const t = useTranslations("categories");
+  const pathname = usePathname();
 
   // 어느 그룹에도 속하지 않는 태그는 fallback 그룹으로 모여 누락되지 않는다.
   const categories = Object.keys(postsByCategory).filter(
@@ -81,20 +86,45 @@ function GroupNode({
     postsByCategory[category].some(isCurrentPath),
   );
 
+  const groupHref = `${PATH.GROUPS}/${toGroupSlug(groupId)}`;
+  const isGroupPage = pathname.startsWith(groupHref);
+
   return (
     <Collapsible defaultOpen={hasCurrentPost} className="group/group" asChild>
       <div>
-        <CollapsibleTrigger className="w-full cursor-pointer select-none rounded-md px-3 py-1 text-left transition-colors hover:bg-sidebar-accent">
-          <div className="flex items-baseline gap-1.5">
+        {/*
+          화살표는 펼치기, 이름은 이동이다.
+          그룹 전체를 한 번에 훑고 싶을 때가 태그 하나만 볼 때보다 많다.
+        */}
+        <div className="flex items-center rounded-md transition-colors hover:bg-sidebar-accent">
+          <CollapsibleTrigger
+            className="cursor-pointer select-none py-1 pr-1 pl-3"
+            aria-label={t(`${groupId}.label`)}
+          >
             <ChevronRight
-              className="h-3 w-3 shrink-0 self-center text-sidebar-foreground/40 transition-transform duration-200 group-data-[state=open]/group:rotate-90"
+              className="h-3 w-3 shrink-0 text-sidebar-foreground/40 transition-transform duration-200 group-data-[state=open]/group:rotate-90"
               aria-hidden="true"
             />
-            <h3 className="font-medium text-[11px] text-sidebar-foreground/60">
+          </CollapsibleTrigger>
+          {hasGroupPage(groupId) ? (
+            <SidebarAnchorButton
+              href={groupHref}
+              aria-current={isGroupPage ? "page" : undefined}
+              className={cn(
+                "flex-1 py-1 pr-3 text-left font-medium text-[11px] transition-colors",
+                isGroupPage
+                  ? "text-sidebar-foreground"
+                  : "text-sidebar-foreground/60",
+              )}
+            >
+              {t(`${groupId}.label`)}
+            </SidebarAnchorButton>
+          ) : (
+            <h3 className="flex-1 py-1 pr-3 font-medium text-[11px] text-sidebar-foreground/60">
               {t(`${groupId}.label`)}
             </h3>
-          </div>
-        </CollapsibleTrigger>
+          )}
+        </div>
         <CollapsibleContent>
           {/* 그룹 이름의 화살표만큼 더 들여써서 한 단계 아래임을 보인다. */}
           <SidebarGroupContent className="pl-4">
@@ -172,12 +202,14 @@ export function PostGroupContent({
                     그룹이 하나뿐이면 대분류·그룹 이름이 겹쳐 보이고,
                     기록처럼 그룹 이름이 곧 태그 이름인 대분류도 마찬가지다.
                     그럴 때는 중간 단계를 건너뛰고 태그를 바로 보여준다.
+                    이 태그가 그룹 자리를 대신하므로 그룹과 같은 들여쓰기·크기를 준다.
                   */}
                   {groupIds.length === 1 || shouldFlattenGroups(sectionId)
                     ? categories.map((category) => (
                         <CollapsiblePostList
                           key={category}
                           category={category}
+                          asGroupLabel
                         />
                       ))
                     : groupIds.map((groupId) => (

@@ -35,8 +35,12 @@ export function CollapsiblePostList({
           한 단계 확실히 작게(9.5px) 두고 색도 더 연하게 깐다.
           긴 이름은 자르지 않고 줄바꿈한다.
         */
-        "block w-full rounded-md px-3 py-1 text-left leading-snug transition-colors",
-        asGroupLabel ? "font-medium text-[11px]" : "text-[9.5px]",
+        "block w-full rounded-md py-1 pr-3 text-left leading-snug transition-colors",
+        /*
+          그룹 자리를 대신할 때는 형제 그룹의 화살표 자리만큼 밀어
+          이름의 시작점을 맞춘다. (px-3 + 화살표 12px + gap 6px)
+        */
+        asGroupLabel ? "pl-7.5 font-medium text-[11px]" : "pl-3 text-[9.5px]",
         isCurrent
           ? "bg-sidebar-accent font-medium text-sidebar-foreground"
           : asGroupLabel
