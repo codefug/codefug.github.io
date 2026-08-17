@@ -8,4 +8,4 @@
 :HL["/images/2024-05-18/image-1.png","image"]
 :HL["/images/2024-05-18/fandom-k-infinite-scroll.gif","image"]
 :HL["/images/2024-05-18/fandom-k-skeleton.gif","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"posts","param":null,"prefetchHints":4160,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-05-18","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"pLk2wjxaBW-bEFZBleqEX"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"posts","param":null,"prefetchHints":4160,"slots":{"children":{"name":"id","param":{"type":"d","key":"2024-05-18","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"IMnqM-fBr-YP3byxg5eoc"}
