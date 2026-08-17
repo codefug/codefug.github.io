@@ -29,6 +29,7 @@ export const PATH = {
   POSTS: "/posts",
   SERIES: "/series",
   NOTES: "/notes",
+  CATEGORIES: "/categories",
   RESUME: "/resume",
   SEARCH: "/search",
 } as const;
