@@ -62,9 +62,52 @@ function useFindAllHeadings(): HeadingData[] {
   return headings;
 }
 
-/** 스크롤을 따라오되 헤더에 가리지 않도록 목표 위치 위에서 멈춘다. */
-function useScrollToHeading(onDone?: () => void) {
-  return useCallback(
+function TocHeader({
+  title,
+  onClose,
+  closeLabel,
+}: {
+  title: string;
+  onClose: () => void;
+  closeLabel: string;
+}) {
+  return (
+    <div className="flex items-center justify-between border-border/50 border-b px-4 py-3">
+      <div className="flex items-center gap-2">
+        <span className="h-3.5 w-1 rounded-full bg-primary" />
+        <h2 className="font-semibold text-foreground text-sm">{title}</h2>
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={closeLabel}
+        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+/**
+ * 본문 목차. 버튼을 눌러서 열고 닫는다.
+ *
+ * 상시 노출로 두면 본문 폭을 잡아먹고, 화면 밖에 숨겨두면 긴 글에서
+ * 위치를 잡기 어려웠다. 그래서 평소에는 버튼만 두고, 열었을 때만 자리를 쓴다.
+ * 넓은 화면은 오른쪽에서 패널이, 좁은 화면은 위에서 오버레이가 내려온다.
+ * 열려 있는 동안 뒤쪽 배경은 흐려져서 목차에 시선이 모인다.
+ */
+export default function MenuBar() {
+  const t = useTranslations("common");
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const headings = useFindAllHeadings();
+  const { activeId } = useHighlightTOC();
+
+  const close = useCallback(() => setIsOpen(false), []);
+
+  const moveToHeading = useCallback(
     (id: string) => {
       const target = document.getElementById(id);
       if (!target) return;
@@ -79,142 +122,87 @@ function useScrollToHeading(onDone?: () => void) {
           ? "auto"
           : "smooth",
       });
-      onDone?.();
+      close();
     },
-    [onDone],
+    [close],
   );
-}
 
-function HeadingList({
-  headings,
-  activeId,
-  onSelect,
-}: {
-  headings: HeadingData[];
-  activeId: string | null;
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <>
-      {headings.map((heading) => (
-        <button
-          type="button"
-          key={heading.id}
-          onClick={() => onSelect(heading.id)}
-          className={menuBarVariant({ isActive: activeId === heading.id })}
-          aria-current={activeId === heading.id ? "page" : undefined}
-        >
-          {heading.text}
-        </button>
-      ))}
-    </>
-  );
-}
+  useOutsideClick(panelRef, close);
 
-/**
- * 본문 옆을 따라오는 목차.
- *
- * 넓은 화면에서는 자리가 남으므로 sticky로 계속 붙여두고,
- * 좁은 화면에서는 본문을 가리지 않도록 평소에는 작은 버튼만 두었다가
- * 누르면 아래에서 시트가 올라오는 방식으로 나눈다.
- */
-export default function MenuBar() {
-  const t = useTranslations("common");
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-
-  const headings = useFindAllHeadings();
-  const { activeId } = useHighlightTOC();
-
-  const closeSheet = useCallback(() => setIsSheetOpen(false), []);
-  const moveToHeading = useScrollToHeading(closeSheet);
-
-  useOutsideClick(sheetRef, closeSheet);
+  // 열려 있을 때 Esc로 닫을 수 있어야 한다.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, close]);
 
   if (!headings.length) return null;
 
   return (
     <>
-      {/* 넓은 화면: 본문 오른쪽에 붙어 따라온다 */}
-      <aside className="hidden shrink-0 xl:sticky xl:top-24 xl:block xl:w-56 xl:self-start print:hidden">
-        <div className="mb-2 flex items-center gap-2 px-3">
-          <span className="h-3.5 w-1 rounded-full bg-primary" />
-          <h2 className="font-semibold text-foreground text-sm">
-            {t("tableOfContents")}
-          </h2>
-        </div>
-        <nav
-          className="max-h-[calc(100vh-10rem)] overflow-auto"
-          aria-label={t("aria.tableOfContents.navigation")}
-        >
-          <HeadingList
-            headings={headings}
-            activeId={activeId}
-            onSelect={moveToHeading}
-          />
-        </nav>
-      </aside>
-
-      {/* 좁은 화면: 평소에는 버튼만, 누르면 시트가 올라온다 */}
+      {/* 여는 버튼 — 화면 오른쪽에 고정 */}
       <button
         type="button"
-        onClick={() => setIsSheetOpen(true)}
+        onClick={() => setIsOpen(true)}
         aria-label={t("aria.tableOfContents.open")}
-        aria-expanded={isSheetOpen}
-        aria-controls="toc-sheet"
+        aria-expanded={isOpen}
+        aria-controls="table-of-contents"
         className={cn(
-          "fixed right-4 bottom-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-opacity xl:hidden print:hidden",
-          isSheetOpen && "pointer-events-none opacity-0",
+          "fixed top-1/2 right-4 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-opacity hover:bg-primary/10 hover:text-primary print:hidden",
+          isOpen && "pointer-events-none opacity-0",
         )}
       >
         <List className="h-5 w-5" />
       </button>
 
-      {isSheetOpen && (
-        <button
-          type="button"
-          aria-hidden
-          tabIndex={-1}
-          onClick={closeSheet}
-          className="fixed inset-0 z-30 bg-black/40 xl:hidden print:hidden"
-        />
-      )}
-
+      {/* 배경 — 열려 있는 동안 뒤쪽을 흐리게 */}
       <div
-        ref={sheetRef}
-        id="toc-sheet"
+        aria-hidden
+        onClick={close}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-40 rounded-t-2xl border-t bg-card shadow-2xl transition-transform duration-200 xl:hidden print:hidden",
-          isSheetOpen
-            ? "translate-y-0"
-            : "pointer-events-none translate-y-full",
+          "fixed inset-0 z-30 bg-background/40 backdrop-blur-sm transition-opacity duration-200 print:hidden",
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+      />
+
+      {/* 목차 — 넓은 화면은 오른쪽에서, 좁은 화면은 위에서 */}
+      <div
+        ref={panelRef}
+        id="table-of-contents"
+        className={cn(
+          "fixed z-40 overflow-hidden border bg-card shadow-2xl transition-all duration-200 print:hidden",
+          // 좁은 화면: 위에서 내려온다
+          "inset-x-0 top-0 rounded-b-2xl",
+          // 넓은 화면: 오른쪽에서 들어온다
+          "sm:inset-x-auto sm:top-20 sm:right-4 sm:w-80 sm:rounded-2xl",
+          isOpen
+            ? "translate-y-0 opacity-100 sm:translate-x-0"
+            : "pointer-events-none -translate-y-full opacity-0 sm:translate-x-4 sm:translate-y-0",
         )}
       >
-        <div className="flex items-center justify-between border-border/50 border-b px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="h-3.5 w-1 rounded-full bg-primary" />
-            <h2 className="font-semibold text-foreground text-sm">
-              {t("tableOfContents")}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={closeSheet}
-            aria-label={t("aria.tableOfContents.close")}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+        <TocHeader
+          title={t("tableOfContents")}
+          onClose={close}
+          closeLabel={t("aria.tableOfContents.close")}
+        />
         <nav
-          className="max-h-[60vh] overflow-auto px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+          className="max-h-[60vh] overflow-auto px-3 py-3 sm:max-h-[calc(100vh-12rem)]"
           aria-label={t("aria.tableOfContents.navigation")}
         >
-          <HeadingList
-            headings={headings}
-            activeId={activeId}
-            onSelect={moveToHeading}
-          />
+          {headings.map((heading) => (
+            <button
+              type="button"
+              key={heading.id}
+              onClick={() => moveToHeading(heading.id)}
+              className={menuBarVariant({ isActive: activeId === heading.id })}
+              aria-current={activeId === heading.id ? "page" : undefined}
+            >
+              {heading.text}
+            </button>
+          ))}
         </nav>
       </div>
     </>
