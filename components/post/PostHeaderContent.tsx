@@ -38,7 +38,12 @@ export function PostHeaderContent({ frontMatter }: Props) {
             ))}
           </div>
 
-          <h1 className="mb-4 text-balance font-bold text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl">
+          {/*
+            긴 제목("순록의 편지 — 연말에 예약 편지를 보내는 서비스를 만들며"
+            정도)이 데스크톱에서 한 줄에 들어가도록 크기를 낮췄다.
+            좁은 화면은 어차피 줄바꿈되므로 기존 크기를 유지한다.
+          */}
+          <h1 className="mb-4 text-balance font-bold text-3xl leading-tight tracking-tight sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
             {title}
           </h1>
 
