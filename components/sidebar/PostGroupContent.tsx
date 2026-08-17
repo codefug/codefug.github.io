@@ -19,7 +19,9 @@ import {
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
+import { cn } from "@/lib/utils";
 import { CollapsiblePostList } from "./CollapsiblePostList";
+import { SidebarAnchorButton } from "./SidebarAnchorButton";
 
 function groupPostsByFirstCategory(
   posts: FrontMatter[],
@@ -33,6 +35,44 @@ function groupPostsByFirstCategory(
 }
 
 type PostsByCategory = Record<string, FrontMatter[]>;
+
+/**
+ * 전용 목록 페이지가 있는 대분류. 여기 있는 것은 사이드바에서 접지 않고
+ * 그 페이지로 바로 보낸다. (안에서 또 나눠 보여줄 이유가 없다)
+ */
+const SECTION_HREF: Partial<Record<CategorySectionId, string>> = {
+  series: PATH.SERIES,
+};
+
+function SectionLink({
+  href,
+  label,
+  description,
+  isCurrent,
+}: {
+  href: string;
+  label: string;
+  description: string;
+  isCurrent: boolean;
+}) {
+  return (
+    <SidebarAnchorButton
+      href={href}
+      aria-current={isCurrent ? "page" : undefined}
+      className={cn(
+        "block w-full rounded-md px-3 py-1.5 text-left transition-colors hover:bg-sidebar-accent",
+        isCurrent && "bg-sidebar-accent",
+      )}
+    >
+      <h2 className="font-semibold text-[11px] text-sidebar-foreground/70 uppercase tracking-widest">
+        {label}
+      </h2>
+      <p className="mt-0.5 text-[11px] text-sidebar-foreground/40 leading-snug">
+        {description}
+      </p>
+    </SidebarAnchorButton>
+  );
+}
 
 /** 그룹 하나 — 대분류 안에서 다시 접히는 단위 */
 function GroupNode({
@@ -114,6 +154,20 @@ export function PostGroupContent({
         const hasCurrentPost = categories.some((category) =>
           postsByCategory[category].some(isCurrentPath),
         );
+
+        // 전용 목록 페이지가 있는 대분류는 접지 않고 그 페이지로 보낸다.
+        const sectionHref = SECTION_HREF[sectionId];
+        if (sectionHref) {
+          return (
+            <SectionLink
+              key={sectionId}
+              href={sectionHref}
+              label={t(`${sectionId}.label`)}
+              description={t(`${sectionId}.description`)}
+              isCurrent={pathname.startsWith(sectionHref)}
+            />
+          );
+        }
 
         return (
           <Collapsible
