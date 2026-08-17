@@ -10,6 +10,14 @@ type ImageOverlayProps = {
   className?: string;
 };
 
+/**
+ * 뱃지(shields.io 등)는 확대할 내용이 없고, 여러 개를 한 줄에 늘어놓는
+ * 용도라서 block 버튼으로 감싸면 세로로 쌓여 표가 망가진다.
+ */
+function isInlineBadge(src: string): boolean {
+  return src.startsWith("https://img.shields.io/");
+}
+
 export default function ImageOverlay({
   src,
   alt,
@@ -18,6 +26,16 @@ export default function ImageOverlay({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!src) return null;
+
+  if (isInlineBadge(src)) {
+    return (
+      <img
+        src={src}
+        alt={alt ?? ""}
+        className={`mr-1 inline-block align-middle ${className ?? ""}`}
+      />
+    );
+  }
 
   return (
     <>
