@@ -104,10 +104,12 @@ export function validatePostFolder(folder, knownTags) {
     }
   }
 
-  // teaser는 OG 태그 전용이라 화면에는 안 보인다. 깨져도 공유하기 전까지 모른다.
+  // teaser는 OG 태그와 목록 썸네일에 쓴다. 깨져도 공유하기 전까지 모른다.
   const teaser = data.header?.teaser;
   if (teaser === undefined) {
-    warnings.push(`${where}: 'header.teaser'가 없어 OG 이미지가 비어 있다.`);
+    // 없으면 목록은 카테고리 기본 썸네일, 공유 카드는 사이트 기본 이미지를 쓴다.
+    // 동작에 문제는 없지만 글에 맞는 이미지를 두는 편이 낫다.
+    warnings.push(`${where}: 'header.teaser'가 없어 기본 이미지로 대체된다.`);
   } else if (typeof teaser !== "string" || !teaser.startsWith("/")) {
     errors.push(
       `${where}: 'header.teaser'는 '/'로 시작하는 경로여야 한다. (받은 값: ${teaser})`,

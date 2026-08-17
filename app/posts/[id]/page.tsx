@@ -52,9 +52,10 @@ export async function generateMetadata({
       url: `${PATH.POSTS}/${id}`,
       type: "article",
       publishedTime: frontMatter.date,
-      ...(frontMatter.header?.teaser && {
-        images: [frontMatter.header.teaser],
-      }),
+      // teaser가 없는 글은 목록에서 기본 썸네일로 채우지만, 공유 카드에는
+      // 그 그래픽을 쓸 수 없다. 이미지를 아예 빼면 미리보기가 비므로
+      // 사이트 기본 OG 이미지로 대체한다.
+      images: [frontMatter.header?.teaser ?? "/opengraph-image.png"],
     },
     // 숨김 글은 URL로는 열리지만 검색엔진 색인에서는 제외한다.
     ...(hidden && { robots: { index: false, follow: false } }),
