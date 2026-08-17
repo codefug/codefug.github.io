@@ -50,7 +50,10 @@ export default function PostCard({
           </div>
         ) : (
           <div className="-mx-5 -mt-5 mb-4 aspect-square border-border/60 border-b">
-            <DefaultThumbnail category={categories[0]} />
+            <DefaultThumbnail
+              category={categories[0]}
+              caption={header?.thumbnailCaption}
+            />
           </div>
         )}
         <div className="mb-2.5 flex flex-wrap gap-1">

@@ -1,4 +1,6 @@
 import { cva } from "class-variance-authority";
+import { MessageCircle } from "lucide-react";
+import type { ComponentType } from "react";
 import type { CategoryGroupId } from "./categories";
 
 /**
@@ -16,21 +18,25 @@ type ThumbnailTone =
   | "gray"
   | "sky-blue";
 
-/** 그룹 라벨을 그대로 쓰지 않고, 그 그룹 글의 정서를 담은 한 줄 + 큰 이니셜로 표현한다. */
+type ThumbnailMark =
+  | { kind: "glyph"; value: string }
+  | { kind: "icon"; value: ComponentType<{ className?: string }> };
+
+/** 그룹 라벨을 그대로 쓰지 않고, 그 그룹 글의 정서를 담은 한 줄 + 큰 심볼로 표현한다. */
 export const THUMBNAIL_GROUP_STYLE: Record<
   CategoryGroupId,
-  { tone: ThumbnailTone; initial: string }
+  { tone: ThumbnailTone; mark: ThumbnailMark }
 > = {
-  toyProject: { tone: "orange", initial: "◆" },
-  workProject: { tone: "blue", initial: "▲" },
-  series: { tone: "purple", initial: "»" },
-  framework: { tone: "sky-blue", initial: "{}" },
-  language: { tone: "yellow", initial: "</>" },
-  webDev: { tone: "green", initial: "◎" },
-  retrospective: { tone: "red", initial: "↺" },
-  review: { tone: "orange", initial: "★" },
-  thought: { tone: "purple", initial: "…" },
-  etc: { tone: "gray", initial: "·" },
+  toyProject: { tone: "orange", mark: { kind: "glyph", value: "◆" } },
+  workProject: { tone: "blue", mark: { kind: "glyph", value: "▲" } },
+  series: { tone: "purple", mark: { kind: "glyph", value: "»" } },
+  framework: { tone: "sky-blue", mark: { kind: "glyph", value: "{}" } },
+  language: { tone: "yellow", mark: { kind: "glyph", value: "</>" } },
+  webDev: { tone: "green", mark: { kind: "glyph", value: "◎" } },
+  retrospective: { tone: "red", mark: { kind: "glyph", value: "↺" } },
+  review: { tone: "orange", mark: { kind: "glyph", value: "★" } },
+  thought: { tone: "purple", mark: { kind: "icon", value: MessageCircle } },
+  etc: { tone: "gray", mark: { kind: "glyph", value: "·" } },
 };
 
 export const THUMBNAIL_BG_STYLE = cva("", {
