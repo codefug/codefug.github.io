@@ -184,28 +184,22 @@ const NavigationDropdown = memo(function NavigationDropdown({
   const pathName = usePathname();
   const t = useTranslations("navigation");
   const tc = useTranslations("categories");
-  // 터치로 열어둔 메뉴는 다른 곳으로 이동하면 닫는다.
-  const [openedByTap, setOpenedByTap] = useState(false);
   const isActive = items.some((child) => isSamePath(pathName, child.href));
-
-  useEffect(() => {
-    setOpenedByTap(false);
-  }, []);
 
   return (
     <div className={cn("group relative", isDuplicated && "hidden md:block")}>
+      {/*
+        호버·포커스로만 연다. 클릭으로 여는 상태를 따로 두면
+        한 번 누른 뒤 마우스를 치워도 메뉴가 열린 채로 남는다.
+        터치 기기에서는 이 메뉴가 숨고 사이드바 트리가 같은 역할을 한다.
+      */}
       <button
         type="button"
         aria-label={t(`aria.${messageKey}`)}
         aria-current={isActive ? "page" : undefined}
-        aria-expanded={openedByTap}
         aria-haspopup="menu"
-        onClick={() => setOpenedByTap((open) => !open)}
-        onKeyDown={(event) => {
-          if (event.key === "Escape") setOpenedByTap(false);
-        }}
         className={cn(
-          "relative rounded-md px-2 py-1 text-muted-foreground transition-colors hover:cursor-pointer group-focus-within:text-foreground group-hover:text-foreground",
+          "relative rounded-md px-2 py-1 text-muted-foreground transition-colors group-focus-within:text-foreground group-hover:text-foreground",
           isActive && "text-foreground",
         )}
       >
@@ -220,9 +214,8 @@ const NavigationDropdown = memo(function NavigationDropdown({
       {/* 트리거와 메뉴 사이가 끊기면 호버가 풀리므로 여백 없이 붙인다. */}
       <div
         className={cn(
-          "absolute top-full left-1/2 z-40 w-52 -translate-x-1/2 pt-1 transition-[opacity,visibility] duration-150",
+          "invisible absolute top-full left-1/2 z-40 w-52 -translate-x-1/2 pt-1 opacity-0 transition-[opacity,visibility] duration-150",
           "group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100",
-          openedByTap ? "visible opacity-100" : "invisible opacity-0",
         )}
       >
         <ul className="overflow-hidden rounded-lg border border-border bg-popover p-1 shadow-lg">
