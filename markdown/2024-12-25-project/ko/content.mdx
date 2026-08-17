@@ -40,12 +40,16 @@ flowchart LR
   end
   subgraph data["상태 · 통신"]
     D["Zustand"]
-    E["Axios"]
-    F["MSW"]
+    E["axios"]
+    F["zod · react-hook-form"]
+  end
+  subgraph perf["렌더링 최적화"]
+    G["react-window"]
   end
   subgraph ops["개발 · 운영"]
-    G["GitHub Actions"]
-    H["GTM · GA"]
+    H["MSW"]
+    I["GitHub Actions"]
+    J["GTM · GA"]
   end
 ```
 

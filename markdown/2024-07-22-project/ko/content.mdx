@@ -19,14 +19,12 @@
 flowchart LR
   subgraph core["코어"]
     A["Next.js (App Router)"]
+    B["React"]
   end
-  subgraph render["렌더링"]
-    B["서버 컴포넌트"]
-    C["Suspense"]
-  end
-  subgraph authz["인증 · 접근 제한"]
-    D["미들웨어"]
-    E["쿠키 (cookies API)"]
+  subgraph form["폼 · 통신"]
+    C["react-hook-form"]
+    D["yup"]
+    E["axios"]
   end
   subgraph infra["검증 · 배포"]
     F["MSW"]
