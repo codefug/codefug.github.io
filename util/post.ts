@@ -1,4 +1,4 @@
-import { isSeriesTag } from "@/constants/categories";
+import { isSeriesSlug, isSeriesTag } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 
 export default function buildCategoryStats({
@@ -30,7 +30,7 @@ export default function buildCategoryStats({
  * (2024-09-14-1 ~ -4) date만으로는 순서가 정해지지 않는다.
  * 폴더명(id)에 편 번호가 들어 있으므로 id를 tie-breaker로 쓴다.
  */
-function compareByReadingOrder(a: FrontMatter, b: FrontMatter): number {
+export function compareByReadingOrder(a: FrontMatter, b: FrontMatter): number {
   return a.date.localeCompare(b.date) || a.id.localeCompare(b.id);
 }
 
@@ -50,7 +50,7 @@ export function buildSeriesSummaries(postList: FrontMatter[]): SeriesSummary[] {
 
   for (const post of postList) {
     for (const tag of post.categories) {
-      if (!isSeriesTag(tag)) continue;
+      if (!isSeriesSlug(tag)) continue;
       const bucket = bySeries.get(tag);
       if (bucket) bucket.push(post);
       else bySeries.set(tag, [post]);
@@ -76,6 +76,47 @@ export function getSeriesPosts(
   return postList
     .filter((post) => post.categories.includes(slug))
     .toSorted(compareByReadingOrder);
+}
+
+/**
+ * 시리즈 글에 편 번호(N/M편)를 심는다.
+ *
+ * 넘긴 목록 전체를 기준으로 센다. 숨긴 글을 포함한 목록을 넘겨야
+ * 중간 편을 숨겼을 때 뒤 글의 번호가 앞으로 밀리지 않는다.
+ */
+export function withSeriesOrder(postList: FrontMatter[]): FrontMatter[] {
+  const bySlug = new Map<string, FrontMatter[]>();
+
+  for (const post of postList) {
+    const slug = post.categories.find(isSeriesSlug);
+    if (!slug) continue;
+    const bucket = bySlug.get(slug);
+    if (bucket) bucket.push(post);
+    else bySlug.set(slug, [post]);
+  }
+
+  // 1편부터 읽는 순서로 센다. 목록 정렬과 같은 규칙이어야 번호가 어긋나지 않는다.
+  const idsBySlug = new Map(
+    Array.from(bySlug, ([slug, posts]) => [
+      slug,
+      posts.toSorted(compareByReadingOrder).map((post) => post.id),
+    ]),
+  );
+
+  return postList.map((post) => {
+    const slug = post.categories.find(isSeriesSlug);
+    const ids = slug ? idsBySlug.get(slug) : undefined;
+    if (!slug || !ids) return post;
+
+    return {
+      ...post,
+      seriesOrder: {
+        slug,
+        index: ids.indexOf(post.id) + 1,
+        total: ids.length,
+      },
+    };
+  });
 }
 
 /**

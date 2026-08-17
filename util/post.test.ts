@@ -3,6 +3,7 @@ import type { FrontMatter } from "@/constants/mdx";
 import buildCategoryStats, {
   buildSeriesSummaries,
   getSeriesPosts,
+  withSeriesOrder,
 } from "@/util/post";
 
 function post(overrides: Partial<FrontMatter> & { id: string }): FrontMatter {
@@ -34,8 +35,9 @@ describe("buildCategoryStats", () => {
 });
 
 describe("buildSeriesSummaries", () => {
-  // 시리즈 태그는 constants/categories.ts의 실제 그룹 정의를 따른다.
-  const SERIES_TAG = "kkom-kkom";
+  // 시리즈 목록에 세우는 태그는 categories.ts의 series 그룹만이다.
+  // 프로젝트 태그(kkom-kkom 등)는 여러 편이어도 시리즈로 묶지 않는다.
+  const SERIES_TAG = "async-js";
 
   it("같은 날짜의 글은 id로 순서를 정한다", () => {
     const summaries = buildSeriesSummaries([
@@ -63,6 +65,62 @@ describe("buildSeriesSummaries", () => {
       post({ id: "a", categories: ["react"] }),
     ]);
     expect(summaries).toHaveLength(0);
+  });
+
+  it("프로젝트 태그는 여러 편이어도 시리즈로 묶지 않는다", () => {
+    const summaries = buildSeriesSummaries([
+      post({ id: "2024-09-14-1", categories: ["kkom-kkom"] }),
+      post({ id: "2024-09-14-2", categories: ["kkom-kkom"] }),
+    ]);
+    expect(summaries).toHaveLength(0);
+  });
+});
+
+describe("withSeriesOrder", () => {
+  const seriesPosts = () => [
+    post({ id: "2024-11-10", date: "2024-11-10", categories: ["async-js"] }),
+    post({ id: "2024-11-10-2", date: "2024-11-10", categories: ["async-js"] }),
+    post({ id: "2024-11-10-3", date: "2024-11-10", categories: ["async-js"] }),
+  ];
+
+  it("읽는 순서대로 1부터 편 번호를 심는다", () => {
+    const result = withSeriesOrder(seriesPosts());
+    expect(result.map((p) => p.seriesOrder?.index)).toEqual([1, 2, 3]);
+    expect(result[0].seriesOrder).toEqual({
+      slug: "async-js",
+      index: 1,
+      total: 3,
+    });
+  });
+
+  it("목록 순서가 최신순이어도 편 번호는 오래된 순으로 센다", () => {
+    const result = withSeriesOrder(seriesPosts().toReversed());
+    expect(result.map((p) => [p.id, p.seriesOrder?.index])).toEqual([
+      ["2024-11-10-3", 3],
+      ["2024-11-10-2", 2],
+      ["2024-11-10", 1],
+    ]);
+  });
+
+  it("시리즈에 속하지 않은 글은 그대로 둔다", () => {
+    const [only] = withSeriesOrder([post({ id: "a", categories: ["react"] })]);
+    expect(only.seriesOrder).toBeUndefined();
+  });
+
+  it("숨긴 글도 편 수에 넣어 남은 글의 번호가 밀리지 않는다", () => {
+    const result = withSeriesOrder([
+      ...seriesPosts(),
+      post({
+        id: "2024-11-10-4",
+        date: "2024-11-10",
+        categories: ["async-js"],
+        hidden: true,
+      }),
+    ]);
+    // 숨긴 4편을 빼도 앞 세 편의 번호와 전체 편수는 그대로다.
+    const visible = result.filter((p) => !p.hidden);
+    expect(visible.map((p) => p.seriesOrder?.index)).toEqual([1, 2, 3]);
+    expect(visible.every((p) => p.seriesOrder?.total === 4)).toBe(true);
   });
 });
 
