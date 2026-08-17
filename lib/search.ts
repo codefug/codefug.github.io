@@ -60,6 +60,26 @@ export function createSearchIndex(posts: FrontMatter[]): MiniSearch<SearchDoc> {
   return index;
 }
 
+export type Suggestion = { id: string; title: string };
+
+/**
+ * 입력 중에 보여줄 자동완성 목록.
+ * 확정 검색과 달리 결과를 다 내려주지 않고 제목만 몇 개 추린다.
+ */
+export function suggestPosts(
+  index: MiniSearch<SearchDoc>,
+  query: string,
+  limit = 6,
+): Suggestion[] {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+
+  return index
+    .search(trimmed)
+    .slice(0, limit)
+    .map((result) => ({ id: result.id as string, title: result.title }));
+}
+
 /** 검색 결과를 글 목록으로 되돌린다. (점수 순서를 유지한다) */
 export function searchPosts(
   index: MiniSearch<SearchDoc>,

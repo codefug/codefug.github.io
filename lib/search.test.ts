@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { FrontMatter } from "@/constants/mdx";
-import { createSearchIndex, searchPosts } from "@/lib/search";
+import { createSearchIndex, searchPosts, suggestPosts } from "@/lib/search";
 
 function post(overrides: Partial<FrontMatter> & { id: string }): FrontMatter {
   return {
@@ -83,5 +83,31 @@ describe("searchPosts", () => {
     expect(first.title).toBeTruthy();
     expect(first.date).toBeTruthy();
     expect(Array.isArray(first.categories)).toBe(true);
+  });
+});
+
+describe("suggestPosts", () => {
+  it("빈 검색어에는 제안하지 않는다", () => {
+    expect(suggestPosts(index, "")).toEqual([]);
+  });
+
+  it("제목만 담아서 돌려준다", () => {
+    const [first] = suggestPosts(index, "Suspense");
+    expect(first).toEqual({
+      id: "a",
+      title: "useSearchParams는 왜 Suspense가 필요할까",
+    });
+  });
+
+  it("limit보다 많이 주지 않는다", () => {
+    expect(suggestPosts(index, "왜", 2).length).toBeLessThanOrEqual(2);
+  });
+
+  it("제안 제목으로 다시 검색하면 그 글이 나온다", () => {
+    // 자동완성에서 고른 항목을 그대로 확정 검색에 넘기는 흐름
+    const [first] = suggestPosts(index, "비동기");
+    expect(searchPosts(index, first.title).map((p) => p.id)).toContain(
+      first.id,
+    );
   });
 });
