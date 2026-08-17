@@ -313,7 +313,7 @@
       "items": [
         {
           "title": "Claude Pet",
-          "url": "/posts/2026-05-10",
+          "url": "/posts/2026-05-12-project",
           "github": "https://github.com/codefug/claude-pet",
           "stack": ["Electron", "React", "TypeScript", "esbuild"],
           "description": "병렬 Claude Code 세션의 상태를 실시간으로 표시하는 macOS 위젯 (Homebrew 배포)",
