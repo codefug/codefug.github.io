@@ -3,9 +3,6 @@
  *
  * 환경변수로 덮어쓸 수 있게 둔 것은 커스텀 도메인을 붙이거나 다른 주소로
  * 시험 배포할 때를 위해서다. 값을 주지 않으면 운영 주소를 쓴다.
- *
- * 주의: giscus의 `data-repo`는 도메인이 아니라 레포 이름이라
- * 여기에 묶이지 않는다. components/giscus 참고.
  */
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://codefug.github.io";
