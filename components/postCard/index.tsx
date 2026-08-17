@@ -6,6 +6,7 @@ import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
+import { DefaultThumbnail } from "./DefaultThumbnail";
 
 export default function PostCard({
   categories,
@@ -35,8 +36,9 @@ export default function PostCard({
         {/*
           teaser는 대부분 기술 로고다. 꽉 채우면 로고가 늘어나 보이므로
           정사각 자리를 잡고 그 안에 원본 비율로 넣는다.
+          teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
         */}
-        {header?.teaser && (
+        {header?.teaser ? (
           <div className="-mx-5 -mt-5 mb-4 flex aspect-square items-center justify-center border-border/60 border-b bg-muted/30 p-8">
             <img
               src={header.teaser}
@@ -45,6 +47,10 @@ export default function PostCard({
               className="h-full w-full object-contain"
               loading="lazy"
             />
+          </div>
+        ) : (
+          <div className="-mx-5 -mt-5 mb-4 aspect-square border-border/60 border-b">
+            <DefaultThumbnail category={categories[0]} />
           </div>
         )}
         <div className="mb-2.5 flex flex-wrap gap-1">

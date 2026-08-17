@@ -400,43 +400,53 @@
   "categories": {
     "thought": {
       "label": "생각",
-      "description": "진로와 방향을 스스로 정리한 글"
+      "description": "진로와 방향을 스스로 정리한 글",
+      "thumbnailCaption": "아직 정리하는 중"
     },
     "retrospective": {
       "label": "회고",
-      "description": "한 해와 프로젝트를 돌아보며 남긴 기록"
+      "description": "한 해와 프로젝트를 돌아보며 남긴 기록",
+      "thumbnailCaption": "지나온 길을 되짚으며"
     },
     "toyProject": {
       "label": "토이 프로젝트",
-      "description": "직접 만들고 싶어서 만든 것들. 배경부터 마주친 문제와 회고까지"
+      "description": "직접 만들고 싶어서 만든 것들. 배경부터 마주친 문제와 회고까지",
+      "thumbnailCaption": "만들고 싶어서 만든 것"
     },
     "workProject": {
       "label": "사내 프로젝트",
-      "description": "회사에서 맡아 진행한 프로젝트 기록"
+      "description": "회사에서 맡아 진행한 프로젝트 기록",
+      "thumbnailCaption": "실무에서 부딪힌 기록"
     },
     "series": {
       "label": "시리즈",
-      "description": "하나의 주제를 여러 편에 걸쳐 기록한 글"
+      "description": "하나의 주제를 여러 편에 걸쳐 기록한 글",
+      "thumbnailCaption": "다음 편에 계속"
     },
     "language": {
       "label": "Language",
-      "description": "JavaScript와 TypeScript 그 자체에 대한 탐구"
+      "description": "JavaScript와 TypeScript 그 자체에 대한 탐구",
+      "thumbnailCaption": "문법 그 아래를 보다"
     },
     "etc": {
       "label": "기타",
-      "description": "그 밖의 기록들"
+      "description": "그 밖의 기록들",
+      "thumbnailCaption": "분류에 걸치지 않은 기록"
     },
     "framework": {
       "label": "Framework",
-      "description": "React·Next.js·Electron 등 프레임워크의 동작 원리를 파고든 기록"
+      "description": "React·Next.js·Electron 등 프레임워크의 동작 원리를 파고든 기록",
+      "thumbnailCaption": "동작 원리를 파고들다"
     },
     "review": {
       "label": "후기",
-      "description": "부트캠프와 세미나·컨퍼런스에서 겪은 것과 남은 생각"
+      "description": "부트캠프와 세미나·컨퍼런스에서 겪은 것과 남은 생각",
+      "thumbnailCaption": "겪고 남은 생각"
     },
     "webDev": {
       "label": "웹",
-      "description": "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글"
+      "description": "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글",
+      "thumbnailCaption": "프레임워크 너머의 웹"
     },
     "pageTitle": "{category} 글",
     "pageDescription": "{category} 카테고리의 글 목록입니다.",

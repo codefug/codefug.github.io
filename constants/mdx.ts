@@ -3,8 +3,9 @@ export type FrontMatter = {
   excerpt: string;
   categories: string[];
   date: string;
-  header: {
-    teaser: string;
+  /** 없으면(또는 teaser가 없으면) 카테고리 그룹 기준 기본 썸네일(DefaultThumbnail)을 대신 보여준다. */
+  header?: {
+    teaser?: string;
   };
   id: string;
   /** 본문 기준 예상 읽는 시간(분) */
