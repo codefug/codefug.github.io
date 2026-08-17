@@ -5,6 +5,7 @@ import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
+import { DefaultThumbnail } from "./DefaultThumbnail";
 
 export default function PostListItem({
   categories,
@@ -30,8 +31,11 @@ export default function PostListItem({
         className="absolute top-4 bottom-4 left-0 w-0.5 rounded-full bg-primary/0 transition-colors duration-200 group-hover:bg-primary/60"
         aria-hidden="true"
       />
-      {/* 카드와 같은 규칙 — 정사각 자리에 원본 비율로 넣고 남는 곳은 여백으로 둔다. */}
-      {header?.teaser && (
+      {/*
+        카드와 같은 규칙 — 정사각 자리에 원본 비율로 넣고 남는 곳은 여백으로 둔다.
+        teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
+      */}
+      {header?.teaser ? (
         <div className="hidden aspect-square w-20 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/30 p-3 sm:flex">
           <img
             src={header.teaser}
@@ -40,6 +44,10 @@ export default function PostListItem({
             className="h-full w-full object-contain"
             loading="lazy"
           />
+        </div>
+      ) : (
+        <div className="hidden aspect-square w-20 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:block">
+          <DefaultThumbnail category={categories[0]} compact />
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
