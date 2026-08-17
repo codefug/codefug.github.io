@@ -31,14 +31,17 @@ export function CollapsiblePostList({
       aria-current={isCurrent ? "page" : undefined}
       className={cn(
         /*
-          트리의 말단이다. 부모 그룹(11px)보다 크면 계층이 역전돼 보이므로
-          한 단계 작게 두고, 긴 이름은 자르지 않고 줄바꿈한다.
+          트리의 말단이다. 부모 그룹(11px)과 크기가 비슷하면 같은 층으로 읽히므로
+          한 단계 확실히 작게(9.5px) 두고 색도 더 연하게 깐다.
+          긴 이름은 자르지 않고 줄바꿈한다.
         */
         "block w-full rounded-md px-3 py-1 text-left leading-snug transition-colors",
-        asGroupLabel ? "font-medium text-[11px]" : "text-[10.5px]",
+        asGroupLabel ? "font-medium text-[11px]" : "text-[9.5px]",
         isCurrent
           ? "bg-sidebar-accent font-medium text-sidebar-foreground"
-          : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+          : asGroupLabel
+            ? "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            : "text-sidebar-foreground/45 hover:bg-sidebar-accent hover:text-sidebar-foreground",
       )}
     >
       {resolveTagLabel(category)}
