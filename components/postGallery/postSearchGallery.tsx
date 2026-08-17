@@ -12,6 +12,24 @@ import { Input } from "../ui/input";
 import PostGallery from ".";
 
 /**
+ * 자동완성에서 위/아래로 옮긴 다음 위치.
+ *
+ * -1은 "아무것도 고르지 않음"(입력한 값 그대로 검색)이고, 0..n-1이 항목이다.
+ * 목록 양 끝을 지나면 -1로 돌아와 원래 입력값으로 검색할 수 있게 한다.
+ */
+export function moveActiveIndex(
+  current: number,
+  delta: 1 | -1,
+  size: number,
+): number {
+  if (size === 0) return -1;
+  // -1을 size 번째 자리로 보고 순환시킨다.
+  const slot = current === -1 ? size : current;
+  const next = (slot + delta + size + 1) % (size + 1);
+  return next === size ? -1 : next;
+}
+
+/**
  * 검색은 엔터로 확정한다.
  * 타이핑마다 결과 목록이 갈리면 읽는 중에 화면이 계속 흔들리기 때문이다.
  * 대신 입력 중에는 자동완성만 늦춰서 보여준다.
@@ -72,11 +90,13 @@ export default function PostSearchGallery({
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
 
     event.preventDefault();
-    const delta = event.key === "ArrowDown" ? 1 : -1;
-    const size = visibleSuggestions.length + 1;
-    const next = (activeIndex + delta + size + 1) % size;
-    // 목록 끝을 지나면 -1로 돌아와 입력한 값 그대로 검색할 수 있게 한다.
-    setActiveIndex(next === visibleSuggestions.length ? -1 : next);
+    setActiveIndex((current) =>
+      moveActiveIndex(
+        current,
+        event.key === "ArrowDown" ? 1 : -1,
+        visibleSuggestions.length,
+      ),
+    );
   };
 
   const handleSubmit = (event: React.FormEvent) => {
