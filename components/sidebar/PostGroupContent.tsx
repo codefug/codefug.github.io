@@ -15,19 +15,25 @@ import {
   type CategorySectionId,
   getGroupIdByTag,
   getGroupIdsBySection,
+  shouldFlattenGroups,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
-function groupPostsByFirstCategory(
+/**
+ * 글이 가진 카테고리 전부를 기준으로 묶는다. 한 글이 여러 태그를 가지면
+ * (예: async-js + javascript) 두 태그 모두의 사이드바 목록에 나타난다.
+ */
+function groupPostsByCategory(
   posts: FrontMatter[],
 ): Record<string, FrontMatter[]> {
   return posts.reduce<Record<string, FrontMatter[]>>((acc, post) => {
-    const category = post.categories[0];
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(post);
+    for (const category of post.categories) {
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(post);
+    }
     return acc;
   }, {});
 }
@@ -101,7 +107,7 @@ export function PostGroupContent({
   const t = useTranslations("sections");
   const pathname = usePathname();
   const postsByCategory = useMemo(
-    () => groupPostsByFirstCategory(frontMatterList),
+    () => groupPostsByCategory(frontMatterList),
     [frontMatterList],
   );
 
@@ -149,10 +155,11 @@ export function PostGroupContent({
               <CollapsibleContent>
                 <div className="mt-1 space-y-0.5 pl-2">
                   {/*
-                    그룹이 하나뿐이면 대분류·그룹 이름이 겹쳐 보인다.
+                    그룹이 하나뿐이면 대분류·그룹 이름이 겹쳐 보이고,
+                    기록처럼 그룹 이름이 곧 태그 이름인 대분류도 마찬가지다.
                     그럴 때는 중간 단계를 건너뛰고 태그를 바로 보여준다.
                   */}
-                  {groupIds.length === 1
+                  {groupIds.length === 1 || shouldFlattenGroups(sectionId)
                     ? categories.map((category) => (
                         <CollapsiblePostList
                           key={category}

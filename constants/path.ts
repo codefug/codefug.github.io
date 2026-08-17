@@ -28,7 +28,6 @@ export const PATH = {
   HOME: "/",
   POSTS: "/posts",
   SERIES: "/series",
-  NOTES: "/notes",
   CATEGORIES: "/categories",
   RESUME: "/resume",
   SEARCH: "/search",

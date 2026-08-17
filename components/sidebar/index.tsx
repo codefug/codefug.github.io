@@ -68,7 +68,13 @@ export default function AppSidebar({
         <SidebarGroup className="mt-auto border-sidebar-border border-t pt-2">
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAVIGATION_ITEMS.map((item) => (
+              {/*
+                하위 카테고리로만 들어가는 항목(Notes)은 위 카테고리 트리에
+                이미 같은 내용이 펼쳐져 있으므로 여기서는 빼둔다.
+              */}
+              {NAVIGATION_ITEMS.flatMap((item) =>
+                item.href ? [{ ...item, href: item.href }] : [],
+              ).map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild>
                     <SidebarAnchorButton

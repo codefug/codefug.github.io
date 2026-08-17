@@ -19,6 +19,19 @@ export const TAG_LIST = {
 export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
 
 /**
+ * slug를 그대로 보여주면 어색한 태그의 표기.
+ * 사람 이름을 messages에 둘 이유가 없는(번역 대상이 아닌) 고유명사만 여기 둔다.
+ */
+export const TAG_LABEL: Partial<Record<Tag, string>> = {
+  [TAG_LIST.JAVASCRIPT]: "JavaScript",
+  [TAG_LIST.TYPESCRIPT]: "TypeScript",
+  [TAG_LIST.REACT]: "React",
+  [TAG_LIST.NEXTJS]: "Next.js",
+  [TAG_LIST.ELECTRON]: "Electron",
+  [TAG_LIST.WEB]: "Web",
+};
+
+/**
  * 태그를 담는 가장 작은 묶음. 사이드바에서 접히는 단위다.
  * `label`·`description`은 messages의 `categories.<id>`에서 가져온다.
  */
@@ -51,6 +64,11 @@ export type CategorySection = {
   groups: CategoryGroup[];
   /** 홈·사이드바에서의 노출 순서 */
   order: number;
+  /**
+   * 사이드바에서 그룹 단계를 건너뛰고 태그를 바로 보여준다.
+   * 그룹 하나가 태그 하나를 대표해서 이름이 겹쳐 보이는 대분류(기록)에 쓴다.
+   */
+  flattenGroups?: boolean;
 };
 
 /**
@@ -95,6 +113,8 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
   {
     id: "notes",
     order: 4,
+    // 그룹 이름(생각·회고·후기)이 곧 태그 이름이라 한 단계로 보여준다.
+    flattenGroups: true,
     groups: [
       { id: "thought", tags: [TAG_LIST.THOUGHT] },
       { id: "retrospective", tags: [TAG_LIST.RETROSPECTIVE] },
@@ -111,6 +131,12 @@ export const FALLBACK_SECTION_ID: CategorySectionId = "etc";
 export const CATEGORY_GROUPS: CategoryGroup[] = CATEGORY_SECTIONS.flatMap(
   (section) => section.groups,
 );
+
+function findSection(
+  sectionId: CategorySectionId,
+): CategorySection | undefined {
+  return CATEGORY_SECTIONS.find((section) => section.id === sectionId);
+}
 
 /**
  * 여러 편으로 이어지는 글이 모이는 그룹들.
@@ -137,9 +163,12 @@ export function isSeriesTag(tag: string): boolean {
  * 여러 편으로 이어지는 연재물만 남긴다.
  */
 export const SERIES_SLUGS: readonly Tag[] =
-  CATEGORY_SECTIONS.find((section) => section.id === "series")?.groups.flatMap(
-    (group) => group.tags,
-  ) ?? [];
+  findSection("series")?.groups.flatMap((group) => group.tags) ?? [];
+
+/** `/series`에 목록으로 세우는 연재물인지. 프로젝트 태그는 여기 들어오지 않는다. */
+export function isSeriesSlug(tag: string): boolean {
+  return SERIES_SLUGS.includes(tag as Tag);
+}
 
 const TAG_TO_GROUP_ID = new Map<string, CategoryGroupId>(
   CATEGORY_GROUPS.flatMap((group) =>
@@ -169,16 +198,31 @@ export const CATEGORY_SECTION_ORDER: CategorySectionId[] = [
   FALLBACK_SECTION_ID,
 ];
 
+/**
+ * 대분류 안의 그룹과 그 대표 태그. 그룹 하나가 태그 하나를 대표하는 구조
+ * (기록 아래 생각·회고·후기)에서 내비게이션 항목을 만들 때 쓴다.
+ */
+export function getSectionGroupTags(
+  sectionId: CategorySectionId,
+): { groupId: CategoryGroupId; tag: Tag }[] {
+  return (
+    findSection(sectionId)
+      ?.groups.filter((group) => group.tags.length > 0)
+      .map((group) => ({ groupId: group.id, tag: group.tags[0] })) ?? []
+  );
+}
+
+/** 그룹 단계를 건너뛰고 태그를 바로 보여줄 대분류인지 */
+export function shouldFlattenGroups(sectionId: CategorySectionId): boolean {
+  return findSection(sectionId)?.flattenGroups === true;
+}
+
 /** 대분류 안의 그룹 순서 */
 export function getGroupIdsBySection(
   sectionId: CategorySectionId,
 ): CategoryGroupId[] {
   if (sectionId === FALLBACK_SECTION_ID) return [FALLBACK_GROUP_ID];
-  return (
-    CATEGORY_SECTIONS.find((section) => section.id === sectionId)?.groups.map(
-      (group) => group.id,
-    ) ?? []
-  );
+  return findSection(sectionId)?.groups.map((group) => group.id) ?? [];
 }
 
 /** 홈 섹션 노출 순서 — 그룹 단위가 필요한 곳에서 쓴다. */
