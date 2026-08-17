@@ -18,16 +18,15 @@ Fandom-k는 아이돌 차트에 투표하는 팀 프로젝트입니다. 코드�
 flowchart LR
   subgraph core["코어"]
     A["React"]
+    B["Vite"]
   end
-  subgraph ui["스타일 · UI"]
-    B["styled-components"]
-  end
-  subgraph data["스크롤 · 데이터"]
-    C["react-intersection-observer"]
+  subgraph ui["스타일 · 라우팅"]
+    C["styled-components"]
+    D["React Router"]
   end
   subgraph infra["배포"]
-    D["GitHub Actions"]
-    E["Netlify"]
+    E["GitHub Actions"]
+    F["Netlify"]
   end
 ```
 
