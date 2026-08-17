@@ -89,17 +89,11 @@ export default async function Page({
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
       <PostHeaderContent frontMatter={frontMatterData} />
-      {/*
-        목차는 넓은 화면에서만 본문 옆에 붙는다. (MenuBar 주석 참고)
-        본문이 목차 때문에 좁아지지 않도록, 목차 자리는 화면이 충분히 넓어질 때만
-        내주고 본문은 읽기 좋은 폭(65ch 안팎)을 유지한다.
-      */}
-      <section className="xl:flex xl:items-start xl:justify-center xl:gap-12">
-        <section className="min-w-0 max-w-full flex-1 xl:max-w-4xl">
-          <PostContent postId={id} />
-        </section>
-        <MenuBar />
+      {/* 목차는 버튼으로 열고 닫는 오버레이라 본문 폭을 차지하지 않는다. */}
+      <section className="min-w-0 max-w-full">
+        <PostContent postId={id} />
       </section>
+      <MenuBar />
       <AdjacentPosts adjacent={getAdjacentPosts(id)} />
       <RelatedPosts related={related} />
       <RecentPostsSection
