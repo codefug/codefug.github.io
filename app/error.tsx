@@ -16,7 +16,11 @@ export default function ErrorPage({
         <div>
           <h2>{t("title")}</h2>
           <div>{error.message}</div>
-          <button onClick={reset} aria-label={t("retryAriaLabel")}>
+          <button
+            type="button"
+            onClick={reset}
+            aria-label={t("retryAriaLabel")}
+          >
             {t("retry")}
           </button>
         </div>
