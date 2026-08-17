@@ -29,6 +29,8 @@ export const PATH = {
   POSTS: "/posts",
   SERIES: "/series",
   CATEGORIES: "/categories",
+  /** 그룹(사이드 프로젝트·학습 프로젝트 등) 하나에 속한 태그의 글을 모아 보는 곳 */
+  GROUPS: "/groups",
   RESUME: "/resume",
   SEARCH: "/search",
 } as const;
