@@ -4,6 +4,7 @@ import { AdjacentPosts } from "@/components/post/AdjacentPosts";
 import { PostContent } from "@/components/post/PostContent";
 import { PostHeaderClient } from "@/components/post/PostHeaderClient";
 import PostNotFound from "@/components/post/PostNotFound";
+import { RecentPostsSection } from "@/components/post/RecentPostsSection";
 import { RelatedPosts } from "@/components/post/RelatedPosts";
 import MenuBar from "@/components/postMenuBar/menu-bar";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -17,6 +18,7 @@ import {
   getAdjacentPosts,
   getAllFrontMatterListIncludingHidden,
   getPostFrontMattersById,
+  getRelatedPosts,
   isHiddenPost,
 } from "@/lib/posts";
 
@@ -79,6 +81,9 @@ export default async function Page({
     thumbnailImageUrl: frontMatterData.header?.teaser,
   });
 
+  // 아래 두 섹션이 같은 글을 중복해서 보여주지 않도록 한 번만 구한다.
+  const related = getRelatedPosts(id, frontMatterData.categories);
+
   return (
     <section className="mx-auto w-full max-w-350 px-4">
       <GtmPageView slug={id} />
@@ -91,7 +96,11 @@ export default async function Page({
         </section>
       </section>
       <AdjacentPosts adjacent={getAdjacentPosts(id)} />
-      <RelatedPosts currentId={id} categories={frontMatterData.categories} />
+      <RelatedPosts related={related} />
+      <RecentPostsSection
+        currentId={id}
+        excludeIds={related.map((post) => post.id)}
+      />
     </section>
   );
 }
