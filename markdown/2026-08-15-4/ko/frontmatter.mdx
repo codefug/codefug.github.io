@@ -1,10 +1,9 @@
 ---
-title: "ESLint가 경고하지 않는 곳 — 커스텀 훅이 반환한 함수"
-excerpt: "exhaustive-deps는 컴포넌트 안에서 만든 함수만 봅니다. 훅이 반환한 함수는 안정적이라고 가정하고 넘어갑니다. 실제로 규칙을 돌려 경계가 어디까지인지 확인했습니다."
+title: "exhaustive-deps는 어디까지 봐줄까 — 규칙의 사각지대를 찾아서"
+excerpt: "경고가 없어서 괜찮은 줄 알았는데 effect가 매 렌더 다시 돌았습니다. 다섯 가지 경우를 직접 돌려보니 경계는 커스텀 훅이냐가 아니었습니다. 규칙이 왜 그렇게 가정하는지까지 확인했습니다."
 date: "2026-08-15"
 categories:
   - react
 header:
   teaser: /images/logos/react.png
-hidden: true
 ---
