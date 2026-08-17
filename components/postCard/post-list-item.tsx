@@ -6,6 +6,7 @@ import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import { DefaultThumbnail } from "./DefaultThumbnail";
+import { SeriesOrderBadge } from "./series-order-badge";
 
 export default function PostListItem({
   categories,
@@ -15,6 +16,7 @@ export default function PostListItem({
   id,
   readingTime,
   header,
+  seriesOrder,
 }: FrontMatter) {
   const t = useTranslations();
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
@@ -56,6 +58,7 @@ export default function PostListItem({
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-1">
+          {seriesOrder && <SeriesOrderBadge seriesOrder={seriesOrder} />}
           {categories.map((category) => (
             <Badge key={category + id} variant="outline" className="text-xs">
               {category}

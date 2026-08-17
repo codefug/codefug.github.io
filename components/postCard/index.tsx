@@ -7,6 +7,7 @@ import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 import { DefaultThumbnail } from "./DefaultThumbnail";
+import { SeriesOrderBadge } from "./series-order-badge";
 
 export default function PostCard({
   categories,
@@ -16,6 +17,7 @@ export default function PostCard({
   id,
   readingTime,
   header,
+  seriesOrder,
 }: FrontMatter) {
   const t = useTranslations();
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
@@ -28,7 +30,7 @@ export default function PostCard({
       title={title}
       className="h-full"
     >
-      <Card className="group relative flex h-full min-h-56 cursor-pointer flex-col overflow-hidden bg-card p-5 transition-all duration-300 hover:shadow-lg hover:ring-1 hover:ring-primary/20">
+      <Card className="group relative flex h-108 cursor-pointer flex-col overflow-hidden bg-card p-5 transition-all duration-300 hover:shadow-lg hover:ring-1 hover:ring-primary/20">
         <span
           className="absolute inset-x-0 top-0 h-0.5 bg-primary/40 transition-colors duration-300 group-hover:bg-primary"
           aria-hidden="true"
@@ -39,7 +41,7 @@ export default function PostCard({
           teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
         */}
         {header?.teaser ? (
-          <div className="-mx-5 -mt-5 mb-4 flex aspect-square items-center justify-center border-border/60 border-b bg-muted/30 p-8">
+          <div className="-mx-5 -mt-5 mb-4 flex h-40 shrink-0 items-center justify-center border-border/60 border-b bg-muted/30 p-8 sm:h-48">
             <img
               src={header.teaser}
               alt=""
@@ -49,14 +51,15 @@ export default function PostCard({
             />
           </div>
         ) : (
-          <div className="-mx-5 -mt-5 mb-4 aspect-square border-border/60 border-b">
+          <div className="-mx-5 -mt-5 mb-4 h-40 shrink-0 border-border/60 border-b sm:h-48">
             <DefaultThumbnail
               category={categories[0]}
               caption={header?.thumbnailCaption}
             />
           </div>
         )}
-        <div className="mb-2.5 flex flex-wrap gap-1">
+        <div className="mb-2.5 flex flex-wrap items-center gap-1">
+          {seriesOrder && <SeriesOrderBadge seriesOrder={seriesOrder} />}
           {categories.map((category) => (
             <Badge key={category + id} variant="outline">
               {category}

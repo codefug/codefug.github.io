@@ -4,6 +4,7 @@ import { join } from "node:path";
 import grayMatter from "gray-matter";
 import { cache } from "react";
 import type { FrontMatter, ParsedFrontMatter } from "@/constants/mdx";
+import { withSeriesOrder } from "@/util/post";
 import { getReadingTime } from "@/util/reading-time";
 
 const postsDirectory = join(process.cwd(), "markdown");
@@ -61,10 +62,12 @@ export const getAllFrontMatterListIncludingHidden = cache(
   (): ParsedFrontMatter[] => {
     const folderNames = readdirSync(postsDirectory);
 
-    return folderNames
-      .map((folderName) => readFrontMatter(folderName))
-      .filter((item): item is FrontMatter => item !== null)
-      .reverse();
+    return withSeriesOrder(
+      folderNames
+        .map((folderName) => readFrontMatter(folderName))
+        .filter((item): item is FrontMatter => item !== null)
+        .reverse(),
+    );
   },
 );
 

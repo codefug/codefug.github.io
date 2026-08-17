@@ -17,6 +17,15 @@ export type FrontMatter = {
    * 다만 직접 URL로는 접근 가능하며(기존 링크 보존), 검색엔진에는 noindex로 표시된다.
    */
   hidden?: boolean;
+  /**
+   * 시리즈에 속한 글이면 몇 번째 편인지. 숨긴 글까지 포함해 세므로
+   * 중간 편을 숨겨도 남은 글의 편 번호가 밀리지 않는다.
+   */
+  seriesOrder?: {
+    slug: string;
+    index: number;
+    total: number;
+  };
 };
 
 export type ParsedFrontMatter = FrontMatter;
