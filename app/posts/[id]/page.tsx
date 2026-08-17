@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { GtmPageView } from "@/components/gtm/gtmPageView";
 import { AdjacentPosts } from "@/components/post/AdjacentPosts";
 import { PostContent } from "@/components/post/PostContent";
-import { PostHeaderClient } from "@/components/post/PostHeaderClient";
+import { PostHeaderContent } from "@/components/post/PostHeaderContent";
 import PostNotFound from "@/components/post/PostNotFound";
 import { RecentPostsSection } from "@/components/post/RecentPostsSection";
 import { RelatedPosts } from "@/components/post/RelatedPosts";
@@ -88,7 +88,7 @@ export default async function Page({
     <section className="mx-auto w-full max-w-350 px-4">
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
-      <PostHeaderClient frontMatter={frontMatterData} />
+      <PostHeaderContent frontMatter={frontMatterData} />
       <section className="lg:flex lg:items-baseline">
         <MenuBar />
         <section className="max-w-full">
