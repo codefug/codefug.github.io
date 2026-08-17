@@ -1,10 +1,9 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import { useViewMode } from "@/hooks/useViewMode";
 import { useTranslations } from "@/lib/messages";
 import PostGallery from ".";
 import { ViewToggle } from "./view-toggle";
@@ -15,6 +14,10 @@ const RECENT_COUNT = 8;
  * 홈의 최근 글 목록.
  * 카테고리별 탐색은 /posts와 사이드바가 담당하므로,
  * 홈에서는 구분 없이 최근 글만 보여주고 전체 목록으로 넘긴다.
+ *
+ * 뷰 모드는 세션 간 기억하지 않는 지역 상태다. sessionStorage로 복원하면
+ * 첫 렌더(grid) 이후 effect가 저장된 값(list)으로 덮어써 깜빡임이 생기므로,
+ * 누가 오든 항상 갤러리로 시작하게 고정한다.
  */
 export function RecentPosts({
   frontMatterList,
@@ -22,7 +25,7 @@ export function RecentPosts({
   frontMatterList: FrontMatter[];
 }) {
   const t = useTranslations();
-  const { viewMode, toggle } = useViewMode("home-recent");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const recent = useMemo(
     () => frontMatterList.slice(0, RECENT_COUNT),
@@ -52,7 +55,7 @@ export function RecentPosts({
               aria-hidden="true"
             />
           </a>
-          <ViewToggle viewMode={viewMode} onToggle={toggle} />
+          <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
         </div>
       </div>
 
