@@ -58,6 +58,11 @@ export type CategoryGroup = {
   id: CategoryGroupId;
   /** 이 그룹에 속하는 태그 목록 */
   tags: Tag[];
+  /**
+   * 그룹에 속한 글을 모아 보는 전용 페이지를 만든다.
+   * 태그 하나로는 좁고 대분류로는 넓은 묶음(사이드·학습 프로젝트)에 쓴다.
+   */
+  hasPage?: boolean;
 };
 
 export type CategorySection = {
@@ -96,10 +101,12 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
       {
         id: "sideProject",
         tags: [TAG_LIST.CLAUDE_PET, TAG_LIST.REINDEER_LETTER],
+        hasPage: true,
       },
       {
         id: "learningProject",
         tags: [TAG_LIST.KKOM_KKOM, TAG_LIST.GHEUPPAY, TAG_LIST.FANDOMK],
+        hasPage: true,
       },
       { id: "workProject", tags: [] },
     ],
@@ -227,6 +234,26 @@ export function getSectionGroupTags(
 /** 그룹 단계를 건너뛰고 태그를 바로 보여줄 대분류인지 */
 export function shouldFlattenGroups(sectionId: CategorySectionId): boolean {
   return findSection(sectionId)?.flattenGroups === true;
+}
+
+/** 전용 목록 페이지를 가진 그룹 (`/groups/<slug>`) */
+export const GROUPS_WITH_PAGE: readonly CategoryGroupId[] =
+  CATEGORY_GROUPS.filter((group) => group.hasPage).map((group) => group.id);
+
+export function hasGroupPage(groupId: string): boolean {
+  return GROUPS_WITH_PAGE.includes(groupId as CategoryGroupId);
+}
+
+/**
+ * 그룹 id는 camelCase지만 URL은 태그와 같은 kebab-case로 맞춘다.
+ * (`/categories/claude-pet`과 `/groups/side-project`)
+ */
+export function toGroupSlug(groupId: CategoryGroupId): string {
+  return groupId.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+}
+
+export function fromGroupSlug(slug: string): CategoryGroupId | undefined {
+  return GROUPS_WITH_PAGE.find((groupId) => toGroupSlug(groupId) === slug);
 }
 
 /** 대분류 안의 그룹 순서 */

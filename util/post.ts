@@ -1,4 +1,8 @@
-import { isSeriesSlug, isSeriesTag } from "@/constants/categories";
+import {
+  getGroupIdByTag,
+  isSeriesSlug,
+  isSeriesTag,
+} from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 
 export default function buildCategoryStats({
@@ -130,4 +134,20 @@ export function getPostsByTag(
   const matched = postList.filter((post) => post.categories.includes(tag));
   if (isSeriesTag(tag)) return matched.toSorted(compareByReadingOrder);
   return matched.toSorted((a, b) => compareByReadingOrder(b, a));
+}
+
+/**
+ * 그룹 하나에 속한 글. 그룹은 태그 여러 개를 묶으므로
+ * (사이드 프로젝트 = claude-pet + reindeer-letter) 그 태그의 글을 전부 모은다.
+ * 프로젝트끼리는 최근에 만든 것이 위로 온다.
+ */
+export function getPostsByGroup(
+  postList: FrontMatter[],
+  groupId: string,
+): FrontMatter[] {
+  return postList
+    .filter((post) =>
+      post.categories.some((tag) => getGroupIdByTag(tag) === groupId),
+    )
+    .toSorted((a, b) => compareByReadingOrder(b, a));
 }
