@@ -20,6 +20,7 @@ import {
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
+import { resolveTagLabel } from "@/util/tag-label";
 import { CollapsiblePostList } from "./CollapsiblePostList";
 
 /**
@@ -63,6 +64,17 @@ function GroupNode({
     (category) => getGroupIdByTag(category) === groupId,
   );
   if (categories.length === 0) return null;
+
+  /*
+    태그가 하나뿐이고 그 이름이 그룹 이름과 같으면(Web > Web) 한 단계가 군더더기다.
+    그럴 때는 그룹 토글을 접고 태그만 보여준다.
+  */
+  if (
+    categories.length === 1 &&
+    resolveTagLabel(categories[0]) === t(`${groupId}.label`)
+  ) {
+    return <CollapsiblePostList category={categories[0]} />;
+  }
 
   const hasCurrentPost = categories.some((category) =>
     postsByCategory[category].some(isCurrentPath),
