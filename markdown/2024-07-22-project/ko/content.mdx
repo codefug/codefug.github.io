@@ -2,9 +2,14 @@
 
 급페이는 급하게 일손이 필요한 자리에 더 많은 시급을 제시해서 아르바이트생을 구할 수 있는 서비스입니다. 사장님 계정과 알바님 계정, 두 종류의 사용자가 존재하고, 각자 다른 화면과 권한으로 서비스를 사용합니다.
 
-이 프로젝트에서는 팀장 역할을 맡았습니다. 제 담당 기능 이외에도 팀원들이 개발에만 집중할 수 있도록 공용 인프라를 다지는 데 책임감을 느꼈습니다. S3에 이미지를 올리는 함수, 이미지 블러 처리 컴포넌트 같은 공통 유틸리티부터, 개발/배포 환경 자체를 정비하는 일까지 맡았습니다.
+| | |
+| --- | --- |
+| 역할 | 팀장 · 공통 유틸리티 · 개발·배포 환경 |
+| 링크 | [GitHub](https://github.com/codefug/gheupPAY) |
 
-기술 스택은 Next.js(App Router)였고, 팀이 실제로 부딪힌 문제는 크게 네 갈래였습니다.
+팀장으로서 제 담당 기능 외에도 팀원들이 개발에만 집중할 수 있도록 공용 인프라를 다졌습니다. S3 업로드 함수, 이미지 블러 처리 컴포넌트 같은 공통 유틸리티부터 개발·배포 환경 정비까지 맡았습니다.
+
+팀이 실제로 부딪힌 문제는 크게 네 갈래였습니다.
 
 1. 공고 상세 페이지의 카드 렌더링을 어떻게 최적화할 것인가
 2. 알림창의 무한 스크롤을 백엔드 개발이 끝나지 않은 상태에서 어떻게 검증할 것인가
@@ -15,22 +20,11 @@
 
 ### 코어 기술 스택
 
-```mermaid
-flowchart LR
-  subgraph core["코어"]
-    A["Next.js (App Router)"]
-    B["React"]
-  end
-  subgraph form["폼 · 통신"]
-    C["react-hook-form"]
-    D["yup"]
-    E["axios"]
-  end
-  subgraph infra["검증 · 배포"]
-    F["MSW"]
-    G["Vercel"]
-  end
-```
+| 구분 | 스택 |
+| --- | --- |
+| 코어 | ![Next.js](https://img.shields.io/badge/Next.js_App_Router-000?logo=nextdotjs&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) |
+| 폼 · 통신 | ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) ![yup](https://img.shields.io/badge/yup-171717) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) |
+| 검증 · 배포 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel&logoColor=white) |
 
 ### 서버 컴포넌트 중심의 페이지 구조
 

@@ -1,12 +1,12 @@
 ## 배경
 
-Fandom-k는 아이돌 차트에 투표하는 팀 프로젝트입니다. 코드잇 부트캠프 과정에서 팀원들과 함께 진행했습니다.
+Fandom-k는 아이돌 차트에 투표하는 서비스입니다. 코드잇 부트캠프 과정에서 팀 프로젝트로 진행했습니다.
 
-제가 맡은 역할은 크게 세 가지였습니다.
-
-- 공통 컴포넌트 제작 (무한 스크롤, Button 같은 간단한 UI)
-- 목록 페이지 위젯 제작
-- CI/CD 구축 (Netlify와 GitHub Actions를 통해 PR 이벤트에 반응하는 자동 배포)
+| | |
+| --- | --- |
+| 팀 | 코드잇 부트캠프 팀 프로젝트 |
+| 역할 | 공통 컴포넌트 · 목록 페이지 위젯 · CI/CD 구축 |
+| 링크 | [GitHub](https://github.com/Sprint6-Fandom-K/Fandom-K) |
 
 세 역할 모두 "많은 데이터를 다루는 목록 페이지를 어떻게 부드럽게 보여줄 것인가"라는 하나의 문제로 이어져 있었습니다. 아이돌 차트라는 서비스 특성상 목록에 항목이 많고, 사용자는 스크롤을 내리면서 계속 데이터를 받아야 했습니다.
 
@@ -14,21 +14,11 @@ Fandom-k는 아이돌 차트에 투표하는 팀 프로젝트입니다. 코드�
 
 ### 코어 기술 스택
 
-```mermaid
-flowchart LR
-  subgraph core["코어"]
-    A["React"]
-    B["Vite"]
-  end
-  subgraph ui["스타일 · 라우팅"]
-    C["styled-components"]
-    D["React Router"]
-  end
-  subgraph infra["배포"]
-    E["GitHub Actions"]
-    F["Netlify"]
-  end
-```
+| 구분 | 스택 |
+| --- | --- |
+| 코어 | ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) |
+| 스타일 · 라우팅 | ![styled-components](https://img.shields.io/badge/styled--components-DB7093?logo=styledcomponents&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=reactrouter&logoColor=white) |
+| 배포 | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white) ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?logo=netlify&logoColor=white) |
 
 ### 폴더 구조
 

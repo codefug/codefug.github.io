@@ -1,6 +1,12 @@
 ## 배경
 
-꼼꼼은 부트캠프 최종 프로젝트로 진행한 서비스입니다. 자유게시판, 좋아요, 댓글, 인증 등 실제 서비스에 필요한 기능들을 담은 웹 애플리케이션이었고, Next.js와 Tailwind CSS, Tanstack Query, Zustand를 주요 스택으로 사용했습니다.
+꼼꼼은 부트캠프 최종 프로젝트로 진행한 서비스입니다. 자유게시판, 좋아요, 댓글, 인증 등 실제 서비스에 필요한 기능들을 담은 웹 애플리케이션이었습니다.
+
+| | |
+| --- | --- |
+| 팀 | 코드잇 부트캠프 최종 프로젝트 |
+| 역할 | 공통 컴포넌트 설계 · 오버레이 훅 · 서버·클라이언트 호환 fetch |
+| 링크 | [GitHub](https://github.com/codefug/kkom-kkom) |
 
 디자인 시안이 완성되기 전부터 개발을 시작해야 했던 상황이 이 프로젝트 전체를 관통하는 조건이었습니다. 버튼도, 모달도, 페이지 전환도 "디자인이 계속 바뀔 수 있다"는 전제 위에서 구조를 잡아야 했습니다. 이 글은 그 과정에서 마주친 다섯 가지 문제 — 공통 버튼 컴포넌트, 오버레이 관리, progress bar, 서버/클라이언트 호환 fetch, streaming tanstack query — 를 하나로 묶어 정리한 기록입니다.
 
@@ -8,24 +14,12 @@
 
 ### 코어 기술 스택
 
-```mermaid
-flowchart LR
-  subgraph core["코어"]
-    A["Next.js"]
-  end
-  subgraph style["스타일 · 컴포넌트"]
-    B["Tailwind CSS"]
-    C["cva"]
-  end
-  subgraph stateData["상태 · 데이터"]
-    D["Zustand"]
-    E["Tanstack Query"]
-    F["react-hook-form"]
-  end
-  subgraph doc["문서화"]
-    G["Storybook"]
-  end
-```
+| 구분 | 스택 |
+| --- | --- |
+| 코어 | ![Next.js](https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=white) |
+| 스타일 · 컴포넌트 | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) ![cva](https://img.shields.io/badge/cva-171717) |
+| 상태 · 데이터 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) |
+| 문서화 | ![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white) |
 
 ### 왜 "변경에 강한 구조"가 최우선이었나
 
