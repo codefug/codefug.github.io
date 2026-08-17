@@ -1,12 +1,9 @@
 "use client";
 
 import { cva } from "class-variance-authority";
-import { List, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useHighlightTOC from "@/hooks/use-highlight-toc";
-import useOutsideClick from "@/hooks/use-outside-click";
 import { useTranslations } from "@/lib/messages";
-import { cn } from "@/lib/utils";
 
 type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
 
@@ -15,13 +12,13 @@ type HeadingData = { text: string; level: 1 | 2 | 3 | 4 | 5 | 6; id: string };
  * 목차는 훑어보는 용도라 depth를 표현하는 것보다 한눈에 들어오는 게 낫다.
  */
 const menuBarVariant = cva(
-  "block w-full py-1.5 pl-3 pr-2 text-left text-sm transition-all duration-150 ease-in-out border-l-2 no-underline rounded-r-md hover:cursor-pointer",
+  "block w-full rounded-r-md border-l-2 py-1.5 pr-2 pl-3 text-left text-sm no-underline transition-all duration-150 ease-in-out hover:cursor-pointer",
   {
     variants: {
       isActive: {
-        true: "border-primary font-medium text-primary bg-primary/5",
+        true: "border-primary bg-primary/5 font-medium text-primary",
         false:
-          "border-transparent text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-muted/60",
+          "border-transparent text-muted-foreground hover:border-primary/40 hover:bg-muted/60 hover:text-foreground",
       },
     },
     defaultVariants: {
@@ -62,16 +59,19 @@ function useFindAllHeadings(): HeadingData[] {
   return headings;
 }
 
+/**
+ * 본문 옆에 붙는 목차.
+ *
+ * 예전에는 화면 오른쪽에 떠 있는 버튼을 눌러 오버레이로 열었는데,
+ * 넓은 화면에서는 여백이 남는데도 클릭을 요구했고 좁은 화면에서는
+ * 그 버튼이 본문을 가렸다. 그래서 자리가 있는 화면에서만 상시 노출한다.
+ * (xl 미만에서는 렌더하지 않는다 — 좁은 화면은 스크롤로 읽는 편이 낫다)
+ */
 export default function MenuBar() {
-  const menuListRef = useRef<HTMLDivElement>(null);
-  const [isShow, setIsShow] = useState(false);
   const t = useTranslations("common");
 
   const headings = useFindAllHeadings();
   const { activeId } = useHighlightTOC();
-
-  const handleShowMenuList = useCallback(() => setIsShow(true), []);
-  const handleHideMenuList = useCallback(() => setIsShow(false), []);
 
   /**
    * 앵커 링크 대신 직접 스크롤한다.
@@ -93,78 +93,35 @@ export default function MenuBar() {
     });
   }, []);
 
-  useOutsideClick(menuListRef, handleHideMenuList);
-
   if (!headings.length) return null;
 
   return (
-    <>
-      {/* 토글 버튼 */}
-      <button
-        type="button"
-        className={cn(
-          "fixed top-1/2 right-0 z-10 flex h-16 w-9 -translate-y-1/2 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-l-xl border border-r-0 border-l-2 border-l-primary/60 bg-card/95 text-muted-foreground shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary print:hidden",
-          isShow && "pointer-events-none opacity-0",
-        )}
-        onClick={handleShowMenuList}
-        aria-label={t("aria.tableOfContents.open")}
-        aria-expanded={isShow}
-        aria-controls="table-of-contents"
-      >
-        <List className="h-4 w-4" />
-      </button>
-
-      {/* TOC 패널 */}
-      <div
-        ref={menuListRef}
-        className={cn(
-          "fixed top-[68px] right-0 z-10 w-[300px] transition-all duration-200 print:hidden",
-          isShow
-            ? "translate-x-0 opacity-100"
-            : "pointer-events-none translate-x-full opacity-0",
-        )}
-      >
-        <div className="rounded-l-2xl border border-r-0 bg-card/95 shadow-xl backdrop-blur-sm">
-          {/* 헤더 */}
-          <div className="flex items-center justify-between border-border/50 border-b px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="h-3.5 w-1 rounded-full bg-primary" />
-              <h4 className="font-semibold text-foreground text-sm">
-                {t("tableOfContents")}
-              </h4>
-            </div>
-            <button
-              type="button"
-              onClick={handleHideMenuList}
-              aria-label={t("aria.tableOfContents.close")}
-              className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </div>
-
-          {/* 목록 */}
-          <nav
-            className="h-[calc(100vh-164px)] overflow-auto px-3 py-3"
-            aria-label={t("aria.tableOfContents.navigation")}
-            id="table-of-contents"
-          >
-            {headings.map((heading) => (
-              <button
-                type="button"
-                key={heading.id}
-                onClick={() => handleMoveToHeading(heading.id)}
-                className={menuBarVariant({
-                  isActive: activeId === heading.id,
-                })}
-                aria-current={activeId === heading.id ? "page" : undefined}
-              >
-                {heading.text}
-              </button>
-            ))}
-          </nav>
-        </div>
+    <aside className="hidden shrink-0 xl:sticky xl:top-24 xl:block xl:w-64 xl:self-start print:hidden">
+      <div className="mb-2 flex items-center gap-2 px-3">
+        <span className="h-3.5 w-1 rounded-full bg-primary" />
+        <h2 className="font-semibold text-foreground text-sm">
+          {t("tableOfContents")}
+        </h2>
       </div>
-    </>
+      <nav
+        className="max-h-[calc(100vh-10rem)] overflow-auto"
+        aria-label={t("aria.tableOfContents.navigation")}
+        id="table-of-contents"
+      >
+        {headings.map((heading) => (
+          <button
+            type="button"
+            key={heading.id}
+            onClick={() => handleMoveToHeading(heading.id)}
+            className={menuBarVariant({
+              isActive: activeId === heading.id,
+            })}
+            aria-current={activeId === heading.id ? "page" : undefined}
+          >
+            {heading.text}
+          </button>
+        ))}
+      </nav>
+    </aside>
   );
 }
