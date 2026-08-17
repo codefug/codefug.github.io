@@ -51,7 +51,7 @@ export default function Page() {
       <div className="flex w-fit min-w-full flex-col items-center gap-8 break-keep px-4 py-8 print:w-auto print:min-w-0 print:gap-0 print:p-0">
         {/* 1장 — 인적사항과 현재 회사 */}
         <ResumePage>
-          <ResumeHeader className="mb-8" />
+          <ResumeHeader className="mb-3" />
 
           <WorkExperienceSection>
             <div>
