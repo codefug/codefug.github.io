@@ -6,13 +6,7 @@ import { PATH } from "@/constants/path";
 import { getTranslations } from "@/lib/messages";
 import { getFrontMatterList } from "@/lib/posts";
 import { getPostsByTag } from "@/util/post";
-
-/** 태그 이름은 그대로 노출하기엔 식별이 어려워(kkom-kkom 등) 표시명을 따로 찾는다. */
-async function resolveTagLabel(tag: string): Promise<string> {
-  const series = await getTranslations("series");
-  const name = series.raw(`${tag}.name`);
-  return typeof name === "string" ? name : tag;
-}
+import { resolveTagLabel } from "@/util/tag-label";
 
 export async function generateMetadata({
   params,
@@ -21,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tag } = await params;
   const t = await getTranslations("categories");
-  const label = await resolveTagLabel(tag);
+  const label = resolveTagLabel(tag);
 
   return {
     title: t("pageTitle", { category: label }),
@@ -37,7 +31,7 @@ export default async function Page({
 }) {
   const { tag } = await params;
   const posts = getPostsByTag(getFrontMatterList(), tag);
-  const label = await resolveTagLabel(tag);
+  const label = resolveTagLabel(tag);
 
   return <CategoryPosts tag={tag} label={label} posts={posts} />;
 }
