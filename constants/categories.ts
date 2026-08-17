@@ -70,6 +70,11 @@ export type CategorySection = {
    * 그룹 하나가 태그 하나를 대표해서 이름이 겹쳐 보이는 대분류(기록)에 쓴다.
    */
   flattenGroups?: boolean;
+  /**
+   * 전체 글 필터에서 대분류 한 칸이 아니라 그룹별로 갈라 보여준다.
+   * 한 칸에 두면 성격이 다른 글이 같은 무게로 읽히는 대분류(프로젝트)에 쓴다.
+   */
+  splitInFilter?: boolean;
 };
 
 /**
@@ -80,6 +85,8 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
   {
     id: "project",
     order: 1,
+    // 2026년 사이드 작업과 2024년 학습기를 한 칸에 두면 평균값으로 읽힌다.
+    splitInFilter: true,
     groups: [
       /*
         직접 필요해서 만든 것과, 배우면서 팀으로 만든 것을 나눠 둔다.
@@ -234,3 +241,39 @@ export function getGroupIdsBySection(
 export const CATEGORY_GROUP_ORDER: CategoryGroupId[] = [
   ...CATEGORY_SECTION_ORDER.flatMap(getGroupIdsBySection),
 ];
+
+/**
+ * 전체 글 필터의 칸 목록.
+ *
+ * 대분류 한 칸이 기본이고, splitInFilter가 켜진 대분류만 그룹별로 갈라진다.
+ * 전부 그룹 단위로 펼치면 칸이 열 개를 넘어 훑기 어려워진다.
+ */
+export type FilterFacet =
+  | { kind: "section"; id: CategorySectionId }
+  | { kind: "group"; id: CategoryGroupId };
+
+export const FILTER_FACETS: FilterFacet[] = CATEGORY_SECTION_ORDER.flatMap(
+  (sectionId): FilterFacet[] => {
+    const section = findSection(sectionId);
+    if (!section?.splitInFilter) return [{ kind: "section", id: sectionId }];
+    return section.groups.map((group) => ({ kind: "group", id: group.id }));
+  },
+);
+
+/** 글 하나가 이 칸에 속하는지 */
+export function matchesFacet(
+  facet: FilterFacet,
+  categories: string[],
+): boolean {
+  if (facet.kind === "section") {
+    return categories.some((tag) => getSectionIdByTag(tag) === facet.id);
+  }
+  return categories.some((tag) => getGroupIdByTag(tag) === facet.id);
+}
+
+/** 칸 이름을 messages에서 찾을 키 (섹션은 sections.*, 그룹은 categories.*) */
+export function facetLabelKey(facet: FilterFacet): string {
+  return facet.kind === "section"
+    ? `sections.${facet.id}.label`
+    : `categories.${facet.id}.label`;
+}
