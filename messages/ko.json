@@ -119,7 +119,8 @@
     "aboutMe": {
       "title": "About Me",
       "paragraphs": [
-        "React, TypeScript 기반의 2년차 프론트엔드 개발자로,\n실제 자금이 오가는 선정산 금융 서비스를 운영 및 개선하고 있습니다.\n운영 중 반복해서 터지는 문제를 만나면 증상만 막지 않고, 왜 반복되는지 찾아 구조를 고치는 쪽을 택합니다."
+        "React, TypeScript 기반의 2년차 프론트엔드 개발자로,\n실제 자금이 오가는 선정산 금융 서비스를 운영 및 개선하고 있습니다.\n운영 중 반복해서 터지는 문제를 만나면 증상만 막지 않고, 왜 반복되는지 찾아 구조를 고치는 쪽을 택합니다.",
+        "TypeScript를 타입 주석이 아닌 [B]설계 도구[/B]로 다룹니다. Discriminated Union으로 불가능한 상태를 타입에서 지우고, 계산 로직은 순수 함수로 떼어 테스트로 묶습니다. 번들·이미지·CI처럼 눈에 잘 안 띄는 레이어도 [B]수치로 확인하고 개선[/B]합니다."
       ]
     },
     "workExperience": {
@@ -341,8 +342,8 @@
           "url": "/posts/2026-05-27"
         },
         {
-          "title": "자바스크립트에서 비동기 통신은 뭘까",
-          "url": "/posts/2024-11-10"
+          "title": "비동기 자바스크립트 — 이벤트 루프부터 async/await까지 (7편)",
+          "url": "/series/async-js"
         },
         {
           "title": "꼼꼼 — 커스텀 오버레이 훅과 서버·클라이언트 호환 fetch",
@@ -408,10 +409,15 @@
       "description": "한 해와 프로젝트를 돌아보며 남긴 기록",
       "thumbnailCaption": "지나온 길을 되짚으며"
     },
-    "toyProject": {
-      "label": "토이 프로젝트",
-      "description": "직접 만들고 싶어서 만든 것들. 배경부터 마주친 문제와 회고까지",
-      "thumbnailCaption": "만들고 싶어서 만든 것"
+    "sideProject": {
+      "label": "사이드 프로젝트",
+      "description": "필요해서 직접 만든 것들. 왜 그렇게 만들었는지까지",
+      "thumbnailCaption": "필요해서 만든 것"
+    },
+    "learningProject": {
+      "label": "학습 프로젝트",
+      "description": "팀으로 만들며 처음 부딪혀본 문제들의 기록",
+      "thumbnailCaption": "처음 부딪힌 기록"
     },
     "workProject": {
       "label": "사내 프로젝트",
