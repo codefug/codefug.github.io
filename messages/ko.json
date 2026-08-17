@@ -31,16 +31,19 @@
       "resume": "이력서 페이지로 이동",
       "search": "검색 페이지로 이동",
       "series": "시리즈 목록 페이지로 이동",
-      "posts": "전체 글 페이지로 이동"
+      "posts": "전체 글 페이지로 이동",
+      "retrospective": "회고 페이지로 이동"
     },
     "description": {
       "resume": "경력과 성과를 한 장으로",
       "search": "제목으로 글 찾기",
       "series": "프로젝트를 여러 편으로 기록한 글 묶음",
-      "posts": "모든 글을 한 곳에서"
+      "posts": "모든 글을 한 곳에서",
+      "retrospective": "한 해와 배움을 돌아본 기록"
     },
     "series": "Series",
-    "posts": "Posts"
+    "posts": "Posts",
+    "retrospective": "Retrospective"
   },
   "meta": {
     "title": "Codefug Blog",
@@ -411,10 +414,6 @@
       "label": "시리즈",
       "description": "하나의 주제를 여러 편에 걸쳐 기록한 글"
     },
-    "dev": {
-      "label": "Dev",
-      "description": "특정 프레임워크에 매이지 않는, 개발 전반에 대한 개념과 원리"
-    },
     "language": {
       "label": "Language",
       "description": "JavaScript와 TypeScript 그 자체에 대한 탐구"
@@ -430,6 +429,10 @@
     "review": {
       "label": "후기",
       "description": "세미나·컨퍼런스·교육에서 보고 들은 것과 남은 생각"
+    },
+    "webDev": {
+      "label": "웹",
+      "description": "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글"
     }
   },
   "series": {
@@ -467,5 +470,38 @@
   "posts": {
     "title": "전체 글",
     "description": "카테고리 구분 없이 모든 글을 최신순으로 봅니다."
+  },
+  "sections": {
+    "project": {
+      "label": "프로젝트",
+      "description": "직접 만든 것들 — 배경부터 마주친 문제와 회고까지"
+    },
+    "series": {
+      "label": "시리즈",
+      "description": "하나의 주제를 여러 편에 걸쳐 기록한 글"
+    },
+    "dev": {
+      "label": "Dev",
+      "description": "프레임워크와 언어, 웹 전반에 대한 기록"
+    },
+    "retrospective": {
+      "label": "회고",
+      "description": "한 해와 프로젝트, 컨퍼런스와 교육을 돌아보며 남긴 기록"
+    },
+    "etc": {
+      "label": "기타",
+      "description": "아직 분류하지 않은 글"
+    }
+  },
+  "retrospective": {
+    "meta": {
+      "title": "회고",
+      "description": "한 해와 프로젝트, 컨퍼런스와 교육을 돌아보며 남긴 기록입니다."
+    },
+    "title": "회고",
+    "description": "한 해를 돌아보고, 배운 것을 정리합니다. 되돌린 결정도 이유와 함께 남깁니다.",
+    "emptyTitle": "아직 쓰는 중입니다",
+    "emptyDescription": "연간 회고와 컨퍼런스·교육 참관기를 준비하고 있습니다. 곧 이 자리에 올라옵니다.",
+    "upcoming": "준비 중"
   }
 }

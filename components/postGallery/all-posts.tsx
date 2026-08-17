@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from "react";
 import {
-  CATEGORY_GROUP_ORDER,
-  type CategoryGroupId,
-  getGroupIdByTag,
+  CATEGORY_SECTION_ORDER,
+  type CategorySectionId,
+  getSectionIdByTag,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { useViewMode } from "@/hooks/useViewMode";
@@ -26,14 +26,14 @@ export function AllPosts({
 }) {
   const t = useTranslations();
 
-  const [group, setGroup] = useState<CategoryGroupId | typeof ALL>(ALL);
+  const [group, setGroup] = useState<CategorySectionId | typeof ALL>(ALL);
   const { viewMode, toggle } = useViewMode("all-posts");
 
   const groupCounts = useMemo(() => {
-    const counts = new Map<CategoryGroupId, number>();
+    const counts = new Map<CategorySectionId, number>();
     for (const post of posts) {
-      // 한 글이 여러 그룹에 걸칠 수 있으므로 그룹 기준으로 중복 없이 센다.
-      for (const id of new Set(post.categories.map(getGroupIdByTag))) {
+      // 한 글이 여러 분류에 걸칠 수 있으므로 대분류 기준으로 중복 없이 센다.
+      for (const id of new Set(post.categories.map(getSectionIdByTag))) {
         counts.set(id, (counts.get(id) ?? 0) + 1);
       }
     }
@@ -43,7 +43,7 @@ export function AllPosts({
   const filtered = useMemo(() => {
     if (group === ALL) return posts;
     return posts.filter((post) =>
-      post.categories.some((tag) => getGroupIdByTag(tag) === group),
+      post.categories.some((tag) => getSectionIdByTag(tag) === group),
     );
   }, [posts, group]);
 
@@ -64,11 +64,11 @@ export function AllPosts({
             isSelected={group === ALL}
             onSelect={() => setGroup(ALL)}
           />
-          {CATEGORY_GROUP_ORDER.filter((id) => groupCounts.has(id)).map(
+          {CATEGORY_SECTION_ORDER.filter((id) => groupCounts.has(id)).map(
             (id) => (
               <FilterChip
                 key={id}
-                label={t(`categories.${id}.label`)}
+                label={t(`sections.${id}.label`)}
                 total={groupCounts.get(id) ?? 0}
                 isSelected={group === id}
                 onSelect={() => setGroup(id)}
