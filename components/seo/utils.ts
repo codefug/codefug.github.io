@@ -118,7 +118,7 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
   };
 }
 
-export function createProfilePageStructuredData(path = "/portfolio") {
+export function createProfilePageStructuredData(path = "/resume") {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
@@ -131,7 +131,7 @@ export function createProfilePageStructuredData(path = "/portfolio") {
       "@id": `${BASE_URL}#author`,
       name: koMessages.seo.author,
       alternateName: "codefug",
-      description: koMessages.portfolio.hero.summary,
+      description: koMessages.resume.summary,
       url: BASE_URL,
       image: {
         "@type": "ImageObject" as const,
