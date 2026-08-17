@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/collapsible";
 import { SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar";
 import {
-  CATEGORY_GROUP_ORDER,
+  CATEGORY_SECTION_ORDER,
   type CategoryGroupId,
+  type CategorySectionId,
   getGroupIdByTag,
+  getGroupIdsBySection,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
@@ -30,77 +32,141 @@ function groupPostsByFirstCategory(
   }, {});
 }
 
+type PostsByCategory = Record<string, FrontMatter[]>;
+
+/** 그룹 하나 — 대분류 안에서 다시 접히는 단위 */
+function GroupNode({
+  groupId,
+  postsByCategory,
+  isCurrentPath,
+}: {
+  groupId: CategoryGroupId;
+  postsByCategory: PostsByCategory;
+  isCurrentPath: (post: FrontMatter) => boolean;
+}) {
+  const t = useTranslations("categories");
+
+  // 어느 그룹에도 속하지 않는 태그는 fallback 그룹으로 모여 누락되지 않는다.
+  const categories = Object.keys(postsByCategory).filter(
+    (category) => getGroupIdByTag(category) === groupId,
+  );
+  if (categories.length === 0) return null;
+
+  const total = categories.reduce(
+    (sum, category) => sum + postsByCategory[category].length,
+    0,
+  );
+  const hasCurrentPost = categories.some((category) =>
+    postsByCategory[category].some(isCurrentPath),
+  );
+
+  return (
+    <Collapsible defaultOpen={hasCurrentPost} className="group/group" asChild>
+      <div>
+        <CollapsibleTrigger className="w-full cursor-pointer select-none rounded-md px-3 py-1 text-left transition-colors hover:bg-sidebar-accent">
+          <div className="flex items-baseline gap-1.5">
+            <ChevronRight
+              className="h-3 w-3 shrink-0 self-center text-sidebar-foreground/40 transition-transform duration-200 group-data-[state=open]/group:rotate-90"
+              aria-hidden="true"
+            />
+            <h3 className="font-medium text-[11px] text-sidebar-foreground/60">
+              {t(`${groupId}.label`)}
+            </h3>
+            <span className="text-[10px] text-sidebar-foreground/30 tabular-nums">
+              {total}
+            </span>
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarGroupContent className="pl-2">
+            {categories.map((category) => (
+              <CollapsiblePostList
+                key={category}
+                category={category}
+                frontMatterList={postsByCategory[category]}
+              />
+            ))}
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+}
+
+/**
+ * 대분류 → 그룹 → 글의 3단 목록.
+ * 전부 펼치면 너무 길어지므로 기본은 접어두고,
+ * 지금 보고 있는 글이 속한 가지만 펼친 채로 시작한다.
+ */
 export function PostGroupContent({
   frontMatterList,
 }: {
   frontMatterList: FrontMatter[];
 }) {
-  const t = useTranslations("categories");
+  const t = useTranslations("sections");
   const pathname = usePathname();
   const postsByCategory = useMemo(
     () => groupPostsByFirstCategory(frontMatterList),
     [frontMatterList],
   );
 
+  const isCurrentPath = (post: FrontMatter) =>
+    pathname.includes(`${PATH.POSTS}/${post.id}`);
+
   return (
-    <SidebarGroup className="gap-4 py-2">
-      {CATEGORY_GROUP_ORDER.map((id: CategoryGroupId) => {
-        // 어느 그룹에도 속하지 않는 태그는 fallback 그룹으로 모여 누락되지 않는다.
-        const matchedCategories = Object.keys(postsByCategory).filter(
-          (category) => getGroupIdByTag(category) === id,
+    <SidebarGroup className="gap-3 py-2">
+      {CATEGORY_SECTION_ORDER.map((sectionId: CategorySectionId) => {
+        const groupIds = getGroupIdsBySection(sectionId);
+        const categories = Object.keys(postsByCategory).filter((category) =>
+          groupIds.includes(getGroupIdByTag(category)),
         );
+        if (categories.length === 0) return null;
 
-        if (matchedCategories.length === 0) return null;
-
-        const total = matchedCategories.reduce(
+        const total = categories.reduce(
           (sum, category) => sum + postsByCategory[category].length,
           0,
         );
-
-        // 그룹이 많아 전부 펼치면 목록이 길어진다. 접어두되,
-        // 지금 보고 있는 글이 속한 그룹만 펼친 채로 시작한다.
-        const hasCurrentPost = matchedCategories.some((category) =>
-          postsByCategory[category].some((post) =>
-            pathname.includes(`${PATH.POSTS}/${post.id}`),
-          ),
+        const hasCurrentPost = categories.some((category) =>
+          postsByCategory[category].some(isCurrentPath),
         );
 
         return (
           <Collapsible
-            key={id}
+            key={sectionId}
             defaultOpen={hasCurrentPost}
-            className="group/group"
+            className="group/section"
             asChild
           >
             <section>
-              {/* 카테고리 이름만으로는 무슨 글인지 알기 어려워 설명을 함께 보여준다. */}
+              {/* 이름만으로는 무슨 글인지 알기 어려워 설명을 함께 보여준다. */}
               <CollapsibleTrigger className="w-full cursor-pointer select-none rounded-md px-3 py-1.5 text-left transition-colors hover:bg-sidebar-accent">
                 <div className="flex items-baseline gap-1.5">
                   <ChevronRight
-                    className="h-3.5 w-3.5 shrink-0 self-center text-sidebar-foreground/50 transition-transform duration-200 group-data-[state=open]/group:rotate-90"
+                    className="h-3.5 w-3.5 shrink-0 self-center text-sidebar-foreground/50 transition-transform duration-200 group-data-[state=open]/section:rotate-90"
                     aria-hidden="true"
                   />
                   <h2 className="font-semibold text-[11px] text-sidebar-foreground/70 uppercase tracking-widest">
-                    {t(`${id}.label`)}
+                    {t(`${sectionId}.label`)}
                   </h2>
                   <span className="text-[10px] text-sidebar-foreground/30 tabular-nums">
                     {total}
                   </span>
                 </div>
                 <p className="mt-0.5 pl-5 text-[11px] text-sidebar-foreground/40 leading-snug">
-                  {t(`${id}.description`)}
+                  {t(`${sectionId}.description`)}
                 </p>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SidebarGroupContent>
-                  {matchedCategories.map((category) => (
-                    <CollapsiblePostList
-                      key={category}
-                      category={category}
-                      frontMatterList={postsByCategory[category]}
+                <div className="mt-1 space-y-0.5 pl-2">
+                  {groupIds.map((groupId) => (
+                    <GroupNode
+                      key={groupId}
+                      groupId={groupId}
+                      postsByCategory={postsByCategory}
+                      isCurrentPath={isCurrentPath}
                     />
                   ))}
-                </SidebarGroupContent>
+                </div>
               </CollapsibleContent>
             </section>
           </Collapsible>
