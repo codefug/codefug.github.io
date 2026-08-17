@@ -30,36 +30,42 @@ export default function Header() {
   // 사이드바가 없는 페이지에서는 여는 버튼도 보이지 않아야 한다.
   const isSidebarOff = useMemo(() => isSidebarOffPath(pathName), [pathName]);
   return (
-    <header
-      className={cn(
-        headerVariant({ isShow, isShowVerticalScrollbar }),
-        "print:hidden",
-      )}
-    >
-      <div className="flex items-center justify-between gap-6 p-4">
-        <section className="flex items-center gap-4">
-          {!isSidebarOff && <SideBarToggleButton />}
-          <Link
-            href={PATH.HOME}
-            passHref
-            className="flex shrink-0 items-center transition-opacity hover:opacity-75"
-            aria-label={t("logo")}
-          >
-            <span className="font-black text-lg tracking-tight">
-              <span className="text-foreground">code</span>
-              <span className="bg-linear-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
-                fug
-              </span>
-            </span>
-          </Link>
-        </section>
-        <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
-          <HeaderNavigation hideDuplicatesOnMobile={!isSidebarOff} />
-          <HeaderSwitch />
-        </section>
-      </div>
+    <>
+      {/*
+        진행률 바를 헤더 안에 두면, 아래로 스크롤해 헤더가 숨을 때 같이 사라진다.
+        읽는 동안 보여야 하는 것이므로 헤더 밖에 따로 고정한다.
+      */}
       {isShowVerticalScrollbar && <HorizontalScrollbar />}
-    </header>
+      <header
+        className={cn(
+          headerVariant({ isShow, isShowVerticalScrollbar }),
+          "print:hidden",
+        )}
+      >
+        <div className="flex items-center justify-between gap-6 p-4">
+          <section className="flex items-center gap-4">
+            {!isSidebarOff && <SideBarToggleButton />}
+            <Link
+              href={PATH.HOME}
+              passHref
+              className="flex shrink-0 items-center transition-opacity hover:opacity-75"
+              aria-label={t("logo")}
+            >
+              <span className="font-black text-lg tracking-tight">
+                <span className="text-foreground">code</span>
+                <span className="bg-linear-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
+                  fug
+                </span>
+              </span>
+            </Link>
+          </section>
+          <section className="flex items-center gap-4 font-semibold text-sm md:text-base">
+            <HeaderNavigation hideDuplicatesOnMobile={!isSidebarOff} />
+            <HeaderSwitch />
+          </section>
+        </div>
+      </header>
+    </>
   );
 }
 
@@ -151,7 +157,7 @@ const HorizontalScrollbar = memo(function VerticalScrollbar() {
 
   return (
     <motion.div
-      className="h-2 origin-left bg-primary"
+      className="fixed top-0 right-0 left-0 z-50 h-2 origin-left bg-primary print:hidden"
       style={{
         scaleX,
       }}
