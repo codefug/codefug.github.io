@@ -89,11 +89,12 @@ export default async function Page({
       <GtmPageView slug={id} />
       <StructuredData jsonLd={structuredData} />
       <PostHeaderContent frontMatter={frontMatterData} />
-      <section className="lg:flex lg:items-baseline">
-        <MenuBar />
-        <section className="max-w-full">
+      {/* 넓은 화면에서만 본문 오른쪽에 목차가 따라붙는다. (MenuBar 주석 참고) */}
+      <section className="xl:flex xl:items-start xl:gap-10">
+        <section className="min-w-0 max-w-full flex-1">
           <PostContent postId={id} />
         </section>
+        <MenuBar />
       </section>
       <AdjacentPosts adjacent={getAdjacentPosts(id)} />
       <RelatedPosts related={related} />
