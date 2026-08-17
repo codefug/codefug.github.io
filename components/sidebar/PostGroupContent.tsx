@@ -158,14 +158,26 @@ export function PostGroupContent({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="mt-1 space-y-0.5 pl-2">
-                  {groupIds.map((groupId) => (
-                    <GroupNode
-                      key={groupId}
-                      groupId={groupId}
-                      postsByCategory={postsByCategory}
-                      isCurrentPath={isCurrentPath}
-                    />
-                  ))}
+                  {/*
+                    그룹이 하나뿐이면 "시리즈 > 시리즈"처럼 같은 이름이 겹친다.
+                    그럴 때는 중간 단계를 건너뛰고 태그를 바로 보여준다.
+                  */}
+                  {groupIds.length === 1
+                    ? categories.map((category) => (
+                        <CollapsiblePostList
+                          key={category}
+                          category={category}
+                          frontMatterList={postsByCategory[category]}
+                        />
+                      ))
+                    : groupIds.map((groupId) => (
+                        <GroupNode
+                          key={groupId}
+                          groupId={groupId}
+                          postsByCategory={postsByCategory}
+                          isCurrentPath={isCurrentPath}
+                        />
+                      ))}
                 </div>
               </CollapsibleContent>
             </section>

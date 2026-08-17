@@ -28,7 +28,7 @@ export const PATH = {
   HOME: "/",
   POSTS: "/posts",
   SERIES: "/series",
-  RETROSPECTIVE: "/retrospective",
+  NOTES: "/notes",
   RESUME: "/resume",
   SEARCH: "/search",
 } as const;
