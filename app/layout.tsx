@@ -54,6 +54,11 @@ function SidebarWrapper() {
   return <Sidebar frontMatterList={frontMatterList} />;
 }
 
+/** 글이 있는 태그만 내비게이션 메뉴에 세운다. (빈 카테고리는 페이지가 없다) */
+function usedTags(): string[] {
+  return [...new Set(getFrontMatterList().flatMap((post) => post.categories))];
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -75,7 +80,7 @@ export default function RootLayout({
         >
           <SidebarProvider defaultOpen={false}>
             <SidebarWrapper />
-            <Layout>{children}</Layout>
+            <Layout usedTags={usedTags()}>{children}</Layout>
           </SidebarProvider>
         </ThemeProvider>
       </body>
