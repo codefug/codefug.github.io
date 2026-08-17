@@ -13,6 +13,7 @@ export const TAG_LIST = {
   REINDEER_LETTER: "reindeer-letter",
   RETROSPECTIVE: "retrospective",
   REVIEW: "review",
+  ESSAY: "essay",
 } as const;
 
 export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
@@ -30,6 +31,7 @@ export type CategoryGroupId =
   | "webDev"
   | "retrospective"
   | "review"
+  | "essay"
   | "etc";
 
 /**
@@ -99,6 +101,7 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
     id: "retrospective",
     order: 4,
     groups: [
+      { id: "essay", tags: [TAG_LIST.ESSAY] },
       { id: "retrospective", tags: [TAG_LIST.RETROSPECTIVE] },
       { id: "review", tags: [TAG_LIST.REVIEW] },
     ],
