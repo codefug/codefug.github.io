@@ -13,7 +13,14 @@ import { SidebarAnchorButton } from "./SidebarAnchorButton";
  * 사이드바가 깊어지고 목록이 길어졌다. 지금은 태그를 누르면
  * 그 카테고리의 목록 페이지로 보낸다.
  */
-export function CollapsiblePostList({ category }: { category: string }) {
+export function CollapsiblePostList({
+  category,
+  asGroupLabel = false,
+}: {
+  category: string;
+  /** 그룹 자리를 대신할 때(Web처럼 태그가 그룹과 같은 이름) 형제 그룹과 같은 크기로 둔다. */
+  asGroupLabel?: boolean;
+}) {
   const pathname = usePathname();
   const href = `${PATH.CATEGORIES}/${category}`;
   const isCurrent = pathname.startsWith(href);
@@ -23,10 +30,22 @@ export function CollapsiblePostList({ category }: { category: string }) {
       href={href}
       aria-current={isCurrent ? "page" : undefined}
       className={cn(
-        "block w-full truncate rounded-md px-3 py-1.5 text-left text-[13px] transition-colors",
+        /*
+          트리의 말단이다. 부모 그룹(11px)과 크기가 비슷하면 같은 층으로 읽히므로
+          한 단계 확실히 작게(9.5px) 두고 색도 더 연하게 깐다.
+          긴 이름은 자르지 않고 줄바꿈한다.
+        */
+        "block w-full rounded-md py-1 pr-3 text-left leading-snug transition-colors",
+        /*
+          그룹 자리를 대신할 때는 형제 그룹의 화살표 자리만큼 밀어
+          이름의 시작점을 맞춘다. (px-3 + 화살표 12px + gap 6px)
+        */
+        asGroupLabel ? "pl-7.5 font-medium text-[11px]" : "pl-3 text-[9.5px]",
         isCurrent
           ? "bg-sidebar-accent font-medium text-sidebar-foreground"
-          : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+          : asGroupLabel
+            ? "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            : "text-sidebar-foreground/45 hover:bg-sidebar-accent hover:text-sidebar-foreground",
       )}
     >
       {resolveTagLabel(category)}

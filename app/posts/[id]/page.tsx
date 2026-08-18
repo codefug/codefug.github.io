@@ -16,7 +16,7 @@ import {
 import { PATH } from "@/constants/path";
 import {
   getAdjacentPosts,
-  getAllFrontMatterListIncludingHidden,
+  getFrontMatterList,
   getPostFrontMattersById,
   getRelatedPosts,
   isHiddenPost,
@@ -106,9 +106,12 @@ export default async function Page({
 }
 
 export function generateStaticParams() {
-  // 숨김 글도 직접 URL로는 접근 가능해야 하므로 정적 경로는 전부 생성한다.
-  const allPosts = getAllFrontMatterListIncludingHidden();
-  return allPosts.map(({ id }) => ({ id }));
+  /*
+    숨긴 글은 페이지 자체를 만들지 않는다.
+    목록에서만 빼면 주소를 아는 사람은 계속 읽을 수 있어서,
+    "내리기로 한 글"이 사실상 발행 상태로 남는다.
+  */
+  return getFrontMatterList().map(({ id }) => ({ id }));
 }
 
 export const dynamicParams = false;
