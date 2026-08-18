@@ -49,9 +49,8 @@ export default function Page() {
       */}
       {/* 좁은 화면에서는 축소하지 않고 가로 스크롤로 넘긴다. */}
       <div className="flex w-fit min-w-full flex-col items-center gap-8 break-keep px-4 py-8 print:w-auto print:min-w-0 print:gap-0 print:p-0">
-        {/* 1장 — 인적사항과 현재 회사 */}
         <ResumePage>
-          <ResumeHeader className="mb-8" />
+          <ResumeHeader className="mb-3" />
 
           <WorkExperienceSection>
             <div>
@@ -65,7 +64,6 @@ export default function Page() {
           </WorkExperienceSection>
         </ResumePage>
 
-        {/* 2장 — 어드민과 이전 회사 */}
         <ResumePage>
           <WorkExperienceSection>
             <div>
@@ -91,28 +89,23 @@ export default function Page() {
               </TeamSection>
             </div>
           </WorkExperienceSection>
-        </ResumePage>
-
-        {/* 3장 — 나머지 경력과 활동·학력·자격 */}
-        <ResumePage>
           <KeepTogether>
             <SideProjects />
           </KeepTogether>
-
-          <KeepTogether>
-            <OpenSource />
-          </KeepTogether>
-          <KeepTogether>
-            <KnowledgeSharing />
-          </KeepTogether>
-
-          <KeepTogether>
-            <ResumeEducation />
-          </KeepTogether>
-
-          <KeepTogether>
-            <ResumeCertification />
-          </KeepTogether>
+          <div className="grid grid-cols-2">
+            <KeepTogether>
+              <OpenSource />
+            </KeepTogether>
+            <KeepTogether>
+              <KnowledgeSharing />
+            </KeepTogether>
+            <KeepTogether>
+              <ResumeEducation />
+            </KeepTogether>
+            <KeepTogether>
+              <ResumeCertification />
+            </KeepTogether>
+          </div>
         </ResumePage>
       </div>
     </>

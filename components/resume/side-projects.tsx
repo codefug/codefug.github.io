@@ -66,6 +66,9 @@ export default function SideProjects({ className }: { className?: string }) {
   const t = useTranslations("resume.sideProjects");
   const items = t.raw("items") as SideProjectItem[];
 
+  // 내세울 것이 없으면 제목만 남은 빈 칸이 되므로 섹션째로 접는다.
+  if (items.length === 0) return null;
+
   return (
     <section className={cn("py-5", className)}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>

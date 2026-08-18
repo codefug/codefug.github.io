@@ -31,10 +31,15 @@ categories:
   - react
 header:
   teaser: /images/logos/Nextjs.png # OG 태그용 (목록 카드에는 쓰지 않는다)
-hidden: true # 선택. 목록·검색·RSS·사이트맵에서 제외하고 noindex 처리
+hidden: true # 선택. 발행하지 않는다 (페이지 자체를 만들지 않음)
 ```
 
-`hidden: true`인 글도 직접 URL로는 열린다(기존 링크 보존). 목록에 노출하지 않을 뿐이다.
+`hidden: true`인 글은 **페이지가 생성되지 않는다.** 목록·검색·RSS·사이트맵에서 빠지는 것은 물론이고
+`/posts/<id>`로 직접 접근해도 404다. 내리기로 한 글이 주소를 아는 사람에게만 열려 있으면
+사실상 발행 상태로 남기 때문이다.
+
+그래서 숨긴 글로 향하는 링크는 404가 된다. 글을 숨길 때는
+`grep -rn "/posts/<id>)" markdown/ messages/`로 걸린 링크를 함께 정리해야 한다.
 
 ## 카테고리
 

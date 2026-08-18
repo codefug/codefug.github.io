@@ -33,7 +33,9 @@ export default async function Page({
   const posts = getPostsByTag(getFrontMatterList(), tag);
   const label = resolveTagLabel(tag);
 
-  return <CategoryPosts tag={tag} label={label} posts={posts} />;
+  return (
+    <CategoryPosts scope={`category-${tag}`} label={label} posts={posts} />
+  );
 }
 
 export function generateStaticParams() {

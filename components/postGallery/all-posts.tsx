@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from "react";
 import {
-  CATEGORY_SECTION_ORDER,
-  type CategorySectionId,
-  getSectionIdByTag,
+  FILTER_FACETS,
+  facetLabelKey,
+  matchesFacet,
 } from "@/constants/categories";
 import type { FrontMatter } from "@/constants/mdx";
 import { useViewMode } from "@/hooks/useViewMode";
@@ -26,26 +26,26 @@ export function AllPosts({
 }) {
   const t = useTranslations();
 
-  const [group, setGroup] = useState<CategorySectionId | typeof ALL>(ALL);
+  const [selected, setSelected] = useState<string | typeof ALL>(ALL);
   const { viewMode, toggle } = useViewMode("all-posts");
 
-  const groupCounts = useMemo(() => {
-    const counts = new Map<CategorySectionId, number>();
-    for (const post of posts) {
-      // 한 글이 여러 분류에 걸칠 수 있으므로 대분류 기준으로 중복 없이 센다.
-      for (const id of new Set(post.categories.map(getSectionIdByTag))) {
-        counts.set(id, (counts.get(id) ?? 0) + 1);
-      }
-    }
-    return counts;
-  }, [posts]);
+  // 글이 없는 칸은 세우지 않는다. 한 글이 여러 칸에 걸칠 수 있어 칸마다 따로 센다.
+  const facets = useMemo(
+    () =>
+      FILTER_FACETS.map((facet) => ({
+        facet,
+        total: posts.filter((post) => matchesFacet(facet, post.categories))
+          .length,
+      })).filter(({ total }) => total > 0),
+    [posts],
+  );
 
   const filtered = useMemo(() => {
-    if (group === ALL) return posts;
-    return posts.filter((post) =>
-      post.categories.some((tag) => getSectionIdByTag(tag) === group),
-    );
-  }, [posts, group]);
+    if (selected === ALL) return posts;
+    const found = facets.find(({ facet }) => facet.id === selected);
+    if (!found) return posts;
+    return posts.filter((post) => matchesFacet(found.facet, post.categories));
+  }, [posts, selected, facets]);
 
   return (
     <div className="mx-auto w-full max-w-350 px-4 py-8">
@@ -61,20 +61,18 @@ export function AllPosts({
           <FilterChip
             label={t("common.category.all")}
             total={posts.length}
-            isSelected={group === ALL}
-            onSelect={() => setGroup(ALL)}
+            isSelected={selected === ALL}
+            onSelect={() => setSelected(ALL)}
           />
-          {CATEGORY_SECTION_ORDER.filter((id) => groupCounts.has(id)).map(
-            (id) => (
-              <FilterChip
-                key={id}
-                label={t(`sections.${id}.label`)}
-                total={groupCounts.get(id) ?? 0}
-                isSelected={group === id}
-                onSelect={() => setGroup(id)}
-              />
-            ),
-          )}
+          {facets.map(({ facet, total }) => (
+            <FilterChip
+              key={facet.id}
+              label={t(facetLabelKey(facet))}
+              total={total}
+              isSelected={selected === facet.id}
+              onSelect={() => setSelected(facet.id)}
+            />
+          ))}
         </div>
         <ViewToggle viewMode={viewMode} onToggle={toggle} />
       </div>
