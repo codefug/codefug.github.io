@@ -37,7 +37,6 @@ export const TAG_LABEL: Partial<Record<Tag, string>> = {
  */
 export type CategoryGroupId =
   | "sideProject"
-  | "learningProject"
   | "workProject"
   | "series"
   | "framework"
@@ -103,16 +102,6 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
         tags: [TAG_LIST.CLAUDE_PET],
         hasPage: true,
       },
-      {
-        id: "learningProject",
-        tags: [
-          TAG_LIST.KKOM_KKOM,
-          TAG_LIST.GHEUPPAY,
-          TAG_LIST.FANDOMK,
-          TAG_LIST.REINDEER_LETTER,
-        ],
-        hasPage: true,
-      },
       { id: "workProject", tags: [] },
     ],
   },
@@ -168,7 +157,6 @@ function findSection(
 const ORDERED_GROUP_IDS: CategoryGroupId[] = [
   "series",
   "sideProject",
-  "learningProject",
   "workProject",
 ];
 
