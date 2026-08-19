@@ -46,7 +46,7 @@ export default function ImageOverlay({
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="block cursor-zoom-in"
+        className="block max-w-full cursor-zoom-in"
         aria-label={alt ? `${alt} 크게 보기` : "이미지 크게 보기"}
       >
         <img src={src} alt={alt ?? ""} className={className} />
