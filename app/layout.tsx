@@ -78,7 +78,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen={false}>
+          <SidebarProvider defaultOpen>
             <SidebarWrapper />
             <Layout usedTags={usedTags()}>{children}</Layout>
           </SidebarProvider>
