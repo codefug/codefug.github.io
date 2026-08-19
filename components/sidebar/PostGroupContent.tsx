@@ -113,20 +113,20 @@ function GroupNode({
   return (
     <Collapsible defaultOpen={hasCurrentPost} className="group/group" asChild>
       <div>
-        <div className="flex items-center rounded-md transition-colors hover:bg-sidebar-accent">
-          <CollapsibleTrigger
-            className="cursor-pointer select-none py-1 pr-1 pl-3"
-            aria-label={t(`${groupId}.label`)}
-          >
+        <CollapsibleTrigger
+          className="flex w-full cursor-pointer select-none items-center rounded-md transition-colors hover:bg-sidebar-accent"
+          aria-label={t(`${groupId}.label`)}
+        >
+          <div className="flex items-center gap-1 py-1 pr-1 pl-3">
             <ChevronRight
               className="h-3 w-3 shrink-0 text-sidebar-foreground/40 transition-transform duration-200 group-data-[state=open]/group:rotate-90"
               aria-hidden="true"
             />
-          </CollapsibleTrigger>
-          <h3 className="flex-1 py-1 pr-3 font-medium text-[11px] text-sidebar-foreground/60">
-            {t(`${groupId}.label`)}
-          </h3>
-        </div>
+            <h3 className="flex-1 py-1 pr-3 font-medium text-[11px] text-sidebar-foreground/60">
+              {t(`${groupId}.label`)}
+            </h3>
+          </div>
+        </CollapsibleTrigger>
         <CollapsibleContent>
           {/* 그룹 이름의 화살표만큼 더 들여써서 한 단계 아래임을 보인다. */}
           <SidebarGroupContent className="pl-4">
