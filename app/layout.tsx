@@ -70,6 +70,14 @@ export default function RootLayout({
       className={`${notoSansKr.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/me.jpg"
+          fetchPriority="high"
+        />
+      </head>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       <body className="font-sans antialiased">
         <ThemeProvider
