@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -45,12 +44,15 @@ export default function AppSidebar({
             aria-hidden="true"
           />
           <div className="relative">
-            <Avatar className="h-16 w-16 ring-2 ring-primary/40 ring-offset-2 ring-offset-sidebar">
-              <AvatarImage src="/images/me.jpg" alt={t("sidebar.profileAlt")} />
-              <AvatarFallback className="bg-primary/10 font-mono text-primary text-sm">
-                {t("sidebar.name")}
-              </AvatarFallback>
-            </Avatar>
+            <img
+              src="/images/me.jpg"
+              alt={t("sidebar.profileAlt")}
+              width={64}
+              height={64}
+              fetchPriority="high"
+              decoding="sync"
+              className="h-16 w-16 shrink-0 rounded-full bg-primary/10 object-cover ring-2 ring-primary/40 ring-offset-2 ring-offset-sidebar"
+            />
           </div>
           <div className="relative text-center">
             <h1 className="font-semibold text-sidebar-foreground text-sm">
