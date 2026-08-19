@@ -28,7 +28,6 @@ export const THUMBNAIL_GROUP_STYLE: Record<
   { tone: ThumbnailTone; mark: ThumbnailMark }
 > = {
   sideProject: { tone: "orange", mark: { kind: "glyph", value: "◆" } },
-  learningProject: { tone: "yellow", mark: { kind: "glyph", value: "◇" } },
   workProject: { tone: "blue", mark: { kind: "glyph", value: "▲" } },
   series: { tone: "purple", mark: { kind: "glyph", value: "»" } },
   framework: { tone: "sky-blue", mark: { kind: "glyph", value: "{}" } },
