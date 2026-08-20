@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/sidebar";
 import type { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
+import { isSidebarOffPath } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { PostGroupContent } from "./PostGroupContent";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
+import { useNavigateAfterSidebarClose } from "./use-navigate-after-sidebar-close";
 
 export default function AppSidebar({
   frontMatterList,
@@ -24,7 +26,28 @@ export default function AppSidebar({
   frontMatterList: FrontMatter[];
 }) {
   const t = useTranslations();
-  const { toggleSidebar } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
+  const navigateAfterSidebarClose = useNavigateAfterSidebarClose();
+
+  /**
+   * 이동한 뒤에도 사이드바는 열려 있는 게 기본이다. 두 경우만 예외다.
+   *
+   * - 사이드바를 쓰지 않는 페이지(이력서)로 갈 때는 어차피 닫히므로,
+   *   닫힘 애니메이션이 끝난 뒤에 이동시켜 두 움직임이 겹치지 않게 한다.
+   * - 모바일에서는 사이드바가 본문을 덮는 오버레이라, 열어둔 채 이동하면
+   *   도착한 페이지가 가려진다. 그래서 항상 닫는다.
+   */
+  const getNavigationClickHandler = (item: {
+    href: string;
+    target: string;
+  }) => {
+    if (item.target === "_blank") return undefined;
+    if (isSidebarOffPath(item.href)) {
+      return navigateAfterSidebarClose(item.href);
+    }
+    if (isMobile) return () => setOpenMobile(false);
+    return undefined;
+  };
 
   return (
     <Sidebar>
@@ -82,11 +105,7 @@ export default function AppSidebar({
                     <SidebarAnchorButton
                       href={item.href}
                       target={item.target}
-                      onClick={
-                        (item.target as string) === "_blank"
-                          ? undefined
-                          : toggleSidebar
-                      }
+                      onClick={getNavigationClickHandler(item)}
                     >
                       {t(`navigation.${item.label.toLowerCase()}`)}
                     </SidebarAnchorButton>
