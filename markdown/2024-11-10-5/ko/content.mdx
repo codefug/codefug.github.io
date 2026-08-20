@@ -129,7 +129,10 @@ loadJson("/article/promise-chaining/user.json")
 // ...
 ```
 
-결론적으로 Promise Chaining은 다음의 구조입니다.
+체인이 이어지는 원리는 `.then`의 반환값에 있습니다. `.then(handler)`는 항상 새로운 대기 상태의
+Promise를 반환하고, 그 Promise의 상태와 결과는 핸들러가 무엇을 남기느냐로 결정됩니다.
+값을 반환하면 그 값으로 이행되고, 에러를 던지면 거부되며, Promise를 반환하면 그 Promise의
+결과를 기다렸다가 대신 물려받습니다.
 
 ![](/images/2024-11-10/Pasted%20image%2020241107212119.png)
 
