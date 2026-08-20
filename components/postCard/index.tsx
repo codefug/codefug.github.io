@@ -42,12 +42,12 @@ export default function PostCard({
           teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
         */}
         {header?.teaser ? (
-          <div className="-mx-5 -mt-5 mb-4 flex h-40 shrink-0 items-center justify-center border-border/60 border-b bg-muted/30 sm:h-48">
+          <div className="-mx-5 -mt-5 mb-4 flex h-40 shrink-0 items-center justify-center border-border/60 border-b bg-muted/30 p-6 sm:h-48">
             <img
               src={header.teaser}
               alt=""
               aria-hidden
-              className="aspect-square h-full w-auto max-w-full object-contain"
+              className="max-h-full max-w-full object-contain"
               loading="lazy"
             />
           </div>
