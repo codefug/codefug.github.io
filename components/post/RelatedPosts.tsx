@@ -1,4 +1,4 @@
-import PostGallery from "@/components/postGallery";
+import PostCard from "@/components/postCard";
 import type { FrontMatter } from "@/constants/mdx";
 
 type Props = {
@@ -12,7 +12,11 @@ export function RelatedPosts({ related }: Props) {
   return (
     <section className="not-prose mt-12">
       <h2 className="mb-6 font-bold text-xl">관련 포스트</h2>
-      <PostGallery postInfoList={related} />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((post) => (
+          <PostCard key={post.id} {...post} />
+        ))}
+      </div>
     </section>
   );
 }
