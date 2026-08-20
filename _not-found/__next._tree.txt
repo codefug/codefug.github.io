@@ -2,4 +2,4 @@
 :HL["https://codefug.github.io/_next/static/chunks/099wm272_os32.css","style"]
 :HL["https://codefug.github.io/_next/static/chunks/2bug71ucancbp.css","style"]
 :HL["/images/me.jpg","image",{"fetchPriority":"high"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"w5QIi6KanMDWBUi83wvUH"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"MYFHVBaZc5nafB0WJKVFC"}
