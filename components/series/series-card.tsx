@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, Layers } from "lucide-react";
+import Link from "next/link";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
@@ -25,7 +26,7 @@ export default function SeriesCard({
   const name = t(`series.${slug}.name`);
 
   return (
-    <a href={`${PATH.SERIES}/${slug}`} title={name}>
+    <Link href={`${PATH.SERIES}/${slug}`} title={name}>
       <Card className="group relative flex cursor-pointer items-center gap-4 overflow-hidden p-5 transition-all duration-300 hover:shadow-lg hover:ring-1 hover:ring-primary/20">
         <span
           className="absolute inset-y-0 left-0 w-0.5 bg-primary/40 transition-colors duration-300 group-hover:bg-primary"
@@ -55,6 +56,6 @@ export default function SeriesCard({
           />
         </div>
       </Card>
-    </a>
+    </Link>
   );
 }

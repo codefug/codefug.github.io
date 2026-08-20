@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
@@ -45,7 +46,7 @@ export function RecentPosts({
           </h2>
         </div>
         <div className="flex items-center gap-3">
-          <a
+          <Link
             href={PATH.POSTS}
             className="group inline-flex shrink-0 items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-primary"
           >
@@ -54,7 +55,7 @@ export function RecentPosts({
               className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"
             />
-          </a>
+          </Link>
           <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
         </div>
       </div>

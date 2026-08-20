@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
@@ -21,7 +22,7 @@ export default function PostBannerCard({
   const t = useTranslations();
 
   return (
-    <a
+    <Link
       href={`${PATH.POSTS}/${id}`}
       aria-label={t("common.aria.postRead", { title })}
       rel="bookmark"
@@ -65,6 +66,6 @@ export default function PostBannerCard({
           />
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
