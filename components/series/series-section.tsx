@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import type { SeriesSummary } from "@/util/post";
@@ -32,12 +33,12 @@ export default function SeriesSection({
                 {seriesList.length}
               </span>
             </h2>
-            <a
+            <Link
               href={PATH.SERIES}
               className="shrink-0 text-muted-foreground text-sm transition-colors hover:text-primary"
             >
               {t("viewAll")}
-            </a>
+            </Link>
           </div>
           <p className="mt-0.5 text-muted-foreground text-sm">
             {t("description")}

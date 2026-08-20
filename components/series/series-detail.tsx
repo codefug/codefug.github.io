@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, Layers } from "lucide-react";
+import Link from "next/link";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
@@ -16,13 +17,13 @@ export function SeriesDetail({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
-      <a
+      <Link
         href={PATH.HOME}
         className="mb-6 inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-primary"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         {t("series.backToList")}
-      </a>
+      </Link>
 
       <header className="mb-8 border-border border-b pb-6">
         <div className="mb-2 flex items-center gap-2">
@@ -54,7 +55,7 @@ function SeriesPostItem({ post, order }: { post: FrontMatter; order: number }) {
   const t = useTranslations();
 
   return (
-    <a
+    <Link
       href={`${PATH.POSTS}/${post.id}`}
       aria-label={t("common.aria.postRead", { title: post.title })}
       rel="bookmark"
@@ -85,6 +86,6 @@ function SeriesPostItem({ post, order }: { post: FrontMatter; order: number }) {
           )}
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

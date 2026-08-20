@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
@@ -51,7 +52,7 @@ function AdjacentLink({
   const Icon = isNext ? ArrowRight : ArrowLeft;
 
   return (
-    <a
+    <Link
       href={`${PATH.POSTS}/${post.id}`}
       rel={isNext ? "next" : "prev"}
       className={cn(
@@ -79,6 +80,6 @@ function AdjacentLink({
       <span className="line-clamp-2 font-semibold text-sm transition-colors group-hover:text-primary">
         {post.title}
       </span>
-    </a>
+    </Link>
   );
 }

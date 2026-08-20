@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
@@ -22,7 +23,7 @@ export default function PostListItem({
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
 
   return (
-    <a
+    <Link
       href={linkHref}
       aria-label={t("common.aria.postRead", { title })}
       rel="bookmark"
@@ -79,6 +80,6 @@ export default function PostListItem({
           )}
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
