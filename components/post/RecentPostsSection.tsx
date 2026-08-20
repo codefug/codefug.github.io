@@ -1,4 +1,4 @@
-import PostGallery from "@/components/postGallery";
+import PostCard from "@/components/postCard";
 import getFrontMatterList from "@/lib/posts";
 
 const RECENT_COUNT = 6;
@@ -26,7 +26,11 @@ export function RecentPostsSection({
   return (
     <section className="not-prose mt-12">
       <h2 className="mb-6 font-bold text-xl">최신 글</h2>
-      <PostGallery postInfoList={recent} />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {recent.map((post) => (
+          <PostCard key={post.id} {...post} />
+        ))}
+      </div>
     </section>
   );
 }
