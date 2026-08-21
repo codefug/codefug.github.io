@@ -135,7 +135,11 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
   },
 ];
 
-/** 어느 그룹에도 속하지 않는 태그가 모이는 fallback */
+/**
+ * 어느 그룹에도 속하지 않는 태그가 모이는 fallback.
+ * 지금 여기 모이는 태그는 없지만, 트리에 넣지 않은 태그로 글을 쓰면
+ * 그 글이 분류에서 조용히 사라지므로 남겨둔다.
+ */
 export const FALLBACK_GROUP_ID: CategoryGroupId = "etc";
 export const FALLBACK_SECTION_ID: CategorySectionId = "etc";
 
@@ -202,13 +206,14 @@ export function getSectionIdByTag(tag: string): CategorySectionId {
   return GROUP_TO_SECTION_ID.get(getGroupIdByTag(tag)) ?? FALLBACK_SECTION_ID;
 }
 
-/** 대분류 노출 순서 (fallback은 항상 마지막) */
-export const CATEGORY_SECTION_ORDER: CategorySectionId[] = [
-  ...CATEGORY_SECTIONS.toSorted((a, b) => a.order - b.order).map(
+/**
+ * 대분류 노출 순서.
+ * fallback은 넣지 않는다. 글이 없어도 사이드바·홈·필터 세 곳에 빈 칸이 생긴다.
+ */
+export const CATEGORY_SECTION_ORDER: CategorySectionId[] =
+  CATEGORY_SECTIONS.toSorted((a, b) => a.order - b.order).map(
     (section) => section.id,
-  ),
-  FALLBACK_SECTION_ID,
-];
+  );
 
 /**
  * 대분류 안의 그룹과 그 대표 태그. 그룹 하나가 태그 하나를 대표하는 구조
