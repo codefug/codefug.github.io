@@ -413,11 +413,6 @@
       "description": "JavaScript와 TypeScript 그 자체에 대한 탐구",
       "thumbnailCaption": "문법 그 아래를 보다"
     },
-    "etc": {
-      "label": "기타",
-      "description": "그 밖의 기록들",
-      "thumbnailCaption": "분류에 걸치지 않은 기록"
-    },
     "framework": {
       "label": "Framework",
       "description": "React·Next.js·Electron 등 프레임워크의 동작 원리를 파고든 기록",
@@ -490,10 +485,6 @@
     "notes": {
       "label": "기록",
       "description": "돌아본 것과 생각한 것, 보고 들은 것을 남긴 글"
-    },
-    "etc": {
-      "label": "기타",
-      "description": "아직 분류하지 않은 글"
     }
   }
 }
