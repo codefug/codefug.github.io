@@ -50,13 +50,6 @@
       <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title><![CDATA[순록의 편지 — 연말에 예약 편지를 보내는 서비스를 만들며]]></title>
-      <link>https://codefug.github.io/posts/2024-12-25-project/</link>
-      <guid>https://codefug.github.io/posts/2024-12-25-project/</guid>
-      <description><![CDATA[인앱 브라우저에서 기능이 깨지는 문제와 대용량 목록 렌더링 성능 문제, 두 가지를 실제로 부딪히고 풀어낸 기록입니다.]]></description>
-      <pubDate>Wed, 25 Dec 2024 00:00:00 GMT</pubDate>
-    </item>
-    <item>
       <title><![CDATA[async/await, 그리고 실행 순서 문제]]></title>
       <link>https://codefug.github.io/posts/2024-11-10-7/</link>
       <guid>https://codefug.github.io/posts/2024-11-10-7/</guid>
