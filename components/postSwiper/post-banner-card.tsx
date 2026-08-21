@@ -10,6 +10,9 @@ import { Badge } from "../ui/badge";
 /**
  * 최신 게시물 배너 한 장.
  * 목록 카드와 마찬가지로 이미지를 쓰지 않고, 넓은 가로 폭을 타이포그래피로 채운다.
+ *
+ * 좌우 패딩은 캐러셀 화살표 자리를 비켜 준다.
+ * 화살표가 left-3(12px) + 40px이라 본문은 최소 52px을 띄워야 겹치지 않는다.
  */
 export default function PostBannerCard({
   categories,
@@ -27,7 +30,7 @@ export default function PostBannerCard({
       aria-label={t("common.aria.postRead", { title })}
       rel="bookmark"
       title={title}
-      className="group relative flex min-h-56 flex-col justify-center overflow-hidden rounded-xl border border-border/60 bg-linear-to-br from-primary/8 via-card to-card px-6 py-8 transition-colors duration-300 hover:border-primary/40 md:min-h-64 md:px-14"
+      className="group relative flex min-h-56 flex-col justify-center overflow-hidden rounded-xl border border-border/60 bg-linear-to-br from-primary/8 via-card to-card px-16 py-8 transition-colors duration-300 hover:border-primary/40 md:min-h-64 md:px-14"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-40"
