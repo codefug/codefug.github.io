@@ -62,15 +62,8 @@ await Promise.all(promises);
 ![네트워크 패널 - Server Action(앞쪽)은 순차, Route Handler(뒤쪽)는 병렬](/images/2026-01-29/Pasted%20image%2020260129024324.png)
 
 앞쪽이 Server Action, 뒤쪽이 Route Handler입니다.
-Route Handler는 요청이 한꺼번에 나가고, Server Action은 계단 모양입니다.
-
-같은 코드 모양인데 결과가 갈립니다. `Promise.all`이 병렬을 만들어주는 게
-아니라는 뜻입니다. `Promise.all`은 넘겨받은 promise를 기다릴 뿐이고,
-요청이 언제 나가는지는 그 전에 이미 정해집니다.
-`fetch`는 호출되는 즉시 나가고, Server Action은 큐에 들어갑니다.
-
-큐에 들어간다는 게 이 글의 관심사입니다. 그래서 다음 질문은
-**그 큐가 어디까지 하나인지**입니다.
+Route Handler는 요청이 한꺼번에 나가고, Server Action은 순차적으로 나가는 것을
+볼 수 있습니다.
 
 ## 2. React Query를 끼우면
 
