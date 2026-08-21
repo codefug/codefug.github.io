@@ -28,7 +28,7 @@ export default function PostListItem({
       aria-label={t("common.aria.postRead", { title })}
       rel="bookmark"
       title={title}
-      className="group relative flex gap-4 rounded-xl border border-border bg-background p-4 pl-5 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm"
+      className="group relative flex gap-3 rounded-xl border border-border bg-background p-4 pl-5 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm sm:gap-4"
     >
       <span
         className="absolute top-4 bottom-4 left-0 w-0.5 rounded-full bg-primary/0 transition-colors duration-200 group-hover:bg-primary/60"
@@ -37,9 +37,10 @@ export default function PostListItem({
       {/*
         카드와 같은 규칙 — 정사각 자리에 원본 비율로 넣고 남는 곳은 여백으로 둔다.
         teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
+        모바일에서는 본문 폭을 지키려고 한 단계 작은 자리를 쓴다.
       */}
       {header?.teaser ? (
-        <div className="hidden aspect-square w-20 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/30 p-3 sm:flex">
+        <div className="flex aspect-square w-14 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/30 p-2 sm:w-20 sm:p-3">
           <img
             src={header.teaser}
             alt=""
@@ -49,7 +50,7 @@ export default function PostListItem({
           />
         </div>
       ) : (
-        <div className="hidden aspect-square w-20 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:block">
+        <div className="aspect-square w-14 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:w-20">
           <DefaultThumbnail
             category={categories[0]}
             caption={header?.thumbnailCaption}
