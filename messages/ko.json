@@ -324,16 +324,20 @@
       "subtitle": "기술 블로그 작성",
       "posts": [
         {
-          "title": "로드밸런서 뒤에서 502가 무작위로 뜬다면",
-          "url": "/posts/2026-08-17"
+          "title": "Server Action의 큐는 어디까지 묶일까",
+          "url": "/posts/2026-01-29"
         },
         {
           "title": "useSearchParams는 왜 Suspense가 필요할까",
           "url": "/posts/2026-05-27"
         },
         {
-          "title": "Server Action의 큐는 어디까지 묶일까",
-          "url": "/posts/2026-01-29"
+          "title": "구조화된 데이터는 왜 필요할까",
+          "url": "/posts/2026-08-15"
+        },
+        {
+          "title": "useCallback, useMemo는 왜 쓸까",
+          "url": "/posts/2026-01-18"
         }
       ]
     },
