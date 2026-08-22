@@ -8,12 +8,7 @@ type DetailItem = { text: string; subItems?: string[] };
 type Category = { title: string; details: DetailItem[] };
 
 interface Props {
-  projectKey:
-    | "allra"
-    | "digitalFinance"
-    | "documentAi"
-    | "samilDevKit"
-    | "allraAdmin";
+  projectKey: "allra" | "digitalFinance" | "documentAi" | "samilDevKit";
   className?: string;
 }
 

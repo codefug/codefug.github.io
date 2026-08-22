@@ -291,28 +291,6 @@
         "subtitle": "Samil PwC AC",
         "description": "사내 PwC 제품 전반에서 사용되는 [B]컴포넌트·토큰 기반 디자인 시스템[/B]입니다. 프론트엔드팀 전체와 협업해 v1 배포를 수행했습니다. 초기 단계라 구조적 기반을 잡는 일이 중요했습니다. clsx·cva 기반의 타입세이프 스타일링 패턴을 팀에 정착시키고, JS 상태로 처리하던 애니메이션을 CSS transform 기반으로 전환해 reflow 없는 60fps를 확보했습니다.",
         "stack": ["Next.js", "TypeScript", "Storybook"]
-      },
-      "allraAdmin": {
-        "title": "Allra Admin",
-        "subtitle": "Allra Fintech",
-        "description": "선정산 서비스 운영을 위한 [B]내부 어드민[/B]입니다. PHP 기반 v1을 Next.js로 마이그레이션하는 작업에 참여했고, [B]ISMS 인증 대응[/B] 과정에서 화면마다 흩어져 있던 [B]인증 판단 지점을 일원화[/B]했습니다.",
-        "stack": [
-          "Next.js",
-          "TypeScript",
-          "Turborepo",
-          "Tanstack Query",
-          "Playwright"
-        ],
-        "categories": [
-          {
-            "title": "MSW 기반 모킹 환경",
-            "details": [
-              {
-                "text": "여러 서버와 통신하며 복잡한 상태를 다루는 금융 어드민은 실제 서버를 붙인 채로 개발·검증하기 어려운 구조였습니다. [B]MSW 기반 모킹 환경을 제안·구축[/B]해 [B]오류·지연·권한 부족 같은 경계 상황을 로컬에서 재현[/B]할 수 있게 했고, 스토리북과 화면 개발이 같은 목을 공유하도록 정리해 팀 표준으로 자리 잡았습니다."
-              }
-            ]
-          }
-        ]
       }
     },
     "sideProjects": {

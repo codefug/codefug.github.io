@@ -67,14 +67,6 @@ export default function Page() {
         <ResumePage>
           <WorkExperienceSection>
             <div>
-              <TeamSection companyKey="allra" headless>
-                <KeepTogether>
-                  <ResumeProjectCard projectKey="allraAdmin" />
-                </KeepTogether>
-              </TeamSection>
-            </div>
-
-            <div>
               <CompanySection companyKey="pwc" />
               <TeamSection companyKey="pwc">
                 <KeepTogether>
