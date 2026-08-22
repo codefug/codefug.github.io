@@ -44,13 +44,13 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
           </a>
         )}
       </div>
-      <p className="mt-1 text-[9.5px] text-gray-600 dark:text-gray-400">
+      <p className="mt-1 text-[10.5px] text-gray-600 dark:text-gray-400">
         <RichText>{item.description}</RichText>
       </p>
       <p className="mt-2.5 text-gray-400 text-xs dark:text-gray-500">
         {item.stack.join(", ")}
       </p>
-      <ul className="mt-2.5 space-y-1 text-[9.5px] text-gray-700 dark:text-gray-300">
+      <ul className="mt-2.5 space-y-1 text-[10.5px] text-gray-700 dark:text-gray-300">
         {item.details.map((d, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static content
           <li key={i} className="ml-4 list-disc">

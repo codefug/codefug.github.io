@@ -16,7 +16,7 @@ export default function ResumeCertification({
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <ul className="mt-2 space-y-1.5 text-[9.5px]">
+      <ul className="mt-2 space-y-1.5 text-[10.5px]">
         {items.map((c) => (
           <li key={c.title}>
             <div className="font-semibold text-gray-900 dark:text-white">

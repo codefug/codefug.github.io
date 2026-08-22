@@ -14,7 +14,7 @@ export default function OpenSource({ className }: { className?: string }) {
   return (
     <section className={className}>
       <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
-      <ul className="mt-1 space-y-1 text-[9.5px]">
+      <ul className="mt-1 space-y-1 text-[10.5px]">
         {items.map((item) => (
           <li key={item.url}>
             <Link
