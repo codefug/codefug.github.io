@@ -79,7 +79,6 @@ function EtymologyNote() {
     >
       <p className="text-muted-foreground">
         <span className="font-semibold text-foreground">fug</span>{" "}
-        <span className="text-muted-foreground/70">/fʌɡ/</span>{" "}
         <span className="text-muted-foreground/70 italic">n.</span> 사람이 오래
         머문 방의 후텁지근한 공기
       </p>
