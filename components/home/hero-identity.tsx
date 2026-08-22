@@ -26,6 +26,7 @@ export function HeroIdentity({ postCount, sinceYear }: HeroIdentityProps) {
     <div className="flex flex-col">
       <DevBlogLabel />
       <BlogTitle />
+      <EtymologyNote />
       <BlogStats postCount={postCount} sinceYear={sinceYear} />
       <TraitTagList />
     </div>
@@ -65,6 +66,31 @@ function BlogTitle() {
         fug
       </span>
     </motion.h1>
+  );
+}
+
+function EtymologyNote() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25, duration: 0.5 }}
+      className="mb-8 max-w-md border-indigo-400/40 border-l-2 pl-4 font-mono text-sm"
+    >
+      <p className="text-muted-foreground">
+        <span className="font-semibold text-foreground">fug</span>{" "}
+        <span className="text-muted-foreground/70">/fʌɡ/</span>{" "}
+        <span className="text-muted-foreground/70 italic">n.</span> 사람이 오래
+        머문 방의 후텁지근한 공기
+      </p>
+      <p className="mt-1.5 text-muted-foreground">
+        <span className="bg-linear-to-r from-indigo-500 to-blue-500 bg-clip-text font-semibold text-transparent">
+          code·fug
+        </span>{" "}
+        <span className="text-muted-foreground/70 italic">n.</span> 코드에
+        파묻혀 나오지 않는 방
+      </p>
+    </motion.div>
   );
 }
 
