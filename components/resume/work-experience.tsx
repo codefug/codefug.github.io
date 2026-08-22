@@ -17,14 +17,14 @@ export function CompanySection({
   return (
     <article className={className}>
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="font-extrabold text-[17px] text-gray-900 dark:text-white">
+        <h3 className="font-extrabold text-[18px] text-gray-900 dark:text-white">
           {t(`items.${companyKey}.company`)}
         </h3>
-        <span className="text-[9.5px] text-gray-500 dark:text-gray-400">
+        <span className="text-[10.5px] text-gray-500 dark:text-gray-400">
           {t(`items.${companyKey}.duration`)}
         </span>
       </header>
-      <p className="mt-1.5 text-[9.5px] text-gray-800 leading-relaxed dark:text-gray-200">
+      <p className="mt-1.5 text-[10.5px] text-gray-800 leading-relaxed dark:text-gray-200">
         <RichText>{t(`items.${companyKey}.summary`)}</RichText>
       </p>
     </article>
@@ -53,17 +53,17 @@ export function TeamSection({
   return (
     <section className="mt-5">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h4 className="font-bold text-[13px] text-gray-900 dark:text-white">
+        <h4 className="font-bold text-[14px] text-gray-900 dark:text-white">
           {t("name")}
         </h4>
-        <span className="text-[9.5px] text-gray-500 dark:text-gray-400">
+        <span className="text-[10.5px] text-gray-500 dark:text-gray-400">
           {t("duration")}
         </span>
       </header>
-      <p className="mt-1.5 text-[9.5px] text-gray-800 leading-relaxed dark:text-gray-200">
+      <p className="mt-1.5 text-[10.5px] text-gray-800 leading-relaxed dark:text-gray-200">
         <RichText>{t("summary")}</RichText>
       </p>
-      <div className="mt-1">{children}</div>
+      <div className="mt-2">{children}</div>
     </section>
   );
 }

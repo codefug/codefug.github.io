@@ -84,7 +84,7 @@ export default function Page() {
           <KeepTogether>
             <SideProjects />
           </KeepTogether>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-4">
             <KeepTogether>
               <OpenSource />
             </KeepTogether>
