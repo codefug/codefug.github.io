@@ -142,7 +142,7 @@
           "team": {
             "name": "Digital팀",
             "duration": "2025.01 - 2025.10",
-            "summary": "사내 서비스 통합 포털인 [B]Digital Finance[/B], AI 문서 분석 솔루션인 [B]Document AI[/B], 사내 디자인 시스템인 [B]SamilDevKit[/B]의 프론트엔드 초기 개발을 담당했습니다. 설계부터 배포·운영까지 전 과정을 수행했습니다."
+            "summary": "사내 서비스 통합 포털인 [B]Digital Finance[/B], AI 문서 분석 솔루션인 [B]Document AI[/B], 사내 디자인 시스템인 [B]SamilDevKit[/B]의 프론트엔드 초기 개발을 담당했습니다. 엄격한 보안 체계로 제약이 많은 환경에서 초기 설계부터 배포 및 운영까지 전 과정을 수행했습니다."
           }
         }
       }
@@ -228,20 +228,20 @@
       "digitalFinance": {
         "title": "Digital Finance",
         "subtitle": "Samil PwC AC",
-        "description": "삼일 내부에서 쓰이는 여러 서비스를 한곳에서 관리하는 [B]통합 포털[/B]입니다. 이미 개발이 진행 중이던 프로젝트에 합류해 프론트엔드 전반을 담당했고, 프로덕션 배포까지 수행했습니다.\n회계 도메인 특성상 [B]사내 보안 정책 통과가 배포의 전제 조건[/B]이었습니다. 보안 업데이트가 끊긴 빌드 도구와 정책에 걸리는 에디터를 교체하는 것이 핵심 과제였고, 함께 서버 상태 관리 레이어를 도입해 수동으로 관리되던 캐싱·동기화 구조를 정리했습니다.",
-        "stack": ["React", "Vite", "TypeScript", "Tanstack Query"],
+        "description": "삼일 내외부에서 쓰이는 여러 서비스와 고객사를 한곳에서 관리하는 [B]통합 포털[/B]입니다. 초기 개발이 진행 중이던 프로젝트에 합류해 프로덕션 배포까지 수행했습니다.",
+        "stack": ["React", "Vite", "TypeScript", "Tanstack Query", "Docker"],
         "categories": [
           {
             "title": "빌드 시스템 전환 및 구조 개선",
             "details": [
               {
-                "text": "CRA deprecated로 보안 업데이트가 중단되어 사내 보안 정책상 사용 불가 판정을 받은 빌드 시스템을 [B]Vite로 마이그레이션[/B]하여 보안 리스크 해소 — 번들 크기 [B]58% 감소[/B]"
+                "text": "보안 업데이트가 중단된 CRA를 [B]Vite로 마이그레이션[/B]하여 보안 리스크를 해소하고 번들 크기를 [B]58% 감소[/B]시켰습니다."
               },
               {
-                "text": "사내 [B]CSP 정책[/B] 위반으로 사용할 수 없던 에디터를 react-quill-new로 전환하고 이미지 리사이즈 [B]커스텀 모듈을 직접 개발[/B]하여 해결"
+                "text": "사내 [B]CSP 정책[/B] 위반으로 사용할 수 없던 에디터를 react-quill-new로 전환하고 보안 문제가 없는 이미지 리사이즈 [B]커스텀 모듈을 개발[/B]했습니다."
               },
               {
-                "text": "서버·클라이언트 상태를 함께 담던 Zustand 단일 스토어에 [B]Tanstack Query를 도입해 서버 상태를 분리[/B]하여 중복 요청과 stale 데이터로 깨지던 화면 정합성 확보"
+                "text": "서버·클라이언트 상태를 함께 담던 Zustand 단일 스토어에 [B]Tanstack Query를 도입해 서버 상태를 분리[/B]하여 중복 요청과 stale 데이터로 깨지던 화면 정합성을 확보했습니다."
               }
             ]
           }
@@ -250,20 +250,20 @@
       "documentAi": {
         "title": "Document AI",
         "subtitle": "Samil PwC AC",
-        "description": "AI가 보고서를 분석해주는 [B]문서 분석 솔루션[/B]으로, 설계부터 배포까지 프론트엔드 전체를 담당했습니다.\n여러 PDF를 동시에 띄우고 세밀하게 제어하는 것이 서비스의 핵심 기능이라 [B]뷰어를 직접 구현[/B]했고, 문서가 많아질수록 느려지는 문제를 가상화와 병렬 처리로 해결했습니다. 고객사 온프레미스 환경에 직접 설치되는 제품이었기 때문에, 배포 용량을 줄이는 것도 함께 중요한 과제였습니다.",
+        "description": "AI가 보고서를 분석해주는 [B]문서 분석 솔루션[/B]으로, 설계부터 배포까지 프론트엔드 전체를 담당했습니다.",
         "stack": ["Next.js", "TypeScript", "PDF.js", "Docker"],
         "categories": [
           {
-            "title": "렌더링 성능·배포 최적화",
+            "title": "렌더링 성능 및 배포 최적화",
             "details": [
               {
-                "text": "여러 PDF를 자유롭고 세밀하게 제어해야 하는 핵심 요구사항에 맞춰 [B]PDF.js 기반 커스텀 Viewer를 직접 구현[/B]하고 [B]Web Worker + react-window 가상화[/B]를 적용하여 초기 렌더링 [B]67% 단축[/B]"
+                "text": "여러 PDF를 자유롭고 세밀하게 제어해야 하는 핵심 요구사항에 맞춰 [B]PDF.js 기반 커스텀 Viewer를 직접 구현[/B]하고 [B]Web Worker + react-window 가상화[/B]를 적용하여 초기 렌더링 시간을 [B]67% 단축[/B]했습니다."
               },
               {
-                "text": "고객사 [B]온프레미스 설치 환경[/B]에서 대용량 이미지 배포가 병목이었기에 [B]Standalone 모드 + 멀티스테이지 빌드[/B]를 적용하여 [B]이미지 용량 91% 감소[/B]"
+                "text": "고객사 [B]온프레미스 설치 환경[/B]에서 대용량 이미지 배포가 병목이었기에 [B]Standalone 모드 + 멀티스테이지 빌드[/B]를 적용하여 기존 대비 [B]이미지 크기를 91% 감소[/B]시켰습니다."
               },
               {
-                "text": "dynamic import 기반 코드 스플리팅을 도입하여 [B]번들 크기 74% 감소[/B]"
+                "text": "dynamic import 기반 코드 스플리팅을 도입하여 [B]초기 번들 크기를 74% 감소[/B]시켰습니다."
               }
             ]
           }
@@ -272,7 +272,7 @@
       "samilDevKit": {
         "title": "SamilDevKit Design System",
         "subtitle": "Samil PwC AC",
-        "description": "사내 PwC 제품 전반에서 사용되는 [B]컴포넌트·토큰 기반 디자인 시스템[/B]입니다. 프론트엔드팀 전체와 협업해 v1 배포를 수행했습니다. 초기 단계라 구조적 기반을 잡는 일이 중요했습니다. clsx·cva 기반의 타입세이프 스타일링 패턴을 팀에 정착시키고, JS 상태로 처리하던 애니메이션을 CSS transform 기반으로 전환해 reflow 없는 60fps를 확보했습니다.",
+        "description": "사내 PwC 제품 전반에서 사용되는 [B]컴포넌트·토큰 기반 디자인 시스템[/B]입니다. 프론트엔드팀 전체와 협업해 v1 배포를 수행했습니다. 초기 단계라 구조적 기반을 잡는 일이 중요했습니다. clsx·cva 기반의 타입세이프 스타일링 패턴 같은 기본 컨벤션을 주도적으로 제시해 팀에 정착시켰고, JS 상태로 처리하던 애니메이션을 CSS transform 기반으로 전환해 렌더링 성능을 개선했습니다.",
         "stack": ["Next.js", "TypeScript", "Storybook"]
       }
     },
