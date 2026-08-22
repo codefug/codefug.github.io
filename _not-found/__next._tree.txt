@@ -1,5 +1,5 @@
 :HL["https://codefug.github.io/_next/static/chunks/1ibgw_y9mgw9s.css","style"]
 :HL["https://codefug.github.io/_next/static/chunks/099wm272_os32.css","style"]
-:HL["https://codefug.github.io/_next/static/chunks/2m_4_zccicahe.css","style"]
+:HL["https://codefug.github.io/_next/static/chunks/3dsd7bv9x3ryu.css","style"]
 :HL["/images/me.jpg","image",{"fetchPriority":"high"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"a4vaG0YKg4XJW14QCbvN9"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4116,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"txNsyX6oUYaa_X9ISsPbR"}
