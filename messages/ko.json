@@ -321,7 +321,6 @@
     },
     "knowledgeSharing": {
       "title": "Knowledge Sharing",
-      "subtitle": "기술 블로그 작성",
       "posts": [
         {
           "title": "Server Action의 큐는 어디까지 묶일까",
