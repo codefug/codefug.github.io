@@ -59,13 +59,10 @@ function RichTokens({ line }: { line: string }) {
               href={token.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline decoration-dotted hover:decoration-solid print:no-underline"
+              // PDF로 출력해도 링크가 살아 있으므로, 인쇄에서도 화면과 같은 링크 모양을 유지한다.
+              className="text-primary underline decoration-dotted hover:decoration-solid"
             >
               {token.content}
-              <span aria-hidden className="hidden print:inline">
-                {" "}
-                ({token.url})
-              </span>
             </a>
           );
         return <Fragment key={token.start}>{token.content}</Fragment>;

@@ -40,7 +40,7 @@ function ContactListItem({ Icon, label, value, href }: ContactItem) {
       </div>
       <Link
         href={href}
-        className="min-w-0 text-gray-800 hover:text-primary hover:underline dark:text-gray-300 print:no-underline"
+        className="min-w-0 text-gray-800 hover:text-primary hover:underline dark:text-gray-300"
         target="_blank"
         rel="noopener noreferrer"
       >
