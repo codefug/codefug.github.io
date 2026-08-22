@@ -7,7 +7,7 @@
 
 /* next/font 가 주입한 CSS 변수를 Tailwind 폰트 유틸리티에 연결한다. */
 @theme inline {
-  --font-sans: var(--font-noto-sans-kr), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
