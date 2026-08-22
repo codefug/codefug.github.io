@@ -32,6 +32,18 @@ function buildCodeLines(postCount: number): CodeLine[] {
     {
       indent: true,
       tokens: [
+        { text: "meaning", color: "text-sky-500 dark:text-sky-400" },
+        { text: ": ", color: "text-foreground" },
+        {
+          text: '"코드에 파묻혀 있는 방"',
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
+        { text: ",", color: "text-foreground" },
+      ],
+    },
+    {
+      indent: true,
+      tokens: [
         { text: "values", color: "text-sky-500 dark:text-sky-400" },
         { text: ": [", color: "text-foreground" },
         {
