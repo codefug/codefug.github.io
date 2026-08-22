@@ -1,6 +1,7 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
-import { JetBrains_Mono, Noto_Sans_KR } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
 import { createAlternateLinks } from "@/components/seo/utils";
@@ -14,10 +15,14 @@ import "./globals.css";
 
 const metaMessages = koMessages.meta;
 
-const notoSansKr = Noto_Sans_KR({
-  variable: "--font-noto-sans-kr",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
+// 전체 글리프를 담은 가변 폰트 단일 파일을 self-host한다.
+// Google Fonts의 한글 폰트는 unicode-range 조각 ~120개로 쪼개져 있어,
+// 로딩 중 같은 문장 안에서 글자별로 볼드가 갈려 보이는 문제가 있었다.
+// weight 범위를 명시하지 않으면 WebKit에서 굵기가 잘못 렌더링될 수 있다.
+const pretendard = localFont({
+  src: "../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
+  weight: "45 920",
+  variable: "--font-pretendard",
   display: "swap",
 });
 
@@ -67,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${notoSansKr.variable} ${jetBrainsMono.variable}`}
+      className={`${pretendard.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
