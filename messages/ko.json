@@ -280,26 +280,7 @@
     },
     "sideProjects": {
       "title": "Side Projects",
-      "items": [
-        {
-          "title": "순록의 편지",
-          "url": "/posts/2024-12-25-project",
-          "github": "https://github.com/reindeer-letter/client",
-          "stack": [
-            "Next.js",
-            "TypeScript",
-            "Zustand",
-            "react-window",
-            "MSW",
-            "GitHub Actions"
-          ],
-          "description": "연말에 자신과 소중한 사람에게 예약 편지를 보내는 B2C 서비스. 6인 팀의 프론트엔드로 참여해 실사용자 대상으로 배포하고 운영했습니다.",
-          "details": [
-            "무한 스크롤 편지 목록에 [B]react-window 가상화를 적용해 렌더링 시간을 약 47% 단축[/B]했습니다(100개 기준 1.3ms에서 0.7ms로). DOM 노드 수를 데이터 양과 무관하게 일정하게 유지하도록 바꾼 개선입니다.",
-            "SNS 인앱 브라우저에서 녹음과 파일 첨부가 막히는 유입 문제를 user agent 분기 기반 [B]외부 브라우저 전환 전략[/B]으로 해결했습니다."
-          ]
-        }
-      ]
+      "items": []
     },
     "knowledgeSharing": {
       "title": "Knowledge Sharing",
