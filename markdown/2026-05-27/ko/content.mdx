@@ -204,7 +204,7 @@ sequenceDiagram
 
 > [!NOTE] hydration
 >
-> React 공식 문서는 `hydrateRoot`를 "`react-dom/server`가 만든 HTML payload에 React를 붙여, DOM을 재생성하지 않고 인터랙티브하게 만드는 것"으로 정의합니다. 즉 hydration은 서버 HTML과 클라이언트 React 트리를 일치시키며 이벤트 핸들러·state를 연결하는 과정입니다.
+> React 공식 문서는 `hydrateRoot`를 "`react-dom/server`가 만든 HTML payload에 React를 붙여, DOM을 재생성하지 않고 인터랙티브하게 만드는 것"으로 정의합니다. 즉 hydration은 서버 HTML과 클라이언트 React 트리를 일치시키며 이벤트 핸들러 및 state를 연결하는 과정입니다.
 >
 > 단, `CLIENT_RENDERED`로 표시된 경계는 서버 HTML이 placeholder뿐이므로 일치시킬 DOM이 없습니다. 이 경우 그 자리는 일반적인 hydration이 아니라 클라이언트에서 처음부터 렌더해 DOM을 만들어 끼워 넣습니다.
 
