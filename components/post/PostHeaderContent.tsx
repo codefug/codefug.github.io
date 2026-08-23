@@ -47,7 +47,7 @@ export function PostHeaderContent({ frontMatter }: Props) {
             {title}
           </h1>
 
-          <p className="mb-6 max-w-3xl text-lg text-muted-foreground leading-relaxed">
+          <p className="mb-6 text-lg text-muted-foreground leading-relaxed">
             {excerpt}
           </p>
 
