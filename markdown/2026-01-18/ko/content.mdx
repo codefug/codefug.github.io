@@ -1,13 +1,4 @@
-React에서 useCallback과 useMemo를 사용하는 이유는 단순히 성능 최적화가 아닙니다. JavaScript의 참조형 데이터 특성과 React의 의존성 배열 동작 방식을 이해하면, 이 훅들이 왜 필수적인 상황이 있는지 알 수 있습니다.
-
-이 문서를 읽으면 다음을 이해할 수 있습니다:
-
-- useEffect 의존성 배열에서 참조형이 위험한 이유
-- React.memo와 props 참조 안정성의 관계
-- 무분별한 메모이제이션의 비용
-- 메모이제이션 적용 원칙과 구조적 최적화
-
----
+React에서 useCallback과 useMemo를 사용하는 이유는 단순히 성능 최적화가 아닙니다. JavaScript의 참조형 데이터 특성과 React의 의존성 배열 동작 방식을 이해하면, 이 훅들이 필수가 되는 상황이 왜 생기는지 알 수 있습니다.
 
 ## 원시형과 참조형의 메모리 구조
 
@@ -44,7 +35,7 @@ flowchart TB
 | 구분 | 원시형 | 참조형 |
 |------|--------|--------|
 | **저장 위치** | 스택에 값 직접 저장 | 힙에 객체 저장, 스택에는 주소만 |
-| **할당 방식** | 값 복사 (Pass by Value) | 주소 복사 (Pass by Reference) |
+| **할당 방식** | 값 자체를 복사 | 주소(참조값)를 복사 |
 | **비교 연산** | 값 자체를 비교 | 주소를 비교 |
 
 함수도 JavaScript에서 일급 객체이며 참조형입니다. 동일한 코드를 가진 함수라도 선언할 때마다 새로운 메모리 주소가 할당됩니다.
@@ -61,22 +52,22 @@ console.log(fn1 === fn2); // false
 
 ## useEffect 의존성 배열과 참조형의 함정
 
-React의 useEffect는 의존성 배열의 값이 변경될 때 콜백을 실행합니다. 이 비교는 `Object.is`로 수행되므로, `count` 같은 원시형은 값이 실제로 변경될 때만 effect가 실행되어 안전합니다. 문제는 참조형입니다.
+React의 useEffect는 의존성 배열의 값이 변경될 때 콜백을 실행합니다. 이 비교는 `Object.is`로 수행되므로, 숫자나 문자열 같은 원시형은 값이 실제로 변경될 때만 effect가 실행되어 안전합니다. 문제는 참조형입니다.
 
 ```jsx
 function SearchPage() {
   const [keyword, setKeyword] = useState("");
-  const [searchCount, setSearchCount] = useState(0);
+  const [saveCount, setSaveCount] = useState(0);
 
   // 매 렌더링마다 새로운 함수 생성
   const inlineSaveDraft = () => {
-    console.log("검색 실행:", keyword);
+    console.log("임시 저장:", keyword);
   };
 
   useEffect(() => {
     if (keyword) {
       inlineSaveDraft();
-      setSearchCount((prev) => prev + 1); // 검색 횟수 추적 → 리렌더링 유발
+      setSaveCount((prev) => prev + 1); // 저장 횟수 추적 → 리렌더링 유발
     }
   }, [inlineSaveDraft, keyword]); // 무한 루프!
 
@@ -91,7 +82,7 @@ function SearchPage() {
 1. 사용자가 input에 입력 → `keyword` 상태 변경
 2. 컴포넌트 리렌더링 → `inlineSaveDraft` 함수 재생성 (새 주소)
 3. deps 비교: 주소가 다르므로 effect 실행
-4. effect가 `setSearchCount` 호출 → 리렌더링
+4. effect가 `setSaveCount` 호출 → 리렌더링
 5. 리렌더링으로 `inlineSaveDraft` 또 재생성 → 2~4 반복 (무한 루프)
 
 ```mermaid
@@ -100,7 +91,7 @@ flowchart LR
     B --> C["리렌더링"]
     C --> D["inlineSaveDraft 재생성 (새 주소)"]
     D --> E["deps 비교: 주소 다름 → effect 실행"]
-    E --> F["setSearchCount 호출"]
+    E --> F["setSaveCount 호출"]
     F --> G["리렌더링"]
     G --> D
 ```
@@ -115,26 +106,26 @@ flowchart LR
 
 ```jsx
 const saveDraft = useCallback(() => {
-  console.log("검색 실행:", keyword);
+  console.log("임시 저장:", keyword);
 }, [keyword]); // keyword가 변경될 때만 함수 재생성
 
 useEffect(() => {
   if (keyword) {
     saveDraft();
-    setSearchCount((prev) => prev + 1);
+    setSaveCount((prev) => prev + 1);
   }
 }, [saveDraft, keyword]);
 ```
 
-`searchCount`가 변경되어 리렌더링이 일어나도 `keyword`가 그대로면 `saveDraft`는 이전과 동일한 주소를 유지합니다. deps 비교에서 "변경 없음"으로 판단되어 effect가 다시 실행되지 않고, 무한 루프가 해결됩니다.
+`saveCount`가 변경되어 리렌더링이 일어나도 `keyword`가 그대로면 `saveDraft`는 이전과 동일한 주소를 유지합니다. deps 비교에서 "변경 없음"으로 판단되어 effect가 다시 실행되지 않고, 무한 루프가 해결됩니다.
 
 | 상황 | 메모이제이션 없음 | useCallback 적용 |
 |------|------|------|
 | keyword 변경 | 새 함수 생성 | 새 함수 생성 |
-| searchCount 변경 | 새 함수 생성 ⚠️ | 동일 참조 유지 ✅ |
+| saveCount 변경 | 새 함수 생성 ⚠️ | 동일 참조 유지 ✅ |
 | effect 실행 | 매번 실행 (무한 루프) | keyword 변경 시만 실행 |
 
-실제 프로젝트에서는 React Query 같은 데이터 fetching 라이브러리와 함께 쓰이는 경우가 많은데, 이때는 함수 재생성 → effect 실행 → `refetch()` → 상태 변경 → 리렌더링 → 함수 재생성으로 이어지는 루프가 생겨 원인 추적이 훨씬 어려워집니다. 원리는 동일하며, 해결책도 동일하게 `useCallback`입니다.
+실제 프로젝트에서는 React Query 같은 데이터 fetching 라이브러리와 함께 쓰이는 경우가 많습니다. 라이브러리 내부의 상태 변경이 리렌더링을 일으키고, 그 리렌더링이 함수를 재생성해 다시 effect를 실행하는 식이라 원인 추적이 훨씬 어렵습니다. 하지만 원리는 동일하고, `useCallback`으로 참조를 고정하면 같은 방식으로 해결됩니다.
 
 ### useMemo로 객체 안정화하기
 
@@ -222,10 +213,6 @@ const handleClick = useCallback(() => {
 }, []);
 ```
 
-> [!NOTE] stale closure
->
-> 메모이제이션으로 인해 이전 값이 클로저에 고정되어 최신 상태를 반영하지 못하는 현상입니다.
-
 ---
 
 ## 메모이제이션 적용 원칙
@@ -242,7 +229,7 @@ const handleClick = useCallback(() => {
 | 복잡한 계산 (정렬, 필터링) | useMemo 필요 | 렌더링마다 반복 계산 방지 |
 | 단순 산술 (count * 2) | 불필요 | 계산 비용 < 메모이제이션 비용 |
 
-메모이제이션은 꼭 필요한 곳에만, 데이터로 증명하고 적용합니다.
+메모이제이션은 꼭 필요한 곳에만, 측정으로 병목이 증명되었을 때 적용하는 것이 좋습니다.
 
 ---
 
@@ -316,7 +303,9 @@ function App() {
 
 **3. 최적화 훅.** 위 두 방법으로도 해결할 수 없을 때, 즉 의존성 배열 안정화나 `React.memo`와의 조합처럼 참조 안정성 자체가 필요한 경우에 `useCallback`, `useMemo`를 사용합니다.
 
----
+## 마치며
+
+useCallback과 useMemo는 성능 최적화 도구이기 전에 **참조 동일성을 보장하는 도구**입니다. useEffect의 의존성 배열이나 React.memo처럼 참조를 비교하는 곳에서는 선택이 아니라 정확성의 문제가 됩니다. 반대로 그런 필요가 없는 곳에서의 무분별한 사용은 메모리 점유와 비교 비용만 늘리고 코드를 읽기 어렵게 만든다는 사실도 잊지 말아야 합니다.
 
 ## 참고 자료
 
