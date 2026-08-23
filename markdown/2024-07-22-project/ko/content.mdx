@@ -4,17 +4,17 @@
 
 | | |
 | --- | --- |
-| 역할 | 팀장 · 공통 유틸리티 · 개발·배포 환경 |
+| 역할 | 팀장, 공통 유틸리티, 개발 및 배포 환경 |
 | 링크 | [GitHub](https://github.com/codefug/gheupPAY) |
 
-팀장으로서 제 담당 기능 외에도 팀원들이 개발에만 집중할 수 있도록 공용 인프라를 다졌습니다. S3 업로드 함수, 이미지 블러 처리 컴포넌트 같은 공통 유틸리티부터 개발·배포 환경 정비까지 맡았습니다.
+팀장으로서 제 담당 기능 외에도 팀원들이 개발에만 집중할 수 있도록 공용 인프라를 다졌습니다. S3 업로드 함수, 이미지 블러 처리 컴포넌트 같은 공통 유틸리티부터 개발 및 배포 환경 정비까지 맡았습니다.
 
 팀이 실제로 부딪힌 문제는 크게 네 갈래였습니다.
 
 1. 공고 상세 페이지의 카드 렌더링을 어떻게 최적화할 것인가
 2. 알림창의 무한 스크롤을 백엔드 개발이 끝나지 않은 상태에서 어떻게 검증할 것인가
 3. 사장님/알바님 계정의 접근 제한을 어떻게 구현할 것인가
-4. Vercel organization의 유료 정책 안에서 어떻게 무료로 자동 배포·프리뷰를 구성할 것인가
+4. Vercel organization의 유료 정책 안에서 어떻게 무료로 자동 배포와 프리뷰를 구성할 것인가
 
 ## 설계
 
@@ -23,8 +23,8 @@
 | 구분 | 스택 |
 | --- | --- |
 | 코어 | ![Next.js](https://img.shields.io/badge/Next.js_App_Router-000?logo=nextdotjs&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) |
-| 폼 · 통신 | ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) ![yup](https://img.shields.io/badge/yup-171717) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) |
-| 검증 · 배포 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel&logoColor=white) |
+| 폼 및 통신 | ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) ![yup](https://img.shields.io/badge/yup-171717) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) |
+| 검증 및 배포 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel&logoColor=white) |
 
 ### 서버 컴포넌트 중심의 페이지 구조
 
@@ -33,7 +33,7 @@
 - **메인 카드**: 초기 렌더링 시 서버에서 데이터를 받아오고, Suspense로 로딩을 기다리는 서버 컴포넌트. 다만 "신청하기" 버튼은 로그인 상태에 따라 분기가 필요해서 이벤트 핸들러가 들어가는 클라이언트 컴포넌트로 분리했습니다.
 - **최근에 본 공고**: 앞에서 데이터가 들어오면 오래된 데이터는 밀려나야 하므로 큐(queue) 자료구조로 설계한 서버 컴포넌트.
 
-Next.js는 서버 컴포넌트 단위로 스트리밍 렌더링을 지원합니다. 컴포넌트를 `Suspense`로 감싸면, 해당 서버 컴포넌트의 렌더링이 끝나기 전까지는 `fallback`에 지정한 스켈레톤이 대신 보이고, 렌더링이 끝나면 실제 컴포넌트로 교체됩니다. 이 방식으로 TTFB·FCP·TTI를 각 컴포넌트 단위로 앞당길 수 있습니다.
+Next.js는 서버 컴포넌트 단위로 스트리밍 렌더링을 지원합니다. 컴포넌트를 `Suspense`로 감싸면, 해당 서버 컴포넌트의 렌더링이 끝나기 전까지는 `fallback`에 지정한 스켈레톤이 대신 보이고, 렌더링이 끝나면 실제 컴포넌트로 교체됩니다. 이 방식으로 TTFB, FCP, TTI를 각 컴포넌트 단위로 앞당길 수 있습니다.
 
 ```mermaid
 flowchart TD
@@ -151,6 +151,6 @@ PR 프리뷰용 워크플로도 같은 방식으로 만들어서 커밋마다 �
 
 - **zustand를 걷어내기까지 시행착오가 컸습니다.** rehydrate 방식까지 시도했던 걸 보면, "이 데이터가 상태인가 아닌가"라는 질문을 더 일찍 던졌다면 zustand 도입 자체를 재고했을 것 같습니다. 기술은 도구일 뿐이고, 도구를 고르기 전에 문제의 성격을 먼저 정의해야 한다는 걸 이번에 체감했습니다.
 - **쿠키에 무엇을 담을지 처음부터 더 신중하게 정했을 것 같습니다.** 데이터 자체를 쿠키에 넣었다가 용량 한계에 부딪힌 건, "쿠키는 만능이다"라는 전제 자체가 틀렸다는 걸 뒤늦게 확인한 경우였습니다. id만 저장하고 나머지는 다시 fetch하는 결론은 맞았지만, 쿠키의 4KB 제약을 미리 알았다면 처음부터 그렇게 설계했을 것입니다.
-- **Vercel CLI 배포는 검증에서 그쳤지만, 더 일찍 시작했다면 실제로 교체까지 갔을 수도 있습니다.** 프로젝트 후반에 발견한 방법이라 팀원들의 기존 워크플로를 바꾸는 리스크가 부담스러웠는데, 프로젝트 초반에 알았다면 유료 정책에 막히지 않고도 자동 배포·프리뷰를 정식으로 도입했을 것 같습니다.
+- **Vercel CLI 배포는 검증에서 그쳤지만, 더 일찍 시작했다면 실제로 교체까지 갔을 수도 있습니다.** 프로젝트 후반에 발견한 방법이라 팀원들의 기존 워크플로를 바꾸는 리스크가 부담스러웠는데, 프로젝트 초반에 알았다면 유료 정책에 막히지 않고도 자동 배포와 프리뷰를 정식으로 도입했을 것 같습니다.
 
 당시엔 눈앞의 트러블을 해결하는 데 집중했다면, 지금은 "이 문제가 서버/클라이언트 경계, 데이터 성격, 렌더링 타이밍 중 어디에서 오는가"를 먼저 분류하고 접근하는 습관이 생겼습니다.

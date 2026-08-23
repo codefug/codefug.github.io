@@ -27,9 +27,9 @@
 
 | | |
 | --- | --- |
-| 기간 · 팀 | 6인 (개발 5, 디자인 1) |
+| 기간 및 팀 | 6인 (개발 5, 디자인 1) |
 | 역할 | 프론트엔드 |
-| 링크 | [서비스](https://www.reindeer-letter.site/) · [GitHub](https://github.com/reindeer-letter/client) |
+| 링크 | [서비스](https://www.reindeer-letter.site/) / [GitHub](https://github.com/reindeer-letter/client) |
 
 만든 이유는 단순했습니다. 연말이 되면 누구나 한 번쯤 편지를 쓰고 싶어지지만, 막상 쓴 편지를 "그 날"에 전달할 방법은 마땅치 않습니다. 미래의 나 혹은 소중한 사람에게 정확한 타이밍에 마음을 전달하는 경험을 만들어보고 싶었습니다.
 
@@ -38,9 +38,9 @@
 | 구분 | 스택 |
 | --- | --- |
 | 코어 | ![Next.js](https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) |
-| 상태 · 통신 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
+| 상태 및 통신 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![axios](https://img.shields.io/badge/axios-5A29E4?logo=axios&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
 | 렌더링 최적화 | ![react-window](https://img.shields.io/badge/react--window-61DAFB?logo=react&logoColor=black) |
-| 개발 · 운영 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white) ![GA](https://img.shields.io/badge/GTM_·_GA-E37400?logo=googleanalytics&logoColor=white) |
+| 개발 및 운영 | ![MSW](https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white) ![GA](https://img.shields.io/badge/GTM,_GA-E37400?logo=googleanalytics&logoColor=white) |
 
 백엔드는 Nest.js와 Prisma, PostgreSQL(Supabase)로 구성되어 Vercel과 AWS Lambda에 배포되는 구조였습니다.
 
@@ -56,7 +56,7 @@ API 통신은 Axios로 처리하면서, 개발 초반부터 MSW로 백엔드 API
 
 ### 1. 인앱 브라우저에서 기능이 정상 작동하지 않음
 
-서비스가 SNS 공유를 중심으로 확산되는 구조였기 때문에, 카카오톡이나 인스타그램의 인앱 브라우저를 통해 들어오는 유입이 상당했습니다. 그런데 운영 과정에서 이 인앱 브라우저 환경에서 서비스의 일부 기능이 정상적으로 작동하지 않는 문제가 발견됐습니다. 인앱 브라우저는 자체 렌더링 엔진 제약이나 쿠키·스토리지 접근 제한 등으로 일반 브라우저와 동작이 다른 경우가 많고, 음성 녹음이나 파일 첨부처럼 브라우저 API에 의존하는 기능일수록 이런 제약에 더 취약했습니다. 사용자 입장에서는 "링크를 눌렀는데 편지를 쓸 수 없다"는 경험으로 이어지는 문제였습니다.
+서비스가 SNS 공유를 중심으로 확산되는 구조였기 때문에, 카카오톡이나 인스타그램의 인앱 브라우저를 통해 들어오는 유입이 상당했습니다. 그런데 운영 과정에서 이 인앱 브라우저 환경에서 서비스의 일부 기능이 정상적으로 작동하지 않는 문제가 발견됐습니다. 인앱 브라우저는 자체 렌더링 엔진 제약이나 쿠키와 스토리지 접근 제한 등으로 일반 브라우저와 동작이 다른 경우가 많고, 음성 녹음이나 파일 첨부처럼 브라우저 API에 의존하는 기능일수록 이런 제약에 더 취약했습니다. 사용자 입장에서는 "링크를 눌렀는데 편지를 쓸 수 없다"는 경험으로 이어지는 문제였습니다.
 
 ### 2. 무한 스크롤 목록에서 데이터가 늘어날수록 렌더링이 느려짐
 
@@ -93,7 +93,7 @@ flowchart LR
   end
 ```
 
-이 변경으로 DOM의 크기가 실제 데이터 양과 무관하게 일정하게 유지되면서 메모리 사용을 최적화할 수 있었습니다. 측정 결과 데이터 100개 기준 렌더링 시간이 약 1.3ms에서 0.7ms로, 약 47% 감소했습니다. 이 효과는 컴포넌트 하나가 복잡해질수록(자식 요소가 많아질수록) 더 커지는 성격이었기 때문에, 실제 서비스에서 편지 카드처럼 이미지·텍스트·버튼이 함께 있는 컴포넌트에서 체감 효과가 더 컸습니다.
+이 변경으로 DOM의 크기가 실제 데이터 양과 무관하게 일정하게 유지되면서 메모리 사용을 최적화할 수 있었습니다. 측정 결과 데이터 100개 기준 렌더링 시간이 약 1.3ms에서 0.7ms로, 약 47% 감소했습니다. 이 효과는 컴포넌트 하나가 복잡해질수록(자식 요소가 많아질수록) 더 커지는 성격이었기 때문에, 실제 서비스에서 편지 카드처럼 이미지, 텍스트, 버튼이 함께 있는 컴포넌트에서 체감 효과가 더 컸습니다.
 
 ## 최종 회고
 

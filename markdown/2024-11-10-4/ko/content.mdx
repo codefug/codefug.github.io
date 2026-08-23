@@ -193,13 +193,13 @@ promise.catch(alert); // 1초 뒤 "Error: 에러 발생!" 출력
 
 #### .finally
 
-Promise가 처리되면 성공·실패 여부와 상관없이 항상 실행되는 메서드입니다.
+Promise가 처리되면 성공하든 실패하든 상관없이 항상 실행되는 메서드입니다.
 
 ```js
 new Promise((resolve, reject) => {
   /* 시간이 걸리는 어떤 일을 수행하고, 그 후 resolve, reject를 호출함 */
 })
-  // 성공·실패 여부와 상관없이 Promise가 처리되면 실행됨
+  // 성공하든 실패하든 Promise가 처리되면 실행됨
   .finally(() => 로딩 인디케이터 중지)
   .then(result => alert(result), error => alert(error));
 ```

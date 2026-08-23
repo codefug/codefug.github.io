@@ -7,7 +7,7 @@
 | | |
 | --- | --- |
 | 팀 | 코드잇 부트캠프 최종 프로젝트 |
-| 역할 | 공통 컴포넌트 설계 · 오버레이 훅 · 서버·클라이언트 호환 fetch |
+| 역할 | 공통 컴포넌트 설계, 오버레이 훅, 서버/클라이언트 호환 fetch |
 | 링크 | [GitHub](https://github.com/codefug/kkom-kkom) |
 
 ## 설계
@@ -17,18 +17,18 @@
 | 구분 | 스택 |
 | --- | --- |
 | 코어 | ![Next.js](https://img.shields.io/badge/Next.js-000?logo=nextdotjs&logoColor=white) |
-| 스타일 · 컴포넌트 | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) ![cva](https://img.shields.io/badge/cva-171717) |
-| 상태 · 데이터 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) |
+| 스타일 및 컴포넌트 | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white) ![cva](https://img.shields.io/badge/cva-171717) |
+| 상태 및 데이터 | ![Zustand](https://img.shields.io/badge/Zustand-433E38) ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![react-hook-form](https://img.shields.io/badge/react--hook--form-EC5990?logo=reacthookform&logoColor=white) |
 | 문서화 | ![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white) |
 
 ### 왜 "변경에 강한 구조"가 최우선이었나
 
-프로젝트 초반 디자인 시안을 받았을 때, 버튼 하나만 봐도 style·size·state 세 축의 조합으로 종류가 갈렸습니다. 그런데 디자인은 아직 확정되지 않은 상태였습니다. 여기서 두 가지를 동시에 풀어야 한다고 판단했습니다.
+프로젝트 초반 디자인 시안을 받았을 때, 버튼 하나만 봐도 style, size, state 세 축의 조합으로 종류가 갈렸습니다. 그런데 디자인은 아직 확정되지 않은 상태였습니다. 여기서 두 가지를 동시에 풀어야 한다고 판단했습니다.
 
 1. Tailwind 클래스는 결국 문자열이기 때문에, 조건부 스타일링을 그대로 하면 코드가 금방 지저분해집니다.
 2. 디자인이 바뀔 때 코드 변경 범위를 최소화하고, 바뀐 결과를 눈으로 바로 확인할 수 있어야 합니다.
 
-이 두 문제의식은 이후 모든 선택의 기준이 되었습니다. 버튼은 `cva` + `clsx` + `tailwind-merge`로, 시각적 확인은 Storybook으로, 렌더링 방식이 자주 바뀌는 오버레이(모달·사이드바·토스트)는 커스텀 훅으로 묶어서 조립 가능하게 만들자는 방향을 세웠습니다.
+이 두 문제의식은 이후 모든 선택의 기준이 되었습니다. 버튼은 `cva` + `clsx` + `tailwind-merge`로, 시각적 확인은 Storybook으로, 렌더링 방식이 자주 바뀌는 오버레이(모달, 사이드바, 토스트)는 커스텀 훅으로 묶어서 조립 가능하게 만들자는 방향을 세웠습니다.
 
 ### 상태 관리와 라우팅 UX도 같은 원칙으로
 
@@ -54,7 +54,7 @@ Context API로 만든 모달은 모달을 여는 순간 그 버튼을 감싸고 
 
 searchParams가 바뀌며 렌더링되는 경우가 많은 프로젝트 특성상, 전환 사이의 공백이 눈에 띄었습니다. 그런데 Next.js는 이 전환 시점을 잡을 표준 API를 제공하지 않았습니다.
 
-### 5. Access token / Refresh token 처리가 서버·클라이언트에서 갈라짐
+### 5. Access token / Refresh token 처리가 서버와 클라이언트에서 갈라짐
 
 서버 컴포넌트는 `next/headers`의 쿠키로, 클라이언트 컴포넌트는 브라우저 쿠키로 접근해야 했습니다. 기존에는 미들웨어에서 `waitUntil`로 토큰을 갱신하는 방식이었는데, 서버 액션을 거치지 않는 요청은 애초에 미들웨어를 타지 않아 refresh token이 있어도 로그인 페이지로 튕기는 예외가 발생했습니다.
 
@@ -74,7 +74,7 @@ searchParams가 바뀌며 렌더링되는 경우가 많은 프로젝트 특성�
 
 ### 오버레이: Context API 대신 zustand로 관리
 
-toss의 오픈소스 `useOverlay` 훅을 분석하면서 아이디어를 얻었습니다. 이 훅은 컴포넌트를 마운트하지 않고 상태(Map)에 저장해뒀다가, 별도의 `OverlayProvider`가 트리 최상단이 아닌 곳에서 이 상태를 구독해 렌더링하는 구조였습니다. main 아래에 두면 z-index 쌓임 맥락에 영향받지 않고, 모달뿐 아니라 사이드바·토스트에도 같은 방식을 쓸 수 있다는 점이 핵심이었습니다.
+toss의 오픈소스 `useOverlay` 훅을 분석하면서 아이디어를 얻었습니다. 이 훅은 컴포넌트를 마운트하지 않고 상태(Map)에 저장해뒀다가, 별도의 `OverlayProvider`가 트리 최상단이 아닌 곳에서 이 상태를 구독해 렌더링하는 구조였습니다. main 아래에 두면 z-index 쌓임 맥락에 영향받지 않고, 모달뿐 아니라 사이드바와 토스트에도 같은 방식을 쓸 수 있다는 점이 핵심이었습니다.
 
 여기서 원본을 그대로 쓰지 않고 프로젝트에 맞게 세 가지를 바꿨습니다.
 
@@ -143,7 +143,7 @@ flowchart TD
 
 페이지네이션에서는 searchParams가 바뀌어도 Suspense가 이를 감지하지 못하는 버그가 있었는데, `Suspense`에 `key={JSON.stringify(searchParams)}`를 넘겨 searchParams별로 별개의 Suspense 경계로 인식하도록 해서 해결했습니다.
 
-댓글 영역에는 Streaming, `useSuspenseInfiniteQuery`를 이용한 무한스크롤, 낙관적 업데이트 세 가지를 모두 결합했습니다. 댓글 추가·수정·삭제 각각에서 `onMutate`로 쿼리를 미리 바꾸고 `onError`에서 되돌리는 패턴을 적용했는데, `InfiniteData` 구조상 실제 변경은 `pages[0]`에만 반영하면 되는 규칙을 파악한 뒤에는 세 가지 mutation 모두 같은 형태로 구현할 수 있었습니다.
+댓글 영역에는 Streaming, `useSuspenseInfiniteQuery`를 이용한 무한스크롤, 낙관적 업데이트 세 가지를 모두 결합했습니다. 댓글 추가, 수정, 삭제 각각에서 `onMutate`로 쿼리를 미리 바꾸고 `onError`에서 되돌리는 패턴을 적용했는데, `InfiniteData` 구조상 실제 변경은 `pages[0]`에만 반영하면 되는 규칙을 파악한 뒤에는 세 가지 mutation 모두 같은 형태로 구현할 수 있었습니다.
 
 이 과정에서 두 가지 트러블 슈팅도 있었습니다. 댓글을 연속으로 입력하면 두 개씩 생기는 문제는, 댓글 쿼리의 `isFetching`과 mutation의 `isPending`을 함께 확인해 연속 입력을 막는 방식으로 해결했습니다. 댓글 수정 시 발생한 하이드레이션 에러는 `new Date()`로 만든 시간 값이 서버와 클라이언트에서 달라 생긴 문제였고, 해당 `<time>` 요소에 `suppressHydrationWarning`을 적용해 해결했습니다.
 
