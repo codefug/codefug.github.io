@@ -364,6 +364,11 @@
       "description": "필요해서 직접 만든 것들. 왜 그렇게 만들었는지까지",
       "thumbnailCaption": "필요해서 만든 것"
     },
+    "toyProject": {
+      "label": "토이 프로젝트",
+      "description": "대외활동과 팀으로 만들어 실제 사용자에게 배포해 본 것들",
+      "thumbnailCaption": "함께 만들어 본 것"
+    },
     "workProject": {
       "label": "사내 프로젝트",
       "description": "회사에서 맡아 진행한 프로젝트 기록",
