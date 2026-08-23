@@ -104,7 +104,7 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
         hasPage: true,
       },
       // 대외활동에서 팀으로 만들어 실사용자에게 배포해 본 것들
-      { id: "toyProject", tags: [TAG_LIST.REINDEER_LETTER] },
+      { id: "toyProject", tags: [TAG_LIST.REINDEER_LETTER], hasPage: true },
       { id: "workProject", tags: [] },
     ],
   },
