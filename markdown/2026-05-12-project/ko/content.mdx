@@ -4,13 +4,13 @@ import Mermaid from "@/components/mdx/mermaid.tsx";
 
 Claude Code를 여러 탭에 띄워놓고 병렬로 작업하는 경우가 많았습니다. 한쪽에서는 코드 리뷰를 돌려놓고, 다른 탭에서는 별개의 작업을 하는 식이었습니다. 문제는 세션이 권한 승인을 기다리며 멈춰 있어도 그걸 바로 알 방법이 없다는 점이었습니다. 어떤 탭은 도구를 실행하며 잘 돌아가고 있고, 어떤 탭은 권한 승인을 기다리며 아무 소리 없이 멈춰 있고, 어떤 탭은 이미 끝나 있었습니다. 터미널을 하나씩 열어보는 것 말고는 방법이 없었고, 승인을 기다리는 세션은 한참 뒤에야 발견되곤 했습니다.
 
-계기가 하나 더 있었습니다. Claude Code의 소스가 유출된 적이 있었는데, 터미널 UI를 React Ink로 구현했다는 점이 인상적이었습니다. Anthropic 같은 기업도 쓸 만큼 안정적인 라이브러리라는 뜻이었고, React가 웹을 넘어 터미널까지 커버하는 생각보다 넓은 생태계라는 걸 실감했습니다. 평소에는 업무와 직접 연관이 없으면 사이드 프로젝트를 잘 벌이지 않는 편인데, 마침 필요한 앱이 있었기에 이 계기로 직접 만들어보기로 했습니다.
+계기가 하나 더 있었습니다. Claude Code의 터미널 UI가 React Ink로 구현되어 있다는 사실이 알려진 적이 있는데, 그 점이 인상적이었습니다. Anthropic 같은 기업이 프로덕션에 쓸 만큼 안정적인 라이브러리라는 뜻이었고, React가 웹을 넘어 터미널까지 커버하는 생각보다 넓은 생태계라는 걸 실감했습니다. 평소에는 업무와 직접 연관이 없으면 사이드 프로젝트를 잘 벌이지 않는 편인데, 마침 필요한 앱이 있었기에 이 계기로 직접 만들어보기로 했습니다.
 
 만든 것은 화면 위에 항상 떠 있는 macOS 데스크탑 위젯입니다. 실행 중인 모든 Claude Code 세션의 상태를 카드로 보여주고, 권한 요청이 발생하면 바로 알 수 있게 합니다.
 
 | | |
 | --- | --- |
-| 기간 · 규모 | 3일 · 105 커밋 (개인) |
+| 기간 | 3일 (개인) |
 | 배포 | Homebrew |
 | 링크 | [GitHub](https://github.com/codefug/claude-pet) |
 
@@ -19,8 +19,8 @@ Claude Code를 여러 탭에 띄워놓고 병렬로 작업하는 경우가 많�
 | 구분 | 스택 |
 | --- | --- |
 | 앱 | ![Electron](https://img.shields.io/badge/Electron-2B2E3A?logo=electron&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) |
-| 상태 · 데이터 | ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![chokidar](https://img.shields.io/badge/chokidar-339933?logo=nodedotjs&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
-| 빌드 · 배포 | ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) ![esbuild](https://img.shields.io/badge/esbuild-FFCF00?logo=esbuild&logoColor=black) ![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?logo=homebrew&logoColor=white) |
+| 상태 및 데이터 | ![Tanstack Query](https://img.shields.io/badge/Tanstack_Query-FF4154?logo=reactquery&logoColor=white) ![chokidar](https://img.shields.io/badge/chokidar-339933?logo=nodedotjs&logoColor=white) ![zod](https://img.shields.io/badge/zod-3E67B1?logo=zod&logoColor=white) |
+| 빌드 및 배포 | ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) ![esbuild](https://img.shields.io/badge/esbuild-FFCF00?logo=esbuild&logoColor=black) ![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?logo=homebrew&logoColor=white) |
 
 ### 왜 Electron이었나
 
@@ -32,7 +32,7 @@ Electron 공식 문서의 Security 페이지는 이 차이를 명확히 짚습�
 
 > As web developers, we usually enjoy the strong security net of the browser... When working with Electron, it is important to understand that Electron is not a web browser. It allows you to build feature-rich desktop applications with familiar web technologies, but your code wields much greater power. JavaScript can access the filesystem, user shell, and more.
 
-브라우저는 많은 보안을 대신 처리해주지만 Electron의 Chromium은 그렇지 않습니다. 파일 시스템과 OS API에 직접 접근할 수 있는 만큼, 그 권한을 어떻게 나누느냐가 설계의 핵심이 됩니다. 그래서 Electron은 Main(Node.js)과 Renderer(Chromium) 프로세스를 구조적으로 분리합니다. Main이 파일 시스템·네트워크·OS API를 담당하고, Renderer는 샌드박스 안에서 React UI만 그립니다. 이 프로젝트에서는 `~/.claude/projects/` 아래 세션 파일을 읽어야 했으므로, 그 접근은 전부 Main에서 처리하고 Renderer는 IPC로 결과만 받는 구조를 세웠습니다.
+브라우저는 많은 보안을 대신 처리해주지만 Electron의 Chromium은 그렇지 않습니다. 파일 시스템과 OS API에 직접 접근할 수 있는 만큼, 그 권한을 어떻게 나누느냐가 설계의 핵심이 됩니다. 그래서 Electron은 Main(Node.js)과 Renderer(Chromium) 프로세스를 구조적으로 분리합니다. Main이 파일 시스템, 네트워크, OS API를 담당하고, Renderer는 샌드박스 안에서 React UI만 그립니다. 이 프로젝트에서는 `~/.claude/projects/` 아래 세션 파일을 읽어야 했으므로, 그 접근은 전부 Main에서 처리하고 Renderer는 IPC로 결과만 받는 구조를 세웠습니다.
 
 ### 상태를 어디서 가져올 것인가
 
@@ -42,9 +42,9 @@ Electron 공식 문서의 Security 페이지는 이 차이를 명확히 짚습�
 
 **세션 기록 파일** — `~/.claude/projects/` 아래 세션마다 쌓이는 JSONL 파일입니다. 느리지만 모든 세션에 대해 항상 존재하는 근거입니다.
 
-각각 약점이 뚜렷했기 때문에, 하나만 고르는 대신 둘 다 쓰고 한 곳에서 합치는 쪽을 선택했습니다. hook은 stdin으로 받은 이벤트를 hook-cli를 거쳐 hook 서버의 메모리 상태(Map)에 남기고, 세션 기록 파일은 별도의 watcher가 변경을 감지해 파싱합니다. 이 두 경로는 `scanProjects`라는 한 곳으로 모여, 기록 파일을 파싱한 결과와 hook이 남긴 메모리 상태를 세션 ID로 join한 뒤 IPC로 Renderer에 전달됩니다.
+각각 약점이 뚜렷했기 때문에, 하나만 고르는 대신 둘 다 쓰고 한 곳에서 합치는 쪽을 선택했습니다. hook 이벤트는 앱 안의 HTTP 서버가 받아 메모리 상태(Map)에 남기고, 세션 기록 파일은 별도의 watcher가 변경을 감지해 파싱합니다. 이 두 경로는 `scanProjects`라는 한 곳으로 모여, 기록 파일을 파싱한 결과와 hook이 남긴 메모리 상태를 세션 ID로 join한 뒤 IPC로 Renderer에 전달됩니다.
 
-### IPC 패턴도 처음 설계와 나중 설계가 달랐다
+### IPC는 요청-응답에서 push로 바뀌었다
 
 처음에는 `~/.claude/projects/`의 jsonl 파일을 주기적으로 읽는 폴링 방식이었습니다. 이때는 Renderer가 먼저 요청하는 `ipcRenderer.invoke` + `ipcMain.handle` 패턴(요청-응답)만 있으면 충분했습니다. 하지만 폴링 주기 때문에 실제 이벤트 발생과 위젯 반영 사이에 딜레이가 생겼고, 이 문제를 hook 기반 이벤트 드리븐 방식으로 바꾸며 흐름이 역전됐습니다. Main이 외부 이벤트를 먼저 받아 `webContents.send`로 Renderer에 push하는 구조가 필요해진 것입니다. SSE처럼 서버가 클라이언트에 이벤트를 미는 패턴과 같습니다.
 
@@ -55,8 +55,10 @@ Renderer가 `ipcRenderer`를 직접 다루는 것은 보안상 권장되지 않�
 contextBridge.exposeInMainWorld('claudePet', {
   getSessions: () => ipcRenderer.invoke('GET_SESSIONS'),
   onSessionsUpdate: (cb) => {
-    ipcRenderer.on('SESSIONS_UPDATE', (_, sessions) => cb(sessions))
-    return () => ipcRenderer.off('SESSIONS_UPDATE', cb)
+    const listener = (_, sessions) => cb(sessions)
+    ipcRenderer.on('SESSIONS_UPDATE', listener)
+    // 등록한 listener 그대로 해제해야 한다. cb를 넘기면 해제되지 않는다.
+    return () => ipcRenderer.off('SESSIONS_UPDATE', listener)
   },
 })
 ```
@@ -87,7 +89,7 @@ hook은 사용자의 실제 작업 세션 안에서 실행됩니다. 여기서 �
 
 ### 포트 파일 공유로 hook과 앱을 연결
 
-앱이 켜질 때 포트 0으로 서버를 열어 OS가 빈 포트를 골라주게 하고(`listen(0)`, 로컬 주소에만), 그 번호를 `~/.claude/.pet-hook-port` 파일에 적어둡니다. hook 스크립트는 이 파일을 읽어 어디로 요청을 보낼지 알아냅니다. 앱이 종료되면 파일을 지우고, 앱이 꺼져 있으면 hook 스크립트는 파일이 없는 것을 확인하고 아무것도 하지 않은 채 즉시 종료합니다.
+앱이 켜질 때 포트 0으로 서버를 열어 OS가 빈 포트를 골라주게 하고(`listen(0)`, `127.0.0.1`에만 바인딩), 그 번호를 `~/.claude/.pet-hook-port` 파일에 적어둡니다. hook 스크립트는 이 파일을 읽어 어디로 요청을 보낼지 알아냅니다. 앱이 종료되면 파일을 지우고, 앱이 꺼져 있으면 hook 스크립트는 파일이 없는 것을 확인하고 아무것도 하지 않은 채 즉시 종료합니다.
 
 <Mermaid>
 {`flowchart LR
@@ -102,7 +104,7 @@ Claude Code는 이벤트 데이터를 stdin으로 hook 스크립트에 넘겨줍
 
 ### hook은 무엇이 있어도 조용히 실패하도록
 
-hook 스크립트는 성공하든 실패하든 타임아웃되든 항상 `exit(0)`으로 종료합니다. 등록할 때도 비동기·5초 타임아웃으로 걸어 둡니다.
+hook 스크립트는 성공하든 실패하든 타임아웃되든 항상 `exit(0)`으로 종료합니다. 등록할 때도 비동기로 5초 타임아웃을 걸어 둡니다.
 
 ```ts
 // 어떤 경로로 끝나든 exit(0) — Claude Code에 에러를 노출하지 않는다
@@ -121,7 +123,7 @@ req.on("timeout", () => process.exit(0));
 const start = size < lastOffset ? 0 : lastOffset;
 ```
 
-파일이 갑자기 작아지는 경우(재작성·회전)를 따로 처리하지 않으면 엉뚱한 위치부터 읽어 깨진 JSON을 만나게 됩니다. 이 분기 하나로 그 문제를 막았습니다.
+파일이 갑자기 작아지는 경우(재작성이나 회전)를 따로 처리하지 않으면 엉뚱한 위치부터 읽어 깨진 JSON을 만나게 됩니다. 이 분기 하나로 그 문제를 막았습니다.
 
 ### 승인 대기 무한 루프는 기록 파일로 교차 검증
 
@@ -134,7 +136,7 @@ hook만으로는 이 버그를 고칠 방법이 없었습니다. 그래서 hook�
   B -->|"없음 = 진짜 대기 중"| D["승인 대기 유지"]`}
 </Mermaid>
 
-도구 실행 결과가 기록에 남았다는 것은 그 호출이 어떤 식으로든 끝났다는 뜻입니다. hook이 오지 않아도 이걸로 판단할 수 있습니다. 두 출처를 합친 설계가 여기서 값을 했습니다. 하나만 썼다면 이 stuck 버그는 고칠 방법이 없었습니다.
+도구 실행 결과가 기록에 남았다는 것은 그 호출이 어떤 식으로든 끝났다는 뜻입니다. hook이 오지 않아도 이걸로 판단할 수 있습니다. 두 출처를 합쳐둔 설계가 여기서 빛을 발했습니다. 하나만 썼다면 이 버그는 고칠 방법이 없었습니다.
 
 ### 우선순위 기반 정렬로 "봐야 할 것"을 항상 위로
 
@@ -153,16 +155,16 @@ const PRIORITY = {
 
 ### 서명 문제는 조건부 임시 조치로
 
-Apple 개발자 계정 없이 서명·공증하는 정식 해결책을 쓰기엔 개인 프로젝트에 연 99달러는 부담이었습니다. 대신 앱이 시작할 때 자기 자신에게 붙은 격리 표시(quarantine attribute)를 스스로 떼도록 했습니다. 근본 해결이 아니라, 조건이 바뀌면(서명하게 되면) 걷어내야 하는 코드라는 걸 그대로 기록해두었습니다.
+Apple 개발자 계정 없이 서명 및 공증하는 정식 해결책을 쓰기엔 개인 프로젝트에 연 99달러는 부담이었습니다. 대신 앱이 시작할 때 자기 자신에게 붙은 격리 표시(quarantine attribute)를 스스로 떼도록 했습니다. 근본 해결이 아니라, 조건이 바뀌면(서명하게 되면) 걷어내야 하는 코드라는 걸 그대로 기록해두었습니다.
 
 ## 최종 회고
 
-3일, 105개 커밋으로 만들었고 코드는 1,700줄 남짓, 파일 하나가 120줄을 넘지 않는 규모입니다. 만들면서 남은 것은 크게 세 가지입니다.
+3일짜리 작은 프로젝트였지만, 만들면서 남은 것은 크게 세 가지입니다.
 
 하나, 믿을 수 없는 신호가 있으면 믿을 수 있는 다른 신호와 교차 확인할 수 있는 구조를 만들어두는 편이 낫다는 것입니다. hook만 썼다면 승인 대기 무한 루프를 고칠 방법이 없었고, 기록 파일만 썼다면 반응이 느렸을 겁니다.
 
 둘, 남의 프로세스 안에서 도는 코드는 실패하더라도 조용히 실패해야 한다는 것입니다. 제 위젯이 안 뜨는 것보다, 그것 때문에 Claude Code 자체가 느려지는 게 훨씬 나쁩니다.
 
-셋, 시작할 때 품었던 전제가 틀렸다는 것을 직접 확인했습니다. React Ink를 보고 "React가 웹을 벗어나 훨씬 넓은 곳까지 간다"고 생각해 Electron을 골랐지만, 실제로 만들어보니 Electron의 Renderer는 Chromium이었고, React가 웹을 벗어난 게 아니라 웹이 데스크탑 안으로 들어온 것에 가까웠습니다. 이 프로젝트에서 진짜 새로웠던 지점은 React가 아니라 그 바깥 — 프로세스 분리, IPC, 파일 접근 권한 — 이었습니다. 정작 이 여정의 계기가 됐던 React Ink는 아직 써보지 못했고, 여전히 숙제로 남아 있습니다.
+셋, 시작할 때 품었던 전제가 틀렸다는 것을 직접 확인했습니다. 설계에서 적었듯 React가 웹을 벗어난 게 아니라 웹이 데스크탑 안으로 들어온 것이었고, 진짜 새로웠던 지점은 프로세스 분리, IPC, 파일 접근 권한처럼 React 바깥에 있었습니다. 정작 이 여정의 계기가 됐던 React Ink는 아직 써보지 못했고, 여전히 숙제로 남아 있습니다.
 
 - 저장소: [github.com/codefug/claude-pet](https://github.com/codefug/claude-pet)
