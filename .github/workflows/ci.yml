@@ -43,10 +43,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # mdxMap.ts는 생성 파일이라 저장소에 없다. 타입 체크 전에 만들어야 한다.
-      - name: Generate MDX map
-        run: pnpm run generate-mdx
-
       - name: Lint
         run: pnpm run lint:check
 
