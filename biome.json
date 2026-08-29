@@ -3,15 +3,7 @@
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!public",
-      "!assets",
-      "!out",
-      "!.next",
-      "!coverage",
-      "!lib/mdxMap.ts"
-    ]
+    "includes": ["**", "!public", "!assets", "!out", "!.next", "!coverage"]
   },
   "overrides": [
     {

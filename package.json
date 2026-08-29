@@ -9,12 +9,10 @@
     "node": ">=22"
   },
   "scripts": {
-    "generate-mdx": "node scripts/generateMdxMap.mjs",
     "validate-posts": "node scripts/validatePosts.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "prebuild": "pnpm run generate-mdx && pnpm run validate-posts",
-    "predev": "pnpm run generate-mdx",
+    "prebuild": "pnpm run validate-posts",
     "dev": "next dev",
     "build": "next build",
     "start": "npx serve@latest out",
