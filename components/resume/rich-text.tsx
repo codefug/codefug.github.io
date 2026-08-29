@@ -3,9 +3,11 @@ import { Fragment } from "react";
 type Token =
   | { type: "text"; content: string; start: number }
   | { type: "bold"; content: string; start: number }
+  | { type: "underline"; content: string; start: number }
   | { type: "link"; url: string; content: string; start: number };
 
-const COMBINED_RE = /\[B\](.+?)\[\/B\]|\[L:([^\]]+)\](.+?)\[\/L\]/g;
+const COMBINED_RE =
+  /\[B\](.+?)\[\/B\]|\[U\](.+?)\[\/U\]|\[L:([^\]]+)\](.+?)\[\/L\]/g;
 
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
@@ -20,11 +22,13 @@ function tokenize(text: string): Token[] {
       });
     if (match[1] !== undefined) {
       tokens.push({ type: "bold", content: match[1], start: matchStart });
+    } else if (match[2] !== undefined) {
+      tokens.push({ type: "underline", content: match[2], start: matchStart });
     } else {
       tokens.push({
         type: "link",
-        url: match[2],
-        content: match[3],
+        url: match[3],
+        content: match[4],
         start: matchStart,
       });
     }
@@ -51,6 +55,16 @@ function RichTokens({ line }: { line: string }) {
             >
               {token.content}
             </strong>
+          );
+        if (token.type === "underline")
+          return (
+            // 링크(점선)와 헷갈리지 않도록 하이라이트는 primary 실선 밑줄을 쓴다.
+            <em
+              key={token.start}
+              className="font-semibold text-gray-900 not-italic underline decoration-[1.5px] decoration-primary/70 underline-offset-[3px] dark:text-white"
+            >
+              {token.content}
+            </em>
           );
         if (token.type === "link")
           return (
