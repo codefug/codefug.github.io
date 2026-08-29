@@ -32,7 +32,6 @@
     "**/*.tsx",
     "**/*.mdx",
     ".next/types/**/*.ts",
-    "scripts/generateMdxMap.mjs",
     "next.config.ts",
     ".next/dev/types/**/*.ts"
   ],
