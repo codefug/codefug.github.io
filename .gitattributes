@@ -1,0 +1,15 @@
+# 맥북(LF)과 윈도우 노트북을 함께 쓰므로 저장소는 LF로 통일한다.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg text eol=lf
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
