@@ -18,7 +18,7 @@ export function SeriesDetail({
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
       <Link
-        href={PATH.HOME}
+        href={PATH.SERIES}
         className="mb-6 inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-primary"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
