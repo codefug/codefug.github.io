@@ -11,7 +11,7 @@ export function ResumeSectionHeading({
   return (
     <h2
       className={cn(
-        "relative my-0 inline-block font-bold text-[14px] text-gray-900 dark:text-white",
+        "relative my-0 inline-block font-bold text-[15px] text-gray-900 dark:text-white",
         className,
       )}
     >

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
 type DetailItem = { text: string; subItems?: string[] };
-type Category = { title: string; details: DetailItem[] };
+type Category = { title?: string; details: DetailItem[] };
 
 interface Props {
   projectKey: "allra" | "digitalFinance" | "documentAi" | "samilDevKit";
@@ -32,7 +32,7 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
 
 function DetailList({ details }: { details: DetailItem[] }) {
   return (
-    <ul className="mt-1 space-y-1.5 text-[10.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
+    <ul className="mt-1 space-y-1.5 text-[11.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
       {details.map((d, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static content
         <ProjectCategoryDetail key={i} detail={d} />
@@ -44,9 +44,16 @@ function DetailList({ details }: { details: DetailItem[] }) {
 function ProjectCategory({ category }: { category: Category }) {
   return (
     <section className="border-primary/30 border-l-2 pl-3">
-      <h4 className="font-semibold text-[11px] text-gray-800 dark:text-gray-200">
-        <RichText>{category.title}</RichText>
-      </h4>
+      {/*
+        카테고리가 하나뿐인 프로젝트는 소제목이 프로젝트 제목 바로 아래
+        또 제목을 두는 헛계층이 된다. 제목 없이 나열하되, 묶음을 표시하는
+        왼쪽 보더는 제목 유무와 무관하게 유지한다.
+      */}
+      {category.title && (
+        <h4 className="font-semibold text-[12px] text-gray-800 dark:text-gray-200">
+          <RichText>{category.title}</RichText>
+        </h4>
+      )}
       <DetailList details={category.details} />
     </section>
   );
@@ -63,7 +70,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
     <article className={cn("py-3", className)}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="flex items-center gap-2 font-bold text-[14px] text-gray-900 dark:text-white">
+          <h3 className="flex items-center gap-2 font-bold text-[15px] text-gray-900 dark:text-white">
             <span
               aria-hidden
               className="h-4 w-0.5 shrink-0 bg-gray-900 dark:bg-white"
@@ -73,12 +80,12 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         </div>
       </header>
 
-      <p className="mt-2 text-[10.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
+      <p className="mt-2 text-[11.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
         <RichText>{t("description")}</RichText>
       </p>
 
       {/* 기술 스택은 참고 정보라 본문보다 작게 둔다. */}
-      <p className="mt-1.5 mb-2 text-[10.5px] text-gray-400 dark:text-gray-500">
+      <p className="mt-1.5 mb-2 text-[11px] text-gray-400 dark:text-gray-500">
         {stack.join(", ")}
       </p>
 
@@ -86,8 +93,8 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         // 카테고리가 여러 개일 때 간격이 쌓여 페이지를 넘기므로 과하게 벌리지 않는다.
         // 제목이 굵어 간격이 좁아도 묶음 경계는 구분된다.
         <div className="mt-2.5 space-y-3.5">
-          {categories.map((cat) => (
-            <ProjectCategory key={cat.title} category={cat} />
+          {categories.map((cat, i) => (
+            <ProjectCategory key={cat.title ?? i} category={cat} />
           ))}
         </div>
       )}

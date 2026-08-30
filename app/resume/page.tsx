@@ -7,7 +7,6 @@ import ResumeHeader from "@/components/resume/resume-header";
 import { KeepTogether, ResumePage } from "@/components/resume/resume-page";
 import ResumeProjectCard from "@/components/resume/resume-project-card";
 import SideProjects from "@/components/resume/side-projects";
-import { SidebarOff } from "@/components/resume/sidebar-off";
 import WorkExperienceSection, {
   CompanySection,
   TeamSection,
@@ -27,6 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("title"),
     description: t("description"),
+    // 경력기술서와 함께 링크로 전달하는 문서라 검색 인덱싱을 막는다. sitemap 제외와 짝이다.
+    robots: { index: false, follow: false },
     alternates: createAlternateLinks(PATH.RESUME),
     openGraph: {
       ...defaultOpenGraph,
@@ -41,7 +42,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <>
-      <SidebarOff />
       <StructuredData jsonLd={createProfilePageStructuredData(PATH.RESUME)} />
       {/*
         인쇄 기준으로 A4 한 장이 ResumePage 하나다.
@@ -49,14 +49,18 @@ export default function Page() {
       */}
       {/* 좁은 화면에서는 축소하지 않고 가로 스크롤로 넘긴다. */}
       <div className="flex w-fit min-w-full flex-col items-center gap-8 break-keep px-4 py-8 print:w-auto print:min-w-0 print:gap-0 print:p-0">
-        <ResumePage>
-          <ResumeHeader className="mb-3" />
+        <ResumePage pageNumber={1} pageCount={2}>
+          {/*
+            1장은 헤더+카드 하나뿐이라 하단이 빈다. 폰트를 더 키우면 같은
+            컴포넌트를 쓰는 2장이 넘치므로, 이 장에서만 섹션 간격을 벌려 채운다.
+          */}
+          <ResumeHeader className="mb-8" />
 
           <WorkExperienceSection>
             <div>
               <CompanySection companyKey="allra" />
               <TeamSection companyKey="allra">
-                <KeepTogether>
+                <KeepTogether className="mt-4">
                   <ResumeProjectCard projectKey="allra" />
                 </KeepTogether>
               </TeamSection>
@@ -64,7 +68,7 @@ export default function Page() {
           </WorkExperienceSection>
         </ResumePage>
 
-        <ResumePage>
+        <ResumePage pageNumber={2} pageCount={2}>
           <WorkExperienceSection>
             <div>
               <CompanySection companyKey="pwc" />
