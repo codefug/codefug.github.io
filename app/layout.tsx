@@ -4,9 +4,9 @@ import { JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import Layout from "@/components/layout";
+import { SidebarShell } from "@/components/layout/sidebar-shell";
 import { createAlternateLinks } from "@/components/seo/utils";
 import Sidebar from "@/components/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { SITE_URL } from "@/constants/site";
 import { getFrontMatterList } from "@/lib/posts";
 import koMessages from "@/messages/ko.json";
@@ -91,10 +91,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen>
+          <SidebarShell>
             <SidebarWrapper />
             <Layout usedTags={usedTags()}>{children}</Layout>
-          </SidebarProvider>
+          </SidebarShell>
         </ThemeProvider>
       </body>
     </html>
