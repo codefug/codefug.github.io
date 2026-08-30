@@ -268,3 +268,18 @@
   max-width: 100%;
   overflow-x: auto;
 }
+
+/*
+  경력기술서는 흰 종이 위의 문서라 테마를 따라가지 않는다.
+  본문 색은 컴포넌트에서 밝은 값으로 고정해 두었지만, 이력서와 함께 쓰는
+  RichText의 dark: 변형까지는 막을 수 없어 여기서 되돌린다.
+  (다크 모드에서 강조 텍스트가 흰색이 되어 흰 종이에서 사라지는 것을 막는다)
+*/
+.dark .career-document,
+.dark .career-document * {
+  color-scheme: light;
+}
+
+.dark .career-document strong {
+  color: rgb(17 24 39);
+}

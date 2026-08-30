@@ -7,7 +7,7 @@ export type NavigationChild = {
   href: string;
 };
 
-type NavigationLabelName = "Posts" | "Series" | "Notes" | "Resume" | "Search";
+type NavigationLabelName = "Posts" | "Series" | "Notes" | "Career" | "Search";
 
 type NavigationBase = {
   label: NavigationLabelName;
@@ -15,18 +15,26 @@ type NavigationBase = {
   rel: string;
 };
 
+/** 고정된 하위 링크를 펼치는 메뉴. 라벨·설명은 messages의 navigation.menu.<key>에서 가져온다. */
+export type NavigationLink = {
+  key: "resume" | "career";
+  href: string;
+};
+
 /**
- * 링크로 동작하는 항목과, 하위 카테고리로만 들어가는 항목은 서로 배타적이다.
- * 둘 다 없거나 둘 다 있는 상태를 타입으로 막는다.
+ * 링크로 동작하는 항목, 하위 카테고리를 펼치는 항목, 고정 링크를 펼치는 항목은
+ * 서로 배타적이다. 둘 이상이 함께 있는 상태를 타입으로 막는다.
  */
 export type NavigationItem = NavigationBase &
   (
-    | { href: string; section?: never }
+    | { href: string; section?: never; links?: never }
     | {
         href?: never;
         /** 이 대분류의 하위 카테고리를 호버 메뉴로 펼친다. */
         section: "notes";
+        links?: never;
       }
+    | { href?: never; section?: never; links: NavigationLink[] }
   );
 
 /**
@@ -70,8 +78,11 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     rel: "noopener noreferrer",
   },
   {
-    label: "Resume",
-    href: PATH.RESUME,
+    label: "Career",
+    links: [
+      { key: "resume", href: PATH.RESUME },
+      { key: "career", href: PATH.CAREER },
+    ],
     target: "_self",
     rel: "noopener noreferrer",
   },
