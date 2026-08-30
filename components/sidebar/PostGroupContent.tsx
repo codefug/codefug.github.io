@@ -95,7 +95,9 @@ function GroupNode({
         href={groupHref}
         aria-current={isGroupPage ? "page" : undefined}
         className={cn(
-          "block w-full rounded-md px-3 py-1 text-left font-medium text-[11px] transition-colors hover:bg-sidebar-accent",
+          // 화살표가 없으니 형제 그룹의 화살표 자리만큼 왼쪽을 채워
+          // 그룹 이름끼리 글자를 맞춘다. asGroupLabel과 같은 값을 쓴다.
+          "block w-full rounded-md py-1 pr-3 pl-7.5 text-left font-medium text-[11px] transition-colors hover:bg-sidebar-accent",
           isGroupPage
             ? "text-sidebar-foreground"
             : "text-sidebar-foreground/60",
