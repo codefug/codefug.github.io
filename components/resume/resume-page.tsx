@@ -14,9 +14,17 @@ import { cn } from "@/lib/utils";
 export function ResumePage({
   children,
   className,
+  pageNumber,
+  pageCount,
 }: {
   children: ReactNode;
   className?: string;
+  /**
+   * 오른쪽 아래 여백에 찍는 페이지 번호. 둘 다 주어야 표시된다.
+   * 본문 패딩 바깥(아래 여백 10mm 안)에 두어 내용 예산을 먹지 않는다.
+   */
+  pageNumber?: number;
+  pageCount?: number;
 }) {
   return (
     <section
@@ -46,6 +54,14 @@ export function ResumePage({
         (인쇄에서는 그 지점부터 다음 장으로 넘어간다)
       */}
       {children}
+      {pageNumber !== undefined && pageCount !== undefined && (
+        <span
+          aria-hidden
+          className="absolute right-[11mm] bottom-[4mm] text-[8.5px] text-gray-400"
+        >
+          {pageNumber} / {pageCount}
+        </span>
+      )}
     </section>
   );
 }

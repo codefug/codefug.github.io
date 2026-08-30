@@ -29,21 +29,18 @@ function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
     <li className="flex items-center justify-start gap-1.5">
       {/*
-        라벨 칸을 고정 폭(w-24)으로 잡으면 짧은 라벨 뒤에 빈 공간이 남아
-        블록 전체가 오른쪽 끝에 붙지 못한다. 내용 폭만 차지하게 둔다.
+        텍스트 라벨을 두면 연락처 컬럼이 넓어져 옆의 소개 문단이 좁게 꺾인다.
+        아이콘이 이미 종류를 말하므로 경력기술서 헤더처럼 아이콘+값만 둔다.
+        라벨은 읽는 도구를 위해 링크 안에 sr-only로 남긴다.
       */}
-      <div className="flex shrink-0 items-center gap-1">
-        <Icon className="h-3 w-3 shrink-0 text-primary" />
-        <span className="font-semibold text-gray-500 dark:text-gray-400">
-          {label}
-        </span>
-      </div>
+      <Icon className="h-3 w-3 shrink-0 text-primary" />
       <Link
         href={href}
         className="min-w-0 text-gray-800 hover:text-primary hover:underline dark:text-gray-300"
         target="_blank"
         rel="noopener noreferrer"
       >
+        <span className="sr-only">{label} </span>
         {value}
       </Link>
     </li>
@@ -64,7 +61,8 @@ export default function ResumeHeader({ className }: { className?: string }) {
     {
       Icon: GithubIconAdapted,
       label: t("contact.github"),
-      value: t("contact.githubValue"),
+      // 프로토콜은 표시 폭만 차지한다. 링크에는 남기고 표시에서만 뗀다.
+      value: t("contact.githubValue").replace(/^https?:\/\//, ""),
       href: t("contact.githubValue"),
     },
     {
@@ -84,7 +82,13 @@ export default function ResumeHeader({ className }: { className?: string }) {
 
   return (
     <header className={cn("flex flex-col gap-4", className)}>
-      <div className="flex items-start gap-6">
+      {/*
+        소개는 이름 아래, 연락처는 우측 상단 세로 스택.
+        리드 문장(…개발자입니다.)이 소개 컬럼에서 한 줄에 들어가는 것이 기준이다.
+        10px 리드가 398px이므로 컬럼이 400px 이상 나오도록 간격과 연락처 폰트를 잡았다.
+        사진 크기, gap, 연락처 폰트를 바꿀 때는 이 줄이 꺾이는지부터 확인할 것.
+      */}
+      <div className="flex items-start gap-4">
         <div className="relative size-24 shrink-0">
           <Image
             src="/images/profile/image.jpg"
@@ -96,26 +100,25 @@ export default function ResumeHeader({ className }: { className?: string }) {
           />
         </div>
 
-        {/* 이름 아래에 소개가 붙고, 연락처는 오른쪽에 둔다. */}
-        <div className="flex min-w-0 flex-1 items-start justify-between gap-6">
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-[22px] text-gray-900 dark:text-white">
               <span>{t("name")}</span>
-              <span className="font-medium text-[11px] text-primary">
+              <span className="font-medium text-[11.5px] text-primary">
                 {t("role")}
               </span>
             </h1>
-            <div className="mt-2 space-y-1.5 text-[9px] text-gray-700 leading-[1.6] dark:text-gray-300">
+            <div className="mt-2 space-y-1 text-[10px] text-gray-700 leading-[1.6] dark:text-gray-300">
               {paragraphs.map((p, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                <p key={i} className="whitespace-pre-line">
+                <p key={i}>
                   <RichText>{p}</RichText>
                 </p>
               ))}
             </div>
           </div>
 
-          <ul className="flex shrink-0 flex-col gap-y-0.5 text-[10.5px]">
+          <ul className="flex shrink-0 flex-col gap-y-0.5 text-[10px]">
             {contacts.map((contact) => (
               <ContactListItem key={contact.label} {...contact} />
             ))}
