@@ -13,10 +13,8 @@ export function useIsTablet() {
       setIsTablet(window.innerWidth < TABLET_BREAKPOINT);
     };
 
-    // 초기값 설정
     setIsTablet(window.innerWidth < TABLET_BREAKPOINT);
 
-    // 리스너 등록
     mql.addEventListener("change", onChange);
 
     return () => mql.removeEventListener("change", onChange);

@@ -2,10 +2,6 @@
 
 import { motion } from "motion/react";
 
-/**
- * 생일 제목 컴포넌트
- * 글리치 효과와 그라데이션 애니메이션을 포함합니다.
- */
 export function BirthdayTitle() {
   return (
     <motion.div
@@ -13,7 +9,7 @@ export function BirthdayTitle() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{
         duration: 0.6,
-        ease: [0.16, 1, 0.3, 1], // 커스텀 이징
+        ease: [0.16, 1, 0.3, 1],
       }}
       className="relative"
     >

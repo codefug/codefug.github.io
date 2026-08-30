@@ -16,11 +16,9 @@ export default function Callout({
   title: string;
   content: JSX.Element[];
 }) {
-  // props.children을 꺼내서 \n을 기준으로 나눠서 새로운 배열을 만든다.
   const children = content.map((child) =>
     typeof child === "string" ? "\n" : child.props.children,
   );
-  // 콜백의 경우 콜백 sign을 제거한다.
   if (type !== null)
     children[1] = children[1].slice(children[1].indexOf("] ") + 1);
 

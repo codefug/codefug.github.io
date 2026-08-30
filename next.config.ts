@@ -4,9 +4,7 @@ import type { NextConfig } from "next";
 import { SITE_URL } from "./constants/site";
 
 const nextConfig: NextConfig = {
-  // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
-  // Allow trailing slashes in URLs
   trailingSlash: true,
   images: {
     // 정적 익스포트라 이미지 최적화 서버가 없다. 원본을 그대로 내보낸다.
@@ -42,5 +40,4 @@ const withMDX = createMDX({
   },
 });
 
-// Merge MDX config with Next.js config
 export default withMDX(nextConfig);

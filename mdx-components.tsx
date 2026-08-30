@@ -21,7 +21,6 @@ function CustomHeading({
   });
 }
 
-// eslint-disable-next-line
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h1: (props) => <CustomHeading props={props} level={1} />,
@@ -39,9 +38,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: (props) => {
       const { children } = props;
 
-      // Check if the code block is mermaid
       if (children && typeof children === "object") {
-        // Handle React element
         if ("props" in children && children.props) {
           const codeProps = children.props as {
             className?: string;

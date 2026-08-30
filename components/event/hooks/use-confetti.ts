@@ -1,10 +1,6 @@
 import confetti from "canvas-confetti";
 import { useEffect, useRef } from "react";
 
-/**
- * 폭죽 효과를 관리하는 커스텀 훅
- * 컴포넌트 마운트 시 한 번만 실행됩니다.
- */
 export function useConfetti() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hasTriggered = useRef(false);
@@ -18,7 +14,7 @@ export function useConfetti() {
     });
 
     const triggerFireworks = () => {
-      const duration = 3000; // 3초간 폭죽
+      const duration = 3000;
       const animationEnd = Date.now() + duration;
       const defaults = {
         startVelocity: 30,
@@ -40,7 +36,6 @@ export function useConfetti() {
 
         const particleCount = 50 * (timeLeft / duration);
 
-        // 왼쪽에서 폭죽 발사
         myConfetti({
           ...defaults,
           particleCount,
@@ -48,7 +43,6 @@ export function useConfetti() {
           colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
         });
 
-        // 오른쪽에서 폭죽 발사
         myConfetti({
           ...defaults,
           particleCount,
