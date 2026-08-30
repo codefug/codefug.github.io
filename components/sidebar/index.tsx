@@ -19,6 +19,13 @@ import { PostGroupContent } from "./PostGroupContent";
 import { SidebarAnchorButton } from "./SidebarAnchorButton";
 import { useNavigateAfterSidebarClose } from "./use-navigate-after-sidebar-close";
 
+type SidebarNavEntry = {
+  key: string;
+  href: string;
+  target: string;
+  label: string;
+};
+
 export default function AppSidebar({
   frontMatterList,
 }: {
@@ -93,17 +100,34 @@ export default function AppSidebar({
                 하위 카테고리로만 들어가는 항목(Notes)은 위 카테고리 트리에
                 이미 같은 내용이 펼쳐져 있으므로 여기서는 빼둔다.
               */}
-              {NAVIGATION_ITEMS.flatMap((item) =>
-                item.href ? [{ ...item, href: item.href }] : [],
-              ).map((item) => (
-                <SidebarMenuItem key={item.label}>
+              {NAVIGATION_ITEMS.flatMap<SidebarNavEntry>((item) => {
+                if (item.href)
+                  return [
+                    {
+                      key: item.label,
+                      href: item.href,
+                      target: item.target,
+                      label: t(`navigation.${item.label.toLowerCase()}`),
+                    },
+                  ];
+                // 드롭다운으로 묶인 고정 링크는 펼칠 메뉴가 없는 사이드바에서는 풀어 나란히 둔다.
+                if (item.links)
+                  return item.links.map((link) => ({
+                    key: link.key,
+                    href: link.href,
+                    target: item.target,
+                    label: t(`navigation.menu.${link.key}.label`),
+                  }));
+                return [];
+              }).map((item) => (
+                <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild>
                     <SidebarAnchorButton
                       href={item.href}
                       target={item.target}
                       onClick={getNavigationClickHandler(item)}
                     >
-                      {t(`navigation.${item.label.toLowerCase()}`)}
+                      {item.label}
                     </SidebarAnchorButton>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

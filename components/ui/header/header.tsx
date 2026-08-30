@@ -8,7 +8,6 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   getSectionChildren,
   NAVIGATION_ITEMS,
-  type NavigationChild,
   type NavigationLabel,
 } from "@/constants/navigation";
 import { isSidebarOffPath, PATH } from "@/constants/path";
@@ -86,6 +85,7 @@ const HeaderNavigation = memo(function HeaderNavigation({
 }) {
   const pathName = usePathname();
   const t = useTranslations("navigation");
+  const tc = useTranslations("categories");
   const usedTagSet = useMemo(() => new Set(usedTags), [usedTags]);
 
   return (
@@ -99,17 +99,29 @@ const HeaderNavigation = memo(function HeaderNavigation({
           const isDuplicated =
             hideDuplicatesOnMobile && item.label !== "Search";
 
-          if (item.section) {
-            const children = getSectionChildren(item.section, usedTagSet);
+          if (item.section || item.links) {
+            const entries = item.links
+              ? item.links.map((link) => ({
+                  id: link.key,
+                  href: link.href,
+                  label: t(`menu.${link.key}.label`),
+                  desc: t(`menu.${link.key}.description`),
+                }))
+              : getSectionChildren(item.section, usedTagSet).map((child) => ({
+                  id: child.groupId,
+                  href: child.href,
+                  label: tc(`${child.groupId}.label`),
+                  desc: tc(`${child.groupId}.description`),
+                }));
             // 하위 카테고리에 글이 하나도 없으면 열 메뉴가 없다.
-            if (children.length === 0) return null;
+            if (entries.length === 0) return null;
 
             return (
               <NavigationDropdown
                 key={item.label}
                 label={item.label}
                 messageKey={key}
-                items={children}
+                entries={entries}
                 isDuplicated={isDuplicated}
               />
             );
@@ -164,27 +176,31 @@ function isSamePath(pathname: string, href: string): boolean {
   return pathname.replace(/\/$/, "") === href;
 }
 
+export type DropdownEntry = {
+  id: string;
+  href: string;
+  label: string;
+  desc: string;
+};
+
 /**
- * 자기 페이지 없이 하위 카테고리로만 들어가는 메뉴.
- *
- * 호버·포커스로 열리는 CSS 드롭다운에 클릭 토글을 함께 둔다.
- * 호버만으로 열면 터치 기기에서는 열 방법이 없다.
+ * 자기 페이지 없이 하위 항목으로만 들어가는 메뉴.
+ * 하위 항목이 카테고리든 고정 링크든 여기서는 같은 모양으로 받는다.
  */
 const NavigationDropdown = memo(function NavigationDropdown({
   label,
   messageKey,
-  items,
+  entries,
   isDuplicated,
 }: {
   label: string;
   messageKey: Lowercase<NavigationLabel>;
-  items: NavigationChild[];
+  entries: DropdownEntry[];
   isDuplicated: boolean;
 }) {
   const pathName = usePathname();
   const t = useTranslations("navigation");
-  const tc = useTranslations("categories");
-  const isActive = items.some((child) => isSamePath(pathName, child.href));
+  const isActive = entries.some((entry) => isSamePath(pathName, entry.href));
 
   return (
     <div className={cn("group relative", isDuplicated && "hidden md:block")}>
@@ -220,12 +236,12 @@ const NavigationDropdown = memo(function NavigationDropdown({
         )}
       >
         <ul className="overflow-hidden rounded-lg border border-border bg-popover p-1 shadow-lg">
-          {items.map((child) => {
-            const isCurrent = isSamePath(pathName, child.href);
+          {entries.map((entry) => {
+            const isCurrent = isSamePath(pathName, entry.href);
             return (
-              <li key={child.groupId}>
+              <li key={entry.id}>
                 <Link
-                  href={child.href}
+                  href={entry.href}
                   className={cn(
                     "block rounded-md px-3 py-2 transition-colors hover:bg-accent",
                     isCurrent
@@ -235,10 +251,10 @@ const NavigationDropdown = memo(function NavigationDropdown({
                   aria-current={isCurrent ? "page" : undefined}
                 >
                   <span className="block font-medium text-sm">
-                    {tc(`${child.groupId}.label`)}
+                    {entry.label}
                   </span>
                   <span className="mt-0.5 block font-normal text-muted-foreground/70 text-xs leading-snug">
-                    {tc(`${child.groupId}.description`)}
+                    {entry.desc}
                   </span>
                 </Link>
               </li>
