@@ -13,9 +13,6 @@ export const defaultOpenGraph = {
   locale: "ko_KR",
 } satisfies Metadata["openGraph"];
 
-/**
- * 페이지의 canonical link를 생성하는 함수
- */
 export function createAlternateLinks(path: string): Metadata["alternates"] {
   const url = `${BASE_URL}${path}`;
 

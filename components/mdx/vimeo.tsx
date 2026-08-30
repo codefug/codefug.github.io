@@ -1,5 +1,3 @@
-// VimeoPlayer.js
-
 const VimeoPlayer = ({
   id,
   width = "640",

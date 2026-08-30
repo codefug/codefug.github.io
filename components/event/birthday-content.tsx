@@ -2,10 +2,6 @@
 
 import { motion } from "motion/react";
 
-/**
- * 생일 배너 콘텐츠 컴포넌트
- * 날짜와 메시지를 표시합니다.
- */
 export function BirthdayContent() {
   const currentYear = new Date().getFullYear();
 

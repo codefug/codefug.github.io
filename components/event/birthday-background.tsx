@@ -3,9 +3,6 @@
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
-/**
- * 파티클 데이터 타입
- */
 type ParticleData = {
   left: number;
   top: number;
@@ -13,10 +10,6 @@ type ParticleData = {
   delay: number;
 };
 
-/**
- * 생일 배너 배경 애니메이션 컴포넌트
- * 그라데이션과 파티클 효과를 제공합니다.
- */
 export function BirthdayBackground() {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -37,10 +30,8 @@ export function BirthdayBackground() {
 
   return (
     <>
-      {/* 그라데이션 배경 */}
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-transparent" />
 
-      {/* 움직이는 그라데이션 오버레이 */}
       <motion.div
         className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-500/10 via-transparent to-blue-500/10"
         animate={{
@@ -54,7 +45,6 @@ export function BirthdayBackground() {
         }}
       />
 
-      {/* 파티클 효과 */}
       {particles.map((particle, i) => (
         <motion.div
           key={`particle-${i}-${particle.left}-${particle.top}`}
