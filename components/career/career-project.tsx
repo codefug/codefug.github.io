@@ -65,9 +65,7 @@ export function CareerProject({
             <h3 className="font-bold text-[14px] text-gray-900">
               {t("title")}
             </h3>
-            <span className="text-[9.5px] text-gray-500">
-              {t("period")} &nbsp;|&nbsp; {t("role")}
-            </span>
+            <span className="text-[9.5px] text-gray-500">{t("role")}</span>
           </div>
           <p className="mt-1.5 text-[11px] text-gray-700 leading-[1.65]">
             <RichText>{t("summary")}</RichText>
