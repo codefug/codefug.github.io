@@ -62,37 +62,54 @@ export default function Page() {
           통일하고, 남는 공백은 장별 간격(헤더 아래 여백, 항목 사이 간격)으로
           분산해 바닥에 몰리지 않게 한다. 항목을 옮기면 간격도 다시 잡을 것.
         */}
-        <ResumePage pageNumber={1} pageCount={5}>
+        <ResumePage pageNumber={1} pageCount={6}>
           <CareerHeader className="mb-8" />
-          <CareerCompany companyKey="allra">
-            <CareerProject projectKey="allra" items={[0]} />
+          <CareerCompany companyKey="allra" className="flex flex-col gap-2">
+            <CareerProject
+              projectKey="allra"
+              items={[0]}
+              className="flex flex-col gap-6"
+            />
           </CareerCompany>
         </ResumePage>
 
-        <ResumePage pageNumber={2} pageCount={5}>
-          <CareerProject projectKey="allra" items={[1, 2]} headless />
+        <ResumePage pageNumber={2} pageCount={6}>
+          <CareerProject
+            projectKey="allra"
+            items={[1, 2]}
+            headless
+            itemsClassName="space-y-12"
+          />
         </ResumePage>
 
-        <ResumePage pageNumber={3} pageCount={5}>
+        <ResumePage pageNumber={3} pageCount={6}>
           <CareerProject
             projectKey="allra"
             items={[3, 4]}
             headless
-            itemsClassName="space-y-16"
+            itemsClassName="space-y-12"
           />
         </ResumePage>
 
-        <ResumePage pageNumber={4} pageCount={5}>
-          <CareerProject projectKey="allra" items={[5]} headless />
-          <CareerCompany companyKey="pwc" className="mt-16">
-            <CareerProject projectKey="digitalFinance" />
-          </CareerCompany>
+        <ResumePage pageNumber={4} pageCount={6}>
+          <CareerProject
+            projectKey="allra"
+            items={[5, 6]}
+            headless
+            itemsClassName="space-y-12"
+          />
         </ResumePage>
 
-        <ResumePage pageNumber={5} pageCount={5}>
-          <CareerProject projectKey="documentAi" />
-          <CareerProject projectKey="samilDevKit" className="mt-8" />
-          <CareerExtras className="mt-10" />
+        <ResumePage pageNumber={5} pageCount={6}>
+          <CareerCompany companyKey="pwc">
+            <CareerProject projectKey="digitalFinance" />
+          </CareerCompany>
+          <CareerProject projectKey="documentAi" className="mt-12" />
+        </ResumePage>
+
+        <ResumePage pageNumber={6} pageCount={6}>
+          <CareerProject projectKey="samilDevKit" />
+          <CareerExtras className="mt-12" />
         </ResumePage>
       </div>
     </>
