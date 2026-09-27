@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CodeFug Blog</title>
+    <link>https://codefug.github.io</link>
+    <description>개발자 코드퍼그의 기술 블로그</description>
+    <language>ko</language>
+    <atom:link href="https://codefug.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title><![CDATA[로드밸런서 뒤에서 502가 무작위로 뜬다면]]></title>
+      <link>https://codefug.github.io/posts/2026-08-17/</link>
+      <guid>https://codefug.github.io/posts/2026-08-17/</guid>
+      <description><![CDATA[특정 요청이 아니라 아무 요청에서나 502가 났습니다. 커넥션을 재사용하는 쪽과 받는 쪽의 타임아웃이 서로를 모른 채 돌고 있었고, 그 틈에서 죽어가는 소켓이 재사용되고 있었습니다.]]></description>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[구조화된 데이터는 왜 필요할까]]></title>
+      <link>https://codefug.github.io/posts/2026-08-15/</link>
+      <guid>https://codefug.github.io/posts/2026-08-15/</guid>
+      <description><![CDATA[메타 태그를 다 넣었는데도 검색 결과는 파란 링크 한 줄뿐이었습니다. 검색엔진이 페이지를 '읽는' 것과 '이해하는' 것은 다른 문제였고, 그 사이를 메우는 게 구조화된 데이터였습니다.]]></description>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[useSearchParams는 왜 Suspense가 필요할까]]></title>
+      <link>https://codefug.github.io/posts/2026-05-27/</link>
+      <guid>https://codefug.github.io/posts/2026-05-27/</guid>
+      <description><![CDATA[전역 Suspense로 감싸면 경고는 사라지지만, 페이지의 정적 마크업까지 placeholder로 대체됩니다. Next.js 소스코드를 따라가 BailoutToCSRError가 CLIENT_RENDERED 경계로 어떻게 흐르는지 살펴봅니다.]]></description>
+      <pubDate>Wed, 27 May 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Server Action의 큐는 어디까지 묶일까]]></title>
+      <link>https://codefug.github.io/posts/2026-01-29/</link>
+      <guid>https://codefug.github.io/posts/2026-01-29/</guid>
+      <description><![CDATA[문서에는 "queued"라고만 적혀 있습니다. 호출 단위인지 컴포넌트 단위인지 탭 전체인지 알 수 없어서, 30개 요청을 세 가지 방식으로 직접 재봤습니다.]]></description>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[useCallback, useMemo는 왜 쓸까]]></title>
+      <link>https://codefug.github.io/posts/2026-01-18/</link>
+      <guid>https://codefug.github.io/posts/2026-01-18/</guid>
+      <description><![CDATA[참조형 데이터는 내용이 같아도 주소가 다르면 다른 값으로 취급됩니다. 이 특성이 useEffect 의존성 배열과 React.memo에서 왜 문제가 되는지, useCallback과 useMemo가 무엇을 해결하는지, 그리고 왜 모든 곳에 쓰면 안 되는지 정리합니다.]]></description>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[순록의 편지 — 연말에 예약 편지를 보내는 서비스를 만들며]]></title>
+      <link>https://codefug.github.io/posts/2024-12-25-project/</link>
+      <guid>https://codefug.github.io/posts/2024-12-25-project/</guid>
+      <description><![CDATA[인앱 브라우저에서 기능이 깨지는 문제와 대용량 목록 렌더링 성능 문제, 두 가지를 실제로 부딪히고 풀어낸 기록입니다.]]></description>
+      <pubDate>Wed, 25 Dec 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[async/await, 그리고 실행 순서 문제]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-7/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-7/</guid>
+      <description><![CDATA[Promise 핸들러가 항상 비동기로 실행되는 이유인 마이크로태스크 큐를 짚고, 이를 편하게 다루는 async/await 문법과 실행 순서 종합 문제로 시리즈를 마무리합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Promise API와 요청 취소]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-6/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-6/</guid>
+      <description><![CDATA[Promise.all/allSettled/race 같은 정적 메서드, AbortController로 요청을 취소하는 방법, 그리고 콜백을 Promise로 바꾸는 Promisification을 정리합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Promise 체이닝과 에러 핸들링]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-5/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-5/</guid>
+      <description><![CDATA[then을 이어 붙여 비동기 작업을 순서대로 처리하는 Promise 체이닝과, fetch 예제, 그리고 체인에서 에러를 다루는 방법을 정리합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[콜백에서 Promise까지]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-4/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-4/</guid>
+      <description><![CDATA[콜백 기반 비동기 처리의 한계인 콜백 지옥을 짚어보고, 이를 해결하기 위해 등장한 Promise의 기본 구조와 소비 함수를 정리합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[매크로태스크와 마이크로태스크]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-3/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-3/</guid>
+      <description><![CDATA[Promise 핸들러가 만드는 마이크로태스크는 언제 실행될까요. macrotask, microtask, 렌더링의 처리 순서를 예제로 확인합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[무거운 작업을 쪼개 화면을 살려두기]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10-2/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10-2/</guid>
+      <description><![CDATA[CPU 소모가 많은 task가 화면을 멈추는 문제를 setTimeout으로 쪼개서 해결하는 방법을 살펴봅니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[싱글 스레드 자바스크립트와 이벤트 루프]]></title>
+      <link>https://codefug.github.io/posts/2024-11-10/</link>
+      <guid>https://codefug.github.io/posts/2024-11-10/</guid>
+      <description><![CDATA[자바스크립트가 싱글 스레드인 이유와, 엔진이 task를 처리하는 이벤트 루프의 기본 동작을 정리합니다.]]></description>
+      <pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[이제는 같이 해볼 시점인 것 같습니다 — 부트캠프에 지원한 이유]]></title>
+      <link>https://codefug.github.io/posts/2024-03-05-bootcamp/</link>
+      <guid>https://codefug.github.io/posts/2024-03-05-bootcamp/</guid>
+      <description><![CDATA[혼자 개념을 정리하는 것이 협업 준비가 될지 모르겠다고 적어둔 적이 있습니다. 몇 달 지나 그 질문에 답을 내렸고, 부트캠프를 고를 때 세운 세 가지 기준을 정리했습니다.]]></description>
+      <pubDate>Tue, 05 Mar 2024 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[나는 왜 개발자가 되려고 하는가]]></title>
+      <link>https://codefug.github.io/posts/2023-12-01-resolution/</link>
+      <guid>https://codefug.github.io/posts/2023-12-01-resolution/</guid>
+      <description><![CDATA[밴드부와 VR 테마파크를 거쳐 개발로 왔습니다. 앞단이 바뀌었다는 것만으로 사업이 흔들리는 걸 현장에서 본 뒤, 프론트엔드로 진로를 정했습니다.]]></description>
+      <pubDate>Fri, 01 Dec 2023 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
