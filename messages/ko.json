@@ -860,6 +860,11 @@
       "description": "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글",
       "thumbnailCaption": "프레임워크 너머의 웹"
     },
+    "etc": {
+      "label": "Etc",
+      "description": "어느 분류에도 딱 맞지 않는 글",
+      "thumbnailCaption": "그 밖의 기록"
+    },
     "pageTitle": "{category} 글",
     "pageDescription": "{category} 카테고리의 글 목록입니다.",
     "postCount": "{count}편",

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import grayMatter from "gray-matter";
@@ -9,10 +9,12 @@ import { getReadingTime } from "@/util/reading-time";
 
 const postsDirectory = join(process.cwd(), "markdown");
 
-/**
- * 목록 카드는 썸네일 대신 읽는 시간을 보여주므로,
- * 프론트매터를 읽을 때 본문 기준 읽는 시간을 함께 계산해 둔다.
- */
+function readCover(folderName: string, explicit?: string): string | undefined {
+  if (explicit) return explicit;
+  const path = `/images/${folderName}/cover.svg`;
+  return existsSync(join(process.cwd(), "public", path)) ? path : undefined;
+}
+
 function readReadingTime(folderName: string): number | undefined {
   try {
     const contentPath = join(postsDirectory, folderName, "ko", "content.mdx");
@@ -32,6 +34,7 @@ function readFrontMatter(folderName: string): FrontMatter | null {
       id: folderName,
       ...(matterResult.data as Omit<FrontMatter, "id">),
       readingTime: readReadingTime(folderName),
+      cover: readCover(folderName, matterResult.data.cover),
     };
   } catch {
     return null;
@@ -54,10 +57,7 @@ export const getFrontMatterList = cache((): ParsedFrontMatter[] => {
   return excludeHidden(getAllFrontMatterListIncludingHidden());
 });
 
-/**
- * 숨김 글을 포함한 전체 목록.
- * 정적 경로 생성(generateStaticParams)처럼 숨김 글도 빌드되어야 하는 곳에서만 쓴다.
- */
+/** 숨김 글을 포함한 전체 목록. 숨김 여부를 판별할 때만 쓴다. */
 export const getAllFrontMatterListIncludingHidden = cache(
   (): ParsedFrontMatter[] => {
     const folderNames = readdirSync(postsDirectory);

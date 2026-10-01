@@ -7,7 +7,7 @@ import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
-import { DefaultThumbnail } from "./DefaultThumbnail";
+import { PostThumbnail } from "./post-thumbnail";
 import { SeriesOrderBadge } from "./series-order-badge";
 
 export default function PostCard({
@@ -19,6 +19,8 @@ export default function PostCard({
   readingTime,
   header,
   seriesOrder,
+  cover,
+  coverFit,
 }: FrontMatter) {
   const t = useTranslations();
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
@@ -36,29 +38,17 @@ export default function PostCard({
           className="absolute inset-x-0 top-0 h-0.5 bg-primary/40 transition-colors duration-300 group-hover:bg-primary"
           aria-hidden="true"
         />
-        {/*
-          teaser는 대부분 기술 로고다. 꽉 채우면 로고가 늘어나 보이므로
-          정사각 자리를 잡고 그 안에 원본 비율로 넣는다.
-          teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
-        */}
-        {header?.teaser ? (
-          <div className="-mx-5 -mt-5 mb-4 flex h-40 shrink-0 items-center justify-center border-border/60 border-b bg-muted/30 p-6 sm:h-48">
-            <img
-              src={header.teaser}
-              alt=""
-              aria-hidden
-              className="max-h-full max-w-full object-contain"
-              loading="lazy"
-            />
-          </div>
-        ) : (
-          <div className="-mx-5 -mt-5 mb-4 h-40 shrink-0 border-border/60 border-b sm:h-48">
-            <DefaultThumbnail
-              category={categories[0]}
-              caption={header?.thumbnailCaption}
-            />
-          </div>
-        )}
+        <div className="-mx-5 -mt-5 mb-4 h-40 shrink-0 border-border/60 border-b sm:h-48">
+          <PostThumbnail
+            id={id}
+            title={title}
+            categories={categories}
+            seriesOrder={seriesOrder}
+            header={header}
+            cover={cover}
+            coverFit={coverFit}
+          />
+        </div>
         <div className="mb-2.5 flex flex-wrap items-center gap-1">
           {seriesOrder && <SeriesOrderBadge seriesOrder={seriesOrder} />}
           {categories.map((category) => (

@@ -107,7 +107,7 @@ export function validatePostFolder(folder, knownTags) {
   // teaser는 OG 태그와 목록 썸네일에 쓴다. 깨져도 공유하기 전까지 모른다.
   const teaser = data.header?.teaser;
   if (teaser === undefined) {
-    // 없으면 목록은 카테고리 기본 썸네일, 공유 카드는 사이트 기본 이미지를 쓴다.
+    // 없으면 공유 카드는 사이트 기본 이미지를 쓴다.
     // 동작에 문제는 없지만 글에 맞는 이미지를 두는 편이 낫다.
     warnings.push(`${where}: 'header.teaser'가 없어 기본 이미지로 대체된다.`);
   } else if (typeof teaser !== "string" || !teaser.startsWith("/")) {
@@ -116,16 +116,6 @@ export function validatePostFolder(folder, knownTags) {
     );
   } else if (!existsSync(join(PUBLIC_DIR, decodeURIComponent(teaser)))) {
     errors.push(`${where}: 'header.teaser' 파일이 public에 없다. (${teaser})`);
-  }
-
-  const thumbnailCaption = data.header?.thumbnailCaption;
-  if (
-    thumbnailCaption !== undefined &&
-    (typeof thumbnailCaption !== "string" || thumbnailCaption.trim() === "")
-  ) {
-    errors.push(
-      `${where}: 'header.thumbnailCaption'은 비어 있지 않은 문자열이어야 한다.`,
-    );
   }
 
   if (data.hidden !== undefined && typeof data.hidden !== "boolean") {

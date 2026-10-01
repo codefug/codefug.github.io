@@ -6,7 +6,7 @@ import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
 import { useTranslations } from "@/lib/messages";
 import { Badge } from "../ui/badge";
-import { DefaultThumbnail } from "./DefaultThumbnail";
+import { PostThumbnail } from "./post-thumbnail";
 import { SeriesOrderBadge } from "./series-order-badge";
 
 export default function PostListItem({
@@ -18,6 +18,8 @@ export default function PostListItem({
   readingTime,
   header,
   seriesOrder,
+  cover,
+  coverFit,
 }: FrontMatter) {
   const t = useTranslations();
   const linkHref = useMemo(() => `${PATH.POSTS}/${id}`, [id]);
@@ -34,30 +36,18 @@ export default function PostListItem({
         className="absolute top-4 bottom-4 left-0 w-0.5 rounded-full bg-primary/0 transition-colors duration-200 group-hover:bg-primary/60"
         aria-hidden="true"
       />
-      {/*
-        카드와 같은 규칙 — 정사각 자리에 원본 비율로 넣고 남는 곳은 여백으로 둔다.
-        teaser가 없으면 같은 자리에 카테고리 기반 기본 썸네일을 넣는다.
-        모바일에서는 본문 폭을 지키려고 한 단계 작은 자리를 쓴다.
-      */}
-      {header?.teaser ? (
-        <div className="flex aspect-square w-14 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/30 p-2 sm:w-20 sm:p-3">
-          <img
-            src={header.teaser}
-            alt=""
-            aria-hidden
-            className="h-full w-full object-contain"
-            loading="lazy"
-          />
-        </div>
-      ) : (
-        <div className="aspect-square w-14 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:w-20">
-          <DefaultThumbnail
-            category={categories[0]}
-            caption={header?.thumbnailCaption}
-            compact
-          />
-        </div>
-      )}
+      <div className="aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:w-36">
+        <PostThumbnail
+          id={id}
+          title={title}
+          categories={categories}
+          seriesOrder={seriesOrder}
+          header={header}
+          cover={cover}
+          coverFit={coverFit}
+          size="sm"
+        />
+      </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-1">
           {seriesOrder && <SeriesOrderBadge seriesOrder={seriesOrder} />}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 하나뿐인 엔진 부스가 대기줄에서 task를 하나씩 꺼내 처리하는 싱글 스레드/이벤트 루프 -->
+  <ellipse cx="200" cy="222" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 대기줄: task 카드들 -->
+  <rect x="30" y="152" width="46" height="58" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="40" y="166" width="26" height="7" rx="3" fill="#e5e7eb"/>
+  <rect x="40" y="179" width="20" height="7" rx="3" fill="#e5e7eb"/>
+  <rect x="84" y="152" width="46" height="58" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="94" y="166" width="26" height="7" rx="3" fill="#e5e7eb"/>
+  <rect x="94" y="179" width="20" height="7" rx="3" fill="#e5e7eb"/>
+  <rect x="138" y="152" width="46" height="58" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="148" y="166" width="26" height="7" rx="3" fill="#e5e7eb"/>
+  <rect x="148" y="179" width="20" height="7" rx="3" fill="#e5e7eb"/>
+  <!-- 화살표: 줄에서 부스로 -->
+  <path d="M194 181h32" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M218 173l8 8-8 8" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 엔진 부스 (하나뿐) -->
+  <rect x="236" y="70" width="130" height="140" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M246 70h110a10 10 0 0 1 10 10v14H236V80a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="254" cy="83" r="4" fill="#818cf8"/>
+  <rect x="252" y="110" width="60" height="14" rx="4" fill="#4f46e5"/>
+  <rect x="252" y="132" width="94" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="252" y="146" width="80" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="252" y="160" width="88" height="8" rx="3" fill="#e5e7eb"/>
+  <!-- 처리중인 하나의 task -->
+  <rect x="253" y="180" width="66" height="18" rx="6" fill="#fff" stroke="#4f46e5" stroke-width="2.5"/>
+  <rect x="261" y="186" width="30" height="6" rx="3" fill="#a5b4fc"/>
+  <!-- 한 번에 하나만: 처리중인 task 옆의 1 배지 -->
+  <circle cx="344" cy="189" r="12" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <text x="344" y="193.5" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="#4f46e5" text-anchor="middle">1</text>
+</svg>

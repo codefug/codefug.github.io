@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 부스를 꽉 채운 거대 task를 절단선으로 잘게 쪼개, setTimeout으로 사이사이 화면을 살려두는 모습 -->
+  <ellipse cx="200" cy="222" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 엔진 부스 -->
+  <rect x="126" y="64" width="150" height="146" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M136 64h130a10 10 0 0 1 10 10v14H126V74a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="144" cy="76" r="4" fill="#818cf8"/>
+  <!-- 화면이 멈추지 않는다는 뜻의 작은 체크(제목 표시줄 상태 표시) -->
+  <circle cx="252" cy="76" r="8" fill="#fff" stroke="#1e1b4b" stroke-width="2"/>
+  <path d="M248 76.5l2.8 3 5-6" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 부스 안, 쪼개진 task 조각들이 순서대로 들어가는 모습 -->
+  <rect x="141" y="100" width="24" height="40" rx="5" fill="#4f46e5"/>
+  <path d="M169 102v36" stroke="#1e1b4b" stroke-width="2" stroke-linecap="round" stroke-dasharray="0 6"/>
+  <rect x="173" y="100" width="24" height="40" rx="5" fill="#6366f1"/>
+  <path d="M201 102v36" stroke="#1e1b4b" stroke-width="2" stroke-linecap="round" stroke-dasharray="0 6"/>
+  <rect x="205" y="100" width="24" height="40" rx="5" fill="#818cf8"/>
+  <path d="M233 102v36" stroke="#1e1b4b" stroke-width="2" stroke-linecap="round" stroke-dasharray="0 6"/>
+  <rect x="238" y="101" width="22" height="38" rx="4" fill="#c7d2fe" stroke="#1e1b4b" stroke-width="2"/>
+  <!-- setTimeout 라벨 -->
+  <rect x="154" y="150" width="94" height="20" rx="6" fill="#1e1b4b"/>
+  <text x="201" y="164" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">setTimeout</text>
+  <!-- 사이사이 짬을 내서 처리되는 마우스 커서(다른 이벤트) -->
+  <path d="M143 182V200.7L148 196.3 151.3 203.5 154 202.1 150.7 195.2H156.8Z" fill="#fff" stroke="#1e1b4b" stroke-width="2" stroke-linejoin="round"/>
+  <!-- 진행 표시줄(progress bar)이 조각마다 채워짐 -->
+  <rect x="166" y="186" width="94" height="12" rx="6" fill="#e5e7eb" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="169" y="189" width="66" height="6" rx="3" fill="#4f46e5"/>
+</svg>
