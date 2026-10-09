@@ -1,5 +1,9 @@
 import { Fragment } from "react";
 
+/** 굵게 표시한 핵심 구절에 밑줄을 더한다. 감싸는 요소의 className에 붙인다. */
+export const UNDERLINE_STRONG =
+  "[&_strong]:underline [&_strong]:decoration-[1.5px] [&_strong]:decoration-primary/70 [&_strong]:underline-offset-[3px]";
+
 type Token =
   | { type: "text"; content: string; start: number }
   | { type: "bold"; content: string; start: number }
