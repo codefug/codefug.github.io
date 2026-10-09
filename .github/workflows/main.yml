@@ -56,3 +56,6 @@ jobs:
         with:
           personal_token: ${{ secrets.ACCESS_TOKEN }}
           publish_dir: ./out
+          # 배포 산출물은 기록이 필요 없다. 매번 새 루트 커밋으로 올려,
+          # 지난 빌드에 담겼던 내용이 공개 기록에 쌓이지 않게 한다.
+          force_orphan: true
