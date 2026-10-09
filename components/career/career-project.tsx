@@ -3,9 +3,14 @@
 import { RichText } from "@/components/resume/rich-text";
 import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
-import { PaarBlock, type PaarItem } from "./paar-block";
+import { Bullets, PaarBlock, type PaarItem } from "./paar-block";
 
-type ProjectKey = "allra" | "digitalFinance" | "documentAi" | "samilDevKit";
+type ProjectKey =
+  | "allra"
+  | "allraAdmin"
+  | "allraAiAnalysis"
+  | "digitalFinance"
+  | "documentAi";
 
 function StackList({ stack }: { stack: string[] }) {
   return (
@@ -22,12 +27,75 @@ function StackList({ stack }: { stack: string[] }) {
   );
 }
 
+/** "[문제 해결] 본문"처럼 대괄호 태그로 시작하는 역할 줄 */
+const ROLE_TAG = /^\[([^\]]+)\]\s*(.*)$/;
+
+function RoleLine({ line }: { line: string }) {
+  const [, tag, body = line] = ROLE_TAG.exec(line) ?? [];
+  return (
+    <span className="min-w-0 flex-1">
+      {tag && <span className="mr-1 font-semibold text-gray-900">[{tag}]</span>}
+      <RichText>{body}</RichText>
+    </span>
+  );
+}
+
+function RoleList({ roles }: { roles: string[] }) {
+  return (
+    <ol className="mt-2 space-y-0.5">
+      {roles.map((line, i) => (
+        <li
+          key={line}
+          className="flex gap-1.5 text-[10.5px] text-gray-700 leading-[1.55]"
+        >
+          <span className="shrink-0 text-gray-400 tabular-nums">{i + 1}.</span>
+          <RoleLine line={line} />
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/*
+  프로젝트 소개는 사실만 적고, 이 프로젝트에서의 성과는 여기서 요약한다.
+  훑는 사람이 항목을 읽기 전에 수치를 먼저 얻는 자리. 산출 근거는 본문 항목이 담당한다.
+*/
+function Highlights({ lines }: { lines: string[] }) {
+  return (
+    <div className="mt-2">
+      <p className="font-semibold text-[9.5px] text-primary/70 uppercase tracking-wider">
+        대표 성과
+      </p>
+      <Bullets items={lines} strong className="mt-0.5" />
+    </div>
+  );
+}
+
+/*
+  없는 인덱스를 조용히 걸러내면 항목이 문서에서 사라진 걸 눈치채기 어렵다.
+  항목을 지우거나 순서를 바꿨을 때 빌드(SSG)에서 바로 걸리게 던진다.
+*/
+function pickItems(
+  all: PaarItem[],
+  indexes: number[] | undefined,
+  projectKey: ProjectKey,
+): PaarItem[] {
+  if (!indexes) return all;
+  return indexes.map((i) => {
+    const item = all[i];
+    if (!item)
+      throw new Error(
+        `career.projects.${projectKey}.items[${i}]가 없습니다. 항목이 ${all.length}개뿐이니 app/career/page.tsx의 인덱스를 확인하세요.`,
+      );
+    return item;
+  });
+}
+
 export function CareerProject({
   projectKey,
   items,
   headless = false,
   className,
-  itemsClassName,
 }: {
   projectKey: ProjectKey;
   /** 이 장에 실을 PAAR 항목의 인덱스. 생략하면 전부 싣는다. */
@@ -35,27 +103,10 @@ export function CareerProject({
   /** 프로젝트가 여러 A4 장에 걸칠 때, 이어지는 장에서는 머리말을 반복하지 않는다. */
   headless?: boolean;
   className?: string;
-  /**
-   * 항목 사이 간격 재정의. 항목 수가 적어 바닥이 비는 장에서
-   * 남는 공간을 항목 사이로 분산할 때 쓴다. (예: "space-y-10")
-   */
-  itemsClassName?: string;
 }) {
   const t = useTranslations(`career.projects.${projectKey}`);
-  const all = t.raw("items") as PaarItem[];
-  /*
-    없는 인덱스를 조용히 걸러내면 항목이 문서에서 사라진 걸 눈치채기 어렵다.
-    항목을 지우거나 순서를 바꿨을 때 빌드(SSG)에서 바로 걸리게 던진다.
-  */
-  const shown =
-    items?.map((i) => {
-      const item = all[i];
-      if (!item)
-        throw new Error(
-          `career.projects.${projectKey}.items[${i}]가 없습니다. 항목이 ${all.length}개뿐이니 app/career/page.tsx의 인덱스를 확인하세요.`,
-        );
-      return item;
-    }) ?? all;
+  const all = t.has("items") ? (t.raw("items") as PaarItem[]) : [];
+  const shown = pickItems(all, items, projectKey);
 
   return (
     <section className={cn(className)}>
@@ -71,29 +122,9 @@ export function CareerProject({
             <RichText>{t("summary")}</RichText>
           </p>
 
-          {/*
-            프로젝트 소개는 사실만 적고, 이 프로젝트에서의 성과는 여기서 요약한다.
-            훑는 사람이 항목을 읽기 전에 수치를 먼저 얻는 자리. 산출 근거는 본문 항목이 담당한다.
-          */}
+          {t.has("roles") && <RoleList roles={t.raw("roles") as string[]} />}
           {t.has("highlights") && (
-            <div className="mt-2">
-              <p className="font-semibold text-[9.5px] text-primary/70 uppercase tracking-wider">
-                대표 성과
-              </p>
-              <ul className="mt-0.5 space-y-0.75">
-                {(t.raw("highlights") as string[]).map((line) => (
-                  <li key={line} className="flex gap-1.5">
-                    <span
-                      aria-hidden
-                      className="mt-[6px] size-[3px] shrink-0 rounded-full bg-primary"
-                    />
-                    <p className="min-w-0 flex-1 font-medium text-[11px] text-gray-900 leading-[1.6]">
-                      <RichText>{line}</RichText>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Highlights lines={t.raw("highlights") as string[]} />
           )}
 
           <StackList stack={t.raw("stack") as string[]} />
@@ -101,11 +132,13 @@ export function CareerProject({
       )}
 
       {/* 항목 사이는 본문 문단 간격보다 확실히 넓게 두어 항목 경계가 읽히게 한다. */}
-      <div className={cn("space-y-5", !headless && "mt-3", itemsClassName)}>
-        {shown.map((item) => (
-          <PaarBlock key={item.title} item={item} />
-        ))}
-      </div>
+      {shown.length > 0 && (
+        <div className={cn("space-y-5", !headless && "mt-3")}>
+          {shown.map((item) => (
+            <PaarBlock key={item.title} item={item} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

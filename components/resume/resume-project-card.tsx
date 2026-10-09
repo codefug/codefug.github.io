@@ -2,13 +2,18 @@
 
 import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
-import { RichText } from "./rich-text";
+import { RichText, UNDERLINE_STRONG } from "./rich-text";
 
 type DetailItem = { text: string; subItems?: string[] };
 type Category = { title?: string; details: DetailItem[] };
 
 interface Props {
-  projectKey: "allra" | "digitalFinance" | "documentAi" | "samilDevKit";
+  projectKey:
+    | "allra"
+    | "allraAdmin"
+    | "allraAiAnalysis"
+    | "digitalFinance"
+    | "documentAi";
   className?: string;
 }
 
@@ -32,7 +37,12 @@ function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
 
 function DetailList({ details }: { details: DetailItem[] }) {
   return (
-    <ul className="mt-1 space-y-1.5 text-[11.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
+    <ul
+      className={cn(
+        "mt-1 space-y-1 text-[11px] text-gray-700 leading-[1.45] dark:text-gray-300",
+        UNDERLINE_STRONG,
+      )}
+    >
       {details.map((d, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static content
         <ProjectCategoryDetail key={i} detail={d} />
@@ -62,12 +72,13 @@ function ProjectCategory({ category }: { category: Category }) {
 export default function ResumeProjectCard({ projectKey, className }: Props) {
   const t = useTranslations(`resume.projects.${projectKey}`);
   const stack = t.raw("stack") as string[];
+  const tasks = t.has("tasks") ? (t.raw("tasks") as string[]) : [];
   const categories = t.has("categories")
     ? (t.raw("categories") as Category[])
     : [];
 
   return (
-    <article className={cn("py-3", className)}>
+    <article className={cn("py-2", className)}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 font-bold text-[15px] text-gray-900 dark:text-white">
@@ -80,19 +91,39 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         </div>
       </header>
 
-      <p className="mt-2 text-[11.5px] text-gray-700 leading-[1.6] dark:text-gray-300">
+      <p
+        className={cn(
+          "mt-1.5 text-[11px] text-gray-700 leading-[1.45] dark:text-gray-300",
+          UNDERLINE_STRONG,
+        )}
+      >
         <RichText>{t("description")}</RichText>
       </p>
 
+      {tasks.length > 0 && (
+        <div className="mt-1.5">
+          <p className="font-semibold text-[10px] text-gray-500 dark:text-gray-400">
+            주요 업무
+          </p>
+          <ul className="mt-0.5 space-y-0 text-[10.5px] text-gray-600 leading-[1.45] dark:text-gray-400">
+            {tasks.map((task) => (
+              <li key={task} className="ml-3.5 list-disc">
+                <RichText>{task}</RichText>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* 기술 스택은 참고 정보라 본문보다 작게 둔다. */}
-      <p className="mt-1.5 mb-2 text-[11px] text-gray-400 dark:text-gray-500">
+      <p className="mt-1 mb-1.5 text-[11px] text-gray-400 dark:text-gray-500">
         {stack.join(", ")}
       </p>
 
       {categories.length > 0 && (
         // 카테고리가 여러 개일 때 간격이 쌓여 페이지를 넘기므로 과하게 벌리지 않는다.
         // 제목이 굵어 간격이 좁아도 묶음 경계는 구분된다.
-        <div className="mt-2.5 space-y-3.5">
+        <div className="mt-2 space-y-2.5">
           {categories.map((cat, i) => (
             <ProjectCategory key={cat.title ?? i} category={cat} />
           ))}

@@ -39,6 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const RESUME_SCALE = 0.86;
+
 export default function Page() {
   return (
     <>
@@ -49,27 +51,29 @@ export default function Page() {
       */}
       {/* 좁은 화면에서는 축소하지 않고 가로 스크롤로 넘긴다. */}
       <div className="flex w-fit min-w-full flex-col items-center gap-8 break-keep px-4 py-8 print:w-auto print:min-w-0 print:gap-0 print:p-0">
-        <ResumePage pageNumber={1} pageCount={2}>
-          {/*
-            1장은 헤더+카드 하나뿐이라 하단이 빈다. 폰트를 더 키우면 같은
-            컴포넌트를 쓰는 2장이 넘치므로, 이 장에서만 섹션 간격을 벌려 채운다.
-          */}
-          <ResumeHeader className="mb-8" />
+        <ResumePage pageNumber={1} pageCount={2} scale={RESUME_SCALE}>
+          <ResumeHeader className="mb-2" />
 
           <WorkExperienceSection>
             <div>
               <CompanySection companyKey="allra" />
               <TeamSection companyKey="allra">
-                <KeepTogether className="mt-4">
+                <KeepTogether className="mt-3">
                   <ResumeProjectCard projectKey="allra" />
+                </KeepTogether>
+                <KeepTogether>
+                  <ResumeProjectCard projectKey="allraAdmin" />
+                </KeepTogether>
+                <KeepTogether>
+                  <ResumeProjectCard projectKey="allraAiAnalysis" />
                 </KeepTogether>
               </TeamSection>
             </div>
           </WorkExperienceSection>
         </ResumePage>
 
-        <ResumePage pageNumber={2} pageCount={2}>
-          <WorkExperienceSection>
+        <ResumePage pageNumber={2} pageCount={2} scale={RESUME_SCALE}>
+          <WorkExperienceSection hideHeading>
             <div>
               <CompanySection companyKey="pwc" />
               <TeamSection companyKey="pwc">
@@ -79,16 +83,13 @@ export default function Page() {
                 <KeepTogether>
                   <ResumeProjectCard projectKey="documentAi" />
                 </KeepTogether>
-                <KeepTogether>
-                  <ResumeProjectCard projectKey="samilDevKit" />
-                </KeepTogether>
               </TeamSection>
             </div>
           </WorkExperienceSection>
-          <KeepTogether>
+          <KeepTogether className="mt-1">
             <SideProjects />
           </KeepTogether>
-          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-4">
+          <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3">
             <KeepTogether>
               <OpenSource />
             </KeepTogether>
