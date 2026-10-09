@@ -1,7 +1,9 @@
 "use client";
 
 import { useTranslations } from "@/lib/messages";
-import { RichText } from "./rich-text";
+import { cn } from "@/lib/utils";
+import { ResumeSectionHeading } from "./resume-section-heading";
+import { RichText, UNDERLINE_STRONG } from "./rich-text";
 
 type CompanyKey = "allra" | "pwc";
 
@@ -24,7 +26,12 @@ export function CompanySection({
           {t(`items.${companyKey}.duration`)}
         </span>
       </header>
-      <p className="mt-1.5 text-[11.5px] text-gray-800 leading-relaxed dark:text-gray-200">
+      <p
+        className={cn(
+          "mt-1.5 text-[11.5px] text-gray-800 leading-relaxed dark:text-gray-200",
+          UNDERLINE_STRONG,
+        )}
+      >
         <RichText>{t(`items.${companyKey}.summary`)}</RichText>
       </p>
     </article>
@@ -34,24 +41,14 @@ export function CompanySection({
 export function TeamSection({
   companyKey,
   children,
-  /**
-   * 같은 팀의 프로젝트가 여러 A4 페이지에 걸쳐 있을 때,
-   * 두 번째 장부터는 팀 이름과 소개를 반복하지 않는다.
-   */
-  headless = false,
 }: {
   companyKey: CompanyKey;
   children: React.ReactNode;
-  headless?: boolean;
 }) {
   const t = useTranslations(`resume.workExperience.items.${companyKey}.team`);
 
-  if (headless) {
-    return <section className="">{children}</section>;
-  }
-
   return (
-    <section className="mt-5">
+    <section className="mt-3">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h4 className="font-bold text-[15px] text-gray-900 dark:text-white">
           {t("name")}
@@ -71,13 +68,22 @@ export function TeamSection({
 export default function WorkExperienceSection({
   children,
   className,
+  hideHeading = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  hideHeading?: boolean;
 }) {
+  const t = useTranslations("resume.workExperience");
+
   return (
     <section className={className}>
-      <div className="space-y-6">{children}</div>
+      {!hideHeading && (
+        <ResumeSectionHeading className="mb-3">
+          {t("title")}
+        </ResumeSectionHeading>
+      )}
+      <div className="space-y-4">{children}</div>
     </section>
   );
 }
