@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 클릭과 팝업 사이에 await로 생긴 틈 때문에 iOS에서 인증 팝업이 막힌다 -->
+  <ellipse cx="200" cy="222" rx="160" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 폰 -->
+  <rect x="40" y="46" width="110" height="168" rx="18" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="52" y="64" width="86" height="132" rx="6" fill="#eef2ff"/>
+  <rect x="82" y="200" width="26" height="6" rx="3" fill="#c7d2fe"/>
+  <rect x="64" y="78" width="40" height="8" rx="3" fill="#a5b4fc"/>
+  <rect x="64" y="92" width="62" height="6" rx="3" fill="#d1d5db"/>
+  <!-- 인증 버튼을 누르는 손가락 -->
+  <rect x="64" y="118" width="62" height="26" rx="8" fill="#4f46e5"/>
+  <path d="M95 112v-6M84 113l-4-5M106 113l4-5" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <g transform="translate(75.8 129.2) scale(2.4)" stroke="#1e1b4b" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 14V4a2 2 0 0 1 4 0v5a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82z" fill="#fff"/>
+    <path d="M10 9v3M14 10v2M18 11v2"/>
+  </g>
+  <!-- 대기 시간 표시: 모래시계 -->
+  <path d="M181 103h28l-14 17zM195 120l14 17h-28z" fill="#fff" stroke="#1e1b4b" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M189 110h12l-6 7zM195 128l6.5 7.5h-13z" fill="#818cf8"/>
+  <path d="M177 103h36M177 137h36" stroke="#1e1b4b" stroke-width="3" stroke-linecap="round"/>
+  <text x="195" y="162" text-anchor="middle" font-family="ui-monospace, monospace" font-size="12" font-weight="700" fill="#4f46e5">await</text>
+  <!-- 오른쪽: 막힌 팝업 -->
+  <rect x="240" y="60" width="120" height="90" rx="10" fill="#e5e7eb" stroke="#1e1b4b" stroke-width="3" stroke-dasharray="7 6"/>
+  <rect x="254" y="72" width="92" height="14" rx="4" fill="#d1d5db"/>
+  <circle cx="300" cy="118" r="18" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <path d="M293 111l14 14M307 111l-14 14" stroke="#1e1b4b" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- 아래: 성공한 팝업 -->
+  <rect x="240" y="164" width="120" height="46" rx="10" fill="#fff" stroke="#4f46e5" stroke-width="3"/>
+  <circle cx="266" cy="187" r="11" fill="#4f46e5"/>
+  <path d="M261 187.5l3.5 3.5 7-7.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="286" y="179" width="60" height="7" rx="3" fill="#c7d2fe"/>
+  <rect x="286" y="191" width="42" height="7" rx="3" fill="#e0e7ff"/>
+</svg>

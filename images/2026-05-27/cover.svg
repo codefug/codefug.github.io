@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 페이지 트리: 정적 텍스트는 그대로 남고, Suspense로 좁게 감싼 부분만 placeholder로 바뀐다 -->
+  <ellipse cx="200" cy="230" rx="160" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 페이지 카드 -->
+  <rect x="60" y="46" width="280" height="166" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="70" y="56" width="260" height="18" rx="6" fill="#e0e7ff"/>
+  <circle cx="80" cy="65" r="3" fill="#a5b4fc"/>
+  <!-- 정적 텍스트 줄들 (그대로 남는 부분) -->
+  <rect x="80" y="86" width="110" height="10" rx="3" fill="#6366f1"/>
+  <rect x="80" y="104" width="180" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="80" y="118" width="150" height="8" rx="3" fill="#e5e7eb"/>
+  <!-- Suspense 경계: 점선 프레임, 안쪽만 placeholder -->
+  <rect x="80" y="136" width="240" height="48" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <rect x="96" y="147" width="26" height="26" rx="6" fill="#fff" stroke="#1e1b4b" stroke-width="2"/>
+  <!-- 로딩 스피너 -->
+  <circle cx="109" cy="160" r="6.5" stroke="#c7d2fe" stroke-width="2.5"/>
+  <path d="M109 153.5a6.5 6.5 0 0 1 6.5 6.5" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="134" y="150" width="90" height="8" rx="3" fill="#c7d2fe"/>
+  <rect x="134" y="162" width="60" height="8" rx="3" fill="#c7d2fe"/>
+  <text x="304" y="164" text-anchor="end" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#4f46e5">CSR</text>
+  <!-- 하단 정적 텍스트 (마저 남는 부분) -->
+  <rect x="80" y="194" width="130" height="8" rx="3" fill="#e5e7eb"/>
+</svg>

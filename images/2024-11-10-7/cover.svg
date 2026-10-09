@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- await 팻말 앞에서 잠시 옆 마이크로태스크 줄로 비켜섰다가 되돌아오는 부스, 시리즈 완결의 체크보드 -->
+  <ellipse cx="200" cy="222" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 엔진 부스 -->
+  <rect x="110" y="60" width="130" height="150" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M120 60h110a10 10 0 0 1 10 10v14H110V70a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="128" cy="73" r="4" fill="#818cf8"/>
+  <rect x="124" y="94" width="100" height="14" rx="4" fill="#4f46e5"/>
+  <text x="174" y="105" font-family="ui-monospace, monospace" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">await</text>
+  <rect x="124" y="118" width="70" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="124" y="132" width="90" height="8" rx="3" fill="#e5e7eb"/>
+  <!-- 옆 마이크로태스크 줄: 맨 앞 칸에 비켜선 함수가 기다린다 -->
+  <text x="282" y="78" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#4f46e5">micro</text>
+  <rect x="282" y="86" width="30" height="30" rx="6" fill="#4f46e5"/>
+  <rect x="289" y="98" width="16" height="6" rx="3" fill="#fff"/>
+  <rect x="318" y="86" width="30" height="30" rx="6" fill="#a5b4fc"/>
+  <!-- 비켜서는 화살표: await에서 줄로 -->
+  <path d="M247 101h29" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="4 4" stroke-linecap="round"/>
+  <path d="M270 95l6 6-6 6" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 되돌아오는 화살표: 줄에서 다음 줄의 실행으로 -->
+  <path d="M297 122C297 144 276 152 250 152" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="4 4" stroke-linecap="round"/>
+  <path d="M255 146l-7 6 7 6" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 부스 안, 다시 이어지는 실행 -->
+  <rect x="124" y="148" width="60" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="124" y="162" width="80" height="8" rx="3" fill="#e5e7eb"/>
+  <!-- 완결 체크보드: 시리즈 7편 완주 -->
+  <rect x="124" y="176" width="100" height="20" rx="6" fill="#1e1b4b"/>
+  <circle cx="136" cy="186" r="6" fill="#4f46e5"/>
+  <path d="M133 186l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="150" y="183" width="60" height="6" rx="3" fill="#c7d2fe"/>
+</svg>
