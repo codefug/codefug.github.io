@@ -1,6 +1,6 @@
 ---
 title: "useCallback, useMemo는 왜 쓸까"
-excerpt: "참조형 데이터는 내용이 같아도 주소가 다르면 다른 값으로 취급됩니다. 이 특성이 useEffect 의존성 배열과 React.memo에서 왜 문제가 되는지, useCallback과 useMemo가 무엇을 해결하는지, 그리고 왜 모든 곳에 쓰면 안 되는지 정리합니다."
+excerpt: "내용이 같은 함수도 렌더링마다 새 주소를 받습니다. 두 훅을 성능 도구보다 참조를 고정하는 도구로 봐야 하는 이유와, 아무 데나 쓰면 안 되는 이유를 정리했습니다."
 date: "2026-01-18"
 categories:
   - react
