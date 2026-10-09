@@ -36,7 +36,8 @@ export default function PostListItem({
         className="absolute top-4 bottom-4 left-0 w-0.5 rounded-full bg-primary/0 transition-colors duration-200 group-hover:bg-primary/60"
         aria-hidden="true"
       />
-      <div className="aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-lg border border-border/60 sm:w-36">
+      {/* 썸네일은 요약 두 줄짜리 글 열과 같은 높이로 고정한다. 옆 글이 짧아도 늘어나지 않게 self-start로 뗀다 */}
+      <div className="h-18 w-24 shrink-0 self-start overflow-hidden rounded-lg border border-border/60 sm:h-32 sm:w-43">
         <PostThumbnail
           id={id}
           title={title}
@@ -60,7 +61,10 @@ export default function PostListItem({
         <h2 className="line-clamp-1 font-bold text-base transition-colors group-hover:text-primary sm:text-lg">
           {title}
         </h2>
-        <p className="line-clamp-2 text-muted-foreground text-sm">{excerpt}</p>
+        {/* 요약이 한 줄이어도 두 줄 높이를 차지해 카드 높이가 일정하다 */}
+        <p className="line-clamp-2 min-h-[2lh] text-muted-foreground text-sm">
+          {excerpt}
+        </p>
         <div className="mt-1 flex items-center gap-2 text-muted-foreground/60 text-xs">
           <time>{date}</time>
           {readingTime && (
