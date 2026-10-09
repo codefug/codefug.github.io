@@ -16,6 +16,7 @@ export function ResumePage({
   className,
   pageNumber,
   pageCount,
+  scale,
 }: {
   children: ReactNode;
   className?: string;
@@ -25,6 +26,8 @@ export function ResumePage({
    */
   pageNumber?: number;
   pageCount?: number;
+  /** 본문 배율(zoom). 인쇄 CSS가 transform을 막아 zoom을 쓴다. */
+  scale?: number;
 }) {
   return (
     <section
@@ -53,7 +56,11 @@ export function ResumePage({
         내용이 넘치면 이 영역을 벗어나 아래로 삐져나오므로 화면에서 바로 보인다.
         (인쇄에서는 그 지점부터 다음 장으로 넘어간다)
       */}
-      {children}
+      {scale === undefined ? (
+        children
+      ) : (
+        <div style={{ zoom: scale }}>{children}</div>
+      )}
       {pageNumber !== undefined && pageCount !== undefined && (
         <span
           aria-hidden
