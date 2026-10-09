@@ -108,10 +108,10 @@ export default function ResumeHeader({ className }: { className?: string }) {
                 {t("role")}
               </span>
             </h1>
-            <div className="mt-2 space-y-1 text-[10px] text-gray-700 leading-[1.6] dark:text-gray-300">
+            <div className="mt-2.5 space-y-1 text-[10px] text-gray-700 leading-[1.6] dark:text-gray-300">
               {paragraphs.map((p, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: static content
-                <p key={i}>
+                <p key={i} className="whitespace-pre-line">
                   <RichText>{p}</RichText>
                 </p>
               ))}
