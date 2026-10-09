@@ -2,6 +2,7 @@ export const TAG_LIST = {
   JAVASCRIPT: "javascript",
   TYPESCRIPT: "typescript",
   ASYNC_JS: "async-js",
+  AUTH_SSR: "auth-ssr",
   KKOM_KKOM: "kkom-kkom",
   GHEUPPAY: "gheuppay",
   REACT: "react",
@@ -111,7 +112,7 @@ export const CATEGORY_SECTIONS: CategorySection[] = [
   {
     id: "series",
     order: 2,
-    groups: [{ id: "series", tags: [TAG_LIST.ASYNC_JS] }],
+    groups: [{ id: "series", tags: [TAG_LIST.ASYNC_JS, TAG_LIST.AUTH_SSR] }],
   },
   {
     id: "dev",
