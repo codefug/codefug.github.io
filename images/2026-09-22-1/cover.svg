@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <g transform="translate(0,6)">
+  <!-- 브라우저 속 버튼은 이미 그려져 눌리는데, 그 아래 톱니(핸들러)는 아직 안 붙어 헛돈다 -->
+  <ellipse cx="200" cy="224" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 브라우저 창 -->
+  <rect x="76" y="40" width="200" height="150" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M86 40h180a10 10 0 0 1 10 10v16H76V50a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="94" cy="53" r="4" fill="#818cf8"/><circle cx="108" cy="53" r="4" fill="#a5b4fc"/><circle cx="122" cy="53" r="4" fill="#c7d2fe"/>
+  <rect x="96" y="82" width="150" height="8" rx="4" fill="#e5e7eb"/>
+  <rect x="96" y="96" width="120" height="8" rx="4" fill="#e5e7eb"/>
+  <!-- 버튼: 이미 화면에 보인다 -->
+  <rect x="96" y="122" width="94" height="30" rx="8" fill="#4f46e5" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="112" y="134" width="62" height="6" rx="3" fill="#e0e7ff"/>
+  <rect x="96" y="166" width="52" height="8" rx="4" fill="#e5e7eb"/>
+  <!-- 톱니: 버튼 옆에 있지만 아직 붙지 않아 멈춰 있다 -->
+  <g transform="translate(236,137)">
+    <path d="M-3.7 -11.9 L-2.9 -16.8 L2.9 -16.8 L3.7 -11.9 L5.8 -11.1 L9.8 -13.9 L13.9 -9.8 L11.1 -5.8 L11.9 -3.7 L16.8 -2.9 L16.8 2.9 L11.9 3.7 L11.1 5.8 L13.9 9.8 L9.8 13.9 L5.8 11.1 L3.7 11.9 L2.9 16.8 L-2.9 16.8 L-3.7 11.9 L-5.8 11.1 L-9.8 13.9 L-13.9 9.8 L-11.1 5.8 L-11.9 3.7 L-16.8 2.9 L-16.8 -2.9 L-11.9 -3.7 L-11.1 -5.8 L-13.9 -9.8 L-9.8 -13.9 L-5.8 -11.1 Z" fill="#c7d2fe" stroke="#1e1b4b" stroke-width="2" stroke-linejoin="round"/>
+    <circle r="5.5" fill="#fff" stroke="#1e1b4b" stroke-width="2"/>
+  </g>
+  <!-- 끊긴 연결선: 버튼에서 나왔지만 톱니(핸들러)에 닿지 못한다 -->
+  <path d="M197 137h10" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="3 4" stroke-linecap="round"/>
+  <!-- 화살표 커서: 끝이 버튼 위를 누른다 -->
+  <path d="M160 140v27l6.5-6 4.5 10 5-2.2-4.5-9.8h9z" fill="#fff" stroke="#1e1b4b" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- 반응 없음 표시: 빈 말풍선 -->
+  <path d="M300 96h56a10 10 0 0 1 10 10v26a10 10 0 0 1 -10 10h-30l-14 14v-14h-12a10 10 0 0 1 -10 -10v-26a10 10 0 0 1 10 -10z" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="316" cy="121" r="3" fill="#c7d2fe"/><circle cx="328" cy="121" r="3" fill="#c7d2fe"/><circle cx="340" cy="121" r="3" fill="#c7d2fe"/>
+  </g>
+</svg>
