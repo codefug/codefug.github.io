@@ -1,24 +1,15 @@
-"use client";
-
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { absoluteUrl } from "@/constants/site";
-import { useTranslations } from "@/lib/messages";
+import { RESUME } from "@/content/resume";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
-type Post = { title: string; url: string };
-
-export default function KnowledgeSharing({
-  className,
-}: {
-  className?: string;
-}) {
-  const t = useTranslations("resume.knowledgeSharing");
-  const posts = t.raw("posts") as Post[];
+export default function KnowledgeSharing() {
+  const { title, posts } = RESUME.knowledgeSharing;
 
   return (
-    <section className={className}>
-      <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
+    <section>
+      <ResumeSectionHeading>{title}</ResumeSectionHeading>
       <ul className="mt-1 space-y-0.5 text-[11.5px]">
         {posts.map((p) => (
           <li key={p.title}>

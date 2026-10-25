@@ -1,21 +1,16 @@
-"use client";
-
-import { useTranslations } from "@/lib/messages";
+import type { TitledItem } from "@/content/resume";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
-type Certificate = { title: string; duration: string; detail: string };
-
-export default function ResumeCertification({
-  className,
+export default function TitledList({
+  title,
+  items,
 }: {
-  className?: string;
+  title: string;
+  items: TitledItem[];
 }) {
-  const t = useTranslations("resume.certification");
-  const items = t.raw("items") as Certificate[];
-
   return (
-    <section className={className}>
-      <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
+    <section>
+      <ResumeSectionHeading>{title}</ResumeSectionHeading>
       <ul className="mt-2 space-y-1.5 text-[11.5px]">
         {items.map((c) => (
           <li key={c.title}>

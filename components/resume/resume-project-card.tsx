@@ -1,21 +1,12 @@
-"use client";
-
-import { useTranslations } from "@/lib/messages";
+import {
+  type Category,
+  type DetailItem,
+  RESUME,
+  type ResumeProject,
+  type ResumeProjectKey,
+} from "@/content/resume";
 import { cn } from "@/lib/utils";
 import { RichText, UNDERLINE_STRONG } from "./rich-text";
-
-type DetailItem = { text: string; subItems?: string[] };
-type Category = { title?: string; details: DetailItem[] };
-
-interface Props {
-  projectKey:
-    | "allra"
-    | "allraAdmin"
-    | "allraAiAnalysis"
-    | "digitalFinance"
-    | "documentAi";
-  className?: string;
-}
 
 function ProjectCategoryDetail({ detail }: { detail: DetailItem }) {
   return (
@@ -54,11 +45,7 @@ function DetailList({ details }: { details: DetailItem[] }) {
 function ProjectCategory({ category }: { category: Category }) {
   return (
     <section className="border-primary/30 border-l-2 pl-3">
-      {/*
-        카테고리가 하나뿐인 프로젝트는 소제목이 프로젝트 제목 바로 아래
-        또 제목을 두는 헛계층이 된다. 제목 없이 나열하되, 묶음을 표시하는
-        왼쪽 보더는 제목 유무와 무관하게 유지한다.
-      */}
+      {/* 카테고리가 하나뿐이면 소제목이 헛계층이라 생략하되, 왼쪽 보더는 유지한다. */}
       {category.title && (
         <h4 className="font-semibold text-[12px] text-gray-800 dark:text-gray-200">
           <RichText>{category.title}</RichText>
@@ -69,16 +56,18 @@ function ProjectCategory({ category }: { category: Category }) {
   );
 }
 
-export default function ResumeProjectCard({ projectKey, className }: Props) {
-  const t = useTranslations(`resume.projects.${projectKey}`);
-  const stack = t.raw("stack") as string[];
-  const tasks = t.has("tasks") ? (t.raw("tasks") as string[]) : [];
-  const categories = t.has("categories")
-    ? (t.raw("categories") as Category[])
-    : [];
+export default function ResumeProjectCard({
+  projectKey,
+}: {
+  projectKey: ResumeProjectKey;
+}) {
+  const project: ResumeProject = RESUME.projects[projectKey];
+  const { stack } = project;
+  const tasks = project.tasks ?? [];
+  const categories = project.categories ?? [];
 
   return (
-    <article className={cn("py-2", className)}>
+    <article className="py-2">
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h3 className="flex items-center gap-2 font-bold text-[15px] text-gray-900 dark:text-white">
@@ -86,7 +75,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
               aria-hidden
               className="h-4 w-0.5 shrink-0 bg-gray-900 dark:bg-white"
             />
-            {t("title")}
+            {project.title}
           </h3>
         </div>
       </header>
@@ -97,7 +86,7 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
           UNDERLINE_STRONG,
         )}
       >
-        <RichText>{t("description")}</RichText>
+        <RichText>{project.description}</RichText>
       </p>
 
       {tasks.length > 0 && (
@@ -115,14 +104,12 @@ export default function ResumeProjectCard({ projectKey, className }: Props) {
         </div>
       )}
 
-      {/* 기술 스택은 참고 정보라 본문보다 작게 둔다. */}
       <p className="mt-1 mb-1.5 text-[11px] text-gray-400 dark:text-gray-500">
         {stack.join(", ")}
       </p>
 
       {categories.length > 0 && (
-        // 카테고리가 여러 개일 때 간격이 쌓여 페이지를 넘기므로 과하게 벌리지 않는다.
-        // 제목이 굵어 간격이 좁아도 묶음 경계는 구분된다.
+        // 카테고리가 여러 개면 간격이 쌓여 페이지를 넘기므로 과하게 벌리지 않는다.
         <div className="mt-2 space-y-2.5">
           {categories.map((cat, i) => (
             <ProjectCategory key={cat.title ?? i} category={cat} />

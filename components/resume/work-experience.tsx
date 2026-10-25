@@ -1,29 +1,20 @@
-"use client";
-
-import { useTranslations } from "@/lib/messages";
+import type { ReactNode } from "react";
+import { type CompanyKey, RESUME } from "@/content/resume";
 import { cn } from "@/lib/utils";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText, UNDERLINE_STRONG } from "./rich-text";
 
-type CompanyKey = "allra" | "pwc";
-
-export function CompanySection({
-  companyKey,
-  className,
-}: {
-  companyKey: CompanyKey;
-  className?: string;
-}) {
-  const t = useTranslations("resume.workExperience");
+export function CompanySection({ companyKey }: { companyKey: CompanyKey }) {
+  const company = RESUME.workExperience.items[companyKey];
 
   return (
-    <article className={className}>
+    <article>
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h3 className="font-extrabold text-[18px] text-gray-900 dark:text-white">
-          {t(`items.${companyKey}.company`)}
+          {company.company}
         </h3>
         <span className="text-[11.5px] text-gray-500 dark:text-gray-400">
-          {t(`items.${companyKey}.duration`)}
+          {company.duration}
         </span>
       </header>
       <p
@@ -32,7 +23,7 @@ export function CompanySection({
           UNDERLINE_STRONG,
         )}
       >
-        <RichText>{t(`items.${companyKey}.summary`)}</RichText>
+        <RichText>{company.summary}</RichText>
       </p>
     </article>
   );
@@ -43,22 +34,22 @@ export function TeamSection({
   children,
 }: {
   companyKey: CompanyKey;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const t = useTranslations(`resume.workExperience.items.${companyKey}.team`);
+  const team = RESUME.workExperience.items[companyKey].team;
 
   return (
     <section className="mt-3">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h4 className="font-bold text-[15px] text-gray-900 dark:text-white">
-          {t("name")}
+          {team.name}
         </h4>
         <span className="text-[11.5px] text-gray-500 dark:text-gray-400">
-          {t("duration")}
+          {team.duration}
         </span>
       </header>
       <p className="mt-1.5 text-[11.5px] text-gray-800 leading-relaxed dark:text-gray-200">
-        <RichText>{t("summary")}</RichText>
+        <RichText>{team.summary}</RichText>
       </p>
       <div className="mt-2">{children}</div>
     </section>
@@ -67,20 +58,16 @@ export function TeamSection({
 
 export default function WorkExperienceSection({
   children,
-  className,
   hideHeading = false,
 }: {
-  children: React.ReactNode;
-  className?: string;
+  children: ReactNode;
   hideHeading?: boolean;
 }) {
-  const t = useTranslations("resume.workExperience");
-
   return (
-    <section className={className}>
+    <section>
       {!hideHeading && (
         <ResumeSectionHeading className="mb-3">
-          {t("title")}
+          {RESUME.workExperience.title}
         </ResumeSectionHeading>
       )}
       <div className="space-y-4">{children}</div>

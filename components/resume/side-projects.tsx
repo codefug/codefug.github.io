@@ -1,20 +1,8 @@
-"use client";
-
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "@/lib/messages";
-import { cn } from "@/lib/utils";
+import { RESUME, type SideProjectItem } from "@/content/resume";
 import { ResumeSectionHeading } from "./resume-section-heading";
 import { RichText } from "./rich-text";
-
-type SideProjectItem = {
-  title: string;
-  url?: string;
-  github?: string;
-  stack: string[];
-  description: string;
-  details: string[];
-};
 
 function SideProjectCard({ item }: { item: SideProjectItem }) {
   return (
@@ -62,16 +50,15 @@ function SideProjectCard({ item }: { item: SideProjectItem }) {
   );
 }
 
-export default function SideProjects({ className }: { className?: string }) {
-  const t = useTranslations("resume.sideProjects");
-  const items = t.raw("items") as SideProjectItem[];
+export default function SideProjects() {
+  const { title, items } = RESUME.sideProjects;
 
   // 내세울 것이 없으면 제목만 남은 빈 칸이 되므로 섹션째로 접는다.
   if (items.length === 0) return null;
 
   return (
-    <section className={cn("py-3", className)}>
-      <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
+    <section className="py-3">
+      <ResumeSectionHeading>{title}</ResumeSectionHeading>
       <div className="mt-2 space-y-2.5">
         {items.map((item) => (
           <SideProjectCard key={item.title} item={item} />

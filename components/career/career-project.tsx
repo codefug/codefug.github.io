@@ -1,16 +1,14 @@
-"use client";
-
+import type { ReactNode } from "react";
 import { RichText } from "@/components/resume/rich-text";
-import { useTranslations } from "@/lib/messages";
+import {
+  CAREER,
+  type CareerCompanyKey,
+  type CareerProjectData,
+  type CareerProjectKey,
+  type PaarItem,
+} from "@/content/career";
 import { cn } from "@/lib/utils";
-import { Bullets, PaarBlock, type PaarItem } from "./paar-block";
-
-type ProjectKey =
-  | "allra"
-  | "allraAdmin"
-  | "allraAiAnalysis"
-  | "digitalFinance"
-  | "documentAi";
+import { Bullets, PaarBlock } from "./paar-block";
 
 function StackList({ stack }: { stack: string[] }) {
   return (
@@ -56,10 +54,6 @@ function RoleList({ roles }: { roles: string[] }) {
   );
 }
 
-/*
-  프로젝트 소개는 사실만 적고, 이 프로젝트에서의 성과는 여기서 요약한다.
-  훑는 사람이 항목을 읽기 전에 수치를 먼저 얻는 자리. 산출 근거는 본문 항목이 담당한다.
-*/
 function Highlights({ lines }: { lines: string[] }) {
   return (
     <div className="mt-2">
@@ -71,21 +65,18 @@ function Highlights({ lines }: { lines: string[] }) {
   );
 }
 
-/*
-  없는 인덱스를 조용히 걸러내면 항목이 문서에서 사라진 걸 눈치채기 어렵다.
-  항목을 지우거나 순서를 바꿨을 때 빌드(SSG)에서 바로 걸리게 던진다.
-*/
+// 없는 인덱스를 조용히 거르면 항목이 사라진 걸 모르므로, 던져서 빌드에서 바로 걸리게 한다.
 function pickItems(
   all: PaarItem[],
   indexes: number[] | undefined,
-  projectKey: ProjectKey,
+  projectKey: CareerProjectKey,
 ): PaarItem[] {
   if (!indexes) return all;
   return indexes.map((i) => {
     const item = all[i];
     if (!item)
       throw new Error(
-        `career.projects.${projectKey}.items[${i}]가 없습니다. 항목이 ${all.length}개뿐이니 app/career/page.tsx의 인덱스를 확인하세요.`,
+        `CAREER.projects.${projectKey}.items[${i}]가 없습니다. 항목이 ${all.length}개뿐이니 app/career/page.tsx의 인덱스를 확인하세요.`,
       );
     return item;
   });
@@ -97,15 +88,15 @@ export function CareerProject({
   headless = false,
   className,
 }: {
-  projectKey: ProjectKey;
-  /** 이 장에 실을 PAAR 항목의 인덱스. 생략하면 전부 싣는다. */
+  projectKey: CareerProjectKey;
+  /** 생략하면 전부 싣는다. */
   items?: number[];
-  /** 프로젝트가 여러 A4 장에 걸칠 때, 이어지는 장에서는 머리말을 반복하지 않는다. */
+  /** 여러 장에 걸친 프로젝트의 이어지는 장에서 머리말을 생략한다. */
   headless?: boolean;
   className?: string;
 }) {
-  const t = useTranslations(`career.projects.${projectKey}`);
-  const all = t.has("items") ? (t.raw("items") as PaarItem[]) : [];
+  const project: CareerProjectData = CAREER.projects[projectKey];
+  const all = project.items ?? [];
   const shown = pickItems(all, items, projectKey);
 
   return (
@@ -114,24 +105,21 @@ export function CareerProject({
         <header>
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <h3 className="font-bold text-[14px] text-gray-900">
-              {t("title")}
+              {project.title}
             </h3>
-            <span className="text-[9.5px] text-gray-500">{t("role")}</span>
+            <span className="text-[9.5px] text-gray-500">{project.role}</span>
           </div>
           <p className="mt-1.5 text-[11px] text-gray-700 leading-[1.65]">
-            <RichText>{t("summary")}</RichText>
+            <RichText>{project.summary}</RichText>
           </p>
 
-          {t.has("roles") && <RoleList roles={t.raw("roles") as string[]} />}
-          {t.has("highlights") && (
-            <Highlights lines={t.raw("highlights") as string[]} />
-          )}
+          {project.roles && <RoleList roles={project.roles} />}
+          {project.highlights && <Highlights lines={project.highlights} />}
 
-          <StackList stack={t.raw("stack") as string[]} />
+          <StackList stack={project.stack} />
         </header>
       )}
 
-      {/* 항목 사이는 본문 문단 간격보다 확실히 넓게 두어 항목 경계가 읽히게 한다. */}
       {shown.length > 0 && (
         <div className={cn("space-y-5", !headless && "mt-3")}>
           {shown.map((item) => (
@@ -143,14 +131,12 @@ export function CareerProject({
   );
 }
 
-type LinkItem = { title: string; url: string };
-
 function ExtrasBlock({
   label,
   children,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div>
@@ -160,27 +146,15 @@ function ExtrasBlock({
   );
 }
 
-/** 오픈소스, 기술 공유, 학력, 자격. 본문보다 작게 두고 마지막 장에 붙인다. */
 export function CareerExtras({ className }: { className?: string }) {
-  const t = useTranslations("career.extras");
-  const linkBlocks = (["openSource", "writing"] as const).map((key) => ({
-    key,
-    label: t(`${key}.label`),
-    items: t.raw(`${key}.items`) as LinkItem[],
-  }));
-  const textBlocks = (["education", "certification"] as const).map((key) => ({
-    key,
-    label: t(`${key}.label`),
-    lines: t.raw(`${key}.lines`) as string[],
-  }));
-
+  const extras = CAREER.extras;
   return (
-    <section className={cn(className)}>
-      <h2 className="font-bold text-[11px] text-gray-900">{t("title")}</h2>
+    <section className={className}>
+      <h2 className="font-bold text-[11px] text-gray-900">{extras.title}</h2>
       <div className="mt-1.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
-        {linkBlocks.map((block) => (
-          <ExtrasBlock key={block.key} label={block.label}>
-            {block.items.map((item) => (
+        {(["openSource", "writing"] as const).map((key) => (
+          <ExtrasBlock key={key} label={extras[key].label}>
+            {extras[key].items.map((item) => (
               <li key={item.url} className="text-[10px] leading-[1.55]">
                 <a
                   href={item.url}
@@ -194,9 +168,9 @@ export function CareerExtras({ className }: { className?: string }) {
             ))}
           </ExtrasBlock>
         ))}
-        {textBlocks.map((block) => (
-          <ExtrasBlock key={block.key} label={block.label}>
-            {block.lines.map((line) => (
+        {(["education", "certification"] as const).map((key) => (
+          <ExtrasBlock key={key} label={extras[key].label}>
+            {extras[key].lines.map((line) => (
               <li
                 key={line}
                 className="text-[10px] text-gray-700 leading-[1.55]"
@@ -216,25 +190,25 @@ export function CareerCompany({
   children,
   className,
 }: {
-  companyKey: "allra" | "pwc";
-  children: React.ReactNode;
+  companyKey: CareerCompanyKey;
+  children: ReactNode;
   className?: string;
 }) {
-  const t = useTranslations(`career.companies.${companyKey}`);
+  const company = CAREER.companies[companyKey];
 
   return (
-    <section className={cn(className)}>
+    <section className={className}>
       <header className="border-primary/40 border-b pb-1.5">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <h2 className="font-extrabold text-[16px] text-gray-900">
-            {t("company")}
+            {company.company}
           </h2>
           <span className="text-[10px] text-gray-500">
-            {t("duration")} &nbsp;|&nbsp; {t("position")}
+            {company.duration} &nbsp;|&nbsp; {company.position}
           </span>
         </div>
         <p className="mt-1 text-[10.5px] text-gray-600 leading-[1.6]">
-          <RichText>{t("summary")}</RichText>
+          <RichText>{company.summary}</RichText>
         </p>
       </header>
       <div className="mt-2.5 space-y-3.5">{children}</div>

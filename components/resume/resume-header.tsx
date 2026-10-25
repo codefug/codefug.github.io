@@ -1,38 +1,30 @@
-"use client";
-
 import { Globe, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { ComponentType } from "react";
 import GithubIcon from "@/assets/icons/GithubIcon";
 import LinkedInIcon from "@/assets/icons/LinkedInIcon";
-import { CONTACT_EMAIL, SITE_URL } from "@/constants/site";
-import { useTranslations } from "@/lib/messages";
+import {
+  CONTACT_EMAIL,
+  displayUrl,
+  GITHUB_URL,
+  SITE_URL,
+} from "@/constants/site";
+import { RESUME } from "@/content/resume";
 import { cn } from "@/lib/utils";
 import { RichText } from "./rich-text";
 
-type IconProps = { className?: string; size?: number };
 type ContactItem = {
-  Icon: React.ComponentType<IconProps>;
+  Icon: ComponentType<{ className?: string }>;
   label: string;
   value: string;
   href: string;
 };
 
-const GithubIconAdapted = ({ className }: IconProps) => (
-  <GithubIcon className={className} />
-);
-const LinkedInIconAdapted = ({ className }: IconProps) => (
-  <LinkedInIcon className={className} />
-);
-
 function ContactListItem({ Icon, label, value, href }: ContactItem) {
   return (
     <li className="flex items-center justify-start gap-1.5">
-      {/*
-        텍스트 라벨을 두면 연락처 컬럼이 넓어져 옆의 소개 문단이 좁게 꺾인다.
-        아이콘이 이미 종류를 말하므로 경력기술서 헤더처럼 아이콘+값만 둔다.
-        라벨은 읽는 도구를 위해 링크 안에 sr-only로 남긴다.
-      */}
+      {/* 라벨을 보이게 두면 연락처 컬럼이 넓어져 소개 문단이 꺾이므로 sr-only로만 둔다. */}
       <Icon className="h-3 w-3 shrink-0 text-primary" />
       <Link
         href={href}
@@ -48,34 +40,31 @@ function ContactListItem({ Icon, label, value, href }: ContactItem) {
 }
 
 export default function ResumeHeader({ className }: { className?: string }) {
-  const t = useTranslations("resume");
-  const paragraphs = t.raw("aboutMe.paragraphs") as string[];
+  const { contact, aboutMe } = RESUME;
+  const paragraphs = aboutMe.paragraphs;
   const contacts: ContactItem[] = [
     {
       Icon: Mail,
-      label: t("contact.email"),
-      // 이메일도 번역 대상이 아니라 상수를 따른다.
+      label: contact.email,
       value: CONTACT_EMAIL,
       href: `mailto:${CONTACT_EMAIL}`,
     },
     {
-      Icon: GithubIconAdapted,
-      label: t("contact.github"),
-      // 프로토콜은 표시 폭만 차지한다. 링크에는 남기고 표시에서만 뗀다.
-      value: t("contact.githubValue").replace(/^https?:\/\//, ""),
-      href: t("contact.githubValue"),
+      Icon: GithubIcon,
+      label: contact.github,
+      value: displayUrl(GITHUB_URL),
+      href: GITHUB_URL,
     },
     {
-      Icon: LinkedInIconAdapted,
-      label: t("contact.linkedin"),
-      value: t("contact.linkedinValue"),
-      href: t("contact.linkedinHref"),
+      Icon: LinkedInIcon,
+      label: contact.linkedin,
+      value: contact.linkedinValue,
+      href: contact.linkedinHref,
     },
     {
       Icon: Globe,
-      label: t("contact.blog"),
-      // 블로그 주소는 도메인 자체가 값이라 번역 파일이 아니라 상수를 따른다.
-      value: SITE_URL.replace(/^https?:\/\//, ""),
+      label: contact.blog,
+      value: displayUrl(SITE_URL),
       href: SITE_URL,
     },
   ];
@@ -83,9 +72,7 @@ export default function ResumeHeader({ className }: { className?: string }) {
   return (
     <header className={cn("flex flex-col gap-4", className)}>
       {/*
-        소개는 이름 아래, 연락처는 우측 상단 세로 스택.
-        리드 문장(…개발자입니다.)이 소개 컬럼에서 한 줄에 들어가는 것이 기준이다.
-        10px 리드가 398px이므로 컬럼이 400px 이상 나오도록 간격과 연락처 폰트를 잡았다.
+        리드 문장(10px, 398px)이 소개 컬럼 한 줄에 들어가야 한다.
         사진 크기, gap, 연락처 폰트를 바꿀 때는 이 줄이 꺾이는지부터 확인할 것.
       */}
       <div className="flex items-start gap-4">
@@ -103,9 +90,9 @@ export default function ResumeHeader({ className }: { className?: string }) {
         <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="flex flex-wrap items-baseline gap-2 font-bold text-[22px] text-gray-900 dark:text-white">
-              <span>{t("name")}</span>
+              <span>{RESUME.name}</span>
               <span className="font-medium text-[11.5px] text-primary">
-                {t("role")}
+                {RESUME.role}
               </span>
             </h1>
             <div className="mt-2.5 space-y-1 text-[10px] text-gray-700 leading-[1.6] dark:text-gray-300">

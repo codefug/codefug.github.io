@@ -77,7 +77,7 @@ function RichTokens({ line }: { line: string }) {
               href={token.url}
               target="_blank"
               rel="noopener noreferrer"
-              // PDF로 출력해도 링크가 살아 있으므로, 인쇄에서도 화면과 같은 링크 모양을 유지한다.
+              // PDF에서도 링크가 살아 있으므로 인쇄에서도 링크 모양을 유지한다.
               className="text-primary underline decoration-dotted hover:decoration-solid"
             >
               {token.content}
@@ -98,20 +98,10 @@ export function RichText({ children }: { children: string }) {
       {lines.map((line, lineIndex) => {
         const lineStart = offset;
         offset += line.length + 1;
-        const isIndented = line.startsWith("\t");
-        const content = isIndented ? line.slice(1) : line;
-        if (isIndented)
-          return (
-            <ul key={lineStart} className="mt-1 pl-4">
-              <li className="ml-4 list-disc">
-                <RichTokens line={content} />
-              </li>
-            </ul>
-          );
         return (
           <Fragment key={lineStart}>
             {lineIndex > 0 && <br />}
-            <RichTokens line={content} />
+            <RichTokens line={line} />
           </Fragment>
         );
       })}

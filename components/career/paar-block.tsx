@@ -1,14 +1,6 @@
 import { RichText } from "@/components/resume/rich-text";
+import type { PaarItem } from "@/content/career";
 import { cn } from "@/lib/utils";
-
-export type PaarItem = {
-  title: string;
-  meta?: string;
-  problem: string;
-  choice: string;
-  actions: string[];
-  results: string[];
-};
 
 function SectionLabel({ children }: { children: string }) {
   return (

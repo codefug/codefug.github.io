@@ -1,19 +1,15 @@
-"use client";
-
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "@/lib/messages";
+import { type Contribution, RESUME } from "@/content/resume";
 import { ResumeSectionHeading } from "./resume-section-heading";
 
-type Contribution = { title: string; url: string; description?: string };
-
-export default function OpenSource({ className }: { className?: string }) {
-  const t = useTranslations("resume.openSource");
-  const items = t.raw("items") as Contribution[];
+export default function OpenSource() {
+  const { title } = RESUME.openSource;
+  const items: Contribution[] = RESUME.openSource.items;
 
   return (
-    <section className={className}>
-      <ResumeSectionHeading>{t("title")}</ResumeSectionHeading>
+    <section>
+      <ResumeSectionHeading>{title}</ResumeSectionHeading>
       <ul className="mt-1 space-y-1 text-[11.5px]">
         {items.map((item) => (
           <li key={item.url}>
