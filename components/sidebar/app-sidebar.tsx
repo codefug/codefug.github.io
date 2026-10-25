@@ -11,12 +11,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import type { FrontMatter } from "@/constants/mdx";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
 import { isSidebarOffPath } from "@/constants/path";
-import { useTranslations } from "@/lib/messages";
-import { PostGroupContent } from "./PostGroupContent";
-import { SidebarAnchorButton } from "./SidebarAnchorButton";
+import { AUTHOR_NAME } from "@/constants/site";
+import type { FrontMatter } from "@/types/post";
+import { CategoryTree } from "./category-tree";
+import { SidebarLink } from "./sidebar-link";
 import { useNavigateAfterSidebarClose } from "./use-navigate-after-sidebar-close";
 
 type SidebarNavEntry = {
@@ -26,30 +26,41 @@ type SidebarNavEntry = {
   label: string;
 };
 
+/** 카테고리 링크(Me)는 위 카테고리 트리에 이미 있으므로 뺀다. 드롭다운으로 묶인 링크는 펼칠 메뉴가 없는 사이드바에서 풀어 나란히 둔다. */
+function buildSidebarNavEntries(): SidebarNavEntry[] {
+  return NAVIGATION_ITEMS.flatMap<SidebarNavEntry>((item) => {
+    if (item.tag) return [];
+    if (item.href)
+      return [
+        {
+          key: item.label,
+          href: item.href,
+          target: item.target,
+          label: item.label,
+        },
+      ];
+    if (item.links)
+      return item.links.map((link) => ({
+        key: link.key,
+        href: link.href,
+        target: item.target,
+        label: link.label,
+      }));
+    return [];
+  });
+}
+
 export default function AppSidebar({
   frontMatterList,
 }: {
   frontMatterList: FrontMatter[];
 }) {
-  const t = useTranslations();
   const navigateAfterSidebarClose = useNavigateAfterSidebarClose();
 
-  /**
-   * 이동한 뒤에도 데스크톱 사이드바는 열려 있는 게 기본이다. 예외는
-   * 사이드바를 쓰지 않는 페이지(이력서)로 갈 때다. 어차피 닫히므로 닫힘
-   * 애니메이션이 끝난 뒤에 이동시켜 두 움직임이 겹치지 않게 한다.
-   *
-   * 모바일에서 닫는 일은 SidebarAnchorButton이 한다.
-   */
-  const getNavigationClickHandler = (item: {
-    href: string;
-    target: string;
-  }) => {
-    if (item.target === "_blank") return undefined;
-    if (isSidebarOffPath(item.href)) {
-      return navigateAfterSidebarClose(item.href);
-    }
-    return undefined;
+  // 데스크톱은 이동 후에도 열어 둔다. 모바일에서 닫는 일은 SidebarLink가 한다.
+  const getNavigationClickHandler = (item: SidebarNavEntry) => {
+    if (!isSidebarOffPath(item.href)) return undefined;
+    return navigateAfterSidebarClose(item.href);
   };
 
   return (
@@ -72,7 +83,7 @@ export default function AppSidebar({
           <div className="relative">
             <img
               src="/images/me.jpg"
-              alt={t("sidebar.profileAlt")}
+              alt={"이승현 프로필 사진"}
               width={64}
               height={64}
               fetchPriority="high"
@@ -82,53 +93,30 @@ export default function AppSidebar({
           </div>
           <div className="relative text-center">
             <h1 className="font-semibold text-sidebar-foreground text-sm">
-              {t("sidebar.name")}
+              {AUTHOR_NAME}
             </h1>
             <p className="mt-0.5 font-mono text-muted-foreground text-xs">
-              {t("sidebar.jobTitle")}
+              Web Frontend Developer
             </p>
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent className="gap-0" style={{ scrollbarWidth: "none" }}>
-        <PostGroupContent frontMatterList={frontMatterList} />
+        <CategoryTree frontMatterList={frontMatterList} />
 
         <SidebarGroup className="mt-auto border-sidebar-border border-t pt-2">
           <SidebarGroupContent>
             <SidebarMenu>
-              {/*
-                하위 카테고리로만 들어가는 항목(Notes)은 위 카테고리 트리에
-                이미 같은 내용이 펼쳐져 있으므로 여기서는 빼둔다.
-              */}
-              {NAVIGATION_ITEMS.flatMap<SidebarNavEntry>((item) => {
-                if (item.href)
-                  return [
-                    {
-                      key: item.label,
-                      href: item.href,
-                      target: item.target,
-                      label: t(`navigation.${item.label.toLowerCase()}`),
-                    },
-                  ];
-                // 드롭다운으로 묶인 고정 링크는 펼칠 메뉴가 없는 사이드바에서는 풀어 나란히 둔다.
-                if (item.links)
-                  return item.links.map((link) => ({
-                    key: link.key,
-                    href: link.href,
-                    target: item.target,
-                    label: t(`navigation.menu.${link.key}.label`),
-                  }));
-                return [];
-              }).map((item) => (
+              {buildSidebarNavEntries().map((item) => (
                 <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton asChild>
-                    <SidebarAnchorButton
+                    <SidebarLink
                       href={item.href}
                       target={item.target}
                       onClick={getNavigationClickHandler(item)}
                     >
                       {item.label}
-                    </SidebarAnchorButton>
+                    </SidebarLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

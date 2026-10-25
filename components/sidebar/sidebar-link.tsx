@@ -5,14 +5,8 @@ import type { AnchorHTMLAttributes, MouseEvent } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-/**
- * 사이드바 안의 링크 한 줄.
- *
- * 모바일에서는 사이드바가 본문을 덮는 오버레이라, 열어둔 채 이동하면
- * 도착한 페이지가 가려진다. 사이드바의 모든 링크가 이 컴포넌트를 지나가므로
- * 여기서 닫으면 새 링크를 추가해도 저절로 따라온다.
- */
-export function SidebarAnchorButton({
+/** 모바일 사이드바는 본문을 덮으므로 이동할 때 닫는다. 사이드바 링크는 모두 이 컴포넌트를 쓴다. */
+export function SidebarLink({
   className,
   onClick,
   target,
