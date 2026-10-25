@@ -1,13 +1,10 @@
 import type { JSX } from "react";
 import type { CalloutType } from "@/constants/callout";
 
-function isCallout(children: JSX.Element[]) {
-  if (
-    typeof children[1].props.children === "string" &&
-    children[1].props.children.startsWith("[!")
-  )
-    return true;
-  return false;
+/** `> [!NOTE] 제목` 형태로 시작하는 인용문인지 본다. */
+function isCallout(children: JSX.Element[]): boolean {
+  const firstLine = children[1].props.children;
+  return typeof firstLine === "string" && firstLine.startsWith("[!");
 }
 
 function extractCallOutType(

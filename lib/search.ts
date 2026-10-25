@@ -1,18 +1,8 @@
+import { range } from "es-toolkit";
 import MiniSearch from "minisearch";
-import type { FrontMatter } from "@/constants/mdx";
+import type { FrontMatter } from "@/types/post";
 
-/**
- * 검색 대상 필드와 가중치.
- * 제목이 맞으면 거의 찾던 글이므로 가장 높게 둔다.
- */
-const FIELDS = ["title", "excerpt", "categories"] as const;
-const BOOST = { title: 3, categories: 2, excerpt: 1 };
-
-/**
- * 한국어는 공백으로 끊어도 조사가 붙어 남는다("리액트를", "훅으로").
- * 그래서 공백·기호로 자른 뒤, 2글자 이상 한글 토큰은 앞에서부터 자른
- * 조각도 함께 넣어 "리액트"로 "리액트를"을 찾을 수 있게 한다.
- */
+/** 조사가 붙은 한글 토큰("리액트를")을 "리액트"로도 찾도록 앞 조각을 함께 넣는다. */
 function tokenize(text: string): string[] {
   const words = text.split(/[\s,./·—–\-()[\]{}"'`:;!?]+/u).filter(Boolean);
   const tokens: string[] = [];
@@ -20,89 +10,61 @@ function tokenize(text: string): string[] {
   for (const word of words) {
     tokens.push(word);
     if (/^[가-힣]{2,}$/u.test(word)) {
-      // "리액트를" → "리액", "리액트", "리액트를"
-      for (let end = 2; end < word.length; end += 1) {
-        tokens.push(word.slice(0, end));
-      }
+      tokens.push(...range(2, word.length).map((end) => word.slice(0, end)));
     }
   }
   return tokens;
 }
 
-export type SearchDoc = FrontMatter & { id: string };
-
-export function createSearchIndex(posts: FrontMatter[]): MiniSearch<SearchDoc> {
-  const index = new MiniSearch<SearchDoc>({
+export function createSearchIndex(
+  posts: FrontMatter[],
+): MiniSearch<FrontMatter> {
+  const index = new MiniSearch<FrontMatter>({
     idField: "id",
-    fields: [...FIELDS],
-    // 결과에서 글 정보를 그대로 쓰기 위해 원본을 들고 있는다.
-    storeFields: [
-      "id",
-      "title",
-      "excerpt",
-      "categories",
-      "date",
-      "readingTime",
-      "header",
-    ],
+    fields: ["title", "excerpt", "categories"],
+    // 필드를 골라 담으면 카드가 새 필드(cover 등)를 쓸 때마다 빠뜨리므로 글 객체를 통째로 담는다.
+    storeFields: ["title", "post"],
+    extractField: (post, field) =>
+      field === "post" ? post : post[field as keyof FrontMatter],
     tokenize,
     processTerm: (term) => term.toLowerCase(),
     searchOptions: {
-      boost: BOOST,
+      boost: { title: 3, categories: 2, excerpt: 1 },
       prefix: true,
-      // 오타를 어느 정도 허용한다. 짧은 검색어까지 흐려지지 않게 비율로 준다.
+      // 길이 비율이라 짧은 검색어는 오타 보정이 거의 걸리지 않는다.
       fuzzy: 0.2,
       combineWith: "AND",
     },
   });
 
-  index.addAll(posts as SearchDoc[]);
+  index.addAll(posts);
   return index;
 }
 
-export type Suggestion = { id: string; title: string };
-
-/**
- * 입력 중에 보여줄 자동완성 목록.
- *
- * 확정 검색과 달리 **제목만** 본다. 요약이나 카테고리까지 맞춰버리면
- * 목록에 뜬 제목과 입력한 말이 겹치지 않아 왜 나왔는지 알 수 없다.
- * 오타 보정(fuzzy)도 끄고, 앞글자 일치만 남긴다.
- */
+/** 제목만 본다. 요약까지 맞추면 뜬 제목과 입력이 겹치지 않아 왜 나왔는지 알 수 없다. */
 export function suggestPosts(
-  index: MiniSearch<SearchDoc>,
+  index: MiniSearch<FrontMatter>,
   query: string,
   limit = 6,
-): Suggestion[] {
+): { id: string; title: string }[] {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
   return index
     .search(trimmed, {
       fields: ["title"],
-      prefix: true,
       fuzzy: false,
-      combineWith: "AND",
     })
     .slice(0, limit)
-    .map((result) => ({ id: result.id as string, title: result.title }));
+    .map((result) => ({ id: result.id, title: result.title }));
 }
 
-/** 검색 결과를 글 목록으로 되돌린다. (점수 순서를 유지한다) */
 export function searchPosts(
-  index: MiniSearch<SearchDoc>,
+  index: MiniSearch<FrontMatter>,
   query: string,
 ): FrontMatter[] {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
-  return index.search(trimmed).map((result) => ({
-    id: result.id as string,
-    title: result.title,
-    excerpt: result.excerpt,
-    categories: result.categories,
-    date: result.date,
-    readingTime: result.readingTime,
-    header: result.header,
-  }));
+  return index.search(trimmed).map((result) => result.post);
 }
