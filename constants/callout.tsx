@@ -1,3 +1,4 @@
+import { mapKeys } from "es-toolkit";
 import {
   Angry,
   BookCheck,
@@ -19,61 +20,69 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
-export type CalloutType =
-  | "note"
-  | "NOTE"
-  | "abstract"
-  | "ABSTRACT"
-  | "summary"
-  | "SUMMARY"
-  | "tldr"
-  | "TLDR"
-  | "info"
-  | "INFO"
-  | "todo"
-  | "TODO"
-  | "tip"
-  | "TIP"
-  | "hint"
-  | "HINT"
-  | "important"
-  | "IMPORTANT"
-  | "success"
-  | "SUCCESS"
-  | "check"
-  | "CHECK"
-  | "done"
-  | "DONE"
-  | "question"
-  | "QUESTION"
-  | "help"
-  | "HELP"
-  | "faq"
-  | "FAQ"
-  | "warning"
-  | "WARNING"
-  | "caution"
-  | "CAUTION"
-  | "attention"
-  | "ATTENTION"
-  | "failure"
-  | "FAILURE"
-  | "fail"
-  | "FAIL"
-  | "missing"
-  | "MISSING"
-  | "danger"
-  | "DANGER"
-  | "error"
-  | "ERROR"
-  | "bug"
-  | "BUG"
-  | "example"
-  | "EXAMPLE"
-  | "quote"
-  | "QUOTE"
-  | "cite"
-  | "CITE";
+const COLOR = {
+  note: "blue",
+  abstract: "gray",
+  summary: "gray",
+  tldr: "gray",
+  info: "yellow",
+  todo: "green",
+  tip: "yellow",
+  hint: "red",
+  important: "yellow",
+  success: "green",
+  check: "green",
+  done: "green",
+  question: "sky-blue",
+  help: "sky-blue",
+  faq: "sky-blue",
+  warning: "orange",
+  caution: "orange",
+  attention: "orange",
+  failure: "red",
+  fail: "red",
+  missing: "red",
+  danger: "red",
+  error: "red",
+  bug: "red",
+  example: "purple",
+  quote: "gray",
+  cite: "gray",
+} as const satisfies Record<string, ColorType>;
+
+const ICON = {
+  note: <Pencil />,
+  abstract: <NotepadText />,
+  summary: <NotepadText />,
+  tldr: <NotepadText />,
+  info: <Info />,
+  todo: <ListTodo />,
+  tip: <Lightbulb />,
+  hint: <Flame />,
+  important: <Star />,
+  success: <Medal />,
+  check: <BookCheck />,
+  done: <BookCheck />,
+  question: <MessageCircleQuestion />,
+  help: <MessageCircleQuestion />,
+  faq: <MessageCircleQuestion />,
+  warning: <TriangleAlert />,
+  caution: <TriangleAlert />,
+  attention: <TriangleAlert />,
+  failure: <CircleX />,
+  fail: <CircleX />,
+  missing: <CircleX />,
+  danger: <Angry />,
+  error: <ServerCrash />,
+  bug: <Bug />,
+  example: <List />,
+  quote: <Quote />,
+  cite: <Quote />,
+} satisfies Record<keyof typeof COLOR, ReactNode>;
+
+type LowerCalloutType = keyof typeof COLOR;
+
+export type CalloutType = LowerCalloutType | Uppercase<LowerCalloutType>;
 
 export type ColorType =
   | "blue"
@@ -85,116 +94,16 @@ export type ColorType =
   | "purple"
   | "gray";
 
-export const CALL_OUT_TYPE_COLOR: { [key in CalloutType]: ColorType } = {
-  note: "blue",
-  NOTE: "blue",
-  abstract: "gray",
-  ABSTRACT: "gray",
-  summary: "gray",
-  SUMMARY: "gray",
-  tldr: "gray",
-  TLDR: "gray",
-  info: "yellow",
-  INFO: "yellow",
-  todo: "green",
-  TODO: "green",
-  tip: "yellow",
-  TIP: "yellow",
-  hint: "red",
-  HINT: "red",
-  important: "yellow",
-  IMPORTANT: "yellow",
-  success: "green",
-  SUCCESS: "green",
-  check: "green",
-  CHECK: "green",
-  done: "green",
-  DONE: "green",
-  question: "sky-blue",
-  QUESTION: "sky-blue",
-  help: "sky-blue",
-  HELP: "sky-blue",
-  faq: "sky-blue",
-  FAQ: "sky-blue",
-  warning: "orange",
-  WARNING: "orange",
-  caution: "orange",
-  CAUTION: "orange",
-  attention: "orange",
-  ATTENTION: "orange",
-  failure: "red",
-  FAILURE: "red",
-  fail: "red",
-  FAIL: "red",
-  missing: "red",
-  MISSING: "red",
-  danger: "red",
-  DANGER: "red",
-  error: "red",
-  ERROR: "red",
-  bug: "red",
-  BUG: "red",
-  example: "purple",
-  EXAMPLE: "purple",
-  quote: "gray",
-  QUOTE: "gray",
-  cite: "gray",
-  CITE: "gray",
-};
+/** 소문자 표 하나에서 대문자 키를 만든다. `Note` 같은 혼합 표기는 해석하지 않는다. */
+function withUppercaseKeys<V>(
+  table: Record<LowerCalloutType, V>,
+): Record<CalloutType, V> {
+  const uppercase = mapKeys(table, (_, key) => key.toUpperCase());
+  return { ...table, ...uppercase } as Record<CalloutType, V>;
+}
 
-export const CALL_OUT_TYPE_ICON: { [key in CalloutType]: ReactNode } = {
-  note: <Pencil />,
-  NOTE: <Pencil />,
-  abstract: <NotepadText />,
-  ABSTRACT: <NotepadText />,
-  summary: <NotepadText />,
-  SUMMARY: <NotepadText />,
-  tldr: <NotepadText />,
-  TLDR: <NotepadText />,
-  info: <Info />,
-  INFO: <Info />,
-  todo: <ListTodo />,
-  TODO: <ListTodo />,
-  tip: <Lightbulb />,
-  TIP: <Lightbulb />,
-  hint: <Flame />,
-  HINT: <Flame />,
-  important: <Star />,
-  IMPORTANT: <Star />,
-  success: <Medal />,
-  SUCCESS: <Medal />,
-  check: <BookCheck />,
-  CHECK: <BookCheck />,
-  done: <BookCheck />,
-  DONE: <BookCheck />,
-  question: <MessageCircleQuestion />,
-  QUESTION: <MessageCircleQuestion />,
-  help: <MessageCircleQuestion />,
-  HELP: <MessageCircleQuestion />,
-  faq: <MessageCircleQuestion />,
-  FAQ: <MessageCircleQuestion />,
-  warning: <TriangleAlert />,
-  WARNING: <TriangleAlert />,
-  caution: <TriangleAlert />,
-  CAUTION: <TriangleAlert />,
-  attention: <TriangleAlert />,
-  ATTENTION: <TriangleAlert />,
-  failure: <CircleX />,
-  FAILURE: <CircleX />,
-  fail: <CircleX />,
-  FAIL: <CircleX />,
-  missing: <CircleX />,
-  MISSING: <CircleX />,
-  danger: <Angry />,
-  DANGER: <Angry />,
-  error: <ServerCrash />,
-  ERROR: <ServerCrash />,
-  bug: <Bug />,
-  BUG: <Bug />,
-  example: <List />,
-  EXAMPLE: <List />,
-  quote: <Quote />,
-  QUOTE: <Quote />,
-  cite: <Quote />,
-  CITE: <Quote />,
-};
+export const CALL_OUT_TYPE_COLOR: Record<CalloutType, ColorType> =
+  withUppercaseKeys(COLOR);
+
+export const CALL_OUT_TYPE_ICON: Record<CalloutType, ReactNode> =
+  withUppercaseKeys(ICON);

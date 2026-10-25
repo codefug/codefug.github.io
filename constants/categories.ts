@@ -1,3 +1,5 @@
+import { kebabCase } from "es-toolkit";
+
 export const TAG_LIST = {
   JAVASCRIPT: "javascript",
   TYPESCRIPT: "typescript",
@@ -9,169 +11,221 @@ export const TAG_LIST = {
   WEB: "web",
   NEXTJS: "nextjs",
   FANDOMK: "fandomk",
-  ELECTRON: "electron",
-  CLAUDE_PET: "claude-pet",
   REINDEER_LETTER: "reindeer-letter",
-  RETROSPECTIVE: "retrospective",
-  REVIEW: "review",
-  THOUGHT: "thought",
+  ME: "me",
 } as const;
 
 export type Tag = (typeof TAG_LIST)[keyof typeof TAG_LIST];
 
-/**
- * slug를 그대로 보여주면 어색한 태그의 표기.
- * 사람 이름을 messages에 둘 이유가 없는(번역 대상이 아닌) 고유명사만 여기 둔다.
- */
-export const TAG_LABEL: Partial<Record<Tag, string>> = {
+/** slug를 그대로 보여주면 어색한 태그의 표기. 시리즈 이름과 그룹 라벨이 먼저다(resolveTagLabel). */
+const TAG_LABEL: Partial<Record<Tag, string>> = {
   [TAG_LIST.JAVASCRIPT]: "JavaScript",
   [TAG_LIST.TYPESCRIPT]: "TypeScript",
   [TAG_LIST.REACT]: "React",
   [TAG_LIST.NEXTJS]: "Next.js",
-  [TAG_LIST.ELECTRON]: "Electron",
   [TAG_LIST.WEB]: "Web",
 };
 
-/**
- * 태그를 담는 가장 작은 묶음. 사이드바에서 접히는 단위다.
- * `label`·`description`은 messages의 `categories.<id>`에서 가져온다.
- */
+type SeriesInfo = { name: string; description: string };
+
+/** 여러 편으로 이어지는 태그(연재물과 프로젝트)의 이름과 소개. */
+const SERIES_INFO: Partial<Record<Tag, SeriesInfo>> = {
+  [TAG_LIST.FANDOMK]: {
+    name: "Fandom-k",
+    description:
+      "아이돌 후원 서비스를 만들며 팀 프로젝트 세팅부터 무한 스크롤, 스켈레톤 UI까지 처음 부딪힌 것들을 정리했습니다.",
+  },
+  [TAG_LIST.GHEUPPAY]: {
+    name: "급페이",
+    description:
+      "카드 렌더링 최적화, MSW 기반 mock fetching, 개발 환경 분리까지 UX와 DX를 함께 끌어올린 기록입니다.",
+  },
+  [TAG_LIST.KKOM_KKOM]: {
+    name: "꼼꼼",
+    description:
+      "부트캠프 최종 프로젝트. 공통 컴포넌트 설계, 커스텀 오버레이 훅, 서버/클라이언트 호환 fetch까지 구조를 직접 설계했습니다.",
+  },
+  [TAG_LIST.ASYNC_JS]: {
+    name: "비동기 자바스크립트",
+    description:
+      "이벤트 루프부터 async/await까지, 자바스크립트 비동기를 개념 하나씩 짧게 정리한 시리즈입니다.",
+  },
+  [TAG_LIST.AUTH_SSR]: {
+    name: "인증 분기 SSR 기록",
+    description:
+      "핵심 페이지들이 크롤러에게 GNB와 푸터만 보여주고 있었습니다. 인증 분기와 뷰포트 분기를 서버에서 확정하고, 그 과정에서 깨진 CI와 hydration 불일치까지 정리한 기록입니다.",
+  },
+  [TAG_LIST.REINDEER_LETTER]: {
+    name: "순록의 편지",
+    description:
+      "연말에 나와 타인에게 예약 편지를 보내는 서비스를 만들며 남긴 기록입니다.",
+  },
+};
+
+export function getSeriesInfo(tag: string): SeriesInfo | undefined {
+  return SERIES_INFO[tag as Tag];
+}
+
+/** 시리즈 페이지처럼 정보가 반드시 있어야 하는 곳에서 쓴다. 없으면 SSG 빌드에서 던져 바로 드러낸다. */
+export function requireSeriesInfo(tag: string): SeriesInfo {
+  const info = getSeriesInfo(tag);
+  if (!info) throw new Error(`시리즈 정보가 없습니다: ${tag}`);
+  return info;
+}
+
 export type CategoryGroupId =
-  | "sideProject"
   | "toyProject"
   | "workProject"
   | "series"
   | "framework"
   | "language"
   | "webDev"
-  | "retrospective"
-  | "review"
-  | "thought"
+  | "me"
   | "etc";
 
-/**
- * 그룹을 다시 묶는 대분류. 사이드바·홈에서 최상위 섹션이 되고,
- * 그 안의 그룹이 하위 토글로 들어간다.
- */
-export type CategorySectionId = "project" | "series" | "dev" | "notes" | "etc";
+export type CategorySectionId = "project" | "series" | "dev" | "me" | "etc";
 
-export type CategoryGroup = {
+type CategoryGroup = {
   id: CategoryGroupId;
-  /** 이 그룹에 속하는 태그 목록 */
+  label: string;
+  description: string;
   tags: Tag[];
-  /**
-   * 그룹에 속한 글을 모아 보는 전용 페이지를 만든다.
-   * 태그 하나로는 좁고 대분류로는 넓은 묶음(사이드·학습 프로젝트)에 쓴다.
-   */
+  /** `/groups/<slug>` 전용 목록 페이지를 만든다. */
   hasPage?: boolean;
 };
 
-export type CategorySection = {
+type CategorySection = {
   id: CategorySectionId;
+  label: string;
+  description: string;
   groups: CategoryGroup[];
-  /** 홈·사이드바에서의 노출 순서 */
-  order: number;
-  /**
-   * 사이드바에서 그룹 단계를 건너뛰고 태그를 바로 보여준다.
-   * 그룹 하나가 태그 하나를 대표해서 이름이 겹쳐 보이는 대분류(기록)에 쓴다.
-   */
-  flattenGroups?: boolean;
-  /**
-   * 전체 글 필터에서 대분류 한 칸이 아니라 그룹별로 갈라 보여준다.
-   * 한 칸에 두면 성격이 다른 글이 같은 무게로 읽히는 대분류(프로젝트)에 쓴다.
-   */
+  /** 전체 글 필터에서 대분류 한 칸 대신 그룹별 칸으로 나눈다. */
   splitInFilter?: boolean;
 };
 
-/**
- * 대분류 → 그룹 → 태그의 3단 구조.
- * 태그를 옮기려면 이 트리만 고치면 사이드바·홈·전체 글 목록이 모두 따라온다.
- */
-export const CATEGORY_SECTIONS: CategorySection[] = [
+/** 대분류 → 그룹 → 태그. 사이드바, 홈, 전체 글 목록이 모두 이 트리를 따른다. */
+const CATEGORY_SECTIONS: CategorySection[] = [
   {
     id: "project",
-    order: 1,
+    label: "Projects",
+    description: "직접 만든 것들 — 배경부터 마주친 문제와 회고까지",
     // 2026년 사이드 작업과 2024년 학습기를 한 칸에 두면 평균값으로 읽힌다.
     splitInFilter: true,
     groups: [
-      /*
-        직접 필요해서 만든 것과, 배우면서 팀으로 만든 것을 나눠 둔다.
-        2024년 팀 프로젝트와 2026년 개인 작업을 한 칸에 두면
-        목록에서 둘이 같은 무게로 읽힌다.
-      */
       {
-        id: "sideProject",
-        tags: [TAG_LIST.CLAUDE_PET],
+        id: "toyProject",
+        label: "Toy Project",
+        description: "대외활동과 팀으로 만들어 실제 사용자에게 배포해 본 것들",
+        tags: [TAG_LIST.REINDEER_LETTER],
         hasPage: true,
       },
-      // 대외활동에서 팀으로 만들어 실사용자에게 배포해 본 것들
-      { id: "toyProject", tags: [TAG_LIST.REINDEER_LETTER], hasPage: true },
-      { id: "workProject", tags: [] },
+      {
+        id: "workProject",
+        label: "Work Project",
+        description: "회사에서 맡아 진행한 프로젝트 기록",
+        tags: [],
+      },
     ],
   },
   {
     id: "series",
-    order: 2,
-    groups: [{ id: "series", tags: [TAG_LIST.ASYNC_JS, TAG_LIST.AUTH_SSR] }],
-  },
-  {
-    id: "dev",
-    order: 3,
+    label: "Series",
+    description: "하나의 주제를 여러 편에 걸쳐 기록한 글",
     groups: [
       {
-        id: "framework",
-        tags: [TAG_LIST.REACT, TAG_LIST.NEXTJS, TAG_LIST.ELECTRON],
+        id: "series",
+        label: "Series",
+        description: "하나의 주제를 여러 편에 걸쳐 기록한 글",
+        tags: [TAG_LIST.ASYNC_JS, TAG_LIST.AUTH_SSR],
       },
-      { id: "language", tags: [TAG_LIST.TYPESCRIPT, TAG_LIST.JAVASCRIPT] },
-      { id: "webDev", tags: [TAG_LIST.WEB] },
     ],
   },
   {
-    id: "notes",
-    order: 4,
-    // 그룹 이름(생각·회고·후기)이 곧 태그 이름이라 한 단계로 보여준다.
-    flattenGroups: true,
+    id: "dev",
+    label: "Dev",
+    description: "프레임워크와 언어, 웹 전반에 대한 기록",
     groups: [
-      { id: "thought", tags: [TAG_LIST.THOUGHT] },
-      { id: "retrospective", tags: [TAG_LIST.RETROSPECTIVE] },
-      { id: "review", tags: [TAG_LIST.REVIEW] },
+      {
+        id: "framework",
+        label: "Framework",
+        description: "React, Next.js 등 프레임워크의 동작 원리를 파고든 기록",
+        tags: [TAG_LIST.REACT, TAG_LIST.NEXTJS],
+      },
+      {
+        id: "language",
+        label: "Language",
+        description: "JavaScript와 TypeScript 그 자체에 대한 탐구",
+        tags: [TAG_LIST.TYPESCRIPT, TAG_LIST.JAVASCRIPT],
+      },
+      {
+        id: "webDev",
+        label: "Web",
+        description:
+          "브라우저와 웹 표준, SEO처럼 특정 프레임워크에 묶이지 않는 글",
+        tags: [TAG_LIST.WEB],
+      },
+    ],
+  },
+  {
+    id: "me",
+    label: "Me",
+    description: "기술 밖에서 생각하고 겪은 것들",
+    // 개발 밖의 글은 성격(생각·후기·여행)으로 나눌 만큼 많지 않아 한 칸에 둔다.
+    groups: [
+      {
+        id: "me",
+        label: "Me",
+        description: "기술 밖에서 생각하고 겪은 것들",
+        tags: [TAG_LIST.ME],
+      },
     ],
   },
 ];
 
-/**
- * 어느 그룹에도 속하지 않는 태그가 모이는 fallback.
- * 지금 여기 모이는 태그는 없지만, 트리에 넣지 않은 태그로 글을 쓰면
- * 그 글이 분류에서 조용히 사라지므로 남겨둔다.
- */
-export const FALLBACK_GROUP_ID: CategoryGroupId = "etc";
-export const FALLBACK_SECTION_ID: CategorySectionId = "etc";
+/** 트리에 없는 태그의 글이 분류에서 조용히 사라지지 않게 받는 자리. */
+const FALLBACK_GROUP_ID: CategoryGroupId = "etc";
+const FALLBACK_SECTION_ID: CategorySectionId = "etc";
 
-/** 평탄화한 그룹 목록. 트리를 순회할 필요가 없는 곳에서 쓴다. */
-export const CATEGORY_GROUPS: CategoryGroup[] = CATEGORY_SECTIONS.flatMap(
+const FALLBACK_GROUP: CategoryGroup = {
+  id: FALLBACK_GROUP_ID,
+  label: "Etc",
+  description: "어느 분류에도 딱 맞지 않는 글",
+  tags: [],
+};
+
+// 트리에 넣지 않으므로 사이드바, 홈, 필터에 나타나지 않는다. 라벨 조회가 언제나 값을 돌려주도록만 둔다.
+const FALLBACK_SECTION: CategorySection = {
+  id: FALLBACK_SECTION_ID,
+  label: FALLBACK_GROUP.label,
+  description: FALLBACK_GROUP.description,
+  groups: [FALLBACK_GROUP],
+};
+
+const CATEGORY_GROUPS: CategoryGroup[] = CATEGORY_SECTIONS.flatMap(
   (section) => section.groups,
 );
 
-function findSection(
-  sectionId: CategorySectionId,
-): CategorySection | undefined {
-  return CATEGORY_SECTIONS.find((section) => section.id === sectionId);
+export function getSection(sectionId: CategorySectionId): CategorySection {
+  return (
+    CATEGORY_SECTIONS.find((section) => section.id === sectionId) ??
+    FALLBACK_SECTION
+  );
 }
 
-/**
- * 여러 편으로 이어지는 글이 모이는 그룹들.
- * 이 태그의 글은 목록에서 오래된 순(1편 → 마지막 편)으로 읽는 편이 자연스럽다.
- */
+export function getGroup(groupId: CategoryGroupId): CategoryGroup {
+  return (
+    CATEGORY_GROUPS.find((group) => group.id === groupId) ?? FALLBACK_GROUP
+  );
+}
+
+/** 여러 편으로 이어지는 그룹. 이 태그의 글은 목록에서 오래된 순으로 보여준다. */
 const ORDERED_GROUP_IDS: CategoryGroupId[] = [
   "series",
-  "sideProject",
   "toyProject",
   "workProject",
 ];
 
-export const SERIES_GROUP_ID: CategoryGroupId = "series";
-
-export const SERIES_TAGS: readonly Tag[] = CATEGORY_GROUPS.filter((group) =>
+const SERIES_TAGS: readonly Tag[] = CATEGORY_GROUPS.filter((group) =>
   ORDERED_GROUP_IDS.includes(group.id),
 ).flatMap((group) => group.tags);
 
@@ -179,14 +233,11 @@ export function isSeriesTag(tag: string): boolean {
   return SERIES_TAGS.includes(tag as Tag);
 }
 
-/**
- * `/series` 목록에 세울 태그. 프로젝트는 문서 한 편으로 정리했으므로
- * 여러 편으로 이어지는 연재물만 남긴다.
- */
-export const SERIES_SLUGS: readonly Tag[] =
-  findSection("series")?.groups.flatMap((group) => group.tags) ?? [];
+/** `/series`에 세울 연재물 태그. 프로젝트 태그는 SERIES_TAGS에만 들어간다. */
+export const SERIES_SLUGS: readonly Tag[] = getSection("series").groups.flatMap(
+  (group) => group.tags,
+);
 
-/** `/series`에 목록으로 세우는 연재물인지. 프로젝트 태그는 여기 들어오지 않는다. */
 export function isSeriesSlug(tag: string): boolean {
   return SERIES_SLUGS.includes(tag as Tag);
 }
@@ -211,86 +262,35 @@ export function getSectionIdByTag(tag: string): CategorySectionId {
   return GROUP_TO_SECTION_ID.get(getGroupIdByTag(tag)) ?? FALLBACK_SECTION_ID;
 }
 
-/**
- * 대분류 노출 순서.
- * fallback은 넣지 않는다. 글이 없어도 사이드바·홈·필터 세 곳에 빈 칸이 생긴다.
- */
+/** fallback은 넣지 않는다. 넣으면 글이 없어도 사이드바, 홈, 필터에 빈 칸이 생긴다. */
 export const CATEGORY_SECTION_ORDER: CategorySectionId[] =
-  CATEGORY_SECTIONS.toSorted((a, b) => a.order - b.order).map(
-    (section) => section.id,
-  );
+  CATEGORY_SECTIONS.map((section) => section.id);
 
-/**
- * 대분류 안의 그룹과 그 대표 태그. 그룹 하나가 태그 하나를 대표하는 구조
- * (기록 아래 생각·회고·후기)에서 내비게이션 항목을 만들 때 쓴다.
- */
-export function getSectionGroupTags(
-  sectionId: CategorySectionId,
-): { groupId: CategoryGroupId; tag: Tag }[] {
-  return (
-    findSection(sectionId)
-      ?.groups.filter((group) => group.tags.length > 0)
-      .map((group) => ({ groupId: group.id, tag: group.tags[0] })) ?? []
-  );
-}
-
-/** 그룹 단계를 건너뛰고 태그를 바로 보여줄 대분류인지 */
-export function shouldFlattenGroups(sectionId: CategorySectionId): boolean {
-  return findSection(sectionId)?.flattenGroups === true;
-}
-
-/** 전용 목록 페이지를 가진 그룹 (`/groups/<slug>`) */
 export const GROUPS_WITH_PAGE: readonly CategoryGroupId[] =
   CATEGORY_GROUPS.filter((group) => group.hasPage).map((group) => group.id);
 
-export function hasGroupPage(groupId: string): boolean {
-  return GROUPS_WITH_PAGE.includes(groupId as CategoryGroupId);
-}
-
-/**
- * 그룹 id는 camelCase지만 URL은 태그와 같은 kebab-case로 맞춘다.
- * (`/categories/claude-pet`과 `/groups/side-project`)
- */
+/** URL은 태그와 같은 kebab-case로 맞춘다. toyProject → toy-project */
 export function toGroupSlug(groupId: CategoryGroupId): string {
-  return groupId.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+  return kebabCase(groupId);
 }
 
 export function fromGroupSlug(slug: string): CategoryGroupId | undefined {
   return GROUPS_WITH_PAGE.find((groupId) => toGroupSlug(groupId) === slug);
 }
 
-/** 대분류 안의 그룹 순서 */
-export function getGroupIdsBySection(
-  sectionId: CategorySectionId,
-): CategoryGroupId[] {
-  if (sectionId === FALLBACK_SECTION_ID) return [FALLBACK_GROUP_ID];
-  return findSection(sectionId)?.groups.map((group) => group.id) ?? [];
-}
-
-/** 홈 섹션 노출 순서 — 그룹 단위가 필요한 곳에서 쓴다. */
-export const CATEGORY_GROUP_ORDER: CategoryGroupId[] = [
-  ...CATEGORY_SECTION_ORDER.flatMap(getGroupIdsBySection),
-];
-
-/**
- * 전체 글 필터의 칸 목록.
- *
- * 대분류 한 칸이 기본이고, splitInFilter가 켜진 대분류만 그룹별로 갈라진다.
- * 전부 그룹 단위로 펼치면 칸이 열 개를 넘어 훑기 어려워진다.
- */
-export type FilterFacet =
+/** 전부 그룹 단위로 펼치면 칸이 열 개를 넘어, splitInFilter인 대분류만 가른다. */
+type FilterFacet =
   | { kind: "section"; id: CategorySectionId }
   | { kind: "group"; id: CategoryGroupId };
 
 export const FILTER_FACETS: FilterFacet[] = CATEGORY_SECTION_ORDER.flatMap(
   (sectionId): FilterFacet[] => {
-    const section = findSection(sectionId);
-    if (!section?.splitInFilter) return [{ kind: "section", id: sectionId }];
+    const section = getSection(sectionId);
+    if (!section.splitInFilter) return [{ kind: "section", id: sectionId }];
     return section.groups.map((group) => ({ kind: "group", id: group.id }));
   },
 );
 
-/** 글 하나가 이 칸에 속하는지 */
 export function matchesFacet(
   facet: FilterFacet,
   categories: string[],
@@ -301,9 +301,21 @@ export function matchesFacet(
   return categories.some((tag) => getGroupIdByTag(tag) === facet.id);
 }
 
-/** 칸 이름을 messages에서 찾을 키 (섹션은 sections.*, 그룹은 categories.*) */
-export function facetLabelKey(facet: FilterFacet): string {
+export function facetLabel(facet: FilterFacet): string {
   return facet.kind === "section"
-    ? `sections.${facet.id}.label`
-    : `categories.${facet.id}.label`;
+    ? getSection(facet.id).label
+    : getGroup(facet.id).label;
+}
+
+/** 화면마다 같은 이름을 보이도록 태그 표시명은 모두 이 함수를 거친다. 시리즈 이름, 같은 이름의 그룹 라벨(me → Me), 표기 보정, slug 순으로 찾는다. */
+export function resolveTagLabel(tag: string): string {
+  const sameNameGroup = [...CATEGORY_GROUPS, FALLBACK_GROUP].find(
+    (group) => group.id === tag,
+  );
+  return (
+    getSeriesInfo(tag)?.name ??
+    sameNameGroup?.label ??
+    TAG_LABEL[tag as Tag] ??
+    tag
+  );
 }

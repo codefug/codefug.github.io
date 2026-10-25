@@ -1,21 +1,38 @@
-/**
- * 사이트의 정식 주소. 도메인이 바뀌면 여기 한 곳만 고친다.
- *
- * 환경변수로 덮어쓸 수 있게 둔 것은 커스텀 도메인을 붙이거나 다른 주소로
- * 시험 배포할 때를 위해서다. 값을 주지 않으면 운영 주소를 쓴다.
- */
+/** 도메인의 단일 원천. 환경변수는 커스텀 도메인이나 시험 배포 주소로 덮어쓸 때만 준다. */
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://codefug.github.io";
 
-/** 공개 연락용 이메일. 푸터·포트폴리오·이력서가 모두 이 값을 쓴다. */
+export const SITE_TITLE = "이승현 블로그";
+
+export const SITE_DESCRIPTION =
+  "기술 기록과, 기술 밖에서 생각하고 겪은 것을 남기는 이승현의 블로그";
+
+export const SITE_KEYWORDS = [
+  "개발",
+  "프로그래밍",
+  "React",
+  "Next.js",
+  "JavaScript",
+  "TypeScript",
+  "블로그",
+];
+
+export const AUTHOR_NAME = "이승현";
+
 export const CONTACT_EMAIL = "leeseounghyun9917@gmail.com";
 
-/**
- * 내부 경로를 절대 URL로 만든다. 이력서는 PDF로 인쇄돼 도메인 밖에서 열리므로
- * 상대 경로로 두면 링크가 죽는다.
- *
- * 이미 절대 URL인 값(외부 링크)은 그대로 돌려준다.
- */
+export const GITHUB_URL = "https://github.com/codefug";
+
+export const AUTHOR_GIVEN_NAME_EN = "Seounghyun";
+
+export const AUTHOR_NAME_EN = `Lee ${AUTHOR_GIVEN_NAME_EN}`;
+
+/** 화면에 보이는 주소. 프로토콜은 표시 폭만 차지하므로 뗀다. */
+export function displayUrl(url: string): string {
+  return url.replace(/^https?:\/\//, "");
+}
+
+/** 이력서는 PDF로 인쇄돼 도메인 밖에서 열리므로 상대 경로로 두면 링크가 죽는다. */
 export function absoluteUrl(path = ""): string {
   if (!path) return SITE_URL;
   if (/^[a-z][a-z0-9+.-]*:/i.test(path)) return path;
