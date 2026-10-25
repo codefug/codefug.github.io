@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 같은 URL로 들어온 두 요청. 사람은 미리 구워 둔 정적 문서를 받고, 크롤러(로봇)만 분기점에서 켜진 서버로 보내진다 -->
+  <ellipse cx="200" cy="236" rx="172" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 왼쪽: 사람 -->
+  <circle cx="58" cy="98" r="12" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M38 134c0-12 9-20 20-20s20 8 20 20v6H38z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3" stroke-linejoin="round"/>
+  <!-- 왼쪽: 로봇 -->
+  <rect x="42" y="166" width="34" height="28" rx="6" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="53" cy="180" r="3" fill="#4f46e5"/><circle cx="65" cy="180" r="3" fill="#4f46e5"/>
+  <path d="M59 166v-8" stroke="#1e1b4b" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="59" cy="155" r="3.5" fill="#818cf8"/>
+  <!-- 분기점 -->
+  <path d="M150 140l20-20 20 20-20 20z" fill="#eef2ff" stroke="#1e1b4b" stroke-width="3" stroke-linejoin="round"/>
+  <text x="170" y="144" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#4f46e5" text-anchor="middle">UA</text>
+  <!-- 사람 → 분기점 -->
+  <path d="M86 118C110 118 124 128 146 136" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- 로봇 → 분기점 -->
+  <path d="M84 178C110 178 124 160 146 146" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <!-- 오른쪽 위: 정적 문서 두 장(미리 구워 둔 HTML) -->
+  <rect x="268" y="56" width="74" height="92" rx="6" fill="#e5e7eb" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="256" y="68" width="74" height="92" rx="6" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="268" y="84" width="34" height="8" rx="3" fill="#1e1b4b"/>
+  <rect x="268" y="100" width="50" height="6" rx="3" fill="#a5b4fc"/>
+  <rect x="268" y="112" width="44" height="6" rx="3" fill="#c7d2fe"/>
+  <rect x="268" y="124" width="50" height="6" rx="3" fill="#c7d2fe"/>
+  <rect x="268" y="136" width="30" height="6" rx="3" fill="#e5e7eb"/>
+  <!-- 분기점 → 정적 문서 (실선) -->
+  <path d="M190 128C214 112 228 110 248 110" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M241 104l8 6-8 6" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 오른쪽 아래: 켜진 서버 -->
+  <rect x="262" y="170" width="92" height="54" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="272" y="180" width="72" height="14" rx="3" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="272" y="200" width="72" height="14" rx="3" fill="#4f46e5" stroke="#1e1b4b" stroke-width="2"/>
+  <circle cx="281" cy="187" r="2.5" fill="#818cf8"/><circle cx="281" cy="207" r="2.5" fill="#fff"/>
+  <text x="322" y="211" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">on</text>
+  <!-- 분기점 → 서버 (점선) -->
+  <path d="M190 152C214 168 230 184 254 196" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <path d="M246 188l9 7-9 5" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
