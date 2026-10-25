@@ -2,23 +2,12 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { memo, useCallback, useEffect, useState } from "react";
-import { useTranslations } from "@/lib/messages";
+import { memo, useEffect, useState } from "react";
 
-function useThemeToggle() {
+export const ThemeToggle = memo(function ThemeToggle() {
+  const [mounted, setMounted] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const toggle = useCallback(
-    () => setTheme(isDark ? "light" : "dark"),
-    [isDark, setTheme],
-  );
-  return { isDark, toggle };
-}
-
-export const HeaderSwitch = memo(function HeaderSwitch() {
-  const t = useTranslations("common");
-  const [mounted, setMounted] = useState(false);
-  const { isDark, toggle } = useThemeToggle();
 
   useEffect(() => {
     setMounted(true);
@@ -30,8 +19,8 @@ export const HeaderSwitch = memo(function HeaderSwitch() {
   return (
     <button
       type="button"
-      onClick={toggle}
-      aria-label={t("aria.themeToggle")}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={"테마 전환"}
       className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:cursor-pointer hover:bg-accent hover:text-foreground"
     >
       {isDark ? <Sun size={18} /> : <Moon size={18} />}

@@ -5,7 +5,6 @@
 @source inline("text-{blue,green,yellow,orange,red,purple,gray}-500");
 @source inline("border-{blue,green,yellow,orange,red,purple,gray}-500 border-blue-200");
 
-/* next/font 가 주입한 CSS 변수를 Tailwind 폰트 유틸리티에 연결한다. */
 @theme inline {
   --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -88,7 +87,7 @@
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 5.9% 90%;
+    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 243 75% 60%;
     --quote-blue: 217.89deg 40% 16%;
     --quote-green: 144deg 35% 15%;
@@ -122,62 +121,6 @@
   margin-top: 0;
 }
 
-/* Floating Shapes Background Animations */
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-  }
-}
-
-@keyframes float-medium {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(-180deg);
-  }
-}
-
-@keyframes float-fast {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-25px) rotate(360deg);
-  }
-}
-
-@keyframes drift {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(-20px, -20px);
-  }
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.animate-float-medium {
-  animation: float-medium 6s ease-in-out infinite;
-}
-
-.animate-float-fast {
-  animation: float-fast 4s ease-in-out infinite;
-}
-
-.animate-drift {
-  animation: drift 20s linear infinite;
-}
-
 @keyframes gradient-shift {
   0%,
   100% {
@@ -193,21 +136,14 @@
   animation: gradient-shift 5s ease infinite;
 }
 
-/* ── Print / PDF ─────────────────────────────────────────── */
-
 /* @page는 @media 밖 최상위에 있어야 브라우저가 인식함 */
 @page {
   size: A4;
-  /*
-   * 여백은 ResumePage의 패딩이 담당한다.
-   * @page에 여백을 주면 화면(패딩)과 인쇄(여백)의 본문 폭이 달라져
-   * 줄바꿈 위치가 어긋난다.
-   */
+  /* 여백은 ResumePage 패딩이 맡는다. 여기에 주면 화면과 인쇄의 본문 폭이 달라져 줄바꿈이 어긋난다. */
   margin: 0;
 }
 
 @media print {
-  /* 배경색·투명도 강제 출력 */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -221,25 +157,18 @@
     transform: none !important;
   }
 
-  /* 화면과 인쇄가 같아야 하므로 기본 폰트 크기를 바꾸지 않는다. */
-
   /* 작은 단위(목록 항목)는 페이지 경계에서 쪼개지지 않도록 — 큰 카드(article)는 흐르도록 허용 */
   li {
     break-inside: avoid;
   }
 
-  /*
-   * 헤딩 직후 페이지 분리 방지.
-   * 단 ResumePage처럼 스스로 페이지 경계를 지정한 요소는 건드리지 않는다.
-   * (break-after: avoid가 명시한 page 경계와 충돌해 분할 위치가 밀린다)
-   */
+  /* 헤딩 직후 분리 방지. break-after를 직접 지정한 요소(ResumePage)는 제외한다. 명시한 경계와 충돌해 분할이 밀린다. */
   h2:not([class*="break-after"]),
   h3:not([class*="break-after"]),
   h4:not([class*="break-after"]) {
     break-after: avoid;
   }
 
-  /* 사이드바 (ShadcnUI aside) 숨김 */
   aside {
     display: none !important;
   }
@@ -269,12 +198,7 @@
   overflow-x: auto;
 }
 
-/*
-  경력기술서는 흰 종이 위의 문서라 테마를 따라가지 않는다.
-  본문 색은 컴포넌트에서 밝은 값으로 고정해 두었지만, 이력서와 함께 쓰는
-  RichText의 dark: 변형까지는 막을 수 없어 여기서 되돌린다.
-  (다크 모드에서 강조 텍스트가 흰색이 되어 흰 종이에서 사라지는 것을 막는다)
-*/
+/* 경력기술서는 흰 종이 문서라 다크 테마를 따르지 않는다. 공용 RichText의 dark: 변형은 컴포넌트에서 막을 수 없어 여기서 되돌린다. */
 .dark .career-document,
 .dark .career-document * {
   color-scheme: light;

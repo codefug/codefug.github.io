@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 화면을 그리다 블록 하나가 떨어져 나가고, 옆에서 다시 시도 화살표가 돈다 -->
+  <ellipse cx="200" cy="224" rx="168" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 브라우저 창 -->
+  <rect x="36" y="34" width="236" height="172" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M46 34h216a10 10 0 0 1 10 10v16H36V44a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="54" cy="47" r="4" fill="#818cf8"/><circle cx="68" cy="47" r="4" fill="#a5b4fc"/><circle cx="82" cy="47" r="4" fill="#c7d2fe"/>
+  <!-- 제대로 그려진 부분 -->
+  <rect x="54" y="76" width="92" height="10" rx="3" fill="#a5b4fc"/>
+  <rect x="54" y="94" width="200" height="6" rx="3" fill="#e5e7eb"/>
+  <rect x="54" y="106" width="176" height="6" rx="3" fill="#e5e7eb"/>
+  <!-- 블록이 빠진 자리 -->
+  <rect x="54" y="124" width="96" height="58" rx="6" stroke="#818cf8" stroke-width="2" stroke-dasharray="6 5"/>
+  <rect x="160" y="124" width="94" height="26" rx="6" fill="#eef2ff" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="160" y="158" width="94" height="24" rx="6" fill="#eef2ff" stroke="#1e1b4b" stroke-width="2"/>
+  <!-- 떨어져 나온 블록 -->
+  <g transform="rotate(-14 112 214)">
+    <rect x="66" y="186" width="96" height="40" rx="6" fill="#c7d2fe" stroke="#1e1b4b" stroke-width="3"/>
+    <rect x="78" y="198" width="44" height="6" rx="3" fill="#4f46e5"/>
+    <rect x="78" y="210" width="68" height="5" rx="2.5" fill="#fff"/>
+  </g>
+  <path d="M100 172l-6 8M120 174l2 9" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- 경고 배지 -->
+  <path d="M250 24l24 42h-48z" fill="#fff" stroke="#1e1b4b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M250 40v12" stroke="#4f46e5" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="250" cy="59" r="2.6" fill="#4f46e5"/>
+  <!-- 다시 시도 -->
+  <circle cx="324" cy="138" r="44" fill="#fff" stroke="#1e1b4b" stroke-width="4"/>
+  <path d="M346 126a24 24 0 1 0 1 22" stroke="#4f46e5" stroke-width="7" stroke-linecap="round"/>
+  <path d="M338 112l10 15-17 3" stroke="#4f46e5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
