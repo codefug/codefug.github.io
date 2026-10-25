@@ -7,18 +7,12 @@ export default function CustomLink({
   children,
   ...props
 }: PropsWithChildren<LinkProps>) {
-  const isInternalLink = href.toString()?.startsWith(PATH.HOME);
-  if (isInternalLink) return <Link href={href}>{children}</Link>;
+  const url = href.toString();
+  if (url.startsWith(PATH.HOME)) return <Link href={href}>{children}</Link>;
 
-  // rel 없이 target="_blank"를 쓰면 열린 문서가 window.opener로 이 창을
-  // 조작할 수 있다(리버스 탭내빙). 외부 링크는 본문에서 오므로 항상 막는다.
+  // rel 없는 target="_blank"는 window.opener로 이 창을 조작당할 수 있어(reverse tabnabbing) 항상 막는다.
   return (
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      {...props}
-      href={href.toString()}
-    >
+    <a target="_blank" rel="noopener noreferrer" {...props} href={url}>
       {children}
     </a>
   );

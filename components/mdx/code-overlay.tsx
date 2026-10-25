@@ -2,7 +2,6 @@
 
 import { Maximize2 } from "lucide-react";
 import { type ReactNode, useState } from "react";
-import { createPortal } from "react-dom";
 import OverlayModal from "./overlay-modal";
 
 type CodeOverlayProps = {
@@ -26,20 +25,15 @@ export default function CodeOverlay({ children, className }: CodeOverlayProps) {
           <Maximize2 className="size-4 text-white" />
         </button>
       </div>
-      {isModalOpen &&
-        createPortal(
-          <OverlayModal
-            onClose={() => setIsModalOpen(false)}
-            className="w-full"
+      {isModalOpen && (
+        <OverlayModal onClose={() => setIsModalOpen(false)} className="w-full">
+          <pre
+            className={`${className ?? ""} m-0! max-h-[90vh] overflow-auto rounded-lg! p-6`}
           >
-            <pre
-              className={`${className ?? ""} m-0! max-h-[90vh] overflow-auto rounded-lg! p-6`}
-            >
-              {children}
-            </pre>
-          </OverlayModal>,
-          document.body,
-        )}
+            {children}
+          </pre>
+        </OverlayModal>
+      )}
     </>
   );
 }

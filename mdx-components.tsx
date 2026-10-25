@@ -5,30 +5,54 @@ import CodeOverlay from "./components/mdx/code-overlay";
 import CustomLink from "./components/mdx/custom-link";
 import ImageOverlay from "./components/mdx/image-overlay";
 import Mermaid from "./components/mdx/mermaid-lazy";
-import { getHeaderHltr } from "./constants/header-hltr";
-import processCallout from "./util/callout";
+import processCallout from "./lib/callout";
 
-function CustomHeading({
-  props,
-  level,
-}: {
-  props: { id?: string; children: ReactNode };
-  level: number;
-}) {
-  return createElement(`h${level}`, {
-    className: getHeaderHltr(level),
-    ...props,
-  });
+/** h1부터 h6까지 차례로 입히는 형광펜 색(app/hltr.css). */
+const HEADING_HIGHLIGHTS = [
+  "hltr-red",
+  "hltr-orange",
+  "hltr-yellow",
+  "hltr-green",
+  "hltr-cyan",
+  "hltr-blue",
+];
+
+const heading =
+  (level: number) => (props: { id?: string; children?: ReactNode }) =>
+    createElement(`h${level}`, {
+      className: HEADING_HIGHLIGHTS[level - 1],
+      ...props,
+    });
+
+/** ```mermaid 코드 블록이면 다이어그램 원문을, 아니면 null을 돌려준다. */
+function getMermaidCode(preChildren: ReactNode): string | null {
+  if (!preChildren || typeof preChildren !== "object") return null;
+  if (!("props" in preChildren) || !preChildren.props) return null;
+
+  const codeProps = preChildren.props as {
+    className?: string;
+    children?: ReactNode;
+  };
+  if (
+    typeof codeProps.className !== "string" ||
+    !codeProps.className.includes("language-mermaid")
+  ) {
+    return null;
+  }
+
+  if (typeof codeProps.children === "string") return codeProps.children;
+  if (Array.isArray(codeProps.children)) return codeProps.children.join("");
+  return String(codeProps.children || "");
 }
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    h1: (props) => <CustomHeading props={props} level={1} />,
-    h2: (props) => <CustomHeading props={props} level={2} />,
-    h3: (props) => <CustomHeading props={props} level={3} />,
-    h4: (props) => <CustomHeading props={props} level={4} />,
-    h5: (props) => <CustomHeading props={props} level={5} />,
-    h6: (props) => <CustomHeading props={props} level={6} />,
+    h1: heading(1),
+    h2: heading(2),
+    h3: heading(3),
+    h4: heading(4),
+    h5: heading(5),
+    h6: heading(6),
     blockquote: (props) => {
       const { children } = props;
       const { type, title, content } = processCallout(children);
@@ -36,31 +60,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       return <Callout type={type} title={title} content={content} />;
     },
     pre: (props) => {
-      const { children } = props;
-
-      if (children && typeof children === "object") {
-        if ("props" in children && children.props) {
-          const codeProps = children.props as {
-            className?: string;
-            children?: ReactNode;
-          };
-
-          if (
-            codeProps.className &&
-            typeof codeProps.className === "string" &&
-            codeProps.className.includes("language-mermaid")
-          ) {
-            const codeContent =
-              typeof codeProps.children === "string"
-                ? codeProps.children
-                : Array.isArray(codeProps.children)
-                  ? codeProps.children.join("")
-                  : String(codeProps.children || "");
-            return <Mermaid>{codeContent}</Mermaid>;
-          }
-        }
-      }
-
+      const mermaidCode = getMermaidCode(props.children);
+      if (mermaidCode !== null) return <Mermaid>{mermaidCode}</Mermaid>;
       return <CodeOverlay {...props} />;
     },
     table: (props) => (

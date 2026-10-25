@@ -1,40 +1,29 @@
-"use client";
-
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import type { FrontMatter } from "@/constants/mdx";
 import { PATH } from "@/constants/path";
-import { useTranslations } from "@/lib/messages";
 import { cn } from "@/lib/utils";
+import type { FrontMatter } from "@/types/post";
 
 type Props = {
   adjacent: { previous: FrontMatter | null; next: FrontMatter | null };
 };
 
-/**
- * 댓글 위에서 시간 순서상 이전/다음 글로 이동한다.
- */
 export function AdjacentPosts({ adjacent }: Props) {
-  const t = useTranslations("post");
   const { previous, next } = adjacent;
 
   if (!previous && !next) return null;
 
   return (
     <nav
-      aria-label={t("adjacentNav")}
+      aria-label={"이전 글과 다음 글"}
       className="not-prose mt-12 grid grid-cols-1 gap-3 sm:grid-cols-2"
     >
       {previous ? (
-        <AdjacentLink
-          post={previous}
-          direction="previous"
-          label={t("previous")}
-        />
+        <AdjacentLink post={previous} direction="previous" label={"이전 글"} />
       ) : (
         <span aria-hidden="true" className="hidden sm:block" />
       )}
-      {next && <AdjacentLink post={next} direction="next" label={t("next")} />}
+      {next && <AdjacentLink post={next} direction="next" label={"다음 글"} />}
     </nav>
   );
 }
