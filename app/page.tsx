@@ -1,52 +1,45 @@
-import type { Metadata } from "next";
 import { BirthdayBanner } from "@/components/event/birthday-banner";
+import { FeaturedPosts } from "@/components/home/featured-posts";
 import { HeroSection } from "@/components/home/hero-section";
-import { HomeSectionTitle } from "@/components/home/home-section-title";
-import PostCategoryGallery from "@/components/postGallery/postCategoryGallery";
-import PostSwiper from "@/components/postSwiper";
-import { StructuredData } from "@/components/seo/StructuredData";
-import {
-  createAlternateLinks,
-  createBlogItemListStructuredData,
-} from "@/components/seo/utils";
-import BlockHeader from "@/components/ui/block-header";
+import { RecentPosts } from "@/components/post-gallery/recent-posts";
+import { StructuredData } from "@/components/seo/structured-data";
+import { createBlogItemListStructuredData } from "@/components/seo/utils";
+import SeriesSection from "@/components/series/series-section";
+import { getSection, matchesFacet } from "@/constants/categories";
+import { shouldShowBirthdayBanner } from "@/lib/birthday";
+import { buildSeriesSummaries } from "@/lib/post-grouping";
 import { getFrontMatterList } from "@/lib/posts";
-import { shouldShowBirthdayBanner } from "@/util/birthday";
+import type { FrontMatter } from "@/types/post";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    alternates: createAlternateLinks("/"),
-  };
+const TECH_COUNT = 8;
+
+function isMePost(post: FrontMatter): boolean {
+  return matchesFacet({ kind: "section", id: "me" }, post.categories);
 }
 
-export default async function Home() {
-  const frontMatterList = getFrontMatterList();
-  const showBirthdayBanner = shouldShowBirthdayBanner();
-  // 하드코딩하면 글을 숨기거나 지웠을 때 "since"가 실제 노출 글과 어긋난다.
-  const sinceYear = frontMatterList.reduce(
-    (min, post) => Math.min(min, Number(post.date.slice(0, 4))),
-    new Date().getFullYear(),
-  );
+export default function Home() {
+  const posts = getFrontMatterList();
+  const featuredPosts = posts.filter((post) => post.featured);
+  const techPosts = posts.filter((post) => !isMePost(post));
+  const mePosts = posts.filter(isMePost);
 
   return (
     <div>
-      <StructuredData
-        jsonLd={createBlogItemListStructuredData(frontMatterList)}
-      />
-      {showBirthdayBanner && <BirthdayBanner />}
-      <section className="my-10 lg:mt-0">
-        <HeroSection postCount={frontMatterList.length} sinceYear={sinceYear} />
-      </section>
+      <StructuredData jsonLd={createBlogItemListStructuredData(posts)} />
+      {shouldShowBirthdayBanner() && <BirthdayBanner />}
       <div className="mx-auto w-full max-w-350 px-4">
-        <section className="mb-2">
-          <BlockHeader
-            title={<HomeSectionTitle translationKey="recentPosts" />}
+        <HeroSection />
+        <FeaturedPosts posts={featuredPosts} />
+        {/* 그룹별 섹션은 1~2편짜리 토막이 되므로 홈은 기술과 Me 두 덩어리로만 나눈다. */}
+        <div>
+          <SeriesSection seriesList={buildSeriesSummaries(posts)} />
+          <RecentPosts
+            title="기술"
+            postInfoList={techPosts.slice(0, TECH_COUNT)}
+            allPostCount={posts.length}
           />
-        </section>
-        <div className="mb-14">
-          <PostSwiper cardNumber={5} frontMatterList={frontMatterList} />
+          <RecentPosts title={getSection("me").label} postInfoList={mePosts} />
         </div>
-        <PostCategoryGallery frontMatterList={frontMatterList} />
       </div>
     </div>
   );
