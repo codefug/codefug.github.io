@@ -1,14 +1,12 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
-// 도메인이 바뀔 때 고칠 곳을 한 군데로 모은다. (constants/site.ts가 단일 원천)
 import { SITE_URL } from "./constants/site";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   trailingSlash: true,
   images: {
-    // 정적 익스포트라 이미지 최적화 서버가 없다. 원본을 그대로 내보낸다.
-    // (unoptimized면 커스텀 loader는 호출되지 않으므로 두지 않는다.)
+    // 정적 익스포트라 최적화 서버가 없다. unoptimized면 커스텀 loader도 호출되지 않는다.
     unoptimized: true,
     remotePatterns: [
       {

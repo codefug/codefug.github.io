@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import type { Graph } from "schema-dts";
-import type { ParsedFrontMatter } from "@/constants/mdx";
-import { SITE_URL as BASE_URL } from "@/constants/site";
-import koMessages from "@/messages/ko.json";
+import {
+  AUTHOR_NAME,
+  SITE_URL as BASE_URL,
+  GITHUB_URL,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+} from "@/constants/site";
+import { RESUME } from "@/content/resume";
+import type { FrontMatter } from "@/types/post";
 
-/**
- * 하위 세그먼트에서 openGraph를 다시 선언하면 상위 값이 병합되지 않고
- * 통째로 교체된다. 공통으로 유지할 값은 여기에 두고 매번 펼쳐 넣는다.
- */
+// 하위 세그먼트의 openGraph는 상위와 병합되지 않고 통째로 교체되므로 공통값을 매번 펼쳐 넣는다.
 export const defaultOpenGraph = {
-  siteName: koMessages.meta.openGraph.title,
+  siteName: SITE_TITLE,
   locale: "ko_KR",
 } satisfies Metadata["openGraph"];
 
@@ -21,16 +24,12 @@ export function createAlternateLinks(path: string): Metadata["alternates"] {
   };
 }
 
-export interface BlogPostData {
+interface BlogPostData {
   id: string;
   title: string;
   excerpt: string;
   date: string;
   thumbnailImageUrl?: string;
-  category?: string;
-  tags?: string[];
-  modifiedDate?: string;
-  wordCount?: number;
 }
 
 export function createBlogPostStructuredData(data: BlogPostData): Graph {
@@ -56,12 +55,12 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
         },
         author: {
           "@type": "Person",
-          name: koMessages.seo.author,
+          name: AUTHOR_NAME,
           url: BASE_URL,
         },
         publisher: {
           "@type": "Organization",
-          name: "Codefug Blog",
+          name: SITE_TITLE,
           url: BASE_URL,
           logo: {
             "@type": "ImageObject",
@@ -71,18 +70,12 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
           },
         },
         datePublished: new Date(data.date).toISOString(),
-        dateModified: data.modifiedDate
-          ? new Date(data.modifiedDate).toISOString()
-          : new Date(data.date).toISOString(),
+        dateModified: new Date(data.date).toISOString(),
         inLanguage: "ko-KR",
         mainEntityOfPage: {
           "@type": "WebPage",
           "@id": blogUrl,
         },
-        ...(data.category && { articleSection: data.category }),
-        ...(data.tags &&
-          data.tags.length > 0 && { keywords: data.tags.join(", ") }),
-        ...(data.wordCount && { wordCount: data.wordCount }),
       },
       {
         "@type": "BreadcrumbList",
@@ -93,7 +86,7 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
             position: 1 as const,
             item: {
               "@id": BASE_URL,
-              name: koMessages.seo.home,
+              name: "홈",
             },
           },
           {
@@ -101,7 +94,7 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
             position: 2 as const,
             item: {
               "@id": `${BASE_URL}/posts`,
-              name: koMessages.seo.blog,
+              name: "블로그",
             },
           },
           {
@@ -115,20 +108,20 @@ export function createBlogPostStructuredData(data: BlogPostData): Graph {
   };
 }
 
-export function createProfilePageStructuredData(path = "/resume") {
+export function createProfilePageStructuredData(path: string) {
   return {
     "@context": "https://schema.org" as const,
     "@type": "ProfilePage" as const,
     "@id": `${BASE_URL}${path}#profilepage`,
     url: `${BASE_URL}${path}`,
-    name: koMessages.seo.author,
+    name: AUTHOR_NAME,
     inLanguage: "ko-KR",
     mainEntity: {
       "@type": "Person" as const,
       "@id": `${BASE_URL}#author`,
-      name: koMessages.seo.author,
+      name: AUTHOR_NAME,
       alternateName: "codefug",
-      description: koMessages.resume.summary,
+      description: RESUME.summary,
       url: BASE_URL,
       image: {
         "@type": "ImageObject" as const,
@@ -166,7 +159,7 @@ export function createProfilePageStructuredData(path = "/resume") {
         "CI/CD",
       ],
       sameAs: [
-        "https://github.com/codefug",
+        GITHUB_URL,
         "https://www.linkedin.com/in/lee-seung-hyun-568565269/",
         "https://www.instagram.com/happy_fug/",
       ],
@@ -174,29 +167,27 @@ export function createProfilePageStructuredData(path = "/resume") {
   };
 }
 
-export function createBlogItemListStructuredData(
-  posts: ParsedFrontMatter[],
-): Graph {
+export function createBlogItemListStructuredData(posts: FrontMatter[]): Graph {
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Blog",
         "@id": `${BASE_URL}#website`,
-        name: "Codefug Blog",
-        alternateName: "코드퍼그 블로그",
-        description: koMessages.meta.description,
+        name: SITE_TITLE,
+        alternateName: "codefug",
+        description: SITE_DESCRIPTION,
         url: BASE_URL,
         inLanguage: "ko-KR",
         author: {
           "@type": "Person",
           "@id": `${BASE_URL}#author`,
-          name: koMessages.seo.author,
+          name: AUTHOR_NAME,
         },
         publisher: {
           "@type": "Person",
           "@id": `${BASE_URL}#author`,
-          name: koMessages.seo.author,
+          name: AUTHOR_NAME,
         },
         blogPost: posts.slice(0, 10).map((post) => ({
           "@type": "BlogPosting",
@@ -230,7 +221,7 @@ export function createBlogItemListStructuredData(
               author: {
                 "@type": "Person" as const,
                 "@id": `${BASE_URL}#author`,
-                name: koMessages.seo.author,
+                name: AUTHOR_NAME,
                 url: BASE_URL,
               },
               datePublished: new Date(post.date).toISOString(),

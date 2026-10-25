@@ -1,4 +1,5 @@
 import confetti from "canvas-confetti";
+import { random } from "es-toolkit";
 import { useEffect, useRef } from "react";
 
 export function useConfetti() {
@@ -13,7 +14,10 @@ export function useConfetti() {
       useWorker: true,
     });
 
-    const triggerFireworks = () => {
+    let interval: ReturnType<typeof setInterval> | undefined;
+
+    // 애니메이션과 맞추려고 늦게 쏜다.
+    const timeout = setTimeout(() => {
       const duration = 3000;
       const animationEnd = Date.now() + duration;
       const defaults = {
@@ -23,10 +27,7 @@ export function useConfetti() {
         zIndex: 0,
       };
 
-      const randomInRange = (min: number, max: number) =>
-        Math.random() * (max - min) + min;
-
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         const timeLeft = animationEnd - Date.now();
 
         if (timeLeft <= 0) {
@@ -39,29 +40,23 @@ export function useConfetti() {
         myConfetti({
           ...defaults,
           particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+          origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 },
           colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"],
         });
 
         myConfetti({
           ...defaults,
           particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+          origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 },
           colors: ["#ffa500", "#ff69b4", "#00ffff", "#ff1493", "#7fff00"],
         });
       }, 200);
-
-      return () => clearInterval(interval);
-    };
-
-    // 약간의 지연 후 폭죽 발사 (애니메이션과 동기화)
-    const timeout = setTimeout(() => {
-      triggerFireworks();
       hasTriggered.current = true;
     }, 500);
 
     return () => {
       clearTimeout(timeout);
+      clearInterval(interval);
     };
   }, []);
 

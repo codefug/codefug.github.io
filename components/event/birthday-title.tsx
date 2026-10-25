@@ -1,6 +1,5 @@
-"use client";
-
 import { motion } from "motion/react";
+import { AUTHOR_GIVEN_NAME_EN } from "@/constants/site";
 
 export function BirthdayTitle() {
   return (
@@ -14,9 +13,8 @@ export function BirthdayTitle() {
       className="relative"
     >
       <h1 className="mb-2 animate-gradient-shift bg-linear-to-r from-primary via-purple-500 to-white bg-clip-text py-2 font-bold text-5xl text-transparent drop-shadow-2xl md:text-6xl">
-        Codefug's Birthday
+        {AUTHOR_GIVEN_NAME_EN}'s Birthday
       </h1>
-      {/* 글리치 효과 오버레이 */}
       <motion.div
         className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
         animate={{

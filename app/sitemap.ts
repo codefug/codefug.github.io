@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 import { GROUPS_WITH_PAGE, toGroupSlug } from "@/constants/categories";
 import { PATH } from "@/constants/path";
 import { SITE_URL as BASE_URL } from "@/constants/site";
-import getFrontMatterList from "@/lib/posts";
-import { buildSeriesSummaries, getPostsByGroup } from "@/util/post";
+import { buildSeriesSummaries, getPostsByGroup } from "@/lib/post-grouping";
+import { getFrontMatterList } from "@/lib/posts";
 
 const postFrontMatter = getFrontMatterList();
 const postSiteMap: MetadataRoute.Sitemap = postFrontMatter.map((post) => {
@@ -56,11 +56,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    /*
-      이력서와 경력기술서는 사이트맵에 넣지 않는다. 재직 회사의 인증 구조와
-      내부 프로젝트 서술이 담긴 문서라, 링크를 전달받은 사람만 보는 것이
-      의도이고 검색 유입 대상이 아니다. 페이지 메타의 noindex와 짝이다.
-    */
+    // 이력서와 경력기술서는 링크로만 전달하는 문서라 넣지 않는다. 페이지의 noindex와 짝이다.
     {
       url: `${BASE_URL}${PATH.SEARCH}`,
       lastModified: new Date(),

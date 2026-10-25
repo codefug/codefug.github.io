@@ -1,7 +1,5 @@
-"use client";
-
 import { motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type ParticleData = {
   left: number;
@@ -11,21 +9,18 @@ type ParticleData = {
 };
 
 export function BirthdayBackground() {
-  const [isMounted, setIsMounted] = useState(false);
+  const [particles, setParticles] = useState<ParticleData[]>([]);
 
   // 클라이언트에서만 랜덤 값 생성 (hydration 오류 방지)
-  const particles = useMemo<ParticleData[]>(() => {
-    if (!isMounted) return [];
-    return Array.from({ length: 20 }).map(() => ({
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      duration: 3 + Math.random() * 2,
-      delay: Math.random() * 2,
-    }));
-  }, [isMounted]);
-
   useEffect(() => {
-    setIsMounted(true);
+    setParticles(
+      Array.from({ length: 20 }).map(() => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: 3 + Math.random() * 2,
+        delay: Math.random() * 2,
+      })),
+    );
   }, []);
 
   return (
