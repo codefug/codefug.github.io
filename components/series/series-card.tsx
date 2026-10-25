@@ -1,16 +1,10 @@
-"use client";
-
 import { ArrowRight, Layers } from "lucide-react";
 import Link from "next/link";
-import type { FrontMatter } from "@/constants/mdx";
+import { requireSeriesInfo } from "@/constants/categories";
 import { PATH } from "@/constants/path";
-import { useTranslations } from "@/lib/messages";
+import type { FrontMatter } from "@/types/post";
 import { Card } from "../ui/card";
 
-/**
- * 홈의 시리즈 섹션에 놓이는 목록 한 줄.
- * 개별 글이 아니라 시리즈 전체를 대표하며, 누르면 시리즈 페이지로 이동한다.
- */
 export default function SeriesCard({
   slug,
   posts,
@@ -22,8 +16,7 @@ export default function SeriesCard({
   startDate: string;
   endDate: string;
 }) {
-  const t = useTranslations();
-  const name = t(`series.${slug}.name`);
+  const { name, description } = requireSeriesInfo(slug);
 
   return (
     <Link href={`${PATH.SERIES}/${slug}`} title={name}>
@@ -39,11 +32,11 @@ export default function SeriesCard({
               {name}
             </h3>
             <span className="font-medium text-muted-foreground text-xs">
-              {t("series.postCount", { count: posts.length })}
+              {posts.length}편
             </span>
           </div>
           <p className="mt-1 line-clamp-1 text-muted-foreground text-sm">
-            {t(`series.${slug}.description`)}
+            {description}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-3 text-muted-foreground/60 text-xs">

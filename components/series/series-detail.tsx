@@ -1,10 +1,9 @@
-"use client";
-
 import { ArrowLeft, Layers } from "lucide-react";
 import Link from "next/link";
-import type { FrontMatter } from "@/constants/mdx";
+import { requireSeriesInfo } from "@/constants/categories";
 import { PATH } from "@/constants/path";
-import { useTranslations } from "@/lib/messages";
+import type { FrontMatter } from "@/types/post";
+import { PostMeta } from "../post-card/post-meta";
 
 export function SeriesDetail({
   slug,
@@ -13,7 +12,7 @@ export function SeriesDetail({
   slug: string;
   posts: FrontMatter[];
 }) {
-  const t = useTranslations();
+  const info = requireSeriesInfo(slug);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
@@ -22,22 +21,18 @@ export function SeriesDetail({
         className="mb-6 inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-primary"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        {t("series.backToList")}
+        목록으로
       </Link>
 
       <header className="mb-8 border-border border-b pb-6">
         <div className="mb-2 flex items-center gap-2">
           <Layers className="h-4 w-4 text-primary" aria-hidden="true" />
           <span className="font-medium text-muted-foreground text-sm">
-            {t("series.postCount", { count: posts.length })}
+            {posts.length}편
           </span>
         </div>
-        <h1 className="mb-2 font-bold text-2xl md:text-3xl">
-          {t(`series.${slug}.name`)}
-        </h1>
-        <p className="text-muted-foreground">
-          {t(`series.${slug}.description`)}
-        </p>
+        <h1 className="mb-2 font-bold text-2xl md:text-3xl">{info.name}</h1>
+        <p className="text-muted-foreground">{info.description}</p>
       </header>
 
       <ol className="flex flex-col gap-3">
@@ -52,12 +47,10 @@ export function SeriesDetail({
 }
 
 function SeriesPostItem({ post, order }: { post: FrontMatter; order: number }) {
-  const t = useTranslations();
-
   return (
     <Link
       href={`${PATH.POSTS}/${post.id}`}
-      aria-label={t("common.aria.postRead", { title: post.title })}
+      aria-label={`${post.title} 포스트 읽기`}
       rel="bookmark"
       className="group flex gap-4 rounded-xl border border-border p-4 transition-all duration-200 hover:border-primary/40 hover:bg-primary/5"
     >
@@ -74,17 +67,7 @@ function SeriesPostItem({ post, order }: { post: FrontMatter; order: number }) {
         <p className="mb-2 line-clamp-2 text-muted-foreground text-sm">
           {post.excerpt}
         </p>
-        <div className="flex items-center gap-2 text-muted-foreground/60 text-xs">
-          <time>{post.date}</time>
-          {post.readingTime && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span>
-                {t("post.readingTime", { minutes: post.readingTime })}
-              </span>
-            </>
-          )}
-        </div>
+        <PostMeta date={post.date} readingTime={post.readingTime} />
       </div>
     </Link>
   );

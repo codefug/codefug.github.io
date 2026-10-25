@@ -2,16 +2,14 @@ import type { Metadata } from "next";
 import { createAlternateLinks } from "@/components/seo/utils";
 import { SeriesList } from "@/components/series/series-list";
 import { PATH } from "@/constants/path";
-import { getTranslations } from "@/lib/messages";
+import { buildSeriesSummaries } from "@/lib/post-grouping";
 import { getFrontMatterList } from "@/lib/posts";
-import { buildSeriesSummaries } from "@/util/post";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("series");
-
+export function generateMetadata(): Metadata {
   return {
-    title: t("title"),
-    description: t("description"),
+    title: "시리즈",
+    description:
+      "하나의 주제를 여러 편에 걸쳐 기록했습니다. 순서대로 읽으면 흐름이 이어집니다.",
     alternates: createAlternateLinks(PATH.SERIES),
   };
 }

@@ -3,30 +3,23 @@
 import { useMemo, useState } from "react";
 import {
   FILTER_FACETS,
-  facetLabelKey,
+  facetLabel,
   matchesFacet,
 } from "@/constants/categories";
-import type { FrontMatter } from "@/constants/mdx";
-import { useViewMode } from "@/hooks/useViewMode";
-import { useTranslations } from "@/lib/messages";
+import { useViewMode } from "@/hooks/use-view-mode";
+import type { FrontMatter } from "@/types/post";
 import { Badge } from "../ui/badge";
-import PostGallery from ".";
+import PostGallery from "./post-gallery";
 import { ViewToggle } from "./view-toggle";
 
 const ALL = "all";
 
-/**
- * 카테고리 구분 없이 모든 글을 한 곳에서 보는 페이지.
- * 홈은 카테고리별로 나뉘어 있어 "전체를 시간순으로" 훑기 어렵기 때문에 따로 둔다.
- */
 export function AllPosts({
   frontMatterList: posts,
 }: {
   frontMatterList: FrontMatter[];
 }) {
-  const t = useTranslations();
-
-  const [selected, setSelected] = useState<string | typeof ALL>(ALL);
+  const [selected, setSelected] = useState<string>(ALL);
   const { viewMode, toggle } = useViewMode("all-posts");
 
   // 글이 없는 칸은 세우지 않는다. 한 글이 여러 칸에 걸칠 수 있어 칸마다 따로 센다.
@@ -50,16 +43,16 @@ export function AllPosts({
   return (
     <div className="mx-auto w-full max-w-350 px-4 py-8">
       <header className="mb-6">
-        <h1 className="mb-2 font-bold text-2xl md:text-3xl">
-          {t("posts.title")}
-        </h1>
-        <p className="text-muted-foreground">{t("posts.description")}</p>
+        <h1 className="mb-2 font-bold text-2xl md:text-3xl">전체 글</h1>
+        <p className="text-muted-foreground">
+          카테고리 구분 없이 모든 글을 최신순으로 봅니다.
+        </p>
       </header>
 
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex flex-wrap gap-1.5">
           <FilterChip
-            label={t("common.category.all")}
+            label={"전체"}
             total={posts.length}
             isSelected={selected === ALL}
             onSelect={() => setSelected(ALL)}
@@ -67,7 +60,7 @@ export function AllPosts({
           {facets.map(({ facet, total }) => (
             <FilterChip
               key={facet.id}
-              label={t(facetLabelKey(facet))}
+              label={facetLabel(facet)}
               total={total}
               isSelected={selected === facet.id}
               onSelect={() => setSelected(facet.id)}
@@ -80,7 +73,7 @@ export function AllPosts({
       <PostGallery
         postInfoList={filtered}
         viewMode={viewMode}
-        moreLabel={t("common.category.showMore")}
+        moreLabel={"더 보기"}
       />
     </div>
   );

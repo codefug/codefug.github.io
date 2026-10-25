@@ -1,21 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import { PATH } from "@/constants/path";
-import { useTranslations } from "@/lib/messages";
-import type { SeriesSummary } from "@/util/post";
+import type { SeriesSummary } from "@/lib/post-grouping";
 import SeriesCard from "./series-card";
 
-/**
- * 홈의 시리즈 섹션. 글 하나하나가 아니라 시리즈 단위로 보여준다.
- */
 export default function SeriesSection({
   seriesList,
 }: {
   seriesList: SeriesSummary[];
 }) {
-  const t = useTranslations("series");
-
   if (seriesList.length === 0) return null;
 
   return (
@@ -27,8 +19,8 @@ export default function SeriesSection({
         />
         <div className="flex-1">
           <div className="flex items-baseline justify-between gap-4">
-            <h2 className="font-bold text-gray-900 text-lg md:text-xl dark:text-gray-100">
-              {t("title")}
+            <h2 className="font-bold text-foreground text-lg md:text-xl">
+              시리즈
               <span className="ml-2 font-normal text-muted-foreground text-sm">
                 {seriesList.length}
               </span>
@@ -37,11 +29,12 @@ export default function SeriesSection({
               href={PATH.SERIES}
               className="shrink-0 text-muted-foreground text-sm transition-colors hover:text-primary"
             >
-              {t("viewAll")}
+              전체보기 →
             </Link>
           </div>
           <p className="mt-0.5 text-muted-foreground text-sm">
-            {t("description")}
+            하나의 주제를 여러 편에 걸쳐 기록했습니다. 순서대로 읽으면 흐름이
+            이어집니다.
           </p>
         </div>
       </div>

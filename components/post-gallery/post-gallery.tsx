@@ -1,13 +1,13 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { memo, useMemo, useState } from "react";
-import type { FrontMatter } from "@/constants/mdx";
-import { POST_ITEM_PER_PAGE } from "@/constants/post";
-import PostCard from "../postCard";
-import PostListItem from "../postCard/post-list-item";
+import { memo, useState } from "react";
+import type { ViewMode } from "@/hooks/use-view-mode";
+import type { FrontMatter } from "@/types/post";
+import PostCard from "../post-card/post-card";
+import PostListItem from "../post-card/post-list-item";
 
-type ViewMode = "grid" | "list";
+const POST_ITEM_PER_PAGE = 8;
 
 const PostGallery = memo(function PostGallery({
   postInfoList,
@@ -21,10 +21,9 @@ const PostGallery = memo(function PostGallery({
 }) {
   const [page, setPage] = useState(1);
 
-  const visibleList = useMemo(() => {
-    if (!moreLabel) return postInfoList;
-    return postInfoList.slice(0, page * POST_ITEM_PER_PAGE);
-  }, [postInfoList, page, moreLabel]);
+  const visibleList = moreLabel
+    ? postInfoList.slice(0, page * POST_ITEM_PER_PAGE)
+    : postInfoList;
 
   const hasMore = visibleList.length < postInfoList.length;
 
@@ -33,13 +32,13 @@ const PostGallery = memo(function PostGallery({
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visibleList.map((postInfo) => (
-            <PostCard key={postInfo.id} {...postInfo} />
+            <PostCard key={postInfo.id} post={postInfo} />
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           {visibleList.map((postInfo) => (
-            <PostListItem key={postInfo.id} {...postInfo} />
+            <PostListItem key={postInfo.id} post={postInfo} />
           ))}
         </div>
       )}

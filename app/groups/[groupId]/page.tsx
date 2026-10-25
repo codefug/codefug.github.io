@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CategoryPosts } from "@/components/postGallery/category-posts";
+import { CategoryPosts } from "@/components/post-gallery/category-posts";
 import { createAlternateLinks } from "@/components/seo/utils";
 import {
   fromGroupSlug,
   GROUPS_WITH_PAGE,
+  getGroup,
   toGroupSlug,
 } from "@/constants/categories";
 import { PATH } from "@/constants/path";
-import { getTranslations } from "@/lib/messages";
+import { getPostsByGroup } from "@/lib/post-grouping";
 import { getFrontMatterList } from "@/lib/posts";
-import { getPostsByGroup } from "@/util/post";
 
 export async function generateMetadata({
   params,
@@ -19,13 +19,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { groupId: slug } = await params;
   const groupId = fromGroupSlug(slug);
-  const t = await getTranslations("categories");
 
   if (!groupId) return {};
+  const group = getGroup(groupId);
 
   return {
-    title: t(`${groupId}.label`),
-    description: t(`${groupId}.description`),
+    title: group.label,
+    description: group.description,
     alternates: createAlternateLinks(`${PATH.GROUPS}/${slug}`),
   };
 }
@@ -39,21 +39,20 @@ export default async function Page({
   const groupId = fromGroupSlug(slug);
   if (!groupId) notFound();
 
-  const t = await getTranslations("categories");
+  const group = getGroup(groupId);
   const posts = getPostsByGroup(getFrontMatterList(), groupId);
 
   return (
     <CategoryPosts
       scope={`group-${groupId}`}
-      label={t(`${groupId}.label`)}
-      description={t(`${groupId}.description`)}
+      label={group.label}
+      description={group.description}
       posts={posts}
     />
   );
 }
 
 export function generateStaticParams() {
-  // 글이 한 편도 없는 그룹은 빈 페이지가 되므로 만들지 않는다.
   const posts = getFrontMatterList();
   return GROUPS_WITH_PAGE.filter(
     (groupId) => getPostsByGroup(posts, groupId).length > 0,
