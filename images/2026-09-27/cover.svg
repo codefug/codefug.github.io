@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <g transform="translate(0,2)">
+  <!-- 어제 열어둔 탭(v41)이 새로 배포된 서버(v42)에 버전을 묻고, 새로고침 토스트를 띄운다 -->
+  <ellipse cx="200" cy="222" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 탭 -->
+  <rect x="24" y="44" width="200" height="150" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <path d="M34 44h180a10 10 0 0 1 10 10v16H24V54a10 10 0 0 1 10-10z" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="3"/>
+  <circle cx="42" cy="57" r="4" fill="#818cf8"/><circle cx="56" cy="57" r="4" fill="#a5b4fc"/><circle cx="70" cy="57" r="4" fill="#c7d2fe"/>
+  <rect x="44" y="86" width="72" height="10" rx="3" fill="#a5b4fc"/>
+  <rect x="44" y="104" width="160" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="44" y="118" width="140" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="44" y="132" width="150" height="8" rx="3" fill="#e5e7eb"/>
+  <text x="178" y="96" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="#4f46e5">v41</text>
+  <!-- 새로고침 토스트 -->
+  <rect x="58" y="154" width="150" height="28" rx="8" fill="#1e1b4b"/>
+  <rect x="70" y="165" width="84" height="6" rx="3" fill="#c7d2fe"/>
+  <rect x="172" y="160" width="28" height="16" rx="4" fill="#4f46e5"/>
+  <path d="M181 168a5 5 0 1 0 1.5-3.6M181 163.5v3h3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 서버 -->
+  <rect x="276" y="70" width="96" height="120" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="288" y="86" width="72" height="22" rx="4" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="288" y="116" width="72" height="22" rx="4" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="288" y="146" width="72" height="22" rx="4" fill="#4f46e5" stroke="#1e1b4b" stroke-width="2"/>
+  <circle cx="298" cy="97" r="3" fill="#818cf8"/><circle cx="298" cy="127" r="3" fill="#818cf8"/><circle cx="298" cy="157" r="3" fill="#fff"/>
+  <text x="330" y="161" font-family="ui-monospace, monospace" font-size="12" font-weight="700" fill="#fff">v42</text>
+  <!-- 버전 확인 -->
+  <path d="M230 110C250 100 256 100 270 106" stroke="#4f46e5" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <path d="M265.7 98.1l4.3 7.9-8.7 2.3" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M270 150C256 158 248 158 230 152" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M238.5 149l-8.5 3 5 7.5" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

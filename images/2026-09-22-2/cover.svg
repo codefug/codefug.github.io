@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 서버가 UA 신호를 보고 휴대폰과 모니터 중 맞는 트리 한 벌만 골라 보낸다 -->
+  <ellipse cx="200" cy="244" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 서버 -->
+  <rect x="168" y="34" width="64" height="94" rx="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  <rect x="178" y="46" width="44" height="16" rx="4" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="178" y="68" width="44" height="16" rx="4" fill="#4f46e5" stroke="#1e1b4b" stroke-width="2"/>
+  <rect x="178" y="90" width="44" height="16" rx="4" fill="#e0e7ff" stroke="#1e1b4b" stroke-width="2"/>
+  <circle cx="186" cy="54" r="2.5" fill="#818cf8"/><circle cx="186" cy="76" r="2.5" fill="#fff"/><circle cx="186" cy="98" r="2.5" fill="#818cf8"/>
+  <text x="200" y="120" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#4f46e5" text-anchor="middle">UA</text>
+  <!-- 데스크톱 모니터: 왼쪽, 본문이 그려진다 -->
+  <g>
+    <rect x="34" y="150" width="118" height="76" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+    <rect x="46" y="162" width="94" height="8" rx="4" fill="#4f46e5"/>
+    <rect x="46" y="176" width="70" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="46" y="188" width="80" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="46" y="200" width="60" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="82" y="226" width="22" height="10" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+    <rect x="66" y="236" width="54" height="6" rx="3" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+  </g>
+  <!-- 휴대폰: 오른쪽, 본문이 그려진다(세로 배치) -->
+  <g>
+    <rect x="286" y="136" width="66" height="106" rx="12" fill="#fff" stroke="#1e1b4b" stroke-width="3"/>
+    <rect x="296" y="150" width="46" height="8" rx="4" fill="#4f46e5"/>
+    <rect x="296" y="164" width="46" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="296" y="176" width="34" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="296" y="196" width="46" height="26" rx="5" fill="#eef2ff" stroke="#c7d2fe" stroke-width="2"/>
+    <rect x="311" y="230" width="16" height="4" rx="2" fill="#c7d2fe"/>
+  </g>
+  <!-- 서버 → 각 화면으로 확정된 신호선 (점선 아님: 이미 결정됐다) -->
+  <path d="M164 112C144 118 120 136 104 146" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M108 137l-4 9 10 0.5" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M236 112C256 116 282 124 298 132" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M293 123l5 9 -10 1.5" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- 콜백 안에 콜백을 넣어 오른쪽으로 기울어지는 피라미드와, 같은 단계를 한 줄로 세워 .then으로 이은 Promise 체인의 대비 -->
+  <ellipse cx="200" cy="222" rx="170" ry="8" fill="#4f46e5" fill-opacity="0.12"/>
+  <!-- 왼쪽: 콜백 지옥 피라미드 -->
+  <rect x="51" y="60" width="150" height="30" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="61" y="71" width="40" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="71" y="96" width="130" height="30" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="81" y="107" width="40" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="91" y="132" width="110" height="30" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="101" y="143" width="40" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="111" y="168" width="90" height="30" rx="8" fill="#4f46e5"/>
+  <rect x="121" y="179" width="30" height="8" rx="3" fill="#e0e7ff"/>
+  <!-- 같은 일을 체인으로 바꿔 쓴다 -->
+  <path d="M207.5 129.5H241.5" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <path d="M235.5 123.5l7 6-7 6" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 오른쪽: Promise 체인, 들여쓰기 없이 한 줄로 이어짐 -->
+  <rect x="249" y="60" width="100" height="30" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="259" y="71" width="40" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="249" y="114.5" width="100" height="30" rx="8" fill="#fff" stroke="#1e1b4b" stroke-width="2.5"/>
+  <rect x="259" y="125.5" width="40" height="8" rx="3" fill="#e5e7eb"/>
+  <rect x="249" y="168" width="100" height="30" rx="8" fill="#4f46e5"/>
+  <rect x="259" y="179" width="30" height="8" rx="3" fill="#e0e7ff"/>
+  <!-- 단계 사이를 잇는 .then -->
+  <path d="M299 92V111" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M293 104l6 8 6-8" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M299 146.5V165.5" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M293 158.75l6 8 6-8" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="309" y="106" font-family="ui-monospace, monospace" font-size="10" font-weight="700" fill="#4f46e5">.then</text>
+  <text x="309" y="160.5" font-family="ui-monospace, monospace" font-size="10" font-weight="700" fill="#4f46e5">.then</text>
+</svg>

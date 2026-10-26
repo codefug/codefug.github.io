@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://codefug.github.io/sitemap.xml
